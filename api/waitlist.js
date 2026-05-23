@@ -114,7 +114,7 @@ export default async function handler(req, res) {
       provider: normalizeString(body.provider),
       useCase: normalizeString(body.useCase),
       monthlyAiSpend: normalizeString(body.monthlyAiSpend),
-      urgency: normalizeString(body.urgency),
+      urgency: null,
       painPoint: normalizeString(body.painPoint),
       utmSource: normalizeString(body.utmSource),
       utmMedium: normalizeString(body.utmMedium),

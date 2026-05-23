@@ -125,7 +125,7 @@ function initWaitlist() {
       });
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error(result.error || "Signup failed.");
-      track("waitlist_signup_succeeded", { leadId: result.leadId, duplicate: result.duplicate });
+      track("waitlist_signup_succeeded", { ...data, leadId: result.leadId, duplicate: result.duplicate });
       location.href = "/thanks";
     } catch (error) {
       status.textContent = error.message || "Something went wrong.";

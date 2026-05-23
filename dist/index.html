@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body data-page="landing">
+    <div class="ambient-grid" aria-hidden="true"></div>
     <div class="site-shell">
       <header class="nav">
         <a class="brand" href="/" aria-label="Forsig home">
@@ -26,6 +27,7 @@
       <main>
         <section class="hero section">
           <div class="hero-copy reveal">
+            <div class="launch-badge"><span></span> Private beta opening soon</div>
             <div class="eyebrow">OpenAI-compatible control plane for agents</div>
             <h1>Budget firewall and kill switch for AI agents.</h1>
             <p class="hero-lede">Add Forsig in seconds: change the base URL, swap in a virtual key, and get budgets, token counts, audit logs, model policy, custom instructions, and emergency pause controls.</p>
@@ -37,9 +39,16 @@
               <button class="copy-pill" data-copy="npm install @forsig/sdk">npm install @forsig/sdk</button>
               <button class="copy-pill" data-copy="pip install forsig">pip install forsig</button>
             </div>
+            <div class="trust-strip" aria-label="Forsig launch promises">
+              <span>No prompt storage by default</span>
+              <span>OpenAI first</span>
+              <span>JS + Python SDKs</span>
+            </div>
           </div>
 
           <div class="hero-visual reveal delay-1" aria-label="Forsig request protection preview">
+            <div class="orbit orbit-a"></div>
+            <div class="orbit orbit-b"></div>
             <div class="motion-card request-card">
               <div class="card-top">
                 <span class="status-dot live"></span>
@@ -69,6 +78,13 @@ apiKey: process.env.OPENAI_API_KEY</code></pre>
                 <strong>Disallowed model blocked</strong>
                 <span>Policy stopped the call before provider spend.</span>
               </div>
+            </div>
+            <div class="signal-rail" aria-hidden="true">
+              <span style="height: 34%"></span>
+              <span style="height: 66%"></span>
+              <span style="height: 48%"></span>
+              <span style="height: 82%"></span>
+              <span style="height: 56%"></span>
             </div>
           </div>
         </section>
@@ -150,6 +166,35 @@ client.chat.completions.create(
     ),
 )</code></pre>
             </div>
+          </div>
+        </section>
+
+        <section class="section flow-section">
+          <div class="section-heading reveal">
+            <span class="eyebrow">How it works</span>
+            <h2>One gateway. Four controls every agent should have.</h2>
+          </div>
+          <div class="flow-grid">
+            <article class="flow-step reveal">
+              <b>01</b>
+              <h3>Store provider key</h3>
+              <p>Add your OpenAI key once. Forsig encrypts it and issues agent-scoped virtual keys.</p>
+            </article>
+            <article class="flow-step reveal delay-1">
+              <b>02</b>
+              <h3>Register agent</h3>
+              <p>Name the external agent, choose model policy, set spend limits, and record required instructions.</p>
+            </article>
+            <article class="flow-step reveal delay-2">
+              <b>03</b>
+              <h3>Route requests</h3>
+              <p>Use the OpenAI-compatible base URL or SDK helpers to attach session/user metadata.</p>
+            </article>
+            <article class="flow-step reveal delay-3">
+              <b>04</b>
+              <h3>Block or pause</h3>
+              <p>Stop expensive loops, disallowed models, budget breaches, or the whole agent instantly.</p>
+            </article>
           </div>
         </section>
 
@@ -237,12 +282,6 @@ client.chat.completions.create(
                 <option>$10k+</option>
               </select>
               <textarea name="useCase" placeholder="What are you building?"></textarea>
-              <select name="urgency">
-                <option value="">Urgency</option>
-                <option>Exploring</option>
-                <option>Building now</option>
-                <option>Urgent/design partner</option>
-              </select>
               <button class="button primary" type="submit">Request early access</button>
               <p id="form-status" role="status"></p>
             </form>
