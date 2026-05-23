@@ -5,11 +5,14 @@ let sql;
 
 function getSql() {
   if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL is not configured.");
+    const error = new Error("DATABASE_URL is not configured.");
+    error.code = "missing_database_url";
+    throw error;
   }
   if (!sql) {
     sql = postgres(process.env.DATABASE_URL, {
       max: 2,
+      prepare: false,
       ssl: process.env.DATABASE_SSL === "false" ? false : "require"
     });
   }
@@ -37,21 +40,26 @@ async function capturePostHog(event, properties, distinctId) {
   const host = process.env.POSTHOG_HOST || process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://app.posthog.com";
   if (!apiKey) return { captured: false, reason: "POSTHOG_KEY not configured" };
 
-  const response = await fetch(`${host.replace(/\/$/, "")}/capture/`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({
-      api_key: apiKey,
-      event,
-      distinct_id: distinctId,
-      properties
-    })
-  });
+  try {
+    const response = await fetch(`${host.replace(/\/$/, "")}/capture/`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        api_key: apiKey,
+        event,
+        distinct_id: distinctId,
+        properties
+      })
+    });
 
-  if (!response.ok) {
-    return { captured: false, status: response.status, body: await response.text() };
+    if (!response.ok) {
+      return { captured: false, status: response.status, body: await response.text() };
+    }
+    return { captured: true };
+  } catch (error) {
+    console.error("PostHog capture failed", { event, message: error.message });
+    return { captured: false, error: error.message };
   }
-  return { captured: true };
 }
 
 async function sendConfirmationEmail(lead) {
@@ -59,35 +67,40 @@ async function sendConfirmationEmail(lead) {
     return { sent: false, reason: "RESEND_API_KEY not configured" };
   }
 
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-      "content-type": "application/json"
-    },
-    body: JSON.stringify({
-      from: process.env.WAITLIST_FROM_EMAIL || "Forsig <hello@forsig.com>",
-      to: [lead.email],
-      reply_to: process.env.WAITLIST_REPLY_TO || "hello@forsig.com",
-      subject: "You are on the Forsig waitlist",
-      html: `
-        <div style="margin:0;background:#07080c;color:#f7f8ff;font-family:Inter,Arial,sans-serif;padding:32px">
-          <div style="max-width:620px;margin:0 auto;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:30px;background:#111522">
-            <p style="margin:0 0 12px;color:#5ef0a4;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:700">Forsig early access</p>
-            <h1 style="margin:0 0 16px;font-size:30px;line-height:1.1">You are on the Forsig waitlist.</h1>
-            <p style="color:#c9cedd;line-height:1.65">Thanks for joining. Forsig is the budget firewall and kill switch for AI agents. We are prioritizing early access for builders already running or preparing agent traffic.</p>
-            <p style="color:#c9cedd;line-height:1.65">Soon you will be able to add Forsig in seconds: change the base URL, swap in a virtual key, and get budgets, token counts, audit logs, custom instruction records, and emergency pause controls.</p>
-            <p style="margin-top:24px;color:#8f96aa">The Forsig team</p>
+  try {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        from: process.env.WAITLIST_FROM_EMAIL || "Forsig <hello@forsig.com>",
+        to: [lead.email],
+        reply_to: process.env.WAITLIST_REPLY_TO || "hello@forsig.com",
+        subject: "You are on the Forsig waitlist",
+        html: `
+          <div style="margin:0;background:#07080c;color:#f7f8ff;font-family:Inter,Arial,sans-serif;padding:32px">
+            <div style="max-width:620px;margin:0 auto;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:30px;background:#111522">
+              <p style="margin:0 0 12px;color:#5ef0a4;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:700">Forsig early access</p>
+              <h1 style="margin:0 0 16px;font-size:30px;line-height:1.1">You are on the Forsig waitlist.</h1>
+              <p style="color:#c9cedd;line-height:1.65">Thanks for joining. Forsig is the budget firewall and kill switch for AI agents. We are prioritizing early access for builders already running or preparing agent traffic.</p>
+              <p style="color:#c9cedd;line-height:1.65">Soon you will be able to add Forsig in seconds: change the base URL, swap in a virtual key, and get budgets, token counts, audit logs, custom instruction records, and emergency pause controls.</p>
+              <p style="margin-top:24px;color:#8f96aa">The Forsig team</p>
+            </div>
           </div>
-        </div>
-      `
-    })
-  });
+        `
+      })
+    });
 
-  if (!response.ok) {
-    return { sent: false, status: response.status, body: await response.text() };
+    if (!response.ok) {
+      return { sent: false, status: response.status, body: await response.text() };
+    }
+    return { sent: true, response: await response.json() };
+  } catch (error) {
+    console.error("Resend confirmation failed", { email: lead.email, message: error.message });
+    return { sent: false, error: error.message };
   }
-  return { sent: true, response: await response.json() };
 }
 
 export default async function handler(req, res) {
@@ -198,24 +211,39 @@ export default async function handler(req, res) {
 
     const savedLead = rows[0];
     const duplicate = Number(savedLead.signup_count) > 1;
-    const [emailResult, analyticsResult] = await Promise.all([
+    const [emailResult, analyticsResult] = await Promise.allSettled([
       sendConfirmationEmail({ email }),
       capturePostHog("waitlist_signup_succeeded", { ...lead, leadId: savedLead.id, duplicate }, savedLead.email)
     ]);
+    const emailStatus = emailResult.status === "fulfilled" ? emailResult.value : { sent: false, error: emailResult.reason?.message };
+    const analyticsStatus = analyticsResult.status === "fulfilled" ? analyticsResult.value : { captured: false, error: analyticsResult.reason?.message };
 
     res.status(200).json({
       ok: true,
       leadId: savedLead.id,
       duplicate,
       email: {
-        sent: Boolean(emailResult.sent)
+        sent: Boolean(emailStatus.sent)
       },
       analytics: {
-        captured: Boolean(analyticsResult.captured)
+        captured: Boolean(analyticsStatus.captured)
       }
     });
   } catch (error) {
-    await capturePostHog("waitlist_signup_failed", { message: error.message }, "anonymous").catch(() => null);
+    console.error("Waitlist signup failed", {
+      code: error.code,
+      name: error.name,
+      message: error.message,
+      detail: error.detail,
+      hint: error.hint
+    });
+    await capturePostHog("waitlist_signup_failed", { code: error.code, message: error.message }, "anonymous").catch(() => null);
+
+    if (error.code === "missing_database_url") {
+      res.status(503).json({ ok: false, error: "Waitlist is not configured yet." });
+      return;
+    }
+
     res.status(500).json({ ok: false, error: "Waitlist signup failed. Please try again." });
   }
 }
