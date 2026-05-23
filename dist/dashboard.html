@@ -188,12 +188,12 @@ client.chat.completions.create(
             <p>Every request gets a policy decision before provider spend happens. The reason column is the proof.</p>
           </div>
           <div class="log-filters">
-            <button class="active">All</button>
-            <button>Allowed</button>
-            <button>Blocked</button>
-            <button>Budget</button>
-            <button>Model</button>
-            <button>Paused</button>
+            <button class="active" data-filter="all">All</button>
+            <button data-filter="allowed">Allowed</button>
+            <button data-filter="blocked">Blocked</button>
+            <button data-filter="budget">Budget</button>
+            <button data-filter="model">Model</button>
+            <button data-filter="paused">Paused</button>
           </div>
           <div class="responsive-table">
             <table>
@@ -204,6 +204,7 @@ client.chat.completions.create(
                 <tr><td>12:04</td><td>Support Copilot</td><td>cust_123</td><td>allowed</td><td>gpt-4o-mini</td><td>968</td><td>$0.0032</td><td>-</td><td>1.2s</td></tr>
                 <tr><td>12:03</td><td>Support Copilot</td><td>cust_123</td><td>blocked</td><td>gpt-4o</td><td>1,420 est.</td><td>$0.021 est.</td><td>daily_budget_exceeded</td><td>42ms</td></tr>
                 <tr><td>12:01</td><td>Research Agent</td><td>usr_456</td><td>blocked</td><td>gpt-4.1</td><td>640 est.</td><td>$0.013 est.</td><td>model_not_allowed</td><td>39ms</td></tr>
+                <tr><td>11:58</td><td>Support Copilot</td><td>cust_220</td><td>blocked</td><td>gpt-4o-mini</td><td>0</td><td>$0.00</td><td>agent_paused</td><td>24ms</td></tr>
               </tbody>
             </table>
           </div>

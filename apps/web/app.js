@@ -277,7 +277,9 @@ function initDashboard() {
   const blockedCount = document.getElementById("blocked-count");
   const tokenTotal = document.getElementById("token-total");
   const logBody = document.getElementById("demo-log-body");
+  const logFilters = document.querySelectorAll(".log-filters button");
   if (!status) return;
+  let activeLogFilter = "all";
 
   const rows = {
     allowed: ["12:06", "Support Copilot", "cust_789", "allowed", "gpt-4o-mini", "812", "$0.0028", "-", "1.1s"],
@@ -290,8 +292,41 @@ function initDashboard() {
     if (!logBody) return;
     const tr = document.createElement("tr");
     tr.className = "flash-row";
+    tr.dataset.logType = type;
     tr.innerHTML = rows[type].map((cell) => `<td>${cell}</td>`).join("");
     logBody.prepend(tr);
+    applyLogFilter(activeLogFilter);
+  }
+
+  function getLogType(row) {
+    if (row.dataset.logType) return row.dataset.logType;
+    const cells = row.querySelectorAll("td");
+    const decision = cells[3]?.textContent.trim().toLowerCase() || "";
+    const reason = cells[7]?.textContent.trim().toLowerCase() || "";
+    if (decision === "allowed") return "allowed";
+    if (reason.includes("budget")) return "budget";
+    if (reason.includes("model")) return "model";
+    if (reason.includes("paused")) return "paused";
+    return decision === "blocked" ? "blocked" : "all";
+  }
+
+  function matchesLogFilter(row, filter) {
+    if (filter === "all") return true;
+    const type = getLogType(row);
+    if (filter === "blocked") return type === "budget" || type === "model" || type === "paused" || type === "blocked";
+    return type === filter;
+  }
+
+  function applyLogFilter(filter) {
+    activeLogFilter = filter;
+    logFilters.forEach((button) => {
+      const buttonFilter = button.dataset.filter || button.textContent.trim().toLowerCase();
+      button.classList.toggle("active", buttonFilter === filter);
+    });
+    if (!logBody) return;
+    logBody.querySelectorAll("tr").forEach((row) => {
+      row.hidden = !matchesLogFilter(row, filter);
+    });
   }
 
   function applySimulation(type) {
@@ -326,6 +361,16 @@ function initDashboard() {
   document.querySelectorAll("[data-simulate]").forEach((button) => {
     button.addEventListener("click", () => applySimulation(button.dataset.simulate));
   });
+
+  logFilters.forEach((button) => {
+    const filter = button.dataset.filter || button.textContent.trim().toLowerCase();
+    button.dataset.filter = filter;
+    button.addEventListener("click", () => {
+      applyLogFilter(filter);
+      track("dashboard_log_filter_clicked", { filter });
+    });
+  });
+  applyLogFilter(activeLogFilter);
 
   if (!pause) return;
   let paused = false;
