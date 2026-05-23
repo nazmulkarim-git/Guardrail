@@ -159,6 +159,60 @@ async function sendConfirmationEmail(lead) {
   }
 }
 
+async function sendOwnerNotification(lead) {
+  const ownerEmail = process.env.WAITLIST_OWNER_EMAIL || "thenazmulkarim@gmail.com";
+  if (!process.env.RESEND_API_KEY) {
+    return { sent: false, reason: "RESEND_API_KEY not configured" };
+  }
+
+  try {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        from: process.env.WAITLIST_FROM_EMAIL || "Forsig <hello@forsig.com>",
+        to: [ownerEmail],
+        reply_to: lead.email,
+        subject: `New Forsig waitlist signup: ${lead.name}`,
+        html: `
+          <div style="font-family:Inter,Arial,sans-serif;color:#111827">
+            <h2>New Forsig waitlist signup</h2>
+            <p><strong>Name:</strong> ${escapeHtml(lead.name || "")}</p>
+            <p><strong>Email:</strong> ${escapeHtml(lead.email)}</p>
+            <p><strong>Company:</strong> ${escapeHtml(lead.company || "-")}</p>
+            <p><strong>Role:</strong> ${escapeHtml(lead.role || "-")}</p>
+            <p><strong>Provider:</strong> ${escapeHtml(lead.provider || "-")}</p>
+            <p><strong>Monthly AI spend:</strong> ${escapeHtml(lead.monthlyAiSpend || "-")}</p>
+            <p><strong>Use case:</strong></p>
+            <p>${escapeHtml(lead.useCase || "-")}</p>
+            <p><strong>Source:</strong> ${escapeHtml(lead.utmSource || "direct")} / ${escapeHtml(lead.utmMedium || "-")} / ${escapeHtml(lead.utmCampaign || "-")}</p>
+          </div>
+        `
+      })
+    });
+
+    if (!response.ok) {
+      return { sent: false, status: response.status, body: await response.text() };
+    }
+    return { sent: true, response: await response.json() };
+  } catch (error) {
+    console.error("Owner waitlist notification failed", { email: lead.email, message: error.message });
+    return { sent: false, error: error.message };
+  }
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("allow", "POST");
@@ -170,6 +224,11 @@ export default async function handler(req, res) {
     const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
     if (!isEmail(body.email)) {
       res.status(400).json({ ok: false, error: "Valid email is required." });
+      return;
+    }
+
+    if (!normalizeString(body.name)) {
+      res.status(400).json({ ok: false, error: "Name is required." });
       return;
     }
 
@@ -267,11 +326,13 @@ export default async function handler(req, res) {
 
     const savedLead = rows[0];
     const duplicate = Number(savedLead.signup_count) > 1;
-    const [emailResult, analyticsResult] = await Promise.allSettled([
+    const [emailResult, ownerResult, analyticsResult] = await Promise.allSettled([
       sendConfirmationEmail({ email }),
+      sendOwnerNotification(lead),
       capturePostHog("waitlist_signup_succeeded", { ...lead, leadId: savedLead.id, duplicate }, savedLead.email)
     ]);
     const emailStatus = emailResult.status === "fulfilled" ? emailResult.value : { sent: false, error: emailResult.reason?.message };
+    const ownerStatus = ownerResult.status === "fulfilled" ? ownerResult.value : { sent: false, error: ownerResult.reason?.message };
     const analyticsStatus = analyticsResult.status === "fulfilled" ? analyticsResult.value : { captured: false, error: analyticsResult.reason?.message };
 
     res.status(200).json({
@@ -280,6 +341,9 @@ export default async function handler(req, res) {
       duplicate,
       email: {
         sent: Boolean(emailStatus.sent)
+      },
+      ownerNotification: {
+        sent: Boolean(ownerStatus.sent)
       },
       analytics: {
         captured: Boolean(analyticsStatus.captured)

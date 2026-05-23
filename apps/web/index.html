@@ -28,9 +28,9 @@
         <section class="hero section">
           <div class="hero-copy reveal">
             <div class="launch-badge"><span></span> Private beta opening soon</div>
-            <div class="eyebrow">OpenAI-compatible control plane for agents</div>
-            <h1>Budget firewall and kill switch for AI agents.</h1>
-            <p class="hero-lede">Add Forsig in seconds: change the base URL, swap in a virtual key, and get budgets, token counts, audit logs, model policy, custom instructions, and emergency pause controls.</p>
+            <div class="eyebrow">For founders and developers shipping AI agents</div>
+            <h1>Stop runaway AI agent bills before they happen.</h1>
+            <p class="hero-lede">Forsig sits between your app and OpenAI, blocks expensive loops before the provider call, shows token-level spend, and gives every agent an emergency kill switch.</p>
             <div class="hero-actions">
               <a class="button primary" href="#waitlist" data-track="hero_cta_clicked">Join the waitlist</a>
               <a class="button ghost" href="/dashboard">View dashboard demo</a>
@@ -38,6 +38,10 @@
             <div class="install-row" aria-label="SDK install commands">
               <button class="copy-pill" data-copy="npm install @forsig/sdk">npm install @forsig/sdk</button>
               <button class="copy-pill" data-copy="pip install forsig">pip install forsig</button>
+            </div>
+            <div class="signup-proof">
+              <strong>1k+</strong>
+              <span>builders tracking Forsig before private beta</span>
             </div>
             <div class="trust-strip" aria-label="Forsig launch promises">
               <span>No prompt storage by default</span>
@@ -52,7 +56,7 @@
             <div class="motion-card request-card">
               <div class="card-top">
                 <span class="status-dot live"></span>
-                <span>Protected request</span>
+                <span>Budget check passed</span>
                 <strong>$0.0032</strong>
               </div>
               <div class="budget-meter">
@@ -66,17 +70,17 @@
             </div>
             <div class="code-swap" data-swap>
               <div class="code-toolbar">
-                <span>Before</span>
-                <span>After Forsig</span>
+                <span>One-line integration</span>
+                <span>OpenAI compatible</span>
               </div>
               <pre><code id="hero-code">baseURL: "https://api.openai.com/v1"
 apiKey: process.env.OPENAI_API_KEY</code></pre>
             </div>
             <div class="motion-card block-card">
-              <div class="block-icon">403</div>
+              <div class="block-icon">402</div>
               <div>
-                <strong>Disallowed model blocked</strong>
-                <span>Policy stopped the call before provider spend.</span>
+                <strong>Runaway loop blocked</strong>
+                <span>Daily budget would exceed $1.00. Provider call skipped.</span>
               </div>
             </div>
             <div class="signal-rail" aria-hidden="true">
@@ -91,38 +95,60 @@ apiKey: process.env.OPENAI_API_KEY</code></pre>
 
         <section id="value" class="section value-section">
           <div class="section-heading reveal">
-            <span class="eyebrow">True value</span>
-            <h2>Your agents keep running. Your bill does not run away.</h2>
-            <p>Forsig sits between your app and OpenAI. It enforces spend, captures token usage, records metadata-only logs, and gives you one button to stop traffic.</p>
+            <span class="eyebrow">The problem</span>
+            <h2>AI agents can spend money while nobody is watching.</h2>
+            <p>One bad loop, one expensive model, or one forgotten customer workflow can turn into a surprise bill. Forsig gives each agent a budget boundary before it reaches OpenAI.</p>
           </div>
           <div class="feature-grid">
             <article class="feature-card reveal">
-              <span>01</span>
-              <h3>Pre-call budget blocks</h3>
-              <p>Daily, monthly, and per-request budgets are checked before model calls happen.</p>
+              <span>Runaway loop</span>
+              <h3>Block before spend</h3>
+              <p>Forsig estimates token cost and rejects requests that would cross daily, monthly, or per-request limits.</p>
             </article>
             <article class="feature-card reveal delay-1">
-              <span>02</span>
-              <h3>Token counts that explain spend</h3>
-              <p>See estimated and actual input, output, and total tokens per request.</p>
+              <span>Wrong model</span>
+              <h3>Keep models under policy</h3>
+              <p>Allow cheap models for routine work and block expensive or unapproved models before they run.</p>
             </article>
             <article class="feature-card reveal delay-2">
-              <span>03</span>
-              <h3>Agent instructions on record</h3>
-              <p>Keep required operating instructions attached to each agent and audit changes.</p>
+              <span>No visibility</span>
+              <h3>See every request</h3>
+              <p>Track status, model, token counts, estimated cost, actual usage, latency, and block reason.</p>
             </article>
             <article class="feature-card reveal delay-3">
-              <span>04</span>
-              <h3>Emergency pause</h3>
-              <p>Stop org, agent, or instance traffic instantly when behavior looks wrong.</p>
+              <span>Emergency</span>
+              <h3>Pause instantly</h3>
+              <p>Stop a risky agent with one kill switch while you inspect logs and fix the underlying workflow.</p>
             </article>
+          </div>
+        </section>
+
+        <section class="section outcome-section">
+          <div class="outcome-card reveal">
+            <div>
+              <span class="eyebrow">What changes after Forsig</span>
+              <h2>From blind provider calls to controlled agent traffic.</h2>
+            </div>
+            <div class="before-after">
+              <div>
+                <span>Before</span>
+                <strong>Agents call OpenAI directly</strong>
+                <p>No per-agent budgets, weak customer-level visibility, and no fast way to stop a bad loop.</p>
+              </div>
+              <div>
+                <span>After</span>
+                <strong>Agents pass through Forsig</strong>
+                <p>Every request is checked, priced, logged, and blocked or allowed according to your policy.</p>
+              </div>
+            </div>
           </div>
         </section>
 
         <section id="sdk" class="section sdk-section">
           <div class="section-heading reveal">
             <span class="eyebrow">Developer speed</span>
-            <h2>SDKs when you want metadata. Raw base URL when you do not.</h2>
+            <h2>Add budget protection without rewriting your agent.</h2>
+            <p>Use raw OpenAI-compatible base URL for the fastest path, then add SDK headers when you want session, customer, and instance tracking.</p>
           </div>
           <div class="snippet-grid">
             <div class="snippet reveal">
@@ -172,7 +198,7 @@ client.chat.completions.create(
         <section class="section flow-section">
           <div class="section-heading reveal">
             <span class="eyebrow">How it works</span>
-            <h2>One gateway. Four controls every agent should have.</h2>
+            <h2>Four steps from exposed agent to protected traffic.</h2>
           </div>
           <div class="flow-grid">
             <article class="flow-step reveal">
@@ -253,12 +279,12 @@ client.chat.completions.create(
           <div class="waitlist-card reveal">
             <div>
               <span class="eyebrow">Early access</span>
-              <h2>Join the Forsig waitlist.</h2>
-              <p>We are prioritizing teams already building or running AI agents with real traffic.</p>
+              <h2>Join 1k+ builders waiting for Forsig.</h2>
+              <p>Get early access if you are building AI agents and want budget limits, token visibility, and a kill switch before your first real incident.</p>
             </div>
             <form id="waitlist-form" class="waitlist-form">
               <input name="email" type="email" required placeholder="Work email" />
-              <input name="name" type="text" placeholder="Name" />
+              <input name="name" type="text" required placeholder="Name" />
               <input name="company" type="text" placeholder="Company" />
               <select name="role">
                 <option value="">Role</option>

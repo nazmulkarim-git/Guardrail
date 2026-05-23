@@ -271,6 +271,27 @@ h3 {
   background: rgba(255, 255, 255, 0.045);
 }
 
+.signup-proof {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.signup-proof strong {
+  font-size: 38px;
+  line-height: 1;
+  color: var(--green);
+  text-shadow: 0 0 28px rgba(94, 240, 164, 0.28);
+}
+
+.signup-proof span {
+  max-width: 230px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
 .copy-pill,
 .copy-code {
   border: 1px solid var(--line);
@@ -532,6 +553,68 @@ pre {
 .flow-step:hover {
   transform: translateY(-4px);
   background: rgba(22, 27, 40, 0.86);
+}
+
+.outcome-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 24px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 28px;
+  background:
+    linear-gradient(135deg, rgba(94, 240, 164, 0.1), transparent 38%),
+    rgba(18, 21, 31, 0.78);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.outcome-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: var(--premium-border);
+  opacity: 0.62;
+  pointer-events: none;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+.before-after {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.before-after div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.before-after span {
+  display: inline-flex;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.before-after strong {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 21px;
+}
+
+.before-after p {
+  margin-bottom: 0;
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 .feature-card p,
@@ -905,6 +988,7 @@ th {
 
   .hero,
   .waitlist-card,
+  .outcome-card,
   .preview-panel,
   .app-layout {
     grid-template-columns: 1fr;
@@ -927,6 +1011,10 @@ th {
     grid-template-columns: repeat(4, minmax(0, 1fr));
     border-right: 0;
     border-bottom: 1px solid var(--line);
+  }
+
+  .before-after {
+    grid-template-columns: 1fr;
   }
 
   .app-sidebar {
@@ -1007,6 +1095,11 @@ th {
   .hero-actions .button,
   .copy-pill {
     width: 100%;
+  }
+
+  .signup-proof {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .waitlist-card,
