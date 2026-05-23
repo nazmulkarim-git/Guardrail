@@ -35,6 +35,11 @@ function getIp(req) {
   return req.socket?.remoteAddress || null;
 }
 
+function makeReferralCode(email, id) {
+  const prefix = email.split("@")[0].replace(/[^a-z0-9]/gi, "").slice(0, 6).toUpperCase() || "AGENT";
+  return `FS-${prefix}-${id.slice(-5).toUpperCase()}`;
+}
+
 function publicDatabaseError(error) {
   if (error.code === "missing_database_url") {
     return {
@@ -204,6 +209,46 @@ async function sendOwnerNotification(lead) {
   }
 }
 
+async function sendReferralNotification(referrer, referredEmail) {
+  if (!referrer?.email || !process.env.RESEND_API_KEY) {
+    return { sent: false, reason: "missing referrer email or RESEND_API_KEY" };
+  }
+
+  try {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "content-type": "application/json"
+      },
+      body: JSON.stringify({
+        from: process.env.WAITLIST_FROM_EMAIL || "Forsig <hello@forsig.com>",
+        to: [referrer.email],
+        reply_to: process.env.WAITLIST_REPLY_TO || "hello@forsig.com",
+        subject: "You moved up the Forsig waitlist",
+        html: `
+          <div style="margin:0;background:#07080c;color:#f7f8ff;font-family:Inter,Arial,sans-serif;padding:32px">
+            <div style="max-width:620px;margin:0 auto;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:30px;background:#111522">
+              <p style="margin:0 0 12px;color:#d7ff72;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:700">Forsig referral</p>
+              <h1 style="margin:0 0 16px;font-size:28px;line-height:1.1">Thanks for sharing Forsig.</h1>
+              <p style="color:#c9cedd;line-height:1.65">Someone joined the private beta waitlist using your referral code. You moved up in the list.</p>
+              <p style="color:#8f96aa">Referred signup: ${escapeHtml(referredEmail)}</p>
+            </div>
+          </div>
+        `
+      })
+    });
+
+    if (!response.ok) {
+      return { sent: false, status: response.status, body: await response.text() };
+    }
+    return { sent: true, response: await response.json() };
+  } catch (error) {
+    console.error("Referral notification failed", { email: referrer.email, message: error.message });
+    return { sent: false, error: error.message };
+  }
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -251,6 +296,7 @@ export default async function handler(req, res) {
     };
 
     const db = getSql();
+    const ownReferralCode = makeReferralCode(email, lead.id);
     const rows = await db`
       insert into waitlist_leads (
         id,
@@ -267,6 +313,7 @@ export default async function handler(req, res) {
         utm_medium,
         utm_campaign,
         referral_code,
+        own_referral_code,
         referrer,
         source_section,
         viewport,
@@ -291,6 +338,7 @@ export default async function handler(req, res) {
         ${lead.utmMedium},
         ${lead.utmCampaign},
         ${lead.referralCode},
+        ${ownReferralCode},
         ${lead.referrer},
         ${lead.sourceSection},
         ${lead.viewport},
@@ -313,6 +361,7 @@ export default async function handler(req, res) {
         utm_medium = coalesce(excluded.utm_medium, waitlist_leads.utm_medium),
         utm_campaign = coalesce(excluded.utm_campaign, waitlist_leads.utm_campaign),
         referral_code = coalesce(excluded.referral_code, waitlist_leads.referral_code),
+        own_referral_code = coalesce(waitlist_leads.own_referral_code, excluded.own_referral_code),
         referrer = coalesce(excluded.referrer, waitlist_leads.referrer),
         source_section = coalesce(excluded.source_section, waitlist_leads.source_section),
         viewport = coalesce(excluded.viewport, waitlist_leads.viewport),
@@ -320,16 +369,30 @@ export default async function handler(req, res) {
         ip_address = coalesce(excluded.ip_address, waitlist_leads.ip_address),
         signup_count = waitlist_leads.signup_count + 1,
         updated_at = now()
-      returning id, email, signup_count, created_at, updated_at
+      returning id, email, signup_count, own_referral_code, created_at, updated_at
     `;
 
     const savedLead = rows[0];
     const duplicate = Number(savedLead.signup_count) > 1;
+    let referrer = null;
+    if (lead.referralCode) {
+      const normalizedReferral = lead.referralCode.trim();
+      const referrerRows = await db`
+        select id, email, own_referral_code
+        from waitlist_leads
+        where own_referral_code = ${normalizedReferral}
+          and email <> ${email}
+        limit 1
+      `;
+      referrer = referrerRows[0] || null;
+    }
+
     const [emailResult, ownerResult, analyticsResult] = await Promise.allSettled([
       sendConfirmationEmail({ email }),
       sendOwnerNotification(lead),
-      capturePostHog("waitlist_signup_succeeded", { ...lead, leadId: savedLead.id, duplicate }, savedLead.email)
+      capturePostHog("waitlist_signup_succeeded", { ...lead, leadId: savedLead.id, ownReferralCode: savedLead.own_referral_code, referredByMatched: Boolean(referrer), duplicate }, savedLead.email)
     ]);
+    const referralResult = referrer ? await sendReferralNotification(referrer, email) : { sent: false };
     const emailStatus = emailResult.status === "fulfilled" ? emailResult.value : { sent: false, error: emailResult.reason?.message };
     const ownerStatus = ownerResult.status === "fulfilled" ? ownerResult.value : { sent: false, error: ownerResult.reason?.message };
     const analyticsStatus = analyticsResult.status === "fulfilled" ? analyticsResult.value : { captured: false, error: analyticsResult.reason?.message };
@@ -337,6 +400,7 @@ export default async function handler(req, res) {
     res.status(200).json({
       ok: true,
       leadId: savedLead.id,
+      referralCode: savedLead.own_referral_code,
       duplicate,
       email: {
         sent: Boolean(emailStatus.sent)
@@ -346,6 +410,9 @@ export default async function handler(req, res) {
       },
       analytics: {
         captured: Boolean(analyticsStatus.captured)
+      },
+      referralNotification: {
+        sent: Boolean(referralResult.sent)
       }
     });
   } catch (error) {

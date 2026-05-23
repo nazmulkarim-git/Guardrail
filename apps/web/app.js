@@ -41,6 +41,14 @@ function utmProperties() {
   };
 }
 
+function prefillReferralCodes() {
+  const referral = new URLSearchParams(location.search).get("ref");
+  if (!referral) return;
+  document.querySelectorAll('input[name="referralCode"]').forEach((input) => {
+    input.value = referral;
+  });
+}
+
 async function copyText(text) {
   if (navigator.clipboard?.writeText && window.isSecureContext) {
     await navigator.clipboard.writeText(text);
@@ -251,7 +259,7 @@ function initWaitlist() {
         if (!response.ok || !result.ok) throw new Error(result.error || "Signup failed.");
         track("waitlist_signup_succeeded", { ...data, leadId: result.leadId, duplicate: result.duplicate, sourceSection: entry.sourceSection });
         showToast("You are on the waitlist");
-        const params = new URLSearchParams({ lead: result.leadId });
+        const params = new URLSearchParams({ lead: result.leadId, code: result.referralCode || "" });
         location.href = `/thanks?${params.toString()}`;
       } catch (error) {
         entry.status.textContent = error.message || "Something went wrong.";
@@ -360,12 +368,15 @@ initFaqTracking();
 function initThanksReferral() {
   const referral = document.getElementById("referral-link");
   const position = document.getElementById("waitlist-position");
+  const referralCode = document.getElementById("referral-code");
   if (!referral || !position) return;
   const params = new URLSearchParams(location.search);
   const lead = params.get("lead") || "founding";
+  const code = params.get("code") || `FS-${lead.slice(-6).toUpperCase()}`;
   const numeric = [...lead].reduce((sum, char) => sum + char.charCodeAt(0), 0);
   position.textContent = `#${1000 + (numeric % 497)}`;
-  referral.value = `${location.origin}/?utm_source=referral&utm_medium=waitlist&utm_campaign=founding_500&ref=${encodeURIComponent(lead)}`;
+  if (referralCode) referralCode.textContent = code;
+  referral.value = `${location.origin}/?utm_source=referral&utm_medium=waitlist&utm_campaign=founding_500&ref=${encodeURIComponent(code)}`;
   document.getElementById("copy-referral")?.addEventListener("click", async () => {
     const copied = await copyText(referral.value);
     const button = document.getElementById("copy-referral");
@@ -386,3 +397,34 @@ function initThanksReferral() {
 }
 
 initThanksReferral();
+
+function initContactForm() {
+  const form = document.getElementById("contact-form");
+  const status = document.getElementById("contact-status");
+  if (!form || !status) return;
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    status.textContent = "Sending...";
+    const data = Object.fromEntries(new FormData(form).entries());
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.error || "Message failed.");
+      status.textContent = "Message sent. Check your inbox for confirmation.";
+      form.reset();
+      showToast("Message sent");
+      track("contact_message_sent", { role: data.role });
+    } catch (error) {
+      status.textContent = error.message || "Message could not be sent.";
+      track("contact_message_failed", { message: status.textContent });
+    }
+  });
+}
+
+prefillReferralCodes();
+initContactForm();

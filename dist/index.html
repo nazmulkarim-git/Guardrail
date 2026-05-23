@@ -23,7 +23,7 @@
         <a href="#install">Install</a>
         <a href="#faq">FAQ</a>
       </nav>
-      <a class="v2-nav-cta" href="#waitlist">Join private beta</a>
+      <a class="v2-nav-cta" href="#waitlist">Gain early access</a>
     </header>
 
     <main>
@@ -33,15 +33,16 @@
           <h1>Stop runaway AI agents before they burn your budget.</h1>
           <p class="v2-lede">Forsig checks every agent request before it reaches your provider. Set spend caps, restrict models, log token usage, and pause risky agents instantly.</p>
 
-          <form id="hero-waitlist-form" class="v2-form">
+          <form id="hero-waitlist-form" class="v2-form referral-enabled">
             <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
-            <button type="submit">Join private beta</button>
+            <input name="referralCode" type="text" placeholder="Referral code (optional)" />
+            <button type="submit">Gain early access</button>
             <p class="mini-status" role="status"></p>
           </form>
           <p class="form-note">No credit card. Free during beta. Metadata-only logs by default.</p>
 
           <div class="hero-links">
-            <a href="/dashboard">View live demo</a>
+            <a class="button demo-link-button" href="/dashboard">View live demo</a>
             <a href="#security">Read security model</a>
           </div>
 
@@ -330,9 +331,10 @@ client.chat.completions.create(
           <h2>Protect your AI agents before your next provider bill.</h2>
           <p>Join the private beta for early access, setup help, and free beta usage.</p>
         </div>
-        <form id="waitlist-form" class="v2-form reveal delay-1">
-          <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
-          <button type="submit">Join private beta</button>
+          <form id="waitlist-form" class="v2-form referral-enabled reveal delay-1">
+            <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
+            <input name="referralCode" type="text" placeholder="Referral code (optional)" />
+          <button type="submit">Gain early access</button>
           <p id="form-status" class="mini-status" role="status"></p>
         </form>
       </section>
