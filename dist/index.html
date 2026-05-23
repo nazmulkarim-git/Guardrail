@@ -17,6 +17,7 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="#why">Why</a>
+        <a href="#impact">Impact</a>
         <a href="#control">Control</a>
         <a href="#install">Install</a>
         <a href="#faq">FAQ</a>
@@ -45,6 +46,11 @@
             <span>Change one base URL</span>
             <i></i>
             <span>No prompt storage by default</span>
+          </div>
+          <div class="hero-outcomes" aria-label="Forsig value outcomes">
+            <span>Prevent surprise bills</span>
+            <span>Debug agent spend</span>
+            <span>Pause risky traffic</span>
           </div>
         </div>
 
@@ -95,6 +101,35 @@
         </div>
       </section>
 
+      <section id="impact" class="impact-section">
+        <div class="impact-copy reveal">
+          <p class="v2-kicker">Why it matters</p>
+          <h2>One bad loop can cost more than your whole beta.</h2>
+          <p>Provider dashboards tell you what already happened. Forsig lets you set the boundary first, so a confused agent cannot quietly turn a retry loop into a provider bill.</p>
+        </div>
+        <div class="impact-calculator reveal delay-1">
+          <div class="calc-header">
+            <span>Runaway loop simulator</span>
+            <strong id="calc-total">$48.00</strong>
+          </div>
+          <label>
+            Requests in a loop
+            <input id="calc-requests" type="range" min="10" max="500" value="120" />
+            <em id="calc-requests-label">120 requests</em>
+          </label>
+          <label>
+            Average cost per request
+            <input id="calc-cost" type="range" min="1" max="100" value="40" />
+            <em id="calc-cost-label">$0.40/request</em>
+          </label>
+          <div class="calc-result">
+            <span>With Forsig</span>
+            <strong>Blocked at your limit</strong>
+            <p>Set a daily or per-request cap. Forsig stops the loop before the next provider call.</p>
+          </div>
+        </div>
+      </section>
+
       <section id="why" class="v2-section">
         <div class="v2-section-heading reveal">
           <p class="v2-kicker">Why Forsig</p>
@@ -120,6 +155,30 @@
         </div>
       </section>
 
+      <section class="usecase-section">
+        <div class="v2-section-heading reveal">
+          <p class="v2-kicker">Built for real agent traffic</p>
+          <h2>Clear paths for the teams most likely to feel the pain.</h2>
+        </div>
+        <div class="usecase-grid">
+          <article class="usecase-card reveal">
+            <span>AI SaaS</span>
+            <h3>Per-customer cost boundaries</h3>
+            <p>Keep one tenant or user from burning budget for everyone else.</p>
+          </article>
+          <article class="usecase-card reveal delay-1">
+            <span>Support agents</span>
+            <h3>Stop repeated conversation loops</h3>
+            <p>Detect repeated sessions, expensive retries, and disallowed models.</p>
+          </article>
+          <article class="usecase-card reveal delay-2">
+            <span>Internal copilots</span>
+            <h3>Give teams visibility without prompt storage</h3>
+            <p>Track metadata, token counts, spend, latency, and block reasons.</p>
+          </article>
+        </div>
+      </section>
+
       <section id="control" class="v2-split">
         <div class="v2-panel reveal">
           <p class="v2-kicker">Control surface</p>
@@ -136,6 +195,21 @@
           <div><b>2</b><span>Create agent budget</span></div>
           <div><b>3</b><span>Swap base URL</span></div>
           <div><b>4</b><span>Watch blocks and spend</span></div>
+        </div>
+      </section>
+
+      <section class="trust-section">
+        <div class="trust-item reveal">
+          <span>Privacy posture</span>
+          <strong>Metadata-only logs by default</strong>
+        </div>
+        <div class="trust-item reveal delay-1">
+          <span>Developer path</span>
+          <strong>OpenAI-compatible gateway first</strong>
+        </div>
+        <div class="trust-item reveal delay-2">
+          <span>Launch focus</span>
+          <strong>Budget blocks, token counts, kill switch</strong>
         </div>
       </section>
 

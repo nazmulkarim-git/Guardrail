@@ -184,6 +184,30 @@ function initConsoleMotion() {
   }, 2800);
 }
 
+function initImpactCalculator() {
+  const requests = document.getElementById("calc-requests");
+  const cost = document.getElementById("calc-cost");
+  const total = document.getElementById("calc-total");
+  const requestLabel = document.getElementById("calc-requests-label");
+  const costLabel = document.getElementById("calc-cost-label");
+  if (!requests || !cost || !total || !requestLabel || !costLabel) return;
+
+  const update = () => {
+    const requestCount = Number(requests.value);
+    const perRequest = Number(cost.value) / 100;
+    total.textContent = `$${(requestCount * perRequest).toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    })}`;
+    requestLabel.textContent = `${requestCount} requests`;
+    costLabel.textContent = `$${perRequest.toFixed(2)}/request`;
+  };
+
+  requests.addEventListener("input", update);
+  cost.addEventListener("input", update);
+  update();
+}
+
 function initWaitlist() {
   const forms = [
     { form: document.getElementById("hero-waitlist-form"), status: document.querySelector("#hero-waitlist-form .mini-status"), sourceSection: "hero_waitlist" },
@@ -253,6 +277,7 @@ revealOnScroll();
 initCopyButtons();
 initHeroSwap();
 initConsoleMotion();
+initImpactCalculator();
 initWaitlist();
 initDashboard();
 initFaqTracking();
