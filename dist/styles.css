@@ -168,10 +168,14 @@ textarea {
 
 .hero {
   display: grid;
-  grid-template-columns: minmax(0, 1.02fr) minmax(360px, 0.98fr);
-  gap: 54px;
+  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  gap: 68px;
   align-items: center;
   min-height: calc(100vh - 80px);
+}
+
+.hero-premium {
+  padding-top: 56px;
 }
 
 .launch-badge {
@@ -247,6 +251,41 @@ h3 {
   line-height: 1.65;
 }
 
+.hero-waitlist-form {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.85fr) minmax(180px, 1.15fr) auto;
+  gap: 10px;
+  max-width: 690px;
+  margin-top: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 12px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
+}
+
+.hero-waitlist-form input {
+  border-color: transparent;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.hero-waitlist-form .button {
+  min-height: 46px;
+  white-space: nowrap;
+}
+
+.mini-status {
+  grid-column: 1 / -1;
+  min-height: 18px;
+  margin: 0 6px;
+  color: var(--green);
+  font-size: 13px;
+}
+
+.secondary-actions {
+  margin-top: 14px;
+}
+
 .hero-actions,
 .install-row {
   display: flex;
@@ -317,6 +356,61 @@ h3 {
   border-radius: 32px;
   background: linear-gradient(135deg, rgba(94, 240, 164, 0.13), rgba(98, 217, 255, 0.1), rgba(255, 107, 139, 0.08));
   filter: blur(18px);
+}
+
+.demo-frame {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.035)),
+    rgba(5, 7, 11, 0.76);
+  box-shadow: 0 36px 110px rgba(0, 0, 0, 0.56);
+  overflow: hidden;
+}
+
+.demo-frame::after {
+  content: "";
+  position: absolute;
+  inset: auto -18% -35% 18%;
+  height: 180px;
+  background: radial-gradient(circle, rgba(94, 240, 164, 0.16), transparent 68%);
+  pointer-events: none;
+}
+
+.demo-topbar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 4px 10px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.demo-topbar span {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.demo-topbar strong {
+  margin-left: 8px;
+  color: var(--soft);
+  font-weight: 680;
+}
+
+.demo-frame .motion-card,
+.demo-frame .code-swap {
+  box-shadow: none;
+}
+
+.demo-frame .request-card,
+.demo-frame .block-card {
+  animation-duration: 6.5s;
 }
 
 .orbit {
@@ -581,6 +675,11 @@ pre {
   pointer-events: none;
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask-composite: exclude;
+}
+
+.outcome-card p {
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 .before-after {
@@ -853,6 +952,26 @@ textarea {
   padding: 38px;
 }
 
+.referral-box {
+  display: grid;
+  gap: 12px;
+  margin: 26px 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.referral-box span {
+  color: var(--soft);
+}
+
+.referral-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+}
+
 .app-layout {
   display: grid;
   grid-template-columns: 250px 1fr;
@@ -999,6 +1118,10 @@ th {
     padding-top: 44px;
   }
 
+  .hero-waitlist-form {
+    grid-template-columns: 1fr;
+  }
+
   .metric-grid,
   .feature-grid,
   .dashboard-grid,
@@ -1095,6 +1218,10 @@ th {
   .hero-actions .button,
   .copy-pill {
     width: 100%;
+  }
+
+  .referral-row {
+    grid-template-columns: 1fr;
   }
 
   .signup-proof {

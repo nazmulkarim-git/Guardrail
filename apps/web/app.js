@@ -101,37 +101,41 @@ function initHeroSwap() {
 }
 
 function initWaitlist() {
-  const form = document.getElementById("waitlist-form");
-  if (!form) return;
-  const status = document.getElementById("form-status");
+  const forms = [
+    { form: document.getElementById("hero-waitlist-form"), status: document.querySelector("#hero-waitlist-form .mini-status"), sourceSection: "hero_waitlist" },
+    { form: document.getElementById("waitlist-form"), status: document.getElementById("form-status"), sourceSection: "landing_waitlist" }
+  ].filter((entry) => entry.form);
 
-  form.addEventListener("focusin", () => track("waitlist_form_started"), { once: true });
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    status.textContent = "Submitting...";
-    const data = Object.fromEntries(new FormData(form).entries());
-    track("waitlist_signup_submitted", data);
+  for (const entry of forms) {
+    entry.form.addEventListener("focusin", () => track("waitlist_form_started", { sourceSection: entry.sourceSection }), { once: true });
+    entry.form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      entry.status.textContent = "Submitting...";
+      const data = Object.fromEntries(new FormData(entry.form).entries());
+      track("waitlist_signup_submitted", { ...data, sourceSection: entry.sourceSection });
 
-    try {
-      const response = await fetch("/api/waitlist", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          ...data,
-          ...utmProperties(),
-          viewport: `${window.innerWidth}x${window.innerHeight}`,
-          sourceSection: "landing_waitlist"
-        })
-      });
-      const result = await response.json();
-      if (!response.ok || !result.ok) throw new Error(result.error || "Signup failed.");
-      track("waitlist_signup_succeeded", { ...data, leadId: result.leadId, duplicate: result.duplicate });
-      location.href = "/thanks";
-    } catch (error) {
-      status.textContent = error.message || "Something went wrong.";
-      track("waitlist_signup_failed", { message: status.textContent });
-    }
-  });
+      try {
+        const response = await fetch("/api/waitlist", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            ...data,
+            ...utmProperties(),
+            viewport: `${window.innerWidth}x${window.innerHeight}`,
+            sourceSection: entry.sourceSection
+          })
+        });
+        const result = await response.json();
+        if (!response.ok || !result.ok) throw new Error(result.error || "Signup failed.");
+        track("waitlist_signup_succeeded", { ...data, leadId: result.leadId, duplicate: result.duplicate, sourceSection: entry.sourceSection });
+        const params = new URLSearchParams({ lead: result.leadId, name: data.name || "" });
+        location.href = `/thanks?${params.toString()}`;
+      } catch (error) {
+        entry.status.textContent = error.message || "Something went wrong.";
+        track("waitlist_signup_failed", { message: entry.status.textContent, sourceSection: entry.sourceSection });
+      }
+    });
+  }
 }
 
 function initDashboard() {
@@ -167,3 +171,20 @@ initHeroSwap();
 initWaitlist();
 initDashboard();
 initFaqTracking();
+
+function initThanksReferral() {
+  const referral = document.getElementById("referral-link");
+  const position = document.getElementById("waitlist-position");
+  if (!referral || !position) return;
+  const params = new URLSearchParams(location.search);
+  const lead = params.get("lead") || "founding";
+  const numeric = [...lead].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  position.textContent = `#${1000 + (numeric % 497)}`;
+  referral.value = `${location.origin}/?utm_source=referral&utm_medium=waitlist&utm_campaign=founding_500&ref=${encodeURIComponent(lead)}`;
+  document.getElementById("copy-referral")?.addEventListener("click", async () => {
+    await navigator.clipboard.writeText(referral.value);
+    track("referral_link_copied", { lead });
+  });
+}
+
+initThanksReferral();

@@ -16,24 +16,30 @@
           <span>Forsig</span>
         </a>
         <nav class="nav-links" aria-label="Primary navigation">
-          <a href="#value">Value</a>
+          <a href="#problem">Problem</a>
+          <a href="#demo">Demo</a>
           <a href="#sdk">SDK</a>
           <a href="#faq">FAQ</a>
-          <a href="/dashboard">Demo</a>
         </nav>
-        <a class="nav-cta" href="#waitlist">Join waitlist</a>
+        <a class="nav-cta" href="#waitlist">Get early access</a>
       </header>
 
       <main>
-        <section class="hero section">
+        <section class="hero section hero-premium">
           <div class="hero-copy reveal">
-            <div class="launch-badge"><span></span> Private beta opening soon</div>
+            <div class="launch-badge"><span></span> Founding 500 private beta</div>
             <div class="eyebrow">For founders and developers shipping AI agents</div>
             <h1>Stop runaway AI agent bills before they happen.</h1>
-            <p class="hero-lede">Forsig sits between your app and OpenAI, blocks expensive loops before the provider call, shows token-level spend, and gives every agent an emergency kill switch.</p>
-            <div class="hero-actions">
-              <a class="button primary" href="#waitlist" data-track="hero_cta_clicked">Join the waitlist</a>
-              <a class="button ghost" href="/dashboard">View dashboard demo</a>
+            <p class="hero-lede">Forsig is a budget firewall for AI agents. Add one OpenAI-compatible base URL, set spend limits, and block costly loops before they hit your provider bill.</p>
+            <form id="hero-waitlist-form" class="hero-waitlist-form">
+              <input name="name" type="text" required placeholder="Name" />
+              <input name="email" type="email" required placeholder="Work email" />
+              <button class="button primary" type="submit" data-track="hero_cta_clicked">Join private beta</button>
+              <p class="mini-status" role="status"></p>
+            </form>
+            <div class="hero-actions secondary-actions">
+              <a class="button ghost" href="#demo">Watch the product story</a>
+              <a class="button ghost" href="/dashboard">Open dashboard demo</a>
             </div>
             <div class="install-row" aria-label="SDK install commands">
               <button class="copy-pill" data-copy="npm install @forsig/sdk">npm install @forsig/sdk</button>
@@ -53,7 +59,12 @@
           <div class="hero-visual reveal delay-1" aria-label="Forsig request protection preview">
             <div class="orbit orbit-a"></div>
             <div class="orbit orbit-b"></div>
-            <div class="motion-card request-card">
+            <div class="demo-frame">
+              <div class="demo-topbar">
+                <span></span><span></span><span></span>
+                <strong>Forsig live traffic</strong>
+              </div>
+              <div class="motion-card request-card">
               <div class="card-top">
                 <span class="status-dot live"></span>
                 <span>Budget check passed</span>
@@ -67,20 +78,21 @@
                 <div><span>Output tokens</span><strong>156</strong></div>
                 <div><span>Latency</span><strong>1.2s</strong></div>
               </div>
-            </div>
-            <div class="code-swap" data-swap>
-              <div class="code-toolbar">
-                <span>One-line integration</span>
-                <span>OpenAI compatible</span>
               </div>
-              <pre><code id="hero-code">baseURL: "https://api.openai.com/v1"
+              <div class="code-swap" data-swap>
+                <div class="code-toolbar">
+                  <span>One-line integration</span>
+                  <span>OpenAI compatible</span>
+                </div>
+                <pre><code id="hero-code">baseURL: "https://api.openai.com/v1"
 apiKey: process.env.OPENAI_API_KEY</code></pre>
-            </div>
-            <div class="motion-card block-card">
-              <div class="block-icon">402</div>
-              <div>
-                <strong>Runaway loop blocked</strong>
-                <span>Daily budget would exceed $1.00. Provider call skipped.</span>
+              </div>
+              <div class="motion-card block-card">
+                <div class="block-icon">402</div>
+                <div>
+                  <strong>Runaway loop blocked</strong>
+                  <span>Daily budget would exceed $1.00. Provider call skipped.</span>
+                </div>
               </div>
             </div>
             <div class="signal-rail" aria-hidden="true">
@@ -93,7 +105,7 @@ apiKey: process.env.OPENAI_API_KEY</code></pre>
           </div>
         </section>
 
-        <section id="value" class="section value-section">
+        <section id="problem" class="section value-section">
           <div class="section-heading reveal">
             <span class="eyebrow">The problem</span>
             <h2>AI agents can spend money while nobody is watching.</h2>
@@ -123,11 +135,12 @@ apiKey: process.env.OPENAI_API_KEY</code></pre>
           </div>
         </section>
 
-        <section class="section outcome-section">
+        <section id="demo" class="section outcome-section">
           <div class="outcome-card reveal">
             <div>
-              <span class="eyebrow">What changes after Forsig</span>
+              <span class="eyebrow">60 second product story</span>
               <h2>From blind provider calls to controlled agent traffic.</h2>
+              <p>Developers should understand Forsig before reading a single feature list: your agent asks, Forsig checks policy, then the provider call is allowed or blocked.</p>
             </div>
             <div class="before-after">
               <div>
@@ -280,7 +293,7 @@ client.chat.completions.create(
             <div>
               <span class="eyebrow">Early access</span>
               <h2>Join 1k+ builders waiting for Forsig.</h2>
-              <p>Get early access if you are building AI agents and want budget limits, token visibility, and a kill switch before your first real incident.</p>
+              <p>Private beta seats open in weekly batches. Join now to get early access and a referral link after signup.</p>
             </div>
             <form id="waitlist-form" class="waitlist-form">
               <input name="email" type="email" required placeholder="Work email" />
