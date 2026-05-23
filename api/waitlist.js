@@ -35,6 +35,62 @@ function getIp(req) {
   return req.socket?.remoteAddress || null;
 }
 
+function publicDatabaseError(error) {
+  if (error.code === "missing_database_url") {
+    return {
+      status: 503,
+      code: "missing_database_url",
+      message: "DATABASE_URL is not configured in Vercel production."
+    };
+  }
+
+  if (error.code === "42P01") {
+    return {
+      status: 500,
+      code: "missing_waitlist_table",
+      message: "The waitlist_leads table does not exist in the configured database."
+    };
+  }
+
+  if (error.code === "42703") {
+    return {
+      status: 500,
+      code: "waitlist_schema_mismatch",
+      message: "The waitlist_leads table is missing one or more expected columns."
+    };
+  }
+
+  if (error.code === "28P01") {
+    return {
+      status: 500,
+      code: "database_auth_failed",
+      message: "The database rejected the configured username or password."
+    };
+  }
+
+  if (error.code === "3D000") {
+    return {
+      status: 500,
+      code: "database_not_found",
+      message: "The configured database name does not exist."
+    };
+  }
+
+  if (error.code === "ENOTFOUND" || error.code === "ECONNREFUSED" || error.code === "ETIMEDOUT") {
+    return {
+      status: 500,
+      code: "database_connection_failed",
+      message: "The waitlist API could not connect to the configured database host."
+    };
+  }
+
+  return {
+    status: 500,
+    code: error.code || error.name || "waitlist_signup_failed",
+    message: "Waitlist signup failed. Check Vercel function logs for details."
+  };
+}
+
 async function capturePostHog(event, properties, distinctId) {
   const apiKey = process.env.POSTHOG_KEY || process.env.NEXT_PUBLIC_POSTHOG_KEY;
   const host = process.env.POSTHOG_HOST || process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://app.posthog.com";
@@ -230,20 +286,16 @@ export default async function handler(req, res) {
       }
     });
   } catch (error) {
+    const publicError = publicDatabaseError(error);
     console.error("Waitlist signup failed", {
       code: error.code,
       name: error.name,
       message: error.message,
       detail: error.detail,
-      hint: error.hint
+      hint: error.hint,
+      publicCode: publicError.code
     });
-    await capturePostHog("waitlist_signup_failed", { code: error.code, message: error.message }, "anonymous").catch(() => null);
-
-    if (error.code === "missing_database_url") {
-      res.status(503).json({ ok: false, error: "Waitlist is not configured yet." });
-      return;
-    }
-
-    res.status(500).json({ ok: false, error: "Waitlist signup failed. Please try again." });
+    await capturePostHog("waitlist_signup_failed", { code: publicError.code, message: publicError.message }, "anonymous").catch(() => null);
+    res.status(publicError.status).json({ ok: false, error: publicError.message, code: publicError.code });
   }
 }
