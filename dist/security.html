@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Security | Forsig</title>
+    <meta name="description" content="Forsig security model for agent traffic, metadata-only logs, provider keys, referrals, and beta operations." />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://www.forsig.com/security" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body data-page="security">
+    <main class="legal-page">
+      <a class="brand" href="/">
+        <span class="brand-mark"></span>
+        <span>Forsig</span>
+      </a>
+      <article class="legal-card">
+        <p class="eyebrow">Security</p>
+        <h1>Security Model</h1>
+        <p class="legal-updated">Last updated: May 23, 2026</p>
+        <p>Forsig sits in a sensitive position: between AI applications and model providers. Our security model is built around minimizing stored data, making policy decisions before provider spend happens, and keeping rollback simple.</p>
+
+        <h2>Current Launch Status</h2>
+        <p>Forsig is currently in private beta and waitlist launch mode. The public website collects waitlist, referral, contact, and optional qualification information. The production gateway product is being built toward the security posture described below.</p>
+
+        <h2>Core Security Principles</h2>
+        <ul>
+          <li><strong>Minimize stored data.</strong> Store operational metadata by default, not prompts.</li>
+          <li><strong>Check before spend.</strong> Evaluate budget, model, pause, and policy rules before forwarding requests to providers.</li>
+          <li><strong>Make removal easy.</strong> Users should be able to roll back by changing the base URL back to their provider.</li>
+          <li><strong>Return clear failures.</strong> Blocked requests should include understandable error codes and reasons.</li>
+        </ul>
+
+        <h2>Data We Expect To Log</h2>
+        <p>Forsig is designed to log operational metadata such as agent ID, external user ID, model, status, token count, estimated cost, latency, block reason, budget state, request time, and policy decision. This data helps teams understand spend, debug behavior, and audit blocked requests.</p>
+
+        <h2>Prompt Storage</h2>
+        <p>Prompts and model responses are not stored by default in the MVP. If future versions support prompt or response logging, that behavior should be controlled by explicit settings and documented clearly.</p>
+
+        <h2>Provider API Keys</h2>
+        <p>The planned product allows users to store provider keys so Forsig can issue virtual keys scoped to agents. Provider keys are intended to be encrypted before storage, kept server-side, and used only to route authorized requests according to configured policies.</p>
+
+        <h2>Virtual Keys</h2>
+        <p>Forsig virtual keys should be scoped to agents or workspaces, revocable, and stored as hashes where practical. Users should rotate virtual keys if they believe a key was exposed.</p>
+
+        <h2>Transport And Hosting</h2>
+        <p>Forsig is intended to run over HTTPS. Website and API hosting are deployed through managed infrastructure providers. Production databases and email infrastructure are operated by third-party service providers selected for reliability and security controls.</p>
+
+        <h2>Access Control</h2>
+        <p>Administrative access should be limited to authorized maintainers. Access to production systems and provider dashboards should use strong passwords, multi-factor authentication where available, and least-privilege permissions.</p>
+
+        <h2>Referrals And Email Invites</h2>
+        <p>Referral acceptance links are signed to reduce tampering. Invite sending is limited per request and skips emails already registered for early access. Abuse controls will continue to improve as traffic grows.</p>
+
+        <h2>Incident Response</h2>
+        <p>If we discover a security issue that may affect users, we will investigate, reduce exposure, communicate with affected users where appropriate, and prioritize remediation. During beta, availability and response times may vary, but security reports will be treated seriously.</p>
+
+        <h2>Responsible Disclosure</h2>
+        <p>If you believe you found a security issue, email <a href="mailto:thenazmulkarim@gmail.com">thenazmulkarim@gmail.com</a> with a clear description, reproduction steps, affected URLs or endpoints, and potential impact. Please avoid accessing, modifying, deleting, or exfiltrating data that is not yours.</p>
+
+        <h2>Compliance</h2>
+        <p>Forsig is not currently claiming SOC 2, ISO 27001, HIPAA, PCI, or other formal certification. The security program is being built in that direction as the product matures. Security documentation will be updated as controls, audits, and policies develop.</p>
+
+        <h2>What Users Should Do</h2>
+        <ul>
+          <li>Use separate provider keys for testing Forsig.</li>
+          <li>Do not submit sensitive secrets through waitlist, referral, or contact forms.</li>
+          <li>Keep virtual keys out of client-side code and public repositories.</li>
+          <li>Rotate provider and virtual keys if exposure is suspected.</li>
+          <li>Use Forsig beta features first in non-critical environments.</li>
+        </ul>
+      </article>
+    </main>
+  </body>
+</html>

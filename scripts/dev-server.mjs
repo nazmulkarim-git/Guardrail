@@ -148,6 +148,9 @@ async function serveStatic(req, res) {
   if (pathname === "/dashboard") pathname = "/dashboard.html";
   if (pathname === "/thanks") pathname = "/thanks.html";
   if (pathname === "/contact") pathname = "/contact.html";
+  if (pathname === "/privacy") pathname = "/privacy.html";
+  if (pathname === "/terms") pathname = "/terms.html";
+  if (pathname === "/security") pathname = "/security.html";
 
   const filePath = path.join(webRoot, pathname);
   if (!filePath.startsWith(webRoot)) {

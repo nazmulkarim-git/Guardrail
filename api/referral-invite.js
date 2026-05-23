@@ -155,7 +155,7 @@ export default async function handler(req, res) {
     const registeredRows = await db`
       select email
       from waitlist_leads
-      where email = any(${emails})
+      where email in ${db(emails)}
     `;
     const registeredEmails = new Set(registeredRows.map((row) => row.email));
     const inviteEmails = emails.filter((email) => email !== inviter.email && !registeredEmails.has(email));
