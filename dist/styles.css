@@ -804,6 +804,222 @@ pre {
   gap: 10px;
 }
 
+.app-layout {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.app-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  border-right: 1px solid var(--line);
+  padding: 22px;
+  background: rgba(7, 8, 8, 0.82);
+  backdrop-filter: blur(16px);
+}
+
+.app-sidebar .brand {
+  position: static;
+}
+
+.app-sidebar nav {
+  display: grid;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.app-sidebar nav a {
+  border-radius: 12px;
+  padding: 12px;
+  color: var(--muted);
+}
+
+.app-sidebar nav a.active,
+.app-sidebar nav a:hover {
+  color: var(--ink);
+  background: rgba(247, 244, 236, 0.08);
+}
+
+.app-main {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 90px;
+}
+
+.app-header,
+.app-actions,
+.snippet-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.app-header h1 {
+  margin: 0;
+  text-align: left;
+  font-size: clamp(34px, 5vw, 62px);
+}
+
+.button.danger {
+  border-color: rgba(255, 113, 95, 0.35);
+  color: #ffd4ca;
+  background: rgba(255, 113, 95, 0.12);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.stat-card,
+.agent-builder,
+.snippet,
+.logs-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  box-shadow: 0 18px 70px rgba(0, 0, 0, 0.28);
+}
+
+.stat-card {
+  padding: 18px;
+}
+
+.stat-card span,
+.stat-card small,
+.log-list span {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.stat-card strong {
+  display: block;
+  margin-top: 10px;
+  font-size: 24px;
+}
+
+.budget-meter {
+  height: 10px;
+  margin-top: 18px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(247, 244, 236, 0.08);
+}
+
+.budget-meter span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--mint), var(--gold), var(--red));
+}
+
+.agent-builder,
+.logs-panel {
+  margin-top: 24px;
+  padding: 22px;
+}
+
+.section-heading.compact h2 {
+  font-size: clamp(26px, 4vw, 38px);
+}
+
+.builder-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.builder-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+}
+
+.builder-form label:last-child {
+  grid-column: 1 / -1;
+}
+
+select,
+textarea {
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: var(--ink);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+select[multiple] {
+  min-height: 122px;
+}
+
+option {
+  color: var(--ink);
+  background: #121412;
+}
+
+textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.snippet-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.snippet {
+  position: relative;
+  overflow: hidden;
+}
+
+.snippet-title {
+  border-bottom: 1px solid var(--line);
+  padding: 14px 16px;
+  color: var(--muted);
+}
+
+.copy-code {
+  border: 0;
+  border-radius: 10px;
+  min-height: 32px;
+  padding: 0 12px;
+  color: #10110d;
+  background: linear-gradient(135deg, var(--gold), var(--mint));
+  cursor: pointer;
+  font-weight: 780;
+}
+
+.responsive-table {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  min-width: 660px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid var(--line);
+  padding: 14px 10px;
+  text-align: left;
+}
+
+th {
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(18px);
@@ -876,8 +1092,25 @@ pre {
 
   .console-grid,
   .v2-code-grid,
-  .v2-cards {
+  .v2-cards,
+  .dashboard-grid,
+  .snippet-grid {
     grid-template-columns: 1fr;
+  }
+
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .app-sidebar {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .app-sidebar nav {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -935,5 +1168,18 @@ pre {
 
   .referral-row {
     grid-template-columns: 1fr;
+  }
+
+  .app-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .builder-form {
+    grid-template-columns: 1fr;
+  }
+
+  .app-sidebar nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

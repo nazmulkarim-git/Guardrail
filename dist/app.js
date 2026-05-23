@@ -23,8 +23,27 @@ function utmProperties() {
     utmSource: params.get("utm_source"),
     utmMedium: params.get("utm_medium"),
     utmCampaign: params.get("utm_campaign"),
+    referralCode: params.get("ref"),
     referrer: document.referrer || null
   };
+}
+
+async function copyText(text) {
+  if (navigator.clipboard?.writeText && window.isSecureContext) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.left = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  document.body.removeChild(textarea);
+  return copied;
 }
 
 async function loadRuntimeConfig() {
@@ -70,7 +89,7 @@ function revealOnScroll() {
 function initCopyButtons() {
   document.querySelectorAll("[data-copy]").forEach((button) => {
     button.addEventListener("click", async () => {
-      await navigator.clipboard.writeText(button.dataset.copy);
+      await copyText(button.dataset.copy);
       button.textContent = "Copied";
       track("code_snippet_copied", { copyType: "install_command" });
       setTimeout(() => (button.textContent = button.dataset.copy), 1200);
@@ -80,7 +99,7 @@ function initCopyButtons() {
   document.querySelectorAll("[data-copy-target]").forEach((button) => {
     button.addEventListener("click", async () => {
       const target = document.getElementById(button.dataset.copyTarget);
-      await navigator.clipboard.writeText(target?.textContent || "");
+      await copyText(target?.textContent || "");
       button.textContent = "Copied";
       track("code_snippet_copied", { copyType: button.dataset.copyTarget });
       setTimeout(() => (button.textContent = "Copy"), 1200);
@@ -248,7 +267,12 @@ function initThanksReferral() {
   position.textContent = `#${1000 + (numeric % 497)}`;
   referral.value = `${location.origin}/?utm_source=referral&utm_medium=waitlist&utm_campaign=founding_500&ref=${encodeURIComponent(lead)}`;
   document.getElementById("copy-referral")?.addEventListener("click", async () => {
-    await navigator.clipboard.writeText(referral.value);
+    const copied = await copyText(referral.value);
+    const button = document.getElementById("copy-referral");
+    if (button) {
+      button.textContent = copied ? "Copied" : "Select link";
+      setTimeout(() => (button.textContent = "Copy referral link"), 1400);
+    }
     track("referral_link_copied", { lead });
   });
 }

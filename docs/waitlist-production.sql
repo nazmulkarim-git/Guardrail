@@ -12,6 +12,7 @@ create table if not exists waitlist_leads (
   utm_source text,
   utm_medium text,
   utm_campaign text,
+  referral_code text,
   referrer text,
   source_section text,
   viewport text,
@@ -26,3 +27,4 @@ create index if not exists waitlist_leads_created_at_idx on waitlist_leads (crea
 create index if not exists waitlist_leads_urgency_idx on waitlist_leads (urgency);
 create index if not exists waitlist_leads_provider_idx on waitlist_leads (provider);
 create index if not exists waitlist_leads_utm_source_idx on waitlist_leads (utm_source);
+create index if not exists waitlist_leads_referral_code_idx on waitlist_leads (referral_code);
