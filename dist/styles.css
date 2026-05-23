@@ -240,6 +240,11 @@ h3 {
   grid-template-columns: minmax(180px, 1fr) minmax(170px, 0.72fr) auto;
 }
 
+.v2-form.dashboard-cta-form {
+  width: min(760px, 100%);
+  max-width: none;
+}
+
 .cursor-style .v2-form {
   margin-left: auto;
   margin-right: auto;
@@ -314,6 +319,11 @@ textarea:focus {
   color: var(--ink);
   border-bottom: 1px solid rgba(247, 244, 236, 0.25);
   font-size: 14px;
+}
+
+.hero-links a.button {
+  border-bottom: 1px solid rgba(215, 255, 114, 0.26);
+  text-decoration: none;
 }
 
 .v2-proof {
@@ -1098,6 +1108,10 @@ pre {
   color: #10110d;
   background: linear-gradient(135deg, var(--gold), var(--mint));
   font-weight: 820;
+}
+
+.nowrap {
+  white-space: nowrap;
 }
 
 .hero-actions {
