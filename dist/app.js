@@ -100,6 +100,71 @@ function initHeroSwap() {
   }, 2200);
 }
 
+function initConsoleMotion() {
+  const title = document.getElementById("decision-title");
+  const pill = document.getElementById("decision-pill");
+  const model = document.getElementById("decision-model");
+  const fill = document.getElementById("spend-fill");
+  const reason = document.getElementById("decision-reason");
+  const tokens = document.getElementById("metric-tokens");
+  const cost = document.getElementById("metric-cost");
+  const policy = document.getElementById("metric-policy");
+  if (!title || !pill || !model || !fill || !reason || !tokens || !cost || !policy) return;
+
+  const states = [
+    {
+      title: "Blocked before provider spend",
+      pill: "402 budget",
+      model: "gpt-4o",
+      fill: "91%",
+      reason: 'Daily budget would exceed <strong>$25.00</strong>. Forsig skipped the OpenAI call.',
+      tokens: "12,840",
+      cost: "$3.14",
+      policy: "budget cap",
+      danger: true
+    },
+    {
+      title: "Allowed under policy",
+      pill: "200 allowed",
+      model: "gpt-4o-mini",
+      fill: "34%",
+      reason: 'Request is within the <strong>$0.20</strong> per-call limit. Forwarding to OpenAI.',
+      tokens: "1,248",
+      cost: "$0.004",
+      policy: "allowed",
+      danger: false
+    },
+    {
+      title: "Paused by kill switch",
+      pill: "423 paused",
+      model: "support-agent",
+      fill: "68%",
+      reason: 'Agent is paused while the team investigates a customer workflow.',
+      tokens: "0",
+      cost: "$0.00",
+      policy: "paused",
+      danger: true
+    }
+  ];
+
+  let index = 0;
+  setInterval(() => {
+    index = (index + 1) % states.length;
+    const state = states[index];
+    title.textContent = state.title;
+    pill.textContent = state.pill;
+    model.textContent = state.model;
+    fill.style.width = state.fill;
+    reason.innerHTML = state.reason;
+    tokens.textContent = state.tokens;
+    cost.textContent = state.cost;
+    policy.textContent = state.policy;
+    pill.style.borderColor = state.danger ? "rgba(255, 113, 95, 0.35)" : "rgba(120, 242, 194, 0.35)";
+    pill.style.color = state.danger ? "#ffd4ca" : "#d7ffe9";
+    pill.style.background = state.danger ? "rgba(255, 113, 95, 0.12)" : "rgba(120, 242, 194, 0.1)";
+  }, 2800);
+}
+
 function initWaitlist() {
   const forms = [
     { form: document.getElementById("hero-waitlist-form"), status: document.querySelector("#hero-waitlist-form .mini-status"), sourceSection: "hero_waitlist" },
@@ -168,6 +233,7 @@ initPostHog();
 revealOnScroll();
 initCopyButtons();
 initHeroSwap();
+initConsoleMotion();
 initWaitlist();
 initDashboard();
 initFaqTracking();

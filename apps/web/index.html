@@ -29,7 +29,7 @@
         <div class="v2-hero-copy reveal">
           <p class="v2-kicker">AI agent spend control</p>
           <h1>Budget firewall for AI agents.</h1>
-          <p class="v2-lede">Forsig gives every AI agent a spending limit, token log, model policy, and kill switch through one OpenAI-compatible gateway.</p>
+          <p class="v2-lede">AI agents can loop, retry, and switch models while your provider meter keeps running. Forsig caps every agent, logs every token, and gives you a kill switch through one OpenAI-compatible gateway.</p>
 
           <form id="hero-waitlist-form" class="v2-form">
             <input name="name" type="text" required autocomplete="name" placeholder="Name" />
@@ -43,10 +43,13 @@
             <span>builders tracking private beta</span>
             <i></i>
             <span>Change one base URL</span>
+            <i></i>
+            <span>No prompt storage by default</span>
           </div>
         </div>
 
         <div class="v2-console reveal delay-1" aria-label="Forsig budget firewall product preview">
+          <div class="console-glow" aria-hidden="true"></div>
           <div class="console-bar">
             <span></span><span></span><span></span>
             <b>agent: research-copilot</b>
@@ -56,26 +59,31 @@
               <div class="console-header">
                 <div>
                   <small>Pre-call decision</small>
-                  <h2>Blocked before provider spend</h2>
+                  <h2 id="decision-title">Blocked before provider spend</h2>
                 </div>
-                <div class="decision-pill">402 budget</div>
+                <div id="decision-pill" class="decision-pill">402 budget</div>
               </div>
               <div class="request-line">
                 <span>POST</span>
                 <code>/v1/chat/completions</code>
-                <em>gpt-4o</em>
+                <em id="decision-model">gpt-4o</em>
               </div>
               <div class="spend-bar">
-                <div style="width: 91%"></div>
+                <div id="spend-fill" style="width: 91%"></div>
               </div>
-              <div class="console-reason">
+              <div id="decision-reason" class="console-reason">
                 Daily budget would exceed <strong>$25.00</strong>. Forsig skipped the OpenAI call.
+              </div>
+              <div class="event-stream" aria-label="Recent policy events">
+                <div><span></span><b>allowed</b><em>support-agent · 842 tokens</em></div>
+                <div><span></span><b>blocked</b><em>research-copilot · daily budget</em></div>
+                <div><span></span><b>logged</b><em>customer-a · $0.0041</em></div>
               </div>
             </section>
             <aside class="console-side">
-              <div><span>Input tokens</span><strong>12,840</strong></div>
-              <div><span>Projected cost</span><strong>$3.14</strong></div>
-              <div><span>Session</span><strong>loop detected</strong></div>
+              <div><span>Input tokens</span><strong id="metric-tokens">12,840</strong></div>
+              <div><span>Projected cost</span><strong id="metric-cost">$3.14</strong></div>
+              <div><span>Policy</span><strong id="metric-policy">budget cap</strong></div>
             </aside>
           </div>
           <div class="console-code">
