@@ -427,7 +427,7 @@ function initThanksReferral() {
     const button = document.getElementById("copy-referral");
     if (button) {
       button.textContent = copied ? "Copied" : "Select link";
-      setTimeout(() => (button.textContent = "Copy referral link"), 1400);
+      setTimeout(() => (button.textContent = "Invite another builder"), 1400);
     }
     showToast(copied ? "Referral link copied" : "Select and copy the link");
     track("referral_link_copied", { lead });

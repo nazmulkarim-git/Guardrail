@@ -40,6 +40,12 @@ function makeReferralCode(email, id) {
   return `FS-${prefix}-${id.slice(-5).toUpperCase()}`;
 }
 
+function getOrigin(req) {
+  const proto = req.headers["x-forwarded-proto"] || "https";
+  const host = req.headers["x-forwarded-host"] || req.headers.host || "www.forsig.com";
+  return `${proto}://${host}`;
+}
+
 function publicDatabaseError(error) {
   if (error.code === "missing_database_url") {
     return {
@@ -147,6 +153,11 @@ async function sendConfirmationEmail(lead) {
               <h1 style="margin:0 0 16px;font-size:30px;line-height:1.1">You are on the Forsig waitlist.</h1>
               <p style="color:#c9cedd;line-height:1.65">Thanks for joining. Forsig is the budget firewall and kill switch for AI agents. We are prioritizing early access for builders already running or preparing agent traffic.</p>
               <p style="color:#c9cedd;line-height:1.65">Soon you will be able to add Forsig in seconds: change the base URL, swap in a virtual key, and get budgets, token counts, audit logs, custom instruction records, and emergency pause controls.</p>
+              <div style="margin:22px 0;padding:18px;border:1px solid rgba(215,255,114,.22);border-radius:14px;background:rgba(215,255,114,.06)">
+                <p style="margin:0 0 10px;color:#d7ff72;font-weight:800">Your referral code: ${escapeHtml(lead.referralCode || "")}</p>
+                <p style="margin:0;color:#c9cedd;line-height:1.6">Share this link to move up the waitlist:</p>
+                <p style="margin:8px 0 0;word-break:break-all"><a href="${escapeHtml(lead.referralLink || "")}" style="color:#d7ff72">${escapeHtml(lead.referralLink || "")}</a></p>
+              </div>
               <p style="margin-top:24px;color:#8f96aa">The Forsig team</p>
             </div>
           </div>
@@ -388,7 +399,11 @@ export default async function handler(req, res) {
     }
 
     const [emailResult, ownerResult, analyticsResult] = await Promise.allSettled([
-      sendConfirmationEmail({ email }),
+      sendConfirmationEmail({
+        email,
+        referralCode: savedLead.own_referral_code,
+        referralLink: `${getOrigin(req)}/?utm_source=referral&utm_medium=waitlist&utm_campaign=founding_500&ref=${encodeURIComponent(savedLead.own_referral_code)}`
+      }),
       sendOwnerNotification(lead),
       capturePostHog("waitlist_signup_succeeded", { ...lead, leadId: savedLead.id, ownReferralCode: savedLead.own_referral_code, referredByMatched: Boolean(referrer), duplicate }, savedLead.email)
     ]);
