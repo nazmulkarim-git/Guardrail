@@ -236,7 +236,7 @@ function initWaitlist() {
         const result = await response.json();
         if (!response.ok || !result.ok) throw new Error(result.error || "Signup failed.");
         track("waitlist_signup_succeeded", { ...data, leadId: result.leadId, duplicate: result.duplicate, sourceSection: entry.sourceSection });
-        const params = new URLSearchParams({ lead: result.leadId, name: data.name || "" });
+        const params = new URLSearchParams({ lead: result.leadId });
         location.href = `/thanks?${params.toString()}`;
       } catch (error) {
         entry.status.textContent = error.message || "Something went wrong.";

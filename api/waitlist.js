@@ -176,11 +176,11 @@ async function sendOwnerNotification(lead) {
         from: process.env.WAITLIST_FROM_EMAIL || "Forsig <hello@forsig.com>",
         to: [ownerEmail],
         reply_to: lead.email,
-        subject: `New Forsig waitlist signup: ${lead.name}`,
+        subject: `New Forsig waitlist signup: ${lead.email}`,
         html: `
           <div style="font-family:Inter,Arial,sans-serif;color:#111827">
             <h2>New Forsig waitlist signup</h2>
-            <p><strong>Name:</strong> ${escapeHtml(lead.name || "")}</p>
+            <p><strong>Name:</strong> ${escapeHtml(lead.name || "-")}</p>
             <p><strong>Email:</strong> ${escapeHtml(lead.email)}</p>
             <p><strong>Company:</strong> ${escapeHtml(lead.company || "-")}</p>
             <p><strong>Role:</strong> ${escapeHtml(lead.role || "-")}</p>
@@ -224,11 +224,6 @@ export default async function handler(req, res) {
     const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
     if (!isEmail(body.email)) {
       res.status(400).json({ ok: false, error: "Valid email is required." });
-      return;
-    }
-
-    if (!normalizeString(body.name)) {
-      res.status(400).json({ ok: false, error: "Name is required." });
       return;
     }
 

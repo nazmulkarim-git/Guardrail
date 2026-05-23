@@ -18,7 +18,8 @@
       <nav aria-label="Primary navigation">
         <a href="#why">Why</a>
         <a href="#impact">Impact</a>
-        <a href="#control">Control</a>
+        <a href="#how">How it works</a>
+        <a href="#security">Security</a>
         <a href="#install">Install</a>
         <a href="#faq">FAQ</a>
       </nav>
@@ -29,23 +30,28 @@
       <section class="v2-hero cursor-style">
         <div class="v2-hero-copy reveal">
           <p class="v2-kicker">AI agent spend control</p>
-          <h1>Budget firewall for AI agents.</h1>
-          <p class="v2-lede">AI agents can loop, retry, and switch models while your provider meter keeps running. Forsig caps every agent, logs every token, and gives you a kill switch through one OpenAI-compatible gateway.</p>
+          <h1>Stop runaway AI agents before they burn your budget.</h1>
+          <p class="v2-lede">Forsig is an OpenAI-compatible gateway that sets per-agent budgets, blocks retry loops, logs token spend, and gives your team a kill switch without storing prompts by default.</p>
 
           <form id="hero-waitlist-form" class="v2-form">
-            <input name="name" type="text" required autocomplete="name" placeholder="Name" />
-            <input name="email" type="email" required autocomplete="email" placeholder="Work email" />
-            <button type="submit">Get early access</button>
+            <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
+            <button type="submit">Join private beta</button>
             <p class="mini-status" role="status"></p>
           </form>
+          <p class="form-note">No credit card. Free during beta. Invites sent weekly.</p>
+
+          <div class="hero-links">
+            <a href="/dashboard">View demo dashboard</a>
+            <a href="#security">Read security model</a>
+          </div>
 
           <div class="v2-proof">
             <strong>1k+</strong>
-            <span>builders tracking private beta</span>
+            <span>AI builders joined the private beta waitlist</span>
             <i></i>
             <span>Change one base URL</span>
             <i></i>
-            <span>No prompt storage by default</span>
+            <span>Metadata-only logs by default</span>
           </div>
           <div class="hero-outcomes" aria-label="Forsig value outcomes">
             <span>Prevent surprise bills</span>
@@ -105,7 +111,7 @@
         <div class="impact-copy reveal">
           <p class="v2-kicker">Why it matters</p>
           <h2>One bad loop can cost more than your whole beta.</h2>
-          <p>Provider dashboards tell you what already happened. Forsig lets you set the boundary first, so a confused agent cannot quietly turn a retry loop into a provider bill.</p>
+          <p>A support agent retries 400 times at $0.40/request. Your provider dashboard shows the damage after it happens. Forsig blocks the loop before the next call.</p>
         </div>
         <div class="impact-calculator reveal delay-1">
           <div class="calc-header">
@@ -179,6 +185,25 @@
         </div>
       </section>
 
+      <section id="how" class="diagram-section">
+        <div class="v2-section-heading reveal">
+          <p class="v2-kicker">How it works</p>
+          <h2>Your app keeps running. Forsig checks every call before OpenAI.</h2>
+        </div>
+        <div class="flow-diagram reveal">
+          <div><span>Your agent app</span><strong>OpenAI SDK</strong></div>
+          <b></b>
+          <div><span>Forsig gateway</span><strong>Budget + policy check</strong></div>
+          <b></b>
+          <div><span>Provider</span><strong>OpenAI first</strong></div>
+        </div>
+        <div class="flow-notes reveal delay-1">
+          <span>Policies checked before provider call</span>
+          <span>Logs written after decision</span>
+          <span>Kill switch can pause traffic instantly</span>
+        </div>
+      </section>
+
       <section id="control" class="v2-split">
         <div class="v2-panel reveal">
           <p class="v2-kicker">Control surface</p>
@@ -210,6 +235,35 @@
         <div class="trust-item reveal delay-2">
           <span>Launch focus</span>
           <strong>Budget blocks, token counts, kill switch</strong>
+        </div>
+      </section>
+
+      <section id="security" class="security-section">
+        <div class="v2-section-heading reveal">
+          <p class="v2-kicker">Built for sensitive agent traffic</p>
+          <h2>Trust has to be part of the product.</h2>
+        </div>
+        <div class="security-grid">
+          <article class="security-card reveal">
+            <span>Prompt privacy</span>
+            <h3>Metadata-only by default</h3>
+            <p>Forsig logs spend, tokens, status, latency, model, and block reason. Prompts are not stored by default.</p>
+          </article>
+          <article class="security-card reveal delay-1">
+            <span>Provider keys</span>
+            <h3>Your key stays protected</h3>
+            <p>Provider keys are stored server-side and encrypted before storage. Your app uses Forsig virtual keys.</p>
+          </article>
+          <article class="security-card reveal delay-2">
+            <span>Rollback</span>
+            <h3>One-line removal</h3>
+            <p>Remove Forsig by changing your base URL back to your provider. No framework migration required.</p>
+          </article>
+          <article class="security-card reveal">
+            <span>Failure mode</span>
+            <h3>Designed to fail visibly</h3>
+            <p>If traffic is blocked or paused, Forsig returns clear status codes and human-readable reasons.</p>
+          </article>
         </div>
       </section>
 
@@ -262,18 +316,21 @@ client.chat.completions.create(
       <section id="waitlist" class="v2-final">
         <div class="reveal">
           <p class="v2-kicker">Private beta</p>
-          <h2>Join the first builders protecting agent traffic.</h2>
-          <p>Early access is for founders and developers building real AI agents, copilots, automations, and AI SaaS products.</p>
+          <h2>Protect your AI agents before your next provider bill.</h2>
+          <p>Join the private beta for early access, setup help, and free beta usage.</p>
         </div>
         <form id="waitlist-form" class="v2-form reveal delay-1">
-          <input name="name" type="text" required autocomplete="name" placeholder="Name" />
-          <input name="email" type="email" required autocomplete="email" placeholder="Work email" />
-          <button type="submit">Join waitlist</button>
+          <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
+          <button type="submit">Join private beta</button>
           <p id="form-status" class="mini-status" role="status"></p>
         </form>
       </section>
 
       <section id="faq" class="v2-faq">
+        <details open>
+          <summary>Does Forsig store prompts?</summary>
+          <p>Not by default. The MVP stores metadata, token counts, cost, prompt hashes, latency, and policy outcomes.</p>
+        </details>
         <details open>
           <summary>Does Forsig replace my agent framework?</summary>
           <p>No. Forsig registers and controls external agents. Your agent remains in your app.</p>
@@ -283,10 +340,32 @@ client.chat.completions.create(
           <p>No. Any OpenAI-compatible client can use Forsig by changing the base URL and API key.</p>
         </details>
         <details>
-          <summary>Does Forsig store prompts?</summary>
-          <p>Not by default. The MVP stores metadata, token counts, cost, prompt hashes, and policy outcomes.</p>
+          <summary>What happens when an agent hits its budget?</summary>
+          <p>Forsig blocks the request before the provider call and returns a clear budget error with a reason.</p>
+        </details>
+        <details>
+          <summary>Which providers are supported first?</summary>
+          <p>The first gateway path is OpenAI-compatible chat completions. Anthropic and others come after the MVP.</p>
+        </details>
+        <details>
+          <summary>Can I remove Forsig later?</summary>
+          <p>Yes. Change your base URL and API key back to your provider. Your agent code does not need a rewrite.</p>
+        </details>
+        <details>
+          <summary>Is Forsig production-ready?</summary>
+          <p>Forsig is entering private beta. Early users should expect setup help and fast iteration before broad production use.</p>
         </details>
       </section>
+
+      <footer class="site-footer">
+        <a href="/">Forsig</a>
+        <nav>
+          <a href="mailto:thenazmulkarim@gmail.com">Contact</a>
+          <a href="#security">Security</a>
+          <a href="#faq">FAQ</a>
+          <a href="/dashboard">Demo</a>
+        </nav>
+      </footer>
     </main>
 
     <script src="/app.js" type="module"></script>
