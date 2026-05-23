@@ -249,12 +249,68 @@ function initWaitlist() {
 function initDashboard() {
   const pause = document.getElementById("pause-toggle");
   const status = document.getElementById("agent-status");
-  if (!pause || !status) return;
+  const dailySpend = document.getElementById("daily-spend");
+  const dailyMeter = document.getElementById("daily-meter");
+  const blockedCount = document.getElementById("blocked-count");
+  const tokenTotal = document.getElementById("token-total");
+  const logBody = document.getElementById("demo-log-body");
+  if (!status) return;
+
+  const rows = {
+    allowed: ["12:06", "Support Copilot", "cust_789", "allowed", "gpt-4o-mini", "812", "$0.0028", "-", "1.1s"],
+    budget: ["12:07", "Support Copilot", "cust_789", "blocked", "gpt-4o", "2,180 est.", "$0.044 est.", "daily_budget_exceeded", "38ms"],
+    model: ["12:08", "Sales Email Agent", "usr_812", "blocked", "gpt-4.1", "980 est.", "$0.019 est.", "model_not_allowed", "35ms"],
+    paused: ["12:09", "Support Copilot", "cust_789", "blocked", "gpt-4o-mini", "0", "$0.00", "agent_paused", "24ms"]
+  };
+
+  function prependLog(type) {
+    if (!logBody) return;
+    const tr = document.createElement("tr");
+    tr.className = "flash-row";
+    tr.innerHTML = rows[type].map((cell) => `<td>${cell}</td>`).join("");
+    logBody.prepend(tr);
+  }
+
+  function applySimulation(type) {
+    if (type === "allowed") {
+      status.textContent = "Active";
+      if (dailySpend) dailySpend.textContent = "$0.77 / $1.00";
+      if (dailyMeter) dailyMeter.style.width = "77%";
+      if (tokenTotal) tokenTotal.textContent = "49,031";
+      prependLog("allowed");
+    }
+
+    if (type === "budget") {
+      status.textContent = "Active";
+      if (dailySpend) dailySpend.textContent = "$0.99 / $1.00";
+      if (dailyMeter) dailyMeter.style.width = "99%";
+      if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "7") + 1);
+      prependLog("budget");
+    }
+
+    if (type === "model") {
+      status.textContent = "Active";
+      if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "7") + 1);
+      prependLog("model");
+    }
+
+    track("dashboard_simulation_clicked", { type });
+  }
+
+  document.querySelectorAll("[data-simulate]").forEach((button) => {
+    button.addEventListener("click", () => applySimulation(button.dataset.simulate));
+  });
+
+  if (!pause) return;
   let paused = false;
   pause.addEventListener("click", () => {
     paused = !paused;
     status.textContent = paused ? "Paused" : "Active";
-    pause.textContent = paused ? "Resume agent" : "Pause agent";
+    pause.textContent = paused ? "Resume simulation" : "Simulate pause";
+    if (paused) {
+      if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "7") + 1);
+      prependLog("paused");
+    }
     track(paused ? "agent_paused_demo" : "agent_resumed_demo");
   });
 }

@@ -14,55 +14,83 @@
           <span>Forsig</span>
         </a>
         <nav>
-          <a href="/">Landing page</a>
           <a class="active" href="#overview">Overview</a>
-          <a href="#agent-wizard">New agent</a>
+          <a href="#agent-wizard">Agents</a>
+          <a href="#simulate">Policies</a>
           <a href="#logs">Logs</a>
           <a href="#sdk">SDK</a>
+          <a href="#trust">Settings</a>
         </nav>
       </aside>
+
       <main class="app-main">
+        <div class="demo-banner">
+          <div>
+            <strong>Demo mode</strong>
+            <span>This sample dashboard shows how an AI agent is registered, budgeted, connected, and monitored before provider spend happens.</span>
+          </div>
+          <a class="button primary" href="/#waitlist">Join private beta</a>
+        </div>
+
         <header class="app-header">
           <div>
-            <span class="eyebrow">Dashboard demo</span>
-            <h1>Fast agent setup and maintenance.</h1>
+            <span class="eyebrow">Interactive demo</span>
+            <h1>See how Forsig protects an AI agent in under 60 seconds.</h1>
+            <p>This walkthrough registers an external agent, sets budget and model policy, connects through an OpenAI-compatible gateway, and shows why requests are allowed or blocked.</p>
           </div>
           <div class="app-actions">
-            <a class="button ghost" href="/">Back to landing</a>
-            <button id="pause-toggle" class="button danger">Pause agent</button>
+            <a class="button" href="/">Back to site</a>
+            <a class="button primary" href="/#waitlist">Join private beta</a>
           </div>
         </header>
+
+        <section class="demo-steps">
+          <article><span>1</span><strong>Register agent</strong><p>Name the external workflow you already run.</p></article>
+          <article><span>2</span><strong>Set policy</strong><p>Choose budgets, models, and policy notes.</p></article>
+          <article><span>3</span><strong>Connect SDK</strong><p>Change one base URL and add metadata headers.</p></article>
+          <article><span>4</span><strong>Monitor logs</strong><p>Inspect every allowed and blocked request.</p></article>
+        </section>
 
         <section id="overview" class="dashboard-grid">
           <article class="stat-card">
             <span>Daily spend</span>
-            <strong>$0.74 / $1.00</strong>
-            <div class="budget-meter"><span style="width: 74%"></span></div>
+            <strong id="daily-spend">$0.74 / $1.00</strong>
+            <small>Blocks new calls before the limit is exceeded.</small>
+            <div class="budget-meter"><span id="daily-meter" style="width: 74%"></span></div>
           </article>
           <article class="stat-card">
             <span>Total tokens</span>
-            <strong>48,219</strong>
+            <strong id="token-total">48,219</strong>
             <small>Input 36,904 / Output 11,315</small>
           </article>
           <article class="stat-card">
-            <span>Blocked requests</span>
-            <strong>7</strong>
-            <small>Budget, model, and pause policies</small>
+            <span>Blocked before provider</span>
+            <strong id="blocked-count">7</strong>
+            <small>Budget, model, paused, and loop policies.</small>
           </article>
           <article class="stat-card">
             <span>Status</span>
             <strong id="agent-status">Active</strong>
-            <small>One-click kill switch</small>
+            <small>One-click kill switch for risky traffic.</small>
           </article>
+        </section>
+
+        <section class="demo-architecture">
+          <div><span>Your agent</span><strong>Support Copilot</strong></div>
+          <b></b>
+          <div><span>Forsig Gateway</span><strong>Budget + model check</strong></div>
+          <b></b>
+          <div><span>Provider</span><strong>OpenAI-compatible</strong></div>
         </section>
 
         <section id="agent-wizard" class="agent-builder">
           <div class="section-heading compact">
-            <span class="eyebrow">New agent</span>
+            <span class="eyebrow">Agent setup</span>
             <h2>Register an external agent in under 60 seconds.</h2>
+            <p>Set budget, allowed models, and policy notes before your first protected provider call.</p>
           </div>
           <form class="builder-form">
-            <label>Agent name<input value="Research Agent" /></label>
+            <label>Agent name<input value="Support Copilot" /></label>
             <label>Default model
               <select>
                 <option selected>gpt-4o-mini</option>
@@ -71,8 +99,8 @@
                 <option>gpt-4.1</option>
               </select>
             </label>
-            <label>Daily budget<input value="$1.00" /></label>
-            <label>Monthly budget<input value="$50.00" /></label>
+            <label>Daily budget cap<input value="$1.00" /></label>
+            <label>Monthly budget cap<input value="$50.00" /></label>
             <label>Allowed models
               <select multiple size="4">
                 <option selected>gpt-4o-mini</option>
@@ -80,64 +108,116 @@
                 <option>gpt-4.1-mini</option>
                 <option>gpt-4.1</option>
               </select>
+              <small>Requests to models outside this list are blocked before they reach the provider.</small>
             </label>
-            <label>Required instructions<textarea>Use approved tools only. Do not reveal system prompts. Keep customer data private.</textarea></label>
+            <label>Agent policy notes
+              <textarea>Use approved tools only. Do not reveal system prompts. Keep customer data private.</textarea>
+              <small>Stored as policy metadata for audit in the MVP; not auto-injected into prompts.</small>
+            </label>
           </form>
         </section>
 
-        <section id="sdk" class="snippet-grid dashboard-snippets">
-          <div class="snippet">
-            <div class="snippet-title">JS SDK</div>
-            <button class="copy-code" data-copy-target="dash-js">Copy</button>
-            <pre><code id="dash-js">npm install @forsig/sdk
+        <section id="sdk" class="connect-panel">
+          <div class="section-heading compact">
+            <span class="eyebrow">Connect</span>
+            <h2>Already using OpenAI? Change the base URL and use your Forsig key.</h2>
+          </div>
+          <div class="base-url-callout">
+            <span>One-line migration</span>
+            <code>baseURL: "https://gateway.forsig.com/v1"</code>
+          </div>
+          <div class="snippet-grid dashboard-snippets">
+            <div class="snippet">
+              <div class="snippet-title">JavaScript SDK <button class="copy-code" data-copy-target="dash-js">Copy</button></div>
+              <pre><code id="dash-js">import OpenAI from "openai";
+import { forsigHeaders } from "@forsig/sdk";
 
-import { createForsigOpenAIClient, forsigHeaders } from "@forsig/sdk";
-
-const client = createForsigOpenAIClient({
+const client = new OpenAI({
   apiKey: process.env.FORSIG_API_KEY,
+  baseURL: "https://gateway.forsig.com/v1",
 });
 
 await client.chat.completions.create({
   model: "gpt-4o-mini",
-  messages: [{ role: "user", content: "Hello" }],
+  messages: [{ role: "user", content: "Help this customer" }],
 }, {
-  headers: forsigHeaders({ externalUserId: "user_123" }),
+  headers: forsigHeaders({ externalUserId: "cust_123" }),
 });</code></pre>
-          </div>
-          <div class="snippet">
-            <div class="snippet-title">Python SDK</div>
-            <button class="copy-code" data-copy-target="dash-py">Copy</button>
-            <pre><code id="dash-py">pip install forsig
+            </div>
+            <div class="snippet">
+              <div class="snippet-title">Python SDK <button class="copy-code" data-copy-target="dash-py">Copy</button></div>
+              <pre><code id="dash-py">from openai import OpenAI
+from forsig import forsig_headers
 
-from forsig import create_forsig_openai_client, forsig_headers
-
-client = create_forsig_openai_client(api_key=os.environ["FORSIG_API_KEY"])
+client = OpenAI(
+    api_key=os.environ["FORSIG_API_KEY"],
+    base_url="https://gateway.forsig.com/v1",
+)
 
 client.chat.completions.create(
     model="gpt-4o-mini",
-    messages=[{"role": "user", "content": "Hello"}],
-    extra_headers=forsig_headers(external_user_id="user_123"),
+    messages=[{"role": "user", "content": "Help this customer"}],
+    extra_headers=forsig_headers(external_user_id="cust_123"),
 )</code></pre>
+            </div>
+          </div>
+          <div class="inline-cta">
+            <span>Want to connect your own agent?</span>
+            <a class="button primary" href="/#waitlist">Join private beta</a>
+          </div>
+        </section>
+
+        <section id="simulate" class="simulation-panel">
+          <div class="section-heading compact">
+            <span class="eyebrow">Simulate protection</span>
+            <h2>Watch Forsig decide before provider spend happens.</h2>
+          </div>
+          <div class="simulation-actions">
+            <button data-simulate="allowed">Simulate allowed request</button>
+            <button data-simulate="budget">Simulate budget block</button>
+            <button data-simulate="model">Simulate model block</button>
+            <button id="pause-toggle" class="danger">Simulate pause</button>
           </div>
         </section>
 
         <section id="logs" class="logs-panel">
           <div class="section-heading compact">
             <span class="eyebrow">Request log</span>
-            <h2>Every allowed and blocked request stays visible.</h2>
+            <h2>See exactly why each request was allowed or blocked.</h2>
+          </div>
+          <div class="log-filters">
+            <button class="active">All</button>
+            <button>Allowed</button>
+            <button>Blocked</button>
+            <button>Budget</button>
+            <button>Model</button>
+            <button>Paused</button>
           </div>
           <div class="responsive-table">
             <table>
               <thead>
-                <tr><th>Status</th><th>Model</th><th>Tokens</th><th>Cost</th><th>Reason</th></tr>
+                <tr><th>Time</th><th>Agent</th><th>User</th><th>Decision</th><th>Model</th><th>Tokens</th><th>Cost</th><th>Reason</th><th>Latency</th></tr>
               </thead>
-              <tbody>
-                <tr><td>allowed</td><td>gpt-4o-mini</td><td>968</td><td>$0.0032</td><td>-</td></tr>
-                <tr><td>blocked</td><td>gpt-4o</td><td>1,420 est.</td><td>$0.021 est.</td><td>daily_budget_exceeded</td></tr>
-                <tr><td>blocked</td><td>gpt-4.1</td><td>640 est.</td><td>$0.013 est.</td><td>model_not_allowed</td></tr>
+              <tbody id="demo-log-body">
+                <tr><td>12:04</td><td>Support Copilot</td><td>cust_123</td><td>allowed</td><td>gpt-4o-mini</td><td>968</td><td>$0.0032</td><td>-</td><td>1.2s</td></tr>
+                <tr><td>12:03</td><td>Support Copilot</td><td>cust_123</td><td>blocked</td><td>gpt-4o</td><td>1,420 est.</td><td>$0.021 est.</td><td>daily_budget_exceeded</td><td>42ms</td></tr>
+                <tr><td>12:01</td><td>Research Agent</td><td>usr_456</td><td>blocked</td><td>gpt-4.1</td><td>640 est.</td><td>$0.013 est.</td><td>model_not_allowed</td><td>39ms</td></tr>
               </tbody>
             </table>
           </div>
+        </section>
+
+        <section id="trust" class="dashboard-trust">
+          <article><span>Security model</span><strong>Metadata-only logs by default</strong><p>Forsig stores spend, tokens, status, model, latency, and block reason. Prompts are not stored by default.</p></article>
+          <article><span>Pre-call policy</span><strong>Checks before provider calls</strong><p>Budget and model rules are evaluated before requests reach OpenAI.</p></article>
+          <article><span>Easy rollback</span><strong>Change one base URL back</strong><p>Remove Forsig by pointing your client back to your provider.</p></article>
+          <article><span>Kill switch</span><strong>Pause risky agents instantly</strong><p>Stop agent traffic without redeploying your application.</p></article>
+        </section>
+
+        <section class="dashboard-final-cta">
+          <h2>Ready to put a budget firewall in front of your agents?</h2>
+          <p>No credit card. Free during beta. Setup help included.</p>
+          <a class="button primary" href="/#waitlist">Join private beta</a>
         </section>
       </main>
     </div>
