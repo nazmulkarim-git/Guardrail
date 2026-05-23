@@ -1,0 +1,20 @@
+{
+  "name": "forsig",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev-server.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:python": "python -m unittest discover -s packages/sdk-python/tests",
+    "check": "node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "postgres": "^3.4.7"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

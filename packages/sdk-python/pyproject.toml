@@ -1,0 +1,5 @@
+[project]
+name = "forsig"
+version = "0.1.0"
+description = "Forsig SDK helpers for AI agent budget firewall metadata."
+requires-python = ">=3.9"

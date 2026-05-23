@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Forsig - Budget Firewall and Kill Switch for AI Agents</title>
+    <meta name="description" content="Forsig gives every AI agent a spending limit, audit log, token counter, model policy, and emergency stop through an OpenAI-compatible gateway." />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body data-page="landing">
+    <div class="site-shell">
+      <header class="nav">
+        <a class="brand" href="/" aria-label="Forsig home">
+          <span class="brand-mark"></span>
+          <span>Forsig</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#value">Value</a>
+          <a href="#sdk">SDK</a>
+          <a href="#faq">FAQ</a>
+          <a href="/dashboard">Demo</a>
+        </nav>
+        <a class="nav-cta" href="#waitlist">Join waitlist</a>
+      </header>
+
+      <main>
+        <section class="hero section">
+          <div class="hero-copy reveal">
+            <div class="eyebrow">OpenAI-compatible control plane for agents</div>
+            <h1>Budget firewall and kill switch for AI agents.</h1>
+            <p class="hero-lede">Add Forsig in seconds: change the base URL, swap in a virtual key, and get budgets, token counts, audit logs, model policy, custom instructions, and emergency pause controls.</p>
+            <div class="hero-actions">
+              <a class="button primary" href="#waitlist" data-track="hero_cta_clicked">Join the waitlist</a>
+              <a class="button ghost" href="/dashboard">View dashboard demo</a>
+            </div>
+            <div class="install-row" aria-label="SDK install commands">
+              <button class="copy-pill" data-copy="npm install @forsig/sdk">npm install @forsig/sdk</button>
+              <button class="copy-pill" data-copy="pip install forsig">pip install forsig</button>
+            </div>
+          </div>
+
+          <div class="hero-visual reveal delay-1" aria-label="Forsig request protection preview">
+            <div class="motion-card request-card">
+              <div class="card-top">
+                <span class="status-dot live"></span>
+                <span>Protected request</span>
+                <strong>$0.0032</strong>
+              </div>
+              <div class="budget-meter">
+                <span style="width: 62%"></span>
+              </div>
+              <div class="metric-grid">
+                <div><span>Input tokens</span><strong>812</strong></div>
+                <div><span>Output tokens</span><strong>156</strong></div>
+                <div><span>Latency</span><strong>1.2s</strong></div>
+              </div>
+            </div>
+            <div class="code-swap" data-swap>
+              <div class="code-toolbar">
+                <span>Before</span>
+                <span>After Forsig</span>
+              </div>
+              <pre><code id="hero-code">baseURL: "https://api.openai.com/v1"
+apiKey: process.env.OPENAI_API_KEY</code></pre>
+            </div>
+            <div class="motion-card block-card">
+              <div class="block-icon">403</div>
+              <div>
+                <strong>Disallowed model blocked</strong>
+                <span>Policy stopped the call before provider spend.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="value" class="section value-section">
+          <div class="section-heading reveal">
+            <span class="eyebrow">True value</span>
+            <h2>Your agents keep running. Your bill does not run away.</h2>
+            <p>Forsig sits between your app and OpenAI. It enforces spend, captures token usage, records metadata-only logs, and gives you one button to stop traffic.</p>
+          </div>
+          <div class="feature-grid">
+            <article class="feature-card reveal">
+              <span>01</span>
+              <h3>Pre-call budget blocks</h3>
+              <p>Daily, monthly, and per-request budgets are checked before model calls happen.</p>
+            </article>
+            <article class="feature-card reveal delay-1">
+              <span>02</span>
+              <h3>Token counts that explain spend</h3>
+              <p>See estimated and actual input, output, and total tokens per request.</p>
+            </article>
+            <article class="feature-card reveal delay-2">
+              <span>03</span>
+              <h3>Agent instructions on record</h3>
+              <p>Keep required operating instructions attached to each agent and audit changes.</p>
+            </article>
+            <article class="feature-card reveal delay-3">
+              <span>04</span>
+              <h3>Emergency pause</h3>
+              <p>Stop org, agent, or instance traffic instantly when behavior looks wrong.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="sdk" class="section sdk-section">
+          <div class="section-heading reveal">
+            <span class="eyebrow">Developer speed</span>
+            <h2>SDKs when you want metadata. Raw base URL when you do not.</h2>
+          </div>
+          <div class="snippet-grid">
+            <div class="snippet reveal">
+              <div class="snippet-title">JavaScript</div>
+              <button class="copy-code" data-copy-target="js-snippet">Copy</button>
+              <pre><code id="js-snippet">import OpenAI from "openai";
+import { forsigHeaders, newForsigSession } from "@forsig/sdk";
+
+const client = new OpenAI({
+  apiKey: process.env.FORSIG_API_KEY,
+  baseURL: "https://gateway.forsig.com/v1",
+});
+
+await client.chat.completions.create({
+  model: "gpt-4o-mini",
+  messages: [{ role: "user", content: "Hello" }],
+}, {
+  headers: forsigHeaders({
+    sessionId: newForsigSession(),
+    externalUserId: "user_123",
+  }),
+});</code></pre>
+            </div>
+            <div class="snippet reveal delay-1">
+              <div class="snippet-title">Python</div>
+              <button class="copy-code" data-copy-target="py-snippet">Copy</button>
+              <pre><code id="py-snippet">from openai import OpenAI
+from forsig import forsig_headers, new_forsig_session
+
+client = OpenAI(
+    api_key=os.environ["FORSIG_API_KEY"],
+    base_url="https://gateway.forsig.com/v1",
+)
+
+client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "Hello"}],
+    extra_headers=forsig_headers(
+        session_id=new_forsig_session(),
+        external_user_id="user_123",
+    ),
+)</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section class="section dashboard-preview">
+          <div class="preview-panel reveal">
+            <div class="preview-sidebar">
+              <strong>Research Agent</strong>
+              <button>Active</button>
+              <button>Budget</button>
+              <button>Logs</button>
+              <button>Keys</button>
+            </div>
+            <div class="preview-main">
+              <div class="preview-header">
+                <div>
+                  <span class="eyebrow">Agent health</span>
+                  <h2>Fast maintenance, no control-plane burden.</h2>
+                </div>
+                <a class="button danger" href="/dashboard">Pause agent</a>
+              </div>
+              <div class="log-list">
+                <div><span>allowed</span><strong>gpt-4o-mini</strong><em>968 tokens</em></div>
+                <div><span>blocked</span><strong>daily_budget_exceeded</strong><em>$1.00 cap</em></div>
+                <div><span>allowed</span><strong>gpt-4o-mini</strong><em>412 tokens</em></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="faq" class="section faq-section">
+          <div class="section-heading reveal">
+            <span class="eyebrow">FAQ</span>
+            <h2>Questions founders and developers ask first.</h2>
+          </div>
+          <div class="faq-list">
+            <details class="reveal" open>
+              <summary>Does Forsig store my OpenAI API key?</summary>
+              <p>Yes. The MVP stores provider keys encrypted, never displays them after creation, and uses Forsig virtual keys in your app.</p>
+            </details>
+            <details class="reveal">
+              <summary>Do I have to use the SDK?</summary>
+              <p>No. The SDK is optional. You can use any OpenAI-compatible client by changing the base URL and API key.</p>
+            </details>
+            <details class="reveal">
+              <summary>Does Forsig replace my agent framework?</summary>
+              <p>No. Forsig registers and controls your external agents. Your agent code remains in your app.</p>
+            </details>
+            <details class="reveal">
+              <summary>Will Forsig store prompts?</summary>
+              <p>Not by default. The MVP stores metadata, token counts, costs, prompt hashes, policy outcomes, and block reasons.</p>
+            </details>
+          </div>
+        </section>
+
+        <section id="waitlist" class="section waitlist-section">
+          <div class="waitlist-card reveal">
+            <div>
+              <span class="eyebrow">Early access</span>
+              <h2>Join the Forsig waitlist.</h2>
+              <p>We are prioritizing teams already building or running AI agents with real traffic.</p>
+            </div>
+            <form id="waitlist-form" class="waitlist-form">
+              <input name="email" type="email" required placeholder="Work email" />
+              <input name="name" type="text" placeholder="Name" />
+              <input name="company" type="text" placeholder="Company" />
+              <select name="role">
+                <option value="">Role</option>
+                <option>Founder</option>
+                <option>Developer</option>
+                <option>CTO</option>
+                <option>Product</option>
+              </select>
+              <select name="provider">
+                <option value="">Provider</option>
+                <option>OpenAI</option>
+                <option>Anthropic</option>
+                <option>Gemini</option>
+                <option>Multiple</option>
+              </select>
+              <select name="monthlyAiSpend">
+                <option value="">Monthly AI spend</option>
+                <option>&lt;$100</option>
+                <option>$100-$1k</option>
+                <option>$1k-$10k</option>
+                <option>$10k+</option>
+              </select>
+              <textarea name="useCase" placeholder="What are you building?"></textarea>
+              <select name="urgency">
+                <option value="">Urgency</option>
+                <option>Exploring</option>
+                <option>Building now</option>
+                <option>Urgent/design partner</option>
+              </select>
+              <button class="button primary" type="submit">Request early access</button>
+              <p id="form-status" role="status"></p>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
