@@ -434,24 +434,34 @@ function initThanksReferral() {
   });
 
   const inviteForm = document.getElementById("invite-email-form");
-  inviteForm?.addEventListener("submit", (event) => {
+  inviteForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const status = inviteForm.querySelector(".mini-status");
     const data = Object.fromEntries(new FormData(inviteForm).entries());
     const recipients = String(data.inviteEmails || "").trim();
-    const subject = "Join me on the Forsig private beta";
-    const body = [
-      "I joined the Forsig private beta.",
-      "",
-      "Forsig is a budget firewall for AI agents: it blocks runaway loops before they hit your provider bill.",
-      "",
-      `Use my referral link: ${referral.value}`,
-      `Referral code: ${code}`
-    ].join("\n");
-    const mailto = `mailto:${encodeURIComponent(recipients)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailto;
-    if (status) status.textContent = "Opening your email app...";
-    track("referral_email_invite_opened", { lead, hasRecipients: Boolean(recipients) });
+    if (status) status.textContent = "Sending invites...";
+    try {
+      const response = await fetch("/api/referral-invite", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          leadId: lead,
+          referralCode: code,
+          referralLink: referral.value,
+          inviteEmails: recipients
+        })
+      });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.error || "Invites could not be sent.");
+      const label = result.sent === 1 ? "invite" : "invites";
+      if (status) status.textContent = `${result.sent} ${label} sent.`;
+      inviteForm.reset();
+      showToast(`${result.sent} referral ${label} sent`);
+      track("referral_email_invites_sent", { lead, sent: result.sent });
+    } catch (error) {
+      if (status) status.textContent = error.message || "Invites could not be sent.";
+      track("referral_email_invites_failed", { lead, message: status?.textContent });
+    }
   });
 
   const qualificationForm = document.getElementById("qualification-form");
