@@ -138,7 +138,8 @@ export default async function handler(req, res) {
       return;
     }
 
-    const inviterRows = await getSql()`
+    const db = getSql();
+    const inviterRows = await db`
       select id, email, own_referral_code
       from waitlist_leads
       where id = ${leadId}
@@ -151,10 +152,23 @@ export default async function handler(req, res) {
       return;
     }
 
+    const registeredRows = await db`
+      select email
+      from waitlist_leads
+      where email = any(${emails})
+    `;
+    const registeredEmails = new Set(registeredRows.map((row) => row.email));
+    const inviteEmails = emails.filter((email) => email !== inviter.email && !registeredEmails.has(email));
+
+    if (!inviteEmails.length) {
+      res.status(409).json({ ok: false, error: "All entered emails are already registered for early access." });
+      return;
+    }
+
     const origin = getOrigin(req);
     const landingLink = `${origin}/`;
     const results = await Promise.allSettled(
-      emails.map((email) => {
+      inviteEmails.map((email) => {
         const token = signPayload({
           email,
           referralCode,
@@ -178,7 +192,12 @@ export default async function handler(req, res) {
       return;
     }
 
-    res.status(200).json({ ok: true, sent, requested: emails.length });
+    res.status(200).json({
+      ok: true,
+      sent,
+      requested: emails.length,
+      skippedRegistered: emails.length - inviteEmails.length
+    });
   } catch (error) {
     console.error("Referral invites failed", {
       code: error.code,

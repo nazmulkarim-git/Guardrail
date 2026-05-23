@@ -46,6 +46,15 @@ function getOrigin(req) {
   return `${proto}://${host}`;
 }
 
+async function getWaitlistPosition(db, createdAt) {
+  const rows = await db`
+    select count(*)::int as position
+    from waitlist_leads
+    where created_at <= ${createdAt}
+  `;
+  return Number(rows[0]?.position || 1);
+}
+
 function publicDatabaseError(error) {
   if (error.code === "missing_database_url") {
     return {
@@ -385,6 +394,7 @@ export default async function handler(req, res) {
 
     const savedLead = rows[0];
     const duplicate = Number(savedLead.signup_count) > 1;
+    const position = await getWaitlistPosition(db, savedLead.created_at);
     let referrer = null;
     if (lead.referralCode) {
       const normalizedReferral = lead.referralCode.trim();
@@ -396,6 +406,19 @@ export default async function handler(req, res) {
         limit 1
       `;
       referrer = referrerRows[0] || null;
+    }
+
+    if (duplicate) {
+      await capturePostHog("waitlist_duplicate_attempted", { ...lead, leadId: savedLead.id, ownReferralCode: savedLead.own_referral_code, position }, savedLead.email);
+      res.status(200).json({
+        ok: true,
+        duplicate: true,
+        message: "This email is already registered for early access.",
+        leadId: savedLead.id,
+        referralCode: savedLead.own_referral_code,
+        position
+      });
+      return;
     }
 
     const [emailResult, ownerResult, analyticsResult] = await Promise.allSettled([
@@ -416,6 +439,7 @@ export default async function handler(req, res) {
       ok: true,
       leadId: savedLead.id,
       referralCode: savedLead.own_referral_code,
+      position,
       duplicate,
       email: {
         sent: Boolean(emailStatus.sent)

@@ -34,6 +34,15 @@ function makeReferralCode(email, id) {
   return `FS-${prefix}-${id.slice(-5).toUpperCase()}`;
 }
 
+async function getWaitlistPosition(db, createdAt) {
+  const rows = await db`
+    select count(*)::int as position
+    from waitlist_leads
+    where created_at <= ${createdAt}
+  `;
+  return Number(rows[0]?.position || 1);
+}
+
 function isEmail(value) {
   return typeof value === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
@@ -173,25 +182,34 @@ export default async function handler(req, res) {
         utm_campaign = coalesce(waitlist_leads.utm_campaign, excluded.utm_campaign),
         signup_count = waitlist_leads.signup_count + 1,
         updated_at = now()
-      returning id, email, own_referral_code, signup_count
+      returning id, email, own_referral_code, signup_count, created_at
     `;
 
     const savedLead = rows[0];
+    const duplicate = Number(savedLead.signup_count) > 1;
+    const position = await getWaitlistPosition(db, savedLead.created_at);
     const referralLink = `${origin}/?utm_source=referral&utm_medium=waitlist&utm_campaign=founding_500&ref=${encodeURIComponent(savedLead.own_referral_code)}`;
-    await Promise.allSettled([
-      sendConfirmationEmail({
-        email,
-        referralCode: savedLead.own_referral_code,
-        referralLink,
-        inviterEmail: payload.inviterEmail
-      }),
-      sendReferralNotification({
-        referrerEmail: payload.inviterEmail,
-        referredEmail: email
-      })
-    ]);
+    if (!duplicate) {
+      await Promise.allSettled([
+        sendConfirmationEmail({
+          email,
+          referralCode: savedLead.own_referral_code,
+          referralLink,
+          inviterEmail: payload.inviterEmail
+        }),
+        sendReferralNotification({
+          referrerEmail: payload.inviterEmail,
+          referredEmail: email
+        })
+      ]);
+    }
 
-    const params = new URLSearchParams({ lead: savedLead.id, code: savedLead.own_referral_code });
+    const params = new URLSearchParams({
+      lead: savedLead.id,
+      code: savedLead.own_referral_code,
+      position: String(position),
+      duplicate: duplicate ? "1" : "0"
+    });
     res.writeHead(302, { location: `/thanks?${params.toString()}` });
     res.end();
   } catch (error) {

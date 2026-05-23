@@ -258,8 +258,17 @@ function initWaitlist() {
         const result = await response.json();
         if (!response.ok || !result.ok) throw new Error(result.error || "Signup failed.");
         track("waitlist_signup_succeeded", { ...data, leadId: result.leadId, duplicate: result.duplicate, sourceSection: entry.sourceSection });
+        if (result.duplicate) {
+          entry.status.textContent = result.message || "This email is already registered for early access.";
+          showToast("Already registered");
+          return;
+        }
         showToast("You are on the waitlist");
-        const params = new URLSearchParams({ lead: result.leadId, code: result.referralCode || "" });
+        const params = new URLSearchParams({
+          lead: result.leadId,
+          code: result.referralCode || "",
+          position: String(result.position || "")
+        });
         location.href = `/thanks?${params.toString()}`;
       } catch (error) {
         entry.status.textContent = error.message || "Something went wrong.";
@@ -418,8 +427,12 @@ function initThanksReferral() {
   const params = new URLSearchParams(location.search);
   const lead = params.get("lead") || "founding";
   const code = params.get("code") || `FS-${lead.slice(-6).toUpperCase()}`;
-  const numeric = [...lead].reduce((sum, char) => sum + char.charCodeAt(0), 0);
-  position.textContent = `#${1000 + (numeric % 497)}`;
+  const queryPosition = Number(params.get("position"));
+  position.textContent = queryPosition > 0 ? `#${queryPosition.toLocaleString()}` : "#1,000+";
+  if (params.get("duplicate") === "1") {
+    const heading = document.querySelector(".thanks-card h1");
+    if (heading) heading.textContent = "This email is already registered for early access.";
+  }
   if (referralCode) referralCode.textContent = code;
   referral.value = `${location.origin}/?utm_source=referral&utm_medium=waitlist&utm_campaign=founding_500&ref=${encodeURIComponent(code)}`;
   document.getElementById("copy-referral")?.addEventListener("click", async () => {
@@ -454,7 +467,8 @@ function initThanksReferral() {
       const result = await response.json();
       if (!response.ok || !result.ok) throw new Error(result.error || "Invites could not be sent.");
       const label = result.sent === 1 ? "invite" : "invites";
-      if (status) status.textContent = `${result.sent} ${label} sent.`;
+      const skipped = result.skippedRegistered ? ` ${result.skippedRegistered} already registered.` : "";
+      if (status) status.textContent = `${result.sent} ${label} sent.${skipped}`;
       inviteForm.reset();
       showToast(`${result.sent} referral ${label} sent`);
       track("referral_email_invites_sent", { lead, sent: result.sent });
