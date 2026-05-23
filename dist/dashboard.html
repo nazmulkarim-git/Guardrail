@@ -36,7 +36,7 @@
           <div>
             <span class="eyebrow">Interactive demo</span>
             <h1>See how Forsig protects an AI agent in under 60 seconds.</h1>
-            <p>This walkthrough registers an external agent, sets budget and model policy, connects through an OpenAI-compatible gateway, and shows why requests are allowed or blocked.</p>
+            <p>This walkthrough registers an external agent, sets budget and model policy, connects through an OpenAI-compatible gateway, and shows why requests are allowed or blocked before provider spend happens.</p>
           </div>
           <div class="app-actions">
             <a class="button" href="/">Back to site</a>
@@ -178,12 +178,14 @@ client.chat.completions.create(
             <button data-simulate="model">Simulate model block</button>
             <button id="pause-toggle" class="danger">Simulate pause</button>
           </div>
+          <p class="simulation-note">Click a simulation to add a new request log, update metrics, and see the policy decision Forsig would return.</p>
         </section>
 
         <section id="logs" class="logs-panel">
           <div class="section-heading compact">
             <span class="eyebrow">Request log</span>
             <h2>See exactly why each request was allowed or blocked.</h2>
+            <p>Every request gets a policy decision before provider spend happens. The reason column is the proof.</p>
           </div>
           <div class="log-filters">
             <button class="active">All</button>
@@ -217,7 +219,11 @@ client.chat.completions.create(
         <section class="dashboard-final-cta">
           <h2>Ready to put a budget firewall in front of your agents?</h2>
           <p>No credit card. Free during beta. Setup help included.</p>
-          <a class="button primary" href="/#waitlist">Join private beta</a>
+          <form id="dashboard-waitlist-form" class="v2-form">
+            <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
+            <button type="submit">Join private beta</button>
+            <p class="mini-status" role="status"></p>
+          </form>
         </section>
       </main>
     </div>

@@ -31,17 +31,17 @@
         <div class="v2-hero-copy reveal">
           <p class="v2-kicker">AI agent spend control</p>
           <h1>Stop runaway AI agents before they burn your budget.</h1>
-          <p class="v2-lede">Forsig is an OpenAI-compatible gateway that sets per-agent budgets, blocks retry loops, logs token spend, and gives your team a kill switch without storing prompts by default.</p>
+          <p class="v2-lede">Forsig checks every agent request before it reaches your provider. Set spend caps, restrict models, log token usage, and pause risky agents instantly.</p>
 
           <form id="hero-waitlist-form" class="v2-form">
             <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
             <button type="submit">Join private beta</button>
             <p class="mini-status" role="status"></p>
           </form>
-          <p class="form-note">No credit card. Free during beta. Invites sent weekly.</p>
+          <p class="form-note">No credit card. Free during beta. Metadata-only logs by default.</p>
 
           <div class="hero-links">
-            <a href="/dashboard">View demo dashboard</a>
+            <a href="/dashboard">View live demo</a>
             <a href="#security">Read security model</a>
           </div>
 
@@ -188,7 +188,7 @@
       <section id="how" class="diagram-section">
         <div class="v2-section-heading reveal">
           <p class="v2-kicker">How it works</p>
-          <h2>Your app keeps running. Forsig checks every call before OpenAI.</h2>
+          <h2>Your app keeps running. Forsig checks every call before your provider.</h2>
         </div>
         <div class="flow-diagram reveal">
           <div><span>Your agent app</span><strong>OpenAI SDK</strong></div>
@@ -264,6 +264,17 @@
             <h3>Designed to fail visibly</h3>
             <p>If traffic is blocked or paused, Forsig returns clear status codes and human-readable reasons.</p>
           </article>
+        </div>
+      </section>
+
+      <section class="founder-section">
+        <div class="founder-card reveal">
+          <div>
+            <span class="v2-kicker">Founder note</span>
+            <h2>Built for AI builders shipping agents with real provider bills.</h2>
+            <p>Forsig is being built by Nazmul Karim for founders and developers who need practical control before agent traffic becomes expensive, opaque, or risky.</p>
+          </div>
+          <a class="button" href="mailto:thenazmulkarim@gmail.com">Contact founder</a>
         </div>
       </section>
 
@@ -360,6 +371,8 @@ client.chat.completions.create(
       <footer class="site-footer">
         <a href="/">Forsig</a>
         <nav>
+          <a href="#security">Privacy</a>
+          <a href="#security">Terms</a>
           <a href="mailto:thenazmulkarim@gmail.com">Contact</a>
           <a href="#security">Security</a>
           <a href="#faq">FAQ</a>

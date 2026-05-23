@@ -17,6 +17,19 @@ function track(event, properties = {}) {
   if (window.posthog?.capture) window.posthog.capture(event, payload);
 }
 
+function showToast(message) {
+  let toast = document.getElementById("forsig-toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "forsig-toast";
+    toast.className = "toast";
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add("visible");
+  setTimeout(() => toast.classList.remove("visible"), 1800);
+}
+
 function utmProperties() {
   const params = new URLSearchParams(location.search);
   return {
@@ -211,7 +224,8 @@ function initImpactCalculator() {
 function initWaitlist() {
   const forms = [
     { form: document.getElementById("hero-waitlist-form"), status: document.querySelector("#hero-waitlist-form .mini-status"), sourceSection: "hero_waitlist" },
-    { form: document.getElementById("waitlist-form"), status: document.getElementById("form-status"), sourceSection: "landing_waitlist" }
+    { form: document.getElementById("waitlist-form"), status: document.getElementById("form-status"), sourceSection: "landing_waitlist" },
+    { form: document.getElementById("dashboard-waitlist-form"), status: document.querySelector("#dashboard-waitlist-form .mini-status"), sourceSection: "dashboard_waitlist" }
   ].filter((entry) => entry.form);
 
   for (const entry of forms) {
@@ -236,6 +250,7 @@ function initWaitlist() {
         const result = await response.json();
         if (!response.ok || !result.ok) throw new Error(result.error || "Signup failed.");
         track("waitlist_signup_succeeded", { ...data, leadId: result.leadId, duplicate: result.duplicate, sourceSection: entry.sourceSection });
+        showToast("You are on the waitlist");
         const params = new URLSearchParams({ lead: result.leadId });
         location.href = `/thanks?${params.toString()}`;
       } catch (error) {
@@ -278,6 +293,7 @@ function initDashboard() {
       if (dailyMeter) dailyMeter.style.width = "77%";
       if (tokenTotal) tokenTotal.textContent = "49,031";
       prependLog("allowed");
+      showToast("Allowed under policy");
     }
 
     if (type === "budget") {
@@ -286,12 +302,14 @@ function initDashboard() {
       if (dailyMeter) dailyMeter.style.width = "99%";
       if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "7") + 1);
       prependLog("budget");
+      showToast("Blocked before provider spend");
     }
 
     if (type === "model") {
       status.textContent = "Active";
       if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "7") + 1);
       prependLog("model");
+      showToast("Model blocked by policy");
     }
 
     track("dashboard_simulation_clicked", { type });
@@ -310,6 +328,7 @@ function initDashboard() {
     if (paused) {
       if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "7") + 1);
       prependLog("paused");
+      showToast("Agent paused");
     }
     track(paused ? "agent_paused_demo" : "agent_resumed_demo");
   });
@@ -354,7 +373,15 @@ function initThanksReferral() {
       button.textContent = copied ? "Copied" : "Select link";
       setTimeout(() => (button.textContent = "Copy referral link"), 1400);
     }
+    showToast(copied ? "Referral link copied" : "Select and copy the link");
     track("referral_link_copied", { lead });
+  });
+
+  document.getElementById("copy-share-text")?.addEventListener("click", async () => {
+    const text = document.getElementById("share-text")?.value || "";
+    const copied = await copyText(text);
+    showToast(copied ? "Share text copied" : "Select and copy the text");
+    track("share_text_copied", { lead });
   });
 }
 
