@@ -87,7 +87,6 @@ export default async function handler(req, res) {
 
     if (!name) return res.status(400).json({ ok: false, error: "Name is required." });
     if (!isEmail(email)) return res.status(400).json({ ok: false, error: "Valid email is required." });
-    if (!role) return res.status(400).json({ ok: false, error: "Role is required." });
     if (!message) return res.status(400).json({ ok: false, error: "Message is required." });
 
     const id = `msg_${randomUUID().replaceAll("-", "")}`;
@@ -124,7 +123,7 @@ export default async function handler(req, res) {
         <p><strong>Name:</strong> ${escapeHtml(name)}</p>
         <p><strong>Email:</strong> ${escapeHtml(email)}</p>
         <p><strong>Company:</strong> ${escapeHtml(company || "-")}</p>
-        <p><strong>Role:</strong> ${escapeHtml(role)}</p>
+        <p><strong>Role:</strong> ${escapeHtml(role || "-")}</p>
         <p><strong>Message:</strong></p>
         <p>${escapeHtml(message)}</p>
       </div>

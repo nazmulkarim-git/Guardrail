@@ -17,11 +17,11 @@
         <h1>Send a message about Forsig.</h1>
         <p>I read each email personally and reply personally. Share what you are building, what risk you are trying to control, or how Forsig can help.</p>
         <form id="contact-form" class="contact-form">
-          <input name="name" type="text" required placeholder="Name" autocomplete="name" />
-          <input name="email" type="email" required placeholder="Email" autocomplete="email" />
+          <input name="name" type="text" required placeholder="Name *" autocomplete="name" />
+          <input name="email" type="email" required placeholder="Email *" autocomplete="email" />
           <input name="company" type="text" placeholder="Company" autocomplete="organization" />
-          <select name="role" required>
-            <option value="">Role</option>
+          <select name="role">
+            <option value="">Role (optional)</option>
             <option>Founder</option>
             <option>CEO</option>
             <option>CTO</option>
@@ -29,7 +29,7 @@
             <option>Developer</option>
             <option>Product Manager</option>
           </select>
-          <textarea name="message" required placeholder="Write your message"></textarea>
+          <textarea name="message" required placeholder="Write your message *"></textarea>
           <button class="button primary" type="submit">Send message</button>
           <p id="contact-status" class="mini-status" role="status"></p>
         </form>

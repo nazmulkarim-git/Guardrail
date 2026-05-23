@@ -433,11 +433,48 @@ function initThanksReferral() {
     track("referral_link_copied", { lead });
   });
 
-  document.getElementById("copy-share-text")?.addEventListener("click", async () => {
-    const text = document.getElementById("share-text")?.value || "";
-    const copied = await copyText(text);
-    showToast(copied ? "Share text copied" : "Select and copy the text");
-    track("share_text_copied", { lead });
+  const inviteForm = document.getElementById("invite-email-form");
+  inviteForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const status = inviteForm.querySelector(".mini-status");
+    const data = Object.fromEntries(new FormData(inviteForm).entries());
+    const recipients = String(data.inviteEmails || "").trim();
+    const subject = "Join me on the Forsig private beta";
+    const body = [
+      "I joined the Forsig private beta.",
+      "",
+      "Forsig is a budget firewall for AI agents: it blocks runaway loops before they hit your provider bill.",
+      "",
+      `Use my referral link: ${referral.value}`,
+      `Referral code: ${code}`
+    ].join("\n");
+    const mailto = `mailto:${encodeURIComponent(recipients)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto;
+    if (status) status.textContent = "Opening your email app...";
+    track("referral_email_invite_opened", { lead, hasRecipients: Boolean(recipients) });
+  });
+
+  const qualificationForm = document.getElementById("qualification-form");
+  qualificationForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const status = qualificationForm.querySelector(".mini-status");
+    if (status) status.textContent = "Sending...";
+    const data = Object.fromEntries(new FormData(qualificationForm).entries());
+    try {
+      const response = await fetch("/api/waitlist-profile", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ leadId: lead, ...data })
+      });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.error || "Context could not be saved.");
+      if (status) status.textContent = "Context saved. Thank you.";
+      showToast("Context saved");
+      track("waitlist_profile_submitted", { lead, provider: data.provider, role: data.role });
+    } catch (error) {
+      if (status) status.textContent = error.message || "Context could not be saved.";
+      track("waitlist_profile_failed", { lead, message: status?.textContent });
+    }
   });
 }
 

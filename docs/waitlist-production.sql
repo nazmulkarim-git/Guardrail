@@ -7,6 +7,7 @@ create table if not exists waitlist_leads (
   provider text,
   use_case text,
   monthly_ai_spend text,
+  monthly_token_volume text,
   urgency text,
   pain_point text,
   utm_source text,
@@ -30,6 +31,8 @@ create index if not exists waitlist_leads_provider_idx on waitlist_leads (provid
 create index if not exists waitlist_leads_utm_source_idx on waitlist_leads (utm_source);
 create index if not exists waitlist_leads_referral_code_idx on waitlist_leads (referral_code);
 create unique index if not exists waitlist_leads_own_referral_code_idx on waitlist_leads (own_referral_code);
+
+alter table waitlist_leads add column if not exists monthly_token_volume text;
 
 create table if not exists contact_messages (
   id text primary key,

@@ -1848,8 +1848,34 @@ th {
   text-transform: uppercase;
 }
 
-.share-box textarea,
-.qualification-box textarea {
+.share-box p,
+.qualification-box p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.invite-email-form,
+.qualification-form {
+  display: grid;
+  gap: 10px;
+}
+
+.invite-email-form {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.qualification-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.qualification-form textarea,
+.qualification-form button,
+.qualification-form .mini-status {
+  grid-column: 1 / -1;
+}
+
+.qualification-form textarea {
   min-height: 86px;
 }
 
@@ -1947,5 +1973,16 @@ th {
 
   .contact-form {
     grid-template-columns: 1fr;
+  }
+
+  .invite-email-form,
+  .qualification-form {
+    grid-template-columns: 1fr;
+  }
+
+  .qualification-form textarea,
+  .qualification-form button,
+  .qualification-form .mini-status {
+    grid-column: auto;
   }
 }

@@ -26,14 +26,47 @@
           </div>
         </div>
         <div class="share-box">
-          <span>Share text</span>
-          <textarea id="share-text" readonly>I joined the Forsig private beta — a budget firewall for AI agents that blocks runaway loops before they hit your provider bill.</textarea>
-          <button id="copy-share-text" class="button" type="button">Copy share text</button>
+          <span>Email an invite</span>
+          <h2>Send Forsig to another AI builder.</h2>
+          <p>We will prepare the email with your referral link and code. You choose who receives it from your own email app.</p>
+          <form id="invite-email-form" class="invite-email-form">
+            <input name="inviteEmails" type="text" placeholder="Friend or teammate emails" />
+            <button class="button primary" type="submit">Open email invite</button>
+            <p class="mini-status" role="status"></p>
+          </form>
         </div>
         <div class="qualification-box">
           <span>Optional</span>
           <h2>Help us prioritize your invite.</h2>
-          <textarea placeholder="What are you building, which provider do you use, and how urgent is this for you?"></textarea>
+          <p>You can share a little more context now, or skip straight to the demo or homepage.</p>
+          <form id="qualification-form" class="qualification-form">
+            <input name="name" type="text" placeholder="Name" autocomplete="name" />
+            <input name="company" type="text" placeholder="Company" autocomplete="organization" />
+            <select name="role">
+              <option value="">Role</option>
+              <option>Founder</option>
+              <option>CEO</option>
+              <option>CTO</option>
+              <option>CFO</option>
+              <option>Developer</option>
+              <option>Product Manager</option>
+            </select>
+            <select name="provider">
+              <option value="">Primary provider</option>
+              <option>OpenAI</option>
+              <option>Anthropic</option>
+              <option>OpenRouter</option>
+              <option>Azure OpenAI</option>
+              <option>Google Gemini</option>
+              <option>Multiple providers</option>
+              <option>Not sure yet</option>
+            </select>
+            <input name="monthlyTokenVolume" type="text" placeholder="Monthly token volume" />
+            <input name="monthlyAiSpend" type="text" placeholder="Monthly AI spend" />
+            <textarea name="useCase" placeholder="What are you building?"></textarea>
+            <button class="button primary" type="submit">Send context</button>
+            <p class="mini-status" role="status"></p>
+          </form>
         </div>
         <div class="hero-actions">
           <a class="button primary" href="/dashboard">View demo dashboard</a>
