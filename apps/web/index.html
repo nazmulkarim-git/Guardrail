@@ -37,7 +37,7 @@
       }
     </script>
   </head>
-  <body data-page="landing" class="landing-v2 minimal-site">
+  <body data-page="landing" class="landing-v2 minimal-site benchmark-site">
     <div class="v2-bg" aria-hidden="true"></div>
 
     <header class="v2-nav minimal-nav">
@@ -47,19 +47,19 @@
       </a>
       <nav aria-label="Primary navigation">
         <a href="#how">How it works</a>
+        <a href="#platforms">Platforms</a>
         <a href="/dashboard">Demo</a>
         <a href="#developers">Developers</a>
-        <a href="#faq">FAQ</a>
       </nav>
       <a class="v2-nav-cta" href="#waitlist">Get early access</a>
     </header>
 
     <main>
-      <section class="minimal-hero">
-        <div class="minimal-hero-copy reveal">
+      <section class="benchmark-hero">
+        <div class="benchmark-copy reveal">
           <p class="v2-kicker">Human intervention API for AI agents</p>
-          <h1>Let humans approve, edit, or take over risky AI agent actions.</h1>
-          <p class="v2-lede">Forsig adds human review checkpoints to agent workflows. When an agent is about to do something risky, it pauses, asks a reviewer, and resumes with a structured decision.</p>
+          <h1>Give every risky agent action a human checkpoint.</h1>
+          <p class="v2-lede">Forsig lets AI agents pause, request human review, and continue with an approved, edited, rejected, instructed, or takeover decision.</p>
 
           <form id="hero-waitlist-form" class="v2-form referral-enabled minimal-form">
             <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
@@ -70,78 +70,111 @@
 
           <div class="hero-links">
             <a class="button demo-link-button" href="/dashboard">View demo</a>
-            <a class="button demo-link-button" href="/security">Security</a>
+            <a class="button demo-link-button" href="#developers">Read code</a>
           </div>
         </div>
 
-        <div class="minimal-product reveal delay-1" aria-label="Forsig intervention preview">
-          <div class="minimal-product-top">
-            <span>Intervention</span>
-            <strong id="decision-pill">pending</strong>
+        <div class="benchmark-product reveal delay-1" aria-label="Forsig intervention product preview">
+          <div class="benchmark-window">
+            <div class="window-bar"><span></span><span></span><span></span><b>intervention_7k2</b></div>
+            <section class="review-card">
+              <div class="review-top">
+                <div>
+                  <small id="decision-agent">Refund Agent</small>
+                  <h2 id="decision-title">Approve $500 refund?</h2>
+                </div>
+                <strong id="decision-pill">pending</strong>
+              </div>
+              <p id="decision-reason">VIP customer. Product failed twice. Refund is above policy limit.</p>
+              <dl>
+                <div><dt>Risk</dt><dd>refund_over_limit</dd></div>
+                <div><dt>Reviewer</dt><dd id="metric-reviewer">Support lead</dd></div>
+                <div><dt>Decision</dt><dd id="metric-policy">waiting</dd></div>
+              </dl>
+              <div class="review-actions">
+                <button type="button">Approve</button>
+                <button type="button">Edit</button>
+                <button type="button">Take over</button>
+              </div>
+            </section>
+            <section class="agent-result">
+              <span>Returned to agent</span>
+              <code id="hero-code">decision.status === "pending"</code>
+            </section>
           </div>
-          <div class="minimal-product-body">
-            <small id="decision-agent">Refund Agent</small>
-            <h2 id="decision-title">Refund over limit</h2>
-            <p id="decision-reason">Proposed action: <strong>Issue $500 refund</strong>. Forsig waits for a human decision before the agent continues.</p>
-          </div>
-          <div class="minimal-product-actions">
-            <span>approve</span>
-            <span>edit</span>
-            <span>take over</span>
-          </div>
-          <div class="minimal-product-meta">
-            <div><span>Reviewer</span><strong id="metric-reviewer">Support lead</strong></div>
-            <div><span>Decision</span><strong id="metric-policy">pending</strong></div>
-            <div><span>Time</span><strong id="metric-cost">2m 14s</strong></div>
-          </div>
-          <div class="approval-meter"><div id="approval-fill" style="width: 68%"></div></div>
-          <code id="hero-code">forsig.intervene({ risk: "refund_over_limit" })</code>
         </div>
       </section>
 
-      <section id="how" class="minimal-section">
-        <div class="minimal-heading reveal">
+      <section id="platforms" class="platform-strip reveal" aria-label="Supported agent stacks">
+        <span>Works beside your stack</span>
+        <b>JavaScript</b>
+        <b>Python</b>
+        <b>LangGraph</b>
+        <b>CrewAI</b>
+        <b>n8n</b>
+        <b>Make</b>
+        <b>Zapier</b>
+        <b>REST</b>
+      </section>
+
+      <section id="how" class="benchmark-section">
+        <div class="benchmark-heading reveal">
           <p class="v2-kicker">How it works</p>
-          <h2>One review checkpoint. Five possible decisions.</h2>
+          <h2>Intervention in four steps.</h2>
         </div>
-        <div class="minimal-steps">
+        <div class="benchmark-steps">
           <article class="reveal">
             <span>01</span>
-            <h3>Agent pauses</h3>
-            <p>Your agent reaches a risky, uncertain, or customer-impacting action.</p>
+            <h3>Agent reaches risk</h3>
+            <p>Refund, email, CRM update, tool action, policy exception, or missing context.</p>
           </article>
           <article class="reveal delay-1">
             <span>02</span>
-            <h3>Human reviews</h3>
-            <p>Forsig shows the proposed action, context, and risk in a secure review page.</p>
+            <h3>Forsig creates review</h3>
+            <p>Your app sends the proposed action, context, risk type, and run ID.</p>
           </article>
           <article class="reveal delay-2">
             <span>03</span>
-            <h3>Workflow resumes</h3>
-            <p>The agent receives approve, reject, edit, instruct, or takeover as structured data.</p>
+            <h3>Human decides</h3>
+            <p>Approve, reject, edit, instruct the agent, or take over the task.</p>
+          </article>
+          <article class="reveal">
+            <span>04</span>
+            <h3>Agent resumes</h3>
+            <p>Forsig returns structured data your workflow can use immediately.</p>
           </article>
         </div>
       </section>
 
-      <section id="use-cases" class="minimal-section">
-        <div class="minimal-heading reveal">
-          <p class="v2-kicker">Where it fits</p>
-          <h2>Use Forsig before actions that affect customers, money, data, or reputation.</h2>
+      <section class="benchmark-section split-proof">
+        <div class="benchmark-heading reveal">
+          <p class="v2-kicker">Why teams need it</p>
+          <h2>Agents do not always need autonomy. They need a safe way to ask.</h2>
         </div>
-        <div class="minimal-list reveal">
-          <span>Refunds</span>
-          <span>Customer emails</span>
-          <span>CRM updates</span>
-          <span>Tool failures</span>
-          <span>Policy exceptions</span>
-          <span>Human takeover</span>
+        <div class="proof-grid">
+          <article class="reveal">
+            <h3>Review inbox</h3>
+            <p>One place for pending interventions across agents, workflows, and reviewers.</p>
+          </article>
+          <article class="reveal delay-1">
+            <h3>In-place edits</h3>
+            <p>Humans can correct the next action instead of only saying yes or no.</p>
+          </article>
+          <article class="reveal delay-2">
+            <h3>Webhook-ready decisions</h3>
+            <p>Return a status, instruction, edited action, and audit ID to your app.</p>
+          </article>
+          <article class="reveal">
+            <h3>Audit trail</h3>
+            <p>Know what the agent wanted, who reviewed it, and what happened next.</p>
+          </article>
         </div>
       </section>
 
-      <section id="developers" class="minimal-section minimal-dev">
-        <div class="minimal-heading reveal">
+      <section id="developers" class="benchmark-section developer-proof">
+        <div class="benchmark-heading reveal">
           <p class="v2-kicker">Developer flow</p>
-          <h2>Call Forsig only when your agent needs human judgment.</h2>
+          <h2>One call when the agent needs judgment.</h2>
         </div>
         <div class="v2-code reveal">
           <div><span>Illustrative SDK example</span><button data-copy-target="js-snippet">Copy</button></div>
@@ -159,11 +192,11 @@ if (decision.status === "edited_approved") {
         </div>
       </section>
 
-      <section id="waitlist" class="minimal-final reveal">
+      <section id="waitlist" class="benchmark-final reveal">
         <div>
           <p class="v2-kicker">Private beta</p>
-          <h2>Add human intervention to your first agent workflow.</h2>
-          <p>Early users get setup help and direct product feedback loops.</p>
+          <h2>Build agents your customers can trust.</h2>
+          <p>Join early access for setup help and direct product feedback loops.</p>
         </div>
         <form id="waitlist-form" class="v2-form referral-enabled minimal-form">
           <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
@@ -179,16 +212,16 @@ if (decision.status === "edited_approved") {
           <p>Forsig is a human intervention API for AI agents. It lets agents pause before risky actions and return a structured human decision.</p>
         </details>
         <details>
-          <summary>Does Forsig replace my agent framework?</summary>
-          <p>No. Forsig works beside your current agent stack. Your app still executes the final action.</p>
+          <summary>How is Forsig different?</summary>
+          <p>Forsig is focused on intervention checkpoints for agent workflows, not a model gateway, observability dashboard, or support inbox.</p>
         </details>
         <details>
           <summary>What can a human do?</summary>
           <p>Approve, reject, edit and approve, instruct the agent, or take over the task.</p>
         </details>
         <details>
-          <summary>Is it live?</summary>
-          <p>Forsig is in private beta. The website shows the intended product direction and waitlist flow.</p>
+          <summary>Is it production-ready?</summary>
+          <p>Forsig is in private beta. Early users should expect setup help and fast iteration.</p>
         </details>
       </section>
 
