@@ -56,19 +56,27 @@
     </header>
 
     <main>
-      <section class="v2-hero cursor-style">
+      <section class="v2-hero cursor-style yc-inspired">
         <div class="v2-hero-copy reveal">
-          <p class="v2-kicker">Human-in-the-loop control</p>
-          <h1>Human approval for autonomous AI agents</h1>
-          <p class="v2-lede">Forsig lets your AI agents pause before risky actions, route decisions to the right human, and resume with approval, rejection, or edited instructions.</p>
+          <p class="v2-kicker">Private beta · human approval layer</p>
+          <h1>Let AI agents act, but not alone.</h1>
+          <p class="v2-lede">Forsig gives autonomous agents a clean way to pause at risky moments, ask the right human, and continue with an approved, rejected, or edited instruction.</p>
+
+          <div class="hero-route" aria-label="Forsig approval route">
+            <span>Agent reaches risk</span>
+            <i></i>
+            <span>Human decides</span>
+            <i></i>
+            <span>Agent resumes</span>
+          </div>
 
           <form id="hero-waitlist-form" class="v2-form referral-enabled">
             <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
-            <input name="referralCode" type="text" placeholder="Referral code (optional)" />
+            <input name="referralCode" type="text" placeholder="Referral code" />
             <button type="submit">Get early access</button>
             <p class="mini-status" role="status"></p>
           </form>
-          <p class="form-note">Private beta for teams building AI agents, workflow automations, and human-supervised AI systems.</p>
+          <p class="form-note">For teams building agents that send messages, update records, issue refunds, trigger tools, or need human judgment.</p>
 
           <div class="hero-links">
             <a class="button demo-link-button" href="/dashboard">View demo</a>
@@ -77,16 +85,11 @@
 
           <div class="v2-proof">
             <strong>Private beta</strong>
-            <span>Approval inbox for risky agent actions</span>
+            <span>Approval inbox for risky actions</span>
             <i></i>
-            <span>Slack and email workflows planned</span>
+            <span>Dashboard first</span>
             <i></i>
-            <span>Complete decision audit trail</span>
-          </div>
-          <div class="hero-outcomes" aria-label="Forsig value outcomes">
-            <span>Pause risky actions</span>
-            <span>Ask the right reviewer</span>
-            <span>Resume with a decision</span>
+            <span>Slack and email planned</span>
           </div>
         </div>
 
@@ -137,32 +140,17 @@
         </div>
       </section>
 
-      <section id="impact" class="impact-section">
+      <section id="impact" class="impact-section editorial-impact">
         <div class="impact-copy reveal">
-          <p class="v2-kicker">Why it matters</p>
-          <h2>Most agent failures do not need another dashboard. They need a human decision at the right moment.</h2>
-          <p>Autonomous agents are powerful until they send the wrong email, approve the wrong refund, update the wrong record, or get stuck with a judgment call they should not make alone.</p>
+          <p class="v2-kicker">The missing layer</p>
+          <h2>Most agent failures do not need another dashboard. They need a human decision at the exact moment of risk.</h2>
+          <p>Agents are becoming operators. They draft emails, change records, run tools, and make customer-facing choices. Forsig gives them a simple escalation path before a mistake becomes production reality.</p>
         </div>
-        <div class="impact-calculator reveal delay-1">
-          <div class="calc-header">
-            <span>Escalation example</span>
-            <strong id="calc-total">Human needed</strong>
-          </div>
-          <label>
-            Agent confidence
-            <input id="calc-requests" type="range" min="10" max="100" value="42" />
-            <em id="calc-requests-label">42% confidence</em>
-          </label>
-          <label>
-            Customer impact
-            <input id="calc-cost" type="range" min="1" max="100" value="78" />
-            <em id="calc-cost-label">high impact</em>
-          </label>
-          <div class="calc-result">
-            <span>With Forsig</span>
-            <strong>Pause, ask, resume</strong>
-            <p>The agent submits the task, proposed action, and context. A reviewer approves, rejects, or edits the instruction.</p>
-          </div>
+        <div class="risk-ledger reveal delay-1" aria-label="Examples of agent actions that should be escalated">
+          <div><span>01</span><strong>Refund over limit</strong><em>Ask support lead</em></div>
+          <div><span>02</span><strong>External customer email</strong><em>Ask sales manager</em></div>
+          <div><span>03</span><strong>Production tool action</strong><em>Ask engineering owner</em></div>
+          <div><span>04</span><strong>Sensitive record update</strong><em>Ask operations reviewer</em></div>
         </div>
       </section>
 
@@ -358,7 +346,7 @@ if (decision.status === "approved") {
         </div>
         <form id="waitlist-form" class="v2-form referral-enabled reveal delay-1">
           <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
-          <input name="referralCode" type="text" placeholder="Referral code (optional)" />
+          <input name="referralCode" type="text" placeholder="Referral code" />
           <button type="submit">Protect risky agent actions</button>
           <p id="form-status" class="mini-status" role="status"></p>
         </form>
