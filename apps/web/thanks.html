@@ -19,20 +19,19 @@
       <section class="thanks-card reveal">
         <span class="eyebrow">Confirmed</span>
         <h1>You are on the Forsig private beta waitlist.</h1>
-        <p>Your current waitlist position is <strong id="waitlist-position">#1,000+</strong>. We are opening early access in weekly batches for builders running or preparing real AI agent traffic.</p>
-        <p>Check your inbox for confirmation. We invite builders weekly based on use case and referral activity.</p>
+        <p>Check your inbox for a short confirmation note. We are inviting early users who are building real agent workflows.</p>
         <div class="referral-box">
-          <span>Move up the queue by sharing Forsig with another AI builder.</span>
+          <span>Share Forsig with another AI builder.</span>
           <strong>Your referral code: <code id="referral-code">FS-FOUNDING</code></strong>
           <div class="referral-row">
             <input id="referral-link" readonly value="https://www.forsig.com" />
-            <button id="copy-referral" class="button primary" type="button">Invite another builder</button>
+            <button id="copy-referral" class="button primary" type="button">Copy</button>
           </div>
         </div>
         <div class="share-box">
           <span>Email an invite</span>
-          <h2>Send Forsig to another AI builder.</h2>
-          <p>Enter one or more emails. Forsig will send each person your referral link and code.</p>
+          <h2>Invite another builder.</h2>
+          <p>Enter one or more emails. Each person receives your referral link and code.</p>
           <form id="invite-email-form" class="invite-email-form">
             <input name="inviteEmails" type="text" required placeholder="Emails separated by comma, space, or new line" />
             <button class="button primary" type="submit">Invite another builder</button>
@@ -41,8 +40,8 @@
         </div>
         <div class="qualification-box">
           <span>Optional</span>
-          <h2>Help us prioritize your invite.</h2>
-          <p>You can share a little more context now, or skip straight to the demo or homepage.</p>
+          <h2>Optional context.</h2>
+          <p>Share this only if you want setup help.</p>
           <form id="qualification-form" class="qualification-form">
             <input name="name" type="text" placeholder="Name" autocomplete="name" />
             <input name="company" type="text" placeholder="Company" autocomplete="organization" />
@@ -56,7 +55,7 @@
               <option>Product Manager</option>
             </select>
             <select name="provider">
-              <option value="">Preferred approval channel</option>
+              <option value="">Preferred review channel</option>
               <option>Web inbox</option>
               <option>Slack</option>
               <option>Email</option>
@@ -65,9 +64,9 @@
               <option>WhatsApp</option>
               <option>Not sure yet</option>
             </select>
-            <input name="monthlyTokenVolume" type="text" placeholder="Expected approval volume" />
-            <input name="monthlyAiSpend" type="text" placeholder="Risky actions you need reviewed" />
-            <textarea name="useCase" placeholder="What agents or workflows are you building?"></textarea>
+            <input name="monthlyTokenVolume" type="text" placeholder="Expected intervention volume" />
+            <input name="monthlyAiSpend" type="text" placeholder="Actions needing review" />
+            <textarea name="useCase" placeholder="What agent workflow are you building?"></textarea>
             <button class="button primary" type="submit">Send context</button>
             <p class="mini-status" role="status"></p>
           </form>

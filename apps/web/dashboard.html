@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Forsig Approval Demo</title>
-    <meta name="description" content="A minimal live demo of Forsig human approval for autonomous AI agents." />
+    <title>Forsig Intervention Demo</title>
+    <meta name="description" content="A minimal live demo of Forsig human intervention for AI agents." />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="https://www.forsig.com/dashboard" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
-  <body data-page="dashboard" class="minimal-demo-page">
+  <body data-page="dashboard" class="minimal-demo-page minimal-site">
     <main class="minimal-demo">
       <nav class="minimal-demo-nav">
         <a class="brand" href="/">
@@ -26,45 +26,36 @@
       </nav>
 
       <header class="minimal-demo-hero">
-        <p class="v2-kicker">Live approval demo</p>
-        <h1>One risky agent action. One human decision.</h1>
-        <p>Forsig lets an AI agent pause, ask for approval, and resume with a decision your workflow can audit.</p>
+        <p class="v2-kicker">Live intervention demo</p>
+        <h1>One risky action. One human checkpoint.</h1>
+        <p>An agent pauses. A human decides. Your workflow gets structured data back.</p>
       </header>
 
-      <section class="minimal-demo-shell" aria-label="Forsig approval demo">
+      <section class="minimal-demo-shell" aria-label="Forsig intervention demo">
         <div class="approval-request-card">
           <div class="demo-card-topline">
-            <span>Pending escalation</span>
+            <span>Pending intervention</span>
             <b id="agent-status">Live demo</b>
           </div>
 
           <h2>Refund Agent wants to issue a $500 refund.</h2>
-          <p class="demo-risk-line">Risk: <strong>refund_over_limit</strong> · VIP customer · $1,200 order · product failed twice</p>
+          <p class="demo-risk-line">Risk: <strong>refund_over_limit</strong> - VIP customer - $1,200 order - product failed twice</p>
 
           <div class="decision-summary">
-            <div>
-              <span>Pending</span>
-              <strong id="pending-count">1</strong>
-            </div>
-            <div>
-              <span>Decision time</span>
-              <strong id="decision-time">2m 14s</strong>
-            </div>
-            <div>
-              <span>Decisions today</span>
-              <strong id="blocked-count">14</strong>
-            </div>
+            <div><span>Pending</span><strong id="pending-count">1</strong></div>
+            <div><span>Decision time</span><strong id="decision-time">2m 14s</strong></div>
+            <div><span>Today</span><strong id="blocked-count">14</strong></div>
           </div>
 
           <div class="approval-actions minimal-actions">
             <button data-simulate="approved">Approve</button>
             <button data-simulate="rejected">Reject</button>
-            <button data-simulate="edited">Edit instruction</button>
+            <button data-simulate="edited">Edit</button>
           </div>
           <div id="edit-instruction-panel" class="edit-instruction-panel" hidden>
             <label for="edit-instruction">Instruction returned to the agent</label>
             <textarea id="edit-instruction">Offer store credit instead of a cash refund.</textarea>
-            <button id="send-edit-instruction" type="button">Send edited instruction</button>
+            <button id="send-edit-instruction" type="button">Send edit</button>
           </div>
           <button id="pause-toggle" class="minimal-expire-button">Simulate timeout</button>
         </div>
@@ -73,14 +64,14 @@
           <div class="mini-flow">
             <span>Agent pauses</span>
             <b></b>
-            <span>Human decides</span>
+            <span>Human intervenes</span>
             <b></b>
             <span>Agent resumes</span>
           </div>
 
           <div class="minimal-code">
             <div class="snippet-title"><span id="demo-code-title">Agent call</span> <button class="copy-code" data-copy-target="dash-js">Copy</button></div>
-            <pre><code id="dash-js">const decision = await forsig.escalate({
+            <pre><code id="dash-js">const decision = await forsig.intervene({
   agent: "refund-agent",
   risk: "refund_over_limit",
   proposedAction: "Issue $500 refund",
@@ -93,7 +84,7 @@
       <section id="logs" class="minimal-audit">
         <div>
           <p class="v2-kicker">Audit trail</p>
-          <h2>Every decision returns a status and audit ID.</h2>
+          <h2>Status. Decision. Audit ID.</h2>
         </div>
         <div class="responsive-table minimal-table">
           <table>
@@ -101,9 +92,9 @@
               <tr><th>Time</th><th>Status</th><th>Decision</th><th>Audit ID</th></tr>
             </thead>
             <tbody id="demo-log-body">
-              <tr><td>12:18</td><td>edited</td><td>Offer store credit instead</td><td>audit_9J2k</td></tr>
+              <tr><td>12:18</td><td>edited</td><td>Offer store credit</td><td>audit_9J2k</td></tr>
               <tr><td>12:04</td><td>approved</td><td>Approved as written</td><td>audit_Q8p1</td></tr>
-              <tr><td>11:58</td><td>rejected</td><td>Needs proof before action</td><td>audit_T2n7</td></tr>
+              <tr><td>11:58</td><td>rejected</td><td>Needs proof first</td><td>audit_T2n7</td></tr>
             </tbody>
           </table>
         </div>
@@ -111,12 +102,12 @@
 
       <section class="minimal-demo-cta">
         <div>
-          <h2>Want this approval layer for your own agents?</h2>
-          <p>Private beta. No credit card. Setup help included.</p>
+          <h2>Want this intervention layer for your own agents?</h2>
+          <p>Private beta. Setup help included.</p>
         </div>
         <form id="dashboard-waitlist-form" class="v2-form referral-enabled dashboard-cta-form">
           <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
-          <input name="referralCode" type="text" placeholder="Referral code (optional)" />
+          <input name="referralCode" type="text" placeholder="Referral code" />
           <button type="submit">Get early access</button>
           <p class="mini-status" role="status"></p>
         </form>

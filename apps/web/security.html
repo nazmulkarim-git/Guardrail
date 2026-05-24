@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Security | Forsig</title>
-    <meta name="description" content="Forsig security model for human approval workflows, escalation context, audit trails, and private beta operations." />
+    <meta name="description" content="Forsig security model for human intervention workflows, review context, audit trails, and private beta operations." />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="https://www.forsig.com/security" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -29,7 +29,7 @@
 
         <h2>Security Principles</h2>
         <ul>
-          <li><strong>Minimize data exposure.</strong> Forsig should receive only the escalation context selected by the user or agent.</li>
+          <li><strong>Minimize data exposure.</strong> Forsig should receive only the intervention context selected by the user or agent.</li>
           <li><strong>Make decisions auditable.</strong> Approval status, reviewer decisions, timestamps, and returned instructions should be recorded.</li>
           <li><strong>Keep humans accountable.</strong> Reviewers should see enough context to approve, reject, or edit responsibly.</li>
           <li><strong>Avoid over-automation.</strong> Risky workflows should have explicit human decision points.</li>
@@ -56,7 +56,7 @@
         <h2>What Users Should Do</h2>
         <ul>
           <li>Start with non-critical workflows during private beta.</li>
-          <li>Do not send secrets or unnecessary sensitive data in escalation context.</li>
+          <li>Do not send secrets or unnecessary sensitive data in intervention context.</li>
           <li>Use clear reviewer ownership for risky workflows.</li>
           <li>Keep your own agent safeguards in place.</li>
           <li>Review audit logs for decisions that affect customers, billing, data, or production systems.</li>

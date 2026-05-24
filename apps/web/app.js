@@ -131,8 +131,8 @@ function initCopyButtons() {
 function initHeroSwap() {
   const code = document.getElementById("hero-code");
   if (!code) return;
-  const before = 'agent proposes: "Issue $500 refund"';
-  const after = 'forsig waits for: approval / rejection / edit';
+  const before = 'forsig.intervene({ risk: "refund_over_limit" })';
+  const after = 'decision.status === "edited_approved"';
   let useAfter = false;
   setInterval(() => {
     useAfter = !useAfter;
@@ -160,7 +160,7 @@ function initConsoleMotion() {
       reason: 'Proposed action: <strong>Issue $500 refund</strong>. Waiting for a human reviewer before the agent continues.',
       reviewer: "Support lead",
       responseTime: "2m 14s",
-      policy: "needs approval",
+      policy: "pending",
       danger: true
     },
     {
@@ -171,7 +171,7 @@ function initConsoleMotion() {
       reason: 'Reviewer changed the instruction to <strong>send a 10% offer</strong> instead of 25%.',
       reviewer: "Sales manager",
       responseTime: "1m 03s",
-      policy: "resume",
+      policy: "edited",
       danger: false
     },
     {
@@ -182,7 +182,7 @@ function initConsoleMotion() {
       reason: 'Reviewer rejected <strong>production migration</strong> until staging proof is attached.',
       reviewer: "Engineering lead",
       responseTime: "4m 22s",
-      policy: "stop",
+      policy: "rejected",
       danger: true
     }
   ];
@@ -264,8 +264,7 @@ function initWaitlist() {
         showToast("You are on the waitlist");
         const params = new URLSearchParams({
           lead: result.leadId,
-          code: result.referralCode || "",
-          position: String(result.position || "")
+          code: result.referralCode || ""
         });
         location.href = `/thanks?${params.toString()}`;
       } catch (error) {
@@ -512,14 +511,11 @@ initFaqTracking();
 
 function initThanksReferral() {
   const referral = document.getElementById("referral-link");
-  const position = document.getElementById("waitlist-position");
   const referralCode = document.getElementById("referral-code");
-  if (!referral || !position) return;
+  if (!referral) return;
   const params = new URLSearchParams(location.search);
   const lead = params.get("lead") || "founding";
   const code = params.get("code") || `FS-${lead.slice(-6).toUpperCase()}`;
-  const queryPosition = Number(params.get("position"));
-  position.textContent = queryPosition > 0 ? `#${queryPosition.toLocaleString()}` : "#1,000+";
   if (params.get("duplicate") === "1") {
     const heading = document.querySelector(".thanks-card h1");
     if (heading) heading.textContent = "This email is already registered for early access.";
@@ -531,7 +527,7 @@ function initThanksReferral() {
     const button = document.getElementById("copy-referral");
     if (button) {
       button.textContent = copied ? "Copied" : "Select link";
-      setTimeout(() => (button.textContent = "Invite another builder"), 1400);
+      setTimeout(() => (button.textContent = "Copy"), 1400);
     }
     showToast(copied ? "Referral link copied" : "Select and copy the link");
     track("referral_link_copied", { lead });
