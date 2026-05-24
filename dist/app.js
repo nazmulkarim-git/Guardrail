@@ -289,13 +289,13 @@ function initDashboard() {
   let activeLogFilter = "all";
 
   const rows = {
-    approved: ["12:21", "Refund Agent", "refund_over_limit", "approved", "support_lead", "Issue $500 refund", "Approved as written", "audit_R7x2"],
-    rejected: ["12:22", "Deploy Agent", "deployment_action", "rejected", "engineering_lead", "Run production migration", "Needs staging proof", "audit_D4m8"],
-    edited: ["12:23", "Sales Agent", "external_message", "edited", "sales_manager", "Send 25% discount", "Send 10% offer instead", "audit_E9q1"],
-    expired: ["12:24", "Ops Agent", "billing_action", "expired", "ops_lead", "Retry invoice reminder", "Reviewer timeout", "audit_X5p0"],
-    context_added: ["12:25", "Support Agent", "agent_stuck", "context_added", "support_lead", "Ask customer for next step", "Added missing policy context", "audit_C7v4"],
-    taken_over: ["12:26", "Coding Agent", "sensitive_data_access", "taken_over", "engineering_lead", "Read production export", "Human took over", "audit_H3p9"],
-    needs_more_info: ["12:27", "Finance Agent", "billing_action", "needs_more_info", "finance_lead", "Classify failed payment", "Fetch last three invoices", "audit_M8r2"]
+    approved: ["12:21", "approved", "Approved as written", "audit_R7x2"],
+    rejected: ["12:22", "rejected", "Needs proof before action", "audit_D4m8"],
+    edited: ["12:23", "edited", "Offer store credit instead", "audit_E9q1"],
+    expired: ["12:24", "expired", "Reviewer timeout", "audit_X5p0"],
+    context_added: ["12:25", "context_added", "Added missing policy context", "audit_C7v4"],
+    taken_over: ["12:26", "taken_over", "Human took over", "audit_H3p9"],
+    needs_more_info: ["12:27", "needs_more_info", "Fetch last three invoices", "audit_M8r2"]
   };
 
   function prependLog(type) {
@@ -311,7 +311,7 @@ function initDashboard() {
   function getLogType(row) {
     if (row.dataset.logType) return row.dataset.logType;
     const cells = row.querySelectorAll("td");
-    return cells[3]?.textContent.trim().toLowerCase() || "all";
+    return cells[1]?.textContent.trim().toLowerCase() || "all";
   }
 
   function matchesLogFilter(row, filter) {

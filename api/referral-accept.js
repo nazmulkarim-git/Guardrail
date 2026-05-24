@@ -89,19 +89,21 @@ async function sendEmail({ to, replyTo, subject, html }) {
 async function sendConfirmationEmail({ email, referralCode, referralLink, inviterEmail }) {
   return sendEmail({
     to: email,
-    subject: "You accepted a Forsig private beta invite",
+    subject: "I added you to the Forsig waitlist",
     html: `
       <div style="margin:0;background:#07080c;color:#f7f8ff;font-family:Inter,Arial,sans-serif;padding:32px">
         <div style="max-width:620px;margin:0 auto;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:30px;background:#111522">
           <p style="margin:0 0 12px;color:#5ef0a4;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:700">Forsig early access</p>
-          <h1 style="margin:0 0 16px;font-size:30px;line-height:1.1">You are on the Forsig waitlist.</h1>
-          <p style="color:#c9cedd;line-height:1.65">You accepted an invite from <strong>${escapeHtml(inviterEmail)}</strong>. Forsig is the human approval layer for autonomous AI agents.</p>
+          <h1 style="margin:0 0 16px;font-size:30px;line-height:1.1">I added you to the waitlist.</h1>
+          <p style="color:#c9cedd;line-height:1.65">You accepted an invite from <strong>${escapeHtml(inviterEmail)}</strong>, so I added you to the Forsig private beta list.</p>
+          <p style="color:#c9cedd;line-height:1.65">I am looking for builders who are putting AI agents near real actions: refunds, customer messages, account changes, deployments, billing workflows, or anything that needs a human decision before it continues.</p>
+          <p style="color:#c9cedd;line-height:1.65">If that is you, reply with a few lines about what you are building. I read replies personally and use them to prioritize early access.</p>
           <div style="margin:22px 0;padding:18px;border:1px solid rgba(215,255,114,.22);border-radius:14px;background:rgba(215,255,114,.06)">
             <p style="margin:0 0 10px;color:#d7ff72;font-weight:800">Your referral code: ${escapeHtml(referralCode)}</p>
-            <p style="margin:0;color:#c9cedd;line-height:1.6">Share this link to move up the waitlist:</p>
+            <p style="margin:0;color:#c9cedd;line-height:1.6">Share this with another AI builder if Forsig might help them too:</p>
             <p style="margin:8px 0 0;word-break:break-all"><a href="${escapeHtml(referralLink)}" style="color:#d7ff72">${escapeHtml(referralLink)}</a></p>
           </div>
-          <p style="margin-top:24px;color:#8f96aa">The Forsig team</p>
+          <p style="margin-top:24px;color:#8f96aa">Founder, Forsig</p>
         </div>
       </div>
     `
@@ -111,13 +113,15 @@ async function sendConfirmationEmail({ email, referralCode, referralLink, invite
 async function sendReferralNotification({ referrerEmail, referredEmail }) {
   return sendEmail({
     to: referrerEmail,
-    subject: "You moved up the Forsig waitlist",
+    subject: "Your Forsig invite was accepted",
     html: `
       <div style="margin:0;background:#07080c;color:#f7f8ff;font-family:Inter,Arial,sans-serif;padding:32px">
         <div style="max-width:620px;margin:0 auto;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:30px;background:#111522">
           <p style="margin:0 0 12px;color:#d7ff72;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:700">Forsig referral</p>
-          <h1 style="margin:0 0 16px;font-size:28px;line-height:1.1">Thanks for sharing Forsig.</h1>
-          <p style="color:#c9cedd;line-height:1.65">${escapeHtml(referredEmail)} accepted your referral invite. You moved up in the list.</p>
+          <h1 style="margin:0 0 16px;font-size:28px;line-height:1.1">Your invite was accepted.</h1>
+          <p style="color:#c9cedd;line-height:1.65">${escapeHtml(referredEmail)} accepted your Forsig invite, so I moved you up in the waitlist.</p>
+          <p style="color:#c9cedd;line-height:1.65">Thank you for sending it to someone relevant. That matters a lot at this stage because the best feedback will come from people building real agent workflows.</p>
+          <p style="margin-top:24px;color:#8f96aa">Founder, Forsig</p>
         </div>
       </div>
     `

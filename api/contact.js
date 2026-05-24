@@ -132,9 +132,10 @@ export default async function handler(req, res) {
     const userHtml = `
       <div style="margin:0;background:#07080c;color:#f7f8ff;font-family:Inter,Arial,sans-serif;padding:32px">
         <div style="max-width:620px;margin:0 auto;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:30px;background:#111522">
-          <h1 style="margin:0 0 16px;font-size:28px;line-height:1.1">Thanks for your message.</h1>
-          <p style="color:#c9cedd;line-height:1.65">I read each Forsig email personally and reply personally. Thanks for taking the time to reach out.</p>
-          <p style="color:#8f96aa">- The Forsig team</p>
+          <h1 style="margin:0 0 16px;font-size:28px;line-height:1.1">I got your message.</h1>
+          <p style="color:#c9cedd;line-height:1.65">Thanks for taking the time to write. I read Forsig messages personally, especially when someone shares what they are building or where AI agents feel risky in a real workflow.</p>
+          <p style="color:#c9cedd;line-height:1.65">I will reply as soon as I can. If there is useful context you forgot to include, you can reply directly to this email.</p>
+          <p style="color:#8f96aa">Founder, Forsig</p>
         </div>
       </div>
     `;
@@ -149,7 +150,7 @@ export default async function handler(req, res) {
       sendEmail({
         to: email,
         replyTo: ownerEmail,
-        subject: "Thanks for contacting Forsig",
+        subject: "I got your Forsig message",
         html: userHtml
       })
     ]);

@@ -73,20 +73,21 @@ async function sendInvite({ to, inviterEmail, referralCode, acceptLink, landingL
       from: process.env.WAITLIST_FROM_EMAIL || "Forsig <hello@forsig.com>",
       to: [to],
       reply_to: process.env.WAITLIST_REPLY_TO || "hello@forsig.com",
-      subject: "You were invited to the Forsig private beta",
+      subject: `${inviterEmail} thought Forsig might be useful for you`,
       html: `
         <div style="margin:0;background:#07080c;color:#f7f8ff;font-family:Inter,Arial,sans-serif;padding:32px">
           <div style="max-width:620px;margin:0 auto;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:30px;background:#111522">
             <p style="margin:0 0 12px;color:#d7ff72;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:700">Forsig referral</p>
-            <h1 style="margin:0 0 16px;font-size:28px;line-height:1.1">You were invited to join Forsig.</h1>
-            <p style="color:#c9cedd;line-height:1.65"><strong>${escapeHtml(inviterEmail)}</strong> invited you to the Forsig private beta.</p>
-            <p style="color:#c9cedd;line-height:1.65">Forsig is the human approval layer for autonomous AI agents. It helps agents pause before risky actions, ask the right human for a decision, and resume with an audit trail.</p>
-            <p style="color:#c9cedd;line-height:1.65">Click below to accept the invite. We will automatically add <strong>${escapeHtml(to)}</strong> to early access with referral code <strong>${escapeHtml(referralCode)}</strong>.</p>
+            <h1 style="margin:0 0 16px;font-size:28px;line-height:1.1">A quick personal invite to Forsig.</h1>
+            <p style="color:#c9cedd;line-height:1.65"><strong>${escapeHtml(inviterEmail)}</strong> thought you might care about Forsig, so I wanted to make this invite feel clear and useful.</p>
+            <p style="color:#c9cedd;line-height:1.65">Forsig is for teams building AI agents that should pause before risky actions, ask a human for a decision, and then continue with an audit trail.</p>
+            <p style="color:#c9cedd;line-height:1.65">If you are building agents for support, sales, ops, finance, or internal tools, I would love to have you on the early access list. Clicking below will add <strong>${escapeHtml(to)}</strong> automatically with referral code <strong>${escapeHtml(referralCode)}</strong>.</p>
             <p style="margin:26px 0">
               <a href="${escapeHtml(acceptLink)}" style="display:inline-block;background:#d7ff72;color:#10110d;text-decoration:none;padding:13px 18px;border-radius:12px;font-weight:800">Accept invite</a>
             </p>
-            <p style="color:#8f96aa;line-height:1.55">Want to inspect Forsig first? Visit the landing page: <a href="${escapeHtml(landingLink)}" style="color:#d7ff72">${escapeHtml(landingLink)}</a></p>
+            <p style="color:#8f96aa;line-height:1.55">Want to inspect it first? Here is the landing page: <a href="${escapeHtml(landingLink)}" style="color:#d7ff72">${escapeHtml(landingLink)}</a></p>
             <p style="color:#8f96aa;line-height:1.55">If you were not expecting this invite, you can ignore this email.</p>
+            <p style="margin-top:24px;color:#8f96aa">Founder, Forsig</p>
           </div>
         </div>
       `

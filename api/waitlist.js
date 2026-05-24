@@ -154,20 +154,21 @@ async function sendConfirmationEmail(lead) {
         from: process.env.WAITLIST_FROM_EMAIL || "Forsig <hello@forsig.com>",
         to: [lead.email],
         reply_to: process.env.WAITLIST_REPLY_TO || "hello@forsig.com",
-        subject: "You are on the Forsig waitlist",
+        subject: "I saved your spot for Forsig",
         html: `
           <div style="margin:0;background:#07080c;color:#f7f8ff;font-family:Inter,Arial,sans-serif;padding:32px">
             <div style="max-width:620px;margin:0 auto;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:30px;background:#111522">
-              <p style="margin:0 0 12px;color:#5ef0a4;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:700">Forsig early access</p>
-              <h1 style="margin:0 0 16px;font-size:30px;line-height:1.1">You are on the Forsig waitlist.</h1>
-              <p style="color:#c9cedd;line-height:1.65">Thanks for joining. Forsig is the human approval layer for autonomous AI agents. We are prioritizing early access for builders creating agents that need human judgment before risky actions.</p>
-              <p style="color:#c9cedd;line-height:1.65">The private beta focuses on escalation requests, approval inboxes, reviewer decisions, edited instructions, agent resume responses, and audit trails.</p>
+              <p style="margin:0 0 12px;color:#5ef0a4;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:700">Forsig private beta</p>
+              <h1 style="margin:0 0 16px;font-size:30px;line-height:1.1">I saved your spot.</h1>
+              <p style="color:#c9cedd;line-height:1.65">Thanks for joining the Forsig waitlist. I am building Forsig for teams that want AI agents to pause at risky moments, ask a human, and continue with a clear decision trail.</p>
+              <p style="color:#c9cedd;line-height:1.65">Early access will go first to builders who are already shipping, testing, or planning agent workflows where a refund, message, record change, deployment, or billing action should not happen without human judgment.</p>
+              <p style="color:#c9cedd;line-height:1.65">If that sounds like what you are building, just reply to this email and tell me what your agent does. I read these replies personally.</p>
               <div style="margin:22px 0;padding:18px;border:1px solid rgba(215,255,114,.22);border-radius:14px;background:rgba(215,255,114,.06)">
                 <p style="margin:0 0 10px;color:#d7ff72;font-weight:800">Your referral code: ${escapeHtml(lead.referralCode || "")}</p>
-                <p style="margin:0;color:#c9cedd;line-height:1.6">Share this link to move up the waitlist:</p>
+                <p style="margin:0;color:#c9cedd;line-height:1.6">If you know another builder who needs human approval for agents, send them this link. It helps me find the right early users and moves you up the list.</p>
                 <p style="margin:8px 0 0;word-break:break-all"><a href="${escapeHtml(lead.referralLink || "")}" style="color:#d7ff72">${escapeHtml(lead.referralLink || "")}</a></p>
               </div>
-              <p style="margin-top:24px;color:#8f96aa">The Forsig team</p>
+              <p style="margin-top:24px;color:#8f96aa">Founder, Forsig</p>
             </div>
           </div>
         `
@@ -245,14 +246,16 @@ async function sendReferralNotification(referrer, referredEmail) {
         from: process.env.WAITLIST_FROM_EMAIL || "Forsig <hello@forsig.com>",
         to: [referrer.email],
         reply_to: process.env.WAITLIST_REPLY_TO || "hello@forsig.com",
-        subject: "You moved up the Forsig waitlist",
+        subject: "Your Forsig referral helped",
         html: `
           <div style="margin:0;background:#07080c;color:#f7f8ff;font-family:Inter,Arial,sans-serif;padding:32px">
             <div style="max-width:620px;margin:0 auto;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:30px;background:#111522">
               <p style="margin:0 0 12px;color:#d7ff72;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:700">Forsig referral</p>
-              <h1 style="margin:0 0 16px;font-size:28px;line-height:1.1">Thanks for sharing Forsig.</h1>
-              <p style="color:#c9cedd;line-height:1.65">Someone joined the private beta waitlist using your referral code. You moved up in the list.</p>
+              <h1 style="margin:0 0 16px;font-size:28px;line-height:1.1">Someone joined from your invite.</h1>
+              <p style="color:#c9cedd;line-height:1.65">A builder joined the Forsig private beta waitlist using your referral code, so I moved you up in the list.</p>
+              <p style="color:#c9cedd;line-height:1.65">This helps a lot. I am trying to get Forsig in front of people who have real agent workflows and real approval problems, not just passive curiosity.</p>
               <p style="color:#8f96aa">Referred signup: ${escapeHtml(referredEmail)}</p>
+              <p style="margin-top:24px;color:#8f96aa">Founder, Forsig</p>
             </div>
           </div>
         `

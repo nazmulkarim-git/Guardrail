@@ -62,13 +62,13 @@ async function sendWaitlistEmail(lead) {
       from: process.env.WAITLIST_FROM_EMAIL || "Forsig <hello@forsig.com>",
       to: [lead.email],
       reply_to: process.env.WAITLIST_REPLY_TO || "hello@forsig.com",
-      subject: "You are on the Forsig waitlist",
+      subject: "I saved your spot for Forsig",
       html: `
         <div style="font-family:Inter,Arial,sans-serif;background:#08090d;color:#f7f7fb;padding:32px;border-radius:18px">
-          <h1 style="margin:0 0 12px;font-size:28px">You are on the Forsig waitlist.</h1>
-          <p style="line-height:1.6;color:#c9cbd8">Thanks for joining. Forsig is the human approval layer for autonomous AI agents. We are prioritizing early access for builders creating agents that need human judgment before risky actions.</p>
-          <p style="line-height:1.6;color:#c9cbd8">The private beta focuses on escalation requests, approval inboxes, reviewer decisions, edited instructions, agent resume responses, and audit trails.</p>
-          <p style="color:#8e94aa">- The Forsig team</p>
+          <h1 style="margin:0 0 12px;font-size:28px">I saved your spot.</h1>
+          <p style="line-height:1.6;color:#c9cbd8">Thanks for joining the Forsig waitlist. I am building Forsig for teams that want AI agents to pause at risky moments, ask a human, and continue with a clear decision trail.</p>
+          <p style="line-height:1.6;color:#c9cbd8">If you are building a real agent workflow, reply and tell me what it does. I read these replies personally.</p>
+          <p style="color:#8e94aa">Founder, Forsig</p>
         </div>
       `
     })
