@@ -285,6 +285,11 @@ function initDashboard() {
   const decisionTime = document.getElementById("decision-time");
   const logBody = document.getElementById("demo-log-body");
   const logFilters = document.querySelectorAll(".log-filters button");
+  const codeTitle = document.getElementById("demo-code-title");
+  const codeBlock = document.getElementById("dash-js");
+  const editPanel = document.getElementById("edit-instruction-panel");
+  const editInput = document.getElementById("edit-instruction");
+  const sendEdit = document.getElementById("send-edit-instruction");
   if (!status) return;
   let activeLogFilter = "all";
 
@@ -298,14 +303,59 @@ function initDashboard() {
     needs_more_info: ["12:27", "needs_more_info", "Fetch last three invoices", "audit_M8r2"]
   };
 
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function currentTime() {
+    return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
+
+  function auditId() {
+    return `audit_${Math.random().toString(36).slice(2, 6)}`;
+  }
+
+  function setCode(title, code) {
+    if (codeTitle) codeTitle.textContent = title;
+    if (codeBlock) codeBlock.textContent = code;
+  }
+
+  function decisionCode(type, instruction, id = auditId()) {
+    return `{
+  "status": "${type}",
+  "instruction": ${JSON.stringify(instruction)},
+  "auditId": "${id}"
+}`;
+  }
+
+  function capAuditRows() {
+    if (!logBody) return;
+    const rows = [...logBody.querySelectorAll("tr")];
+    rows.slice(10).forEach((row) => row.remove());
+  }
+
   function prependLog(type) {
     if (!logBody) return;
+    if (!rows[type]) return;
     const tr = document.createElement("tr");
     tr.className = "flash-row";
     tr.dataset.logType = type;
     tr.innerHTML = rows[type].map((cell) => `<td>${cell}</td>`).join("");
     logBody.prepend(tr);
+    capAuditRows();
     applyLogFilter(activeLogFilter);
+  }
+
+  function prependCustomLog(type, instruction) {
+    const id = auditId();
+    rows[type] = [currentTime(), type, instruction, id];
+    prependLog(type);
+    return id;
   }
 
   function getLogType(row) {
@@ -338,27 +388,33 @@ function initDashboard() {
       if (pendingCount) pendingCount.textContent = "7";
       if (escalationMeter) escalationMeter.style.width = "54%";
       if (decisionTime) decisionTime.textContent = "2m 02s";
-      prependLog("approved");
+      const instruction = "Proceed with the proposed refund.";
+      const id = prependCustomLog("approved", instruction);
+      setCode("Agent receives", decisionCode("approved", instruction, id));
       showToast("Approval recorded");
     }
 
     if (type === "rejected") {
       status.textContent = "Rejected";
       if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "23") + 1);
-      prependLog("rejected");
+      const instruction = "Do not issue the refund. Ask for proof of purchase first.";
+      const id = prependCustomLog("rejected", instruction);
+      setCode("Agent receives", decisionCode("rejected", instruction, id));
       showToast("Rejection sent to agent");
     }
 
     if (type === "edited") {
-      status.textContent = "Edited";
-      if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "23") + 1);
-      prependLog("edited");
-      showToast("Edited instruction returned");
+      status.textContent = "Editing";
+      if (editPanel) editPanel.hidden = false;
+      if (editInput) editInput.focus();
+      setCode("Edit response", decisionCode("edited", editInput?.value || "Offer store credit instead of a cash refund."));
+      showToast("Write the instruction to return");
     }
 
     if (type === "context_added") {
       status.textContent = "Context added";
       if (decisionTime) decisionTime.textContent = "3m 18s";
+      setCode("Agent receives", decisionCode("context_added", "Use the added policy context and continue."));
       prependLog("context_added");
       showToast("Context returned to agent");
     }
@@ -366,12 +422,14 @@ function initDashboard() {
     if (type === "taken_over") {
       status.textContent = "Taken over";
       if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "23") + 1);
+      setCode("Agent receives", decisionCode("taken_over", "Human reviewer has taken over. Stop autonomous execution."));
       prependLog("taken_over");
       showToast("Human takeover recorded");
     }
 
     if (type === "needs_more_info") {
       status.textContent = "Needs more info";
+      setCode("Agent receives", decisionCode("needs_more_info", "Fetch the customer's last three support tickets and escalate again."));
       prependLog("needs_more_info");
       showToast("Agent asked to gather more context");
     }
@@ -382,6 +440,25 @@ function initDashboard() {
   document.querySelectorAll("[data-simulate]").forEach((button) => {
     button.addEventListener("click", () => applySimulation(button.dataset.simulate));
   });
+
+  if (editInput) {
+    editInput.addEventListener("input", () => {
+      setCode("Edit response", decisionCode("edited", editInput.value || "Offer store credit instead of a cash refund."));
+    });
+  }
+
+  if (sendEdit) {
+    sendEdit.addEventListener("click", () => {
+      const instruction = editInput?.value.trim() || "Offer store credit instead of a cash refund.";
+      status.textContent = "Edited";
+      if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "23") + 1);
+      const id = prependCustomLog("edited", instruction);
+      setCode("Agent receives", decisionCode("edited", instruction, id));
+      if (editPanel) editPanel.hidden = true;
+      showToast("Edited instruction returned");
+      track("dashboard_edit_instruction_sent");
+    });
+  }
 
   logFilters.forEach((button) => {
     const filter = button.dataset.filter || button.textContent.trim().toLowerCase();
@@ -401,7 +478,9 @@ function initDashboard() {
     pause.textContent = paused ? "Reset expiration" : "Simulate expired request";
     if (paused) {
       if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "23") + 1);
-      prependLog("expired");
+      const instruction = "No reviewer responded before timeout. Stop the risky action.";
+      const id = prependCustomLog("expired", instruction);
+      setCode("Agent receives", decisionCode("expired", instruction, id));
       showToast("Approval request expired");
     }
     track(paused ? "approval_expired_demo" : "approval_reset_demo");

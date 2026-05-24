@@ -61,6 +61,11 @@
             <button data-simulate="rejected">Reject</button>
             <button data-simulate="edited">Edit instruction</button>
           </div>
+          <div id="edit-instruction-panel" class="edit-instruction-panel" hidden>
+            <label for="edit-instruction">Instruction returned to the agent</label>
+            <textarea id="edit-instruction">Offer store credit instead of a cash refund.</textarea>
+            <button id="send-edit-instruction" type="button">Send edited instruction</button>
+          </div>
           <button id="pause-toggle" class="minimal-expire-button">Simulate timeout</button>
         </div>
 
@@ -74,7 +79,7 @@
           </div>
 
           <div class="minimal-code">
-            <div class="snippet-title">Agent call <button class="copy-code" data-copy-target="dash-js">Copy</button></div>
+            <div class="snippet-title"><span id="demo-code-title">Agent call</span> <button class="copy-code" data-copy-target="dash-js">Copy</button></div>
             <pre><code id="dash-js">const decision = await forsig.escalate({
   agent: "refund-agent",
   risk: "refund_over_limit",
