@@ -180,7 +180,7 @@ Example:
   },
   "reviewer": {
     "id": "user_123",
-    "name": "Nazmul Karim",
+    "name": "Human Reviewer",
     "channel": "slack"
   }
 }

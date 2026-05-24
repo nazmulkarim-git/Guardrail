@@ -134,7 +134,7 @@ export default async function handler(req, res) {
         <div style="max-width:620px;margin:0 auto;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:30px;background:#111522">
           <h1 style="margin:0 0 16px;font-size:28px;line-height:1.1">Thanks for your message.</h1>
           <p style="color:#c9cedd;line-height:1.65">I read each Forsig email personally and reply personally. Thanks for taking the time to reach out.</p>
-          <p style="color:#8f96aa">- Nazmul Karim</p>
+          <p style="color:#8f96aa">- The Forsig team</p>
         </div>
       </div>
     `;

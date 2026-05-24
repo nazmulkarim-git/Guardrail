@@ -752,6 +752,10 @@ input[type="range"]::-webkit-slider-thumb {
   gap: 14px;
 }
 
+.v2-cards.four-step-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .v2-card,
 .v2-panel,
 .v2-timeline,
