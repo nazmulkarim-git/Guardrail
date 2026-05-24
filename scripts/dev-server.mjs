@@ -66,8 +66,8 @@ async function sendWaitlistEmail(lead) {
       html: `
         <div style="font-family:Inter,Arial,sans-serif;background:#08090d;color:#f7f7fb;padding:32px;border-radius:18px">
           <h1 style="margin:0 0 12px;font-size:28px">You are on the Forsig waitlist.</h1>
-          <p style="line-height:1.6;color:#c9cbd8">Thanks for joining. Forsig is the budget firewall and kill switch for AI agents. We are prioritizing early access for builders already routing agent traffic.</p>
-          <p style="line-height:1.6;color:#c9cbd8">Soon you will be able to add Forsig in seconds: change the base URL, swap in a virtual key, and get budgets, logs, token counts, and emergency pause controls.</p>
+          <p style="line-height:1.6;color:#c9cbd8">Thanks for joining. Forsig is the human approval layer for autonomous AI agents. We are prioritizing early access for builders creating agents that need human judgment before risky actions.</p>
+          <p style="line-height:1.6;color:#c9cbd8">The private beta focuses on escalation requests, approval inboxes, reviewer decisions, edited instructions, agent resume responses, and audit trails.</p>
           <p style="color:#8e94aa">- The Forsig team</p>
         </div>
       `

@@ -1,101 +1,69 @@
 # Forsig
 
-Forsig is a budget firewall, audit log, and kill switch for AI agents.
+Forsig is the human approval layer for autonomous AI agents.
 
-This repository starts the v0.1 MVP with:
+The public launch surface currently focuses on a private beta waitlist, demo dashboard, referral loop, contact flow, and legal/security pages. The product direction is human approval and escalation for risky agent actions.
 
-- Premium dark landing page and waitlist
-- Local waitlist API with detailed analytics capture
-- Resend confirmation email hook
-- PostHog-ready frontend event hooks
-- Fast agent dashboard prototype
-- JavaScript SDK helpers
-- Python SDK helpers
-- OpenAI-compatible gateway contract skeleton
+## Positioning
 
-## Run Locally
+Forsig lets AI agents pause before risky actions, ask the right human for approval, and continue safely with a complete audit trail.
 
-```sh
+Agents call Forsig when they are unsure, stuck, or about to take an action that should not happen without human judgment.
+
+Examples:
+
+- Approving a refund outside normal policy
+- Sending an external customer email
+- Updating a customer record
+- Triggering an internal tool
+- Running a risky deployment command
+- Handling billing or finance workflow decisions
+
+## Current Launch Scope
+
+- Landing page for the new Forsig direction
+- Demo approval dashboard with mock data
+- Waitlist email collection
+- Referral invite and accept flow
+- Optional post-signup qualification form
+- Contact founder form
+- Privacy, Terms, and Security pages
+- JavaScript and Python SDK package placeholders from the earlier prototype
+
+## Not Yet Built
+
+The full product backend for escalation requests, reviewer inboxes, channel integrations, and agent resume endpoints has not been built yet. The current work is the waitlist-facing soft-launch site.
+
+## Development
+
+```bash
+npm install
+npm run build
+npm test
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Python SDK tests:
 
-The local server serves:
-
-- `/` landing page
-- `/dashboard` dashboard prototype
-- `/thanks` waitlist thank-you page
-- `/api/waitlist` waitlist API
-
-Waitlist submissions are stored at `data/waitlist-leads.json`.
-
-## Optional Environment
-
-```env
-RESEND_API_KEY=
-WAITLIST_FROM_EMAIL=Forsig <hello@forsig.com>
-WAITLIST_REPLY_TO=hello@forsig.com
-POSTHOG_KEY=
-POSTHOG_HOST=https://app.posthog.com
+```bash
+PYTHONPATH=packages/sdk-python python -m unittest discover -s packages/sdk-python/tests
 ```
 
-If `RESEND_API_KEY` is missing, the API records that email was skipped locally instead of failing the signup.
+## Production Notes
 
-## SDK Promise
+Required production services include a Postgres database, Resend for email, and PostHog for analytics.
 
-Developers can add Forsig in seconds by changing the OpenAI-compatible `baseURL`, swapping in a Forsig virtual key, and optionally attaching SDK metadata headers.
+Important environment variables:
 
-JavaScript:
-
-```ts
-import OpenAI from "openai";
-import { forsigHeaders, newForsigSession } from "@forsig/sdk";
-
-const client = new OpenAI({
-  apiKey: process.env.FORSIG_API_KEY,
-  baseURL: "https://gateway.forsig.com/v1",
-});
-
-await client.chat.completions.create(
-  {
-    model: "gpt-4o-mini",
-    messages: [{ role: "user", content: "Hello" }],
-  },
-  {
-    headers: forsigHeaders({
-      sessionId: newForsigSession(),
-      externalUserId: "user_123",
-    }),
-  }
-);
-```
-
-Python:
-
-```py
-import os
-from openai import OpenAI
-from forsig import forsig_headers, new_forsig_session
-
-client = OpenAI(
-    api_key=os.environ["FORSIG_API_KEY"],
-    base_url="https://gateway.forsig.com/v1",
-)
-
-client.chat.completions.create(
-    model="gpt-4o-mini",
-    messages=[{"role": "user", "content": "Hello"}],
-    extra_headers=forsig_headers(
-        session_id=new_forsig_session(),
-        external_user_id="user_123",
-    ),
-)
-```
-
-## Tests
-
-```sh
-npm test
-python -m unittest discover -s packages/sdk-python/tests
+```txt
+DATABASE_URL
+RESEND_API_KEY
+WAITLIST_FROM_EMAIL
+WAITLIST_REPLY_TO
+WAITLIST_OWNER_EMAIL
+NEXT_PUBLIC_POSTHOG_KEY
+NEXT_PUBLIC_POSTHOG_HOST
+POSTHOG_KEY
+POSTHOG_HOST
+REFERRAL_INVITE_SECRET
 ```

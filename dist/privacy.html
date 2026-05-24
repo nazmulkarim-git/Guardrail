@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Privacy Policy | Forsig</title>
-    <meta name="description" content="Forsig privacy policy for waitlist, referral, contact, analytics, and beta product data." />
+    <meta name="description" content="Forsig privacy policy for waitlist, referral, contact, analytics, and human approval workflow data." />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="https://www.forsig.com/privacy" />
     <link rel="stylesheet" href="/styles.css" />
@@ -18,54 +18,46 @@
       <article class="legal-card">
         <p class="eyebrow">Privacy Policy</p>
         <h1>Privacy Policy</h1>
-        <p class="legal-updated">Last updated: May 23, 2026</p>
-        <p>Forsig is building a budget firewall and control layer for AI agents. This Privacy Policy explains what information we collect, how we use it, and the choices you have when you visit our website, join the waitlist, contact us, use referral features, or participate in the private beta.</p>
-        <p>This policy is written for our early-access launch. As Forsig evolves, we will update this page to reflect the product and our data practices.</p>
+        <p class="legal-updated">Last updated: May 24, 2026</p>
+        <p>Forsig is building a human approval layer for autonomous AI agents. This Privacy Policy explains what information we collect, how we use it, and the choices you have when you visit our website, join the waitlist, use referral features, contact us, or participate in the private beta.</p>
 
         <h2>Who We Are</h2>
-        <p>Forsig is operated by Nazmul Karim. You can contact us at <a href="mailto:thenazmulkarim@gmail.com">thenazmulkarim@gmail.com</a> or through the <a href="/contact">contact page</a>.</p>
+        <p>Forsig is operated by Nazmul Karim. You can contact us at <a href="mailto:thenazmulkarim@gmail.com">thenazmulkarim@gmail.com</a>, <a href="mailto:privacy@forsig.com">privacy@forsig.com</a>, or through the <a href="/contact">contact page</a>.</p>
 
         <h2>Information We Collect</h2>
-        <p>We collect information you choose to provide, including your email address, name, company, role, provider usage, monthly token volume or AI spend, use case, contact messages, referral code, and referral invite recipients.</p>
-        <p>We also collect technical and analytics information, such as pages visited, UTM parameters, referrer, browser and device information, viewport size, approximate request metadata, timestamps, and basic server logs.</p>
-        <p>If you participate in the Forsig beta product, we may process product metadata such as agent identifiers, model names, token counts, estimated costs, status codes, latency, block reasons, budget settings, policy notes, and audit events.</p>
+        <p>We collect information you choose to provide, including your email address, name, company, role, use case, preferred approval channel, expected approval volume, contact messages, referral code, and referral invite recipients.</p>
+        <p>If you participate in the private beta, Forsig may process account information and escalation workflow data submitted by you, your team, or your agents. This may include agent names, run IDs, task descriptions, proposed actions, risk categories, context fields, approval status, human decisions, edited instructions, timestamps, reviewer metadata, communication channel metadata, and audit logs.</p>
+        <p>We also collect technical and analytics information needed to operate the beta, such as pages visited, UTM parameters, referrer, browser and device information, viewport size, request metadata, timestamps, and basic server logs.</p>
 
-        <h2>Prompt And Traffic Data</h2>
-        <p>Forsig is designed around a metadata-first privacy posture. Prompts and model responses are not stored by default in the MVP. We may temporarily process request data only as needed to route, authorize, meter, block, or debug requests. If prompt logging is introduced later, it will be presented as an explicit product setting or feature with clear controls.</p>
+        <h2>Escalation Context</h2>
+        <p>Forsig uses escalation context to provide the approval workflow. Users are responsible for deciding what task, proposed action, and context their agents send to Forsig. During private beta, you should avoid sending secrets or unnecessary sensitive personal data.</p>
 
-        <h2>Provider Keys And Virtual Keys</h2>
-        <p>In the planned product, users may provide AI provider API keys so Forsig can route authorized requests through a Forsig virtual key. Provider keys are intended to be stored server-side and encrypted before storage. We do not sell provider keys or use them to train models.</p>
+        <h2>Communication Channels</h2>
+        <p>The private beta starts with a web approval inbox. Slack and email workflows are planned, and future integrations may include WhatsApp, Discord, Microsoft Teams, or similar tools. If enabled, Forsig may process the metadata necessary to send approval requests and receive reviewer decisions through those channels.</p>
 
         <h2>How We Use Information</h2>
-        <p>We use information to operate the waitlist, send confirmations and referral emails, respond to messages, prioritize beta access, understand demand, improve the website and product, detect abuse, troubleshoot issues, and communicate about Forsig.</p>
-        <p>For beta product data, we use metadata to enforce budgets, model rules, kill switches, audit logs, token counting, request visibility, and policy decisions.</p>
+        <p>We use information to operate the waitlist, send confirmation and referral emails, respond to messages, prioritize beta access, provide approval workflows, return decisions to agents, maintain audit trails, detect abuse, troubleshoot issues, improve Forsig, and communicate with you about the product.</p>
 
         <h2>Emails And Referrals</h2>
-        <p>When you join the waitlist, we may email you confirmation, product updates, launch information, and beta access details. If you invite someone by referral, we send the invite email to the addresses you enter and include your email address as the inviter. If someone accepts your referral, we may notify you that your referral was accepted.</p>
+        <p>When you join the waitlist, we may email you confirmation, product updates, launch information, and beta access details. If you invite someone by referral, we send the invite email to the addresses you enter and include your email address as the inviter. If someone accepts your referral, we may notify you.</p>
 
-        <h2>Analytics</h2>
-        <p>We use analytics tools such as PostHog to understand website usage, conversion events, referral performance, and product interest. Analytics may use cookies or similar technologies. We configure analytics to support product improvement and launch measurement, not to sell personal information.</p>
-
-        <h2>Service Providers</h2>
-        <p>We use service providers to host the site, store waitlist records, send emails, and measure analytics. These may include Vercel, Supabase or another Postgres provider, Resend, PostHog, domain/DNS providers, and similar infrastructure vendors. They process information on our behalf to provide these services.</p>
+        <h2>Analytics And Service Providers</h2>
+        <p>We use service providers for hosting, database storage, email delivery, analytics, DNS, and related infrastructure. These may include Vercel, Supabase or another Postgres provider, Resend, PostHog, and similar vendors. We use analytics to understand website usage, conversion events, referral performance, and product interest.</p>
 
         <h2>Sharing</h2>
-        <p>We do not sell personal information. We may share information with service providers, when required by law, to protect Forsig or users, to prevent abuse, or as part of a merger, acquisition, financing, or business transfer.</p>
+        <p>We do not sell personal data. We may share information with service providers, when required by law, to protect Forsig or users, to prevent abuse, or as part of a merger, acquisition, financing, or business transfer.</p>
 
         <h2>Retention</h2>
-        <p>We keep waitlist and contact information for as long as needed to operate the beta, evaluate product interest, communicate with you, and maintain business records. You can ask us to delete your information at any time.</p>
+        <p>We keep waitlist, contact, referral, and beta workflow information for as long as needed to operate Forsig, evaluate product interest, communicate with users, maintain audit trails, and comply with legal or operational obligations. You can ask us to delete your information.</p>
 
         <h2>Your Choices</h2>
-        <p>You may request access, correction, deletion, or opt out of non-essential emails by contacting <a href="mailto:thenazmulkarim@gmail.com">thenazmulkarim@gmail.com</a>. We may need to retain limited information where required for security, legal, or operational reasons.</p>
+        <p>You may request access, correction, deletion, or opt out of non-essential emails by contacting <a href="mailto:privacy@forsig.com">privacy@forsig.com</a> or <a href="mailto:thenazmulkarim@gmail.com">thenazmulkarim@gmail.com</a>.</p>
 
         <h2>Security</h2>
-        <p>We use reasonable administrative, technical, and organizational measures to protect information. No system is perfectly secure, especially during an early beta. Please do not send sensitive secrets through contact forms or waitlist fields.</p>
+        <p>We use reasonable administrative, technical, and organizational measures to protect information. Forsig is in private beta, and no system is perfectly secure. Security questions can be sent to <a href="mailto:security@forsig.com">security@forsig.com</a>.</p>
 
         <h2>International Users</h2>
         <p>Forsig may process information in countries other than where you live. By using Forsig, you understand that information may be transferred to and processed by our infrastructure and service providers.</p>
-
-        <h2>Children</h2>
-        <p>Forsig is not intended for children under 13, and we do not knowingly collect information from children.</p>
 
         <h2>Changes</h2>
         <p>We may update this policy as Forsig changes. The updated date above will show when the policy was last revised.</p>

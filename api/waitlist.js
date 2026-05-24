@@ -160,8 +160,8 @@ async function sendConfirmationEmail(lead) {
             <div style="max-width:620px;margin:0 auto;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:30px;background:#111522">
               <p style="margin:0 0 12px;color:#5ef0a4;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:700">Forsig early access</p>
               <h1 style="margin:0 0 16px;font-size:30px;line-height:1.1">You are on the Forsig waitlist.</h1>
-              <p style="color:#c9cedd;line-height:1.65">Thanks for joining. Forsig is the budget firewall and kill switch for AI agents. We are prioritizing early access for builders already running or preparing agent traffic.</p>
-              <p style="color:#c9cedd;line-height:1.65">Soon you will be able to add Forsig in seconds: change the base URL, swap in a virtual key, and get budgets, token counts, audit logs, custom instruction records, and emergency pause controls.</p>
+              <p style="color:#c9cedd;line-height:1.65">Thanks for joining. Forsig is the human approval layer for autonomous AI agents. We are prioritizing early access for builders creating agents that need human judgment before risky actions.</p>
+              <p style="color:#c9cedd;line-height:1.65">The private beta focuses on escalation requests, approval inboxes, reviewer decisions, edited instructions, agent resume responses, and audit trails.</p>
               <div style="margin:22px 0;padding:18px;border:1px solid rgba(215,255,114,.22);border-radius:14px;background:rgba(215,255,114,.06)">
                 <p style="margin:0 0 10px;color:#d7ff72;font-weight:800">Your referral code: ${escapeHtml(lead.referralCode || "")}</p>
                 <p style="margin:0;color:#c9cedd;line-height:1.6">Share this link to move up the waitlist:</p>
@@ -209,8 +209,8 @@ async function sendOwnerNotification(lead) {
             <p><strong>Email:</strong> ${escapeHtml(lead.email)}</p>
             <p><strong>Company:</strong> ${escapeHtml(lead.company || "-")}</p>
             <p><strong>Role:</strong> ${escapeHtml(lead.role || "-")}</p>
-            <p><strong>Provider:</strong> ${escapeHtml(lead.provider || "-")}</p>
-            <p><strong>Monthly AI spend:</strong> ${escapeHtml(lead.monthlyAiSpend || "-")}</p>
+            <p><strong>Preferred approval channel:</strong> ${escapeHtml(lead.provider || "-")}</p>
+            <p><strong>Risky actions to review:</strong> ${escapeHtml(lead.monthlyAiSpend || "-")}</p>
             <p><strong>Use case:</strong></p>
             <p>${escapeHtml(lead.useCase || "-")}</p>
             <p><strong>Source:</strong> ${escapeHtml(lead.utmSource || "direct")} / ${escapeHtml(lead.utmMedium || "-")} / ${escapeHtml(lead.utmCampaign || "-")}</p>

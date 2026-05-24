@@ -1334,6 +1334,62 @@ pre {
   padding: 22px;
 }
 
+.approval-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.approval-card {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(247, 244, 236, 0.055);
+}
+
+.approval-card span {
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 820;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.approval-card h3 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.approval-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.approval-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.approval-actions button {
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  color: var(--ink);
+  background: rgba(247, 244, 236, 0.07);
+  cursor: pointer;
+}
+
+.approval-actions button:hover {
+  border-color: rgba(215, 255, 114, 0.28);
+  background: rgba(215, 255, 114, 0.1);
+}
+
 .demo-architecture {
   display: grid;
   grid-template-columns: 1fr 70px 1fr 70px 1fr;
@@ -2019,6 +2075,10 @@ th {
 
 @media (max-width: 980px) {
   .v2-form.referral-enabled {
+    grid-template-columns: 1fr;
+  }
+
+  .approval-grid {
     grid-template-columns: 1fr;
   }
 }

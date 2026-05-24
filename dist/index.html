@@ -3,18 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Forsig - Budget Firewall for AI Agents</title>
-    <meta name="description" content="Forsig gives AI agents budgets, token visibility, model policy, audit logs, and an emergency kill switch through one OpenAI-compatible gateway." />
+    <title>Forsig - Human Approval for Autonomous AI Agents</title>
+    <meta name="description" content="Forsig lets AI agents pause before risky actions, ask humans for approval, and resume safely with a complete audit trail." />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="https://www.forsig.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.forsig.com/" />
-    <meta property="og:title" content="Forsig - Budget Firewall for AI Agents" />
-    <meta property="og:description" content="Stop runaway AI agents before they burn your budget. Set spend caps, restrict models, log token usage, and pause risky traffic through one OpenAI-compatible gateway." />
+    <meta property="og:title" content="Forsig - Human Approval for Autonomous AI Agents" />
+    <meta property="og:description" content="Human approval and escalation for autonomous AI agents." />
     <meta property="og:site_name" content="Forsig" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Forsig - Budget Firewall for AI Agents" />
-    <meta name="twitter:description" content="Stop runaway AI agents before they burn your budget with budgets, token logs, model policy, and a kill switch." />
+    <meta name="twitter:title" content="Forsig - Human Approval for Autonomous AI Agents" />
+    <meta name="twitter:description" content="Let AI agents pause before risky actions, ask the right human, and continue with an audit trail." />
     <link rel="stylesheet" href="/styles.css" />
     <script type="application/ld+json">
       {
@@ -24,12 +24,12 @@
         "url": "https://www.forsig.com/",
         "applicationCategory": "DeveloperApplication",
         "operatingSystem": "Web",
-        "description": "Forsig is a budget firewall for AI agents that checks requests before provider spend happens.",
+        "description": "Forsig is the human approval layer for autonomous AI agents.",
         "offers": {
           "@type": "Offer",
           "price": "0",
           "priceCurrency": "USD",
-          "description": "Free during private beta"
+          "description": "Private beta"
         }
       }
     </script>
@@ -43,11 +43,10 @@
         Forsig
       </a>
       <nav aria-label="Primary navigation">
-        <a href="#why">Why</a>
-        <a href="#impact">Impact</a>
         <a href="#how">How it works</a>
-        <a href="#security">Security</a>
-        <a href="#install">Install</a>
+        <a href="#use-cases">Use cases</a>
+        <a href="/dashboard">Demo</a>
+        <a href="#developers">Developers</a>
         <a href="#faq">FAQ</a>
       </nav>
       <a class="v2-nav-cta" href="#waitlist">Get early access</a>
@@ -56,9 +55,9 @@
     <main>
       <section class="v2-hero cursor-style">
         <div class="v2-hero-copy reveal">
-          <p class="v2-kicker">AI agent spend control</p>
-          <h1>Stop runaway AI agents before they burn your budget.</h1>
-          <p class="v2-lede">Forsig checks every agent request before it reaches your provider. Set spend caps, restrict models, log token usage, and pause risky agents instantly.</p>
+          <p class="v2-kicker">Human-in-the-loop control</p>
+          <h1>Human approval for autonomous AI agents</h1>
+          <p class="v2-lede">Forsig lets your AI agents pause before risky actions, route decisions to the right human, and resume with approval, rejection, or edited instructions.</p>
 
           <form id="hero-waitlist-form" class="v2-form referral-enabled">
             <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
@@ -66,71 +65,71 @@
             <button type="submit">Get early access</button>
             <p class="mini-status" role="status"></p>
           </form>
-          <p class="form-note">No credit card. Free during beta. Metadata-only logs by default.</p>
+          <p class="form-note">Private beta for teams building AI agents, workflow automations, and human-supervised AI systems.</p>
 
           <div class="hero-links">
-            <a class="button demo-link-button" href="/dashboard">View live demo</a>
-            <a class="button demo-link-button" href="#security">Read security model</a>
+            <a class="button demo-link-button" href="/dashboard">View demo</a>
+            <a class="button demo-link-button" href="/security">Read security model</a>
           </div>
 
           <div class="v2-proof">
-            <strong>1k+</strong>
-            <span>AI builders joined the private beta waitlist</span>
+            <strong>Private beta</strong>
+            <span>Approval inbox for risky agent actions</span>
             <i></i>
-            <span>Change one base URL</span>
+            <span>Slack and email workflows planned</span>
             <i></i>
-            <span>Metadata-only logs by default</span>
+            <span>Complete decision audit trail</span>
           </div>
           <div class="hero-outcomes" aria-label="Forsig value outcomes">
-            <span>Prevent surprise bills</span>
-            <span>Debug agent spend</span>
-            <span>Pause risky traffic</span>
+            <span>Pause risky actions</span>
+            <span>Ask the right reviewer</span>
+            <span>Resume with a decision</span>
           </div>
         </div>
 
-        <div class="v2-console reveal delay-1" aria-label="Forsig budget firewall product preview">
+        <div class="v2-console reveal delay-1" aria-label="Forsig approval workflow preview">
           <div class="console-glow" aria-hidden="true"></div>
           <div class="console-bar">
             <span></span><span></span><span></span>
-            <b>agent: research-copilot</b>
+            <b>agent: refund-agent</b>
           </div>
           <div class="console-grid">
             <section class="console-main">
               <div class="console-header">
                 <div>
-                  <small>Pre-call decision</small>
-                  <h2 id="decision-title">Blocked before provider spend</h2>
+                  <small>Pending escalation</small>
+                  <h2 id="decision-title">Refund over limit</h2>
                 </div>
-                <div id="decision-pill" class="decision-pill">402 budget</div>
+                <div id="decision-pill" class="decision-pill">pending</div>
               </div>
               <div class="request-line">
-                <span>POST</span>
-                <code>/v1/chat/completions</code>
-                <em id="decision-model">gpt-4o</em>
+                <span>RISK</span>
+                <code>refund_over_limit</code>
+                <em id="decision-model">Refund Agent</em>
               </div>
               <div class="spend-bar">
-                <div id="spend-fill" style="width: 91%"></div>
+                <div id="spend-fill" style="width: 68%"></div>
               </div>
               <div id="decision-reason" class="console-reason">
-                Daily budget would exceed <strong>$25.00</strong>. Forsig skipped the OpenAI call.
+                Proposed action: <strong>Issue $500 refund</strong>. Waiting for a human reviewer before the agent continues.
               </div>
-              <div class="event-stream" aria-label="Recent policy events">
-                <div><span></span><b>allowed</b><em>support-agent · 842 tokens</em></div>
-                <div><span></span><b>blocked</b><em>research-copilot · daily budget</em></div>
-                <div><span></span><b>logged</b><em>customer-a · $0.0041</em></div>
+              <div class="event-stream" aria-label="Recent approval events">
+                <div><span></span><b>approved</b><em>refund-agent · edited instruction</em></div>
+                <div><span></span><b>pending</b><em>sales-agent · external message</em></div>
+                <div><span></span><b>rejected</b><em>ops-agent · record change</em></div>
               </div>
             </section>
             <aside class="console-side">
-              <div><span>Input tokens</span><strong id="metric-tokens">12,840</strong></div>
-              <div><span>Projected cost</span><strong id="metric-cost">$3.14</strong></div>
-              <div><span>Policy</span><strong id="metric-policy">budget cap</strong></div>
+              <div><span>Reviewer</span><strong id="metric-tokens">Support lead</strong></div>
+              <div><span>Decision time</span><strong id="metric-cost">2m 14s</strong></div>
+              <div><span>Status</span><strong id="metric-policy">needs approval</strong></div>
             </aside>
           </div>
           <div class="console-code">
-            <span>Replace this</span>
-            <code>baseURL: "https://api.openai.com/v1"</code>
-            <span>With this</span>
-            <code>baseURL: "https://gateway.forsig.com/v1"</code>
+            <span>Agent calls Forsig</span>
+            <code id="hero-code">forsig.escalate({ risk: "refund_over_limit" })</code>
+            <span>Agent resumes</span>
+            <code>decision.status === "approved"</code>
           </div>
         </div>
       </section>
@@ -138,159 +137,195 @@
       <section id="impact" class="impact-section">
         <div class="impact-copy reveal">
           <p class="v2-kicker">Why it matters</p>
-          <h2>One bad loop can cost more than your whole beta.</h2>
-          <p>A support agent retries 400 times at $0.40/request. Your provider dashboard shows the damage after it happens. Forsig blocks the loop before the next call.</p>
+          <h2>Most agent failures do not need another dashboard. They need a human decision at the right moment.</h2>
+          <p>Autonomous agents are powerful until they send the wrong email, approve the wrong refund, update the wrong record, or get stuck with a judgment call they should not make alone.</p>
         </div>
         <div class="impact-calculator reveal delay-1">
           <div class="calc-header">
-            <span>Runaway loop simulator</span>
-            <strong id="calc-total">$48.00</strong>
+            <span>Escalation example</span>
+            <strong id="calc-total">Human needed</strong>
           </div>
           <label>
-            Requests in a loop
-            <input id="calc-requests" type="range" min="10" max="500" value="120" />
-            <em id="calc-requests-label">120 requests</em>
+            Agent confidence
+            <input id="calc-requests" type="range" min="10" max="100" value="42" />
+            <em id="calc-requests-label">42% confidence</em>
           </label>
           <label>
-            Average cost per request
-            <input id="calc-cost" type="range" min="1" max="100" value="40" />
-            <em id="calc-cost-label">$0.40/request</em>
+            Customer impact
+            <input id="calc-cost" type="range" min="1" max="100" value="78" />
+            <em id="calc-cost-label">high impact</em>
           </label>
           <div class="calc-result">
             <span>With Forsig</span>
-            <strong>Blocked at your limit</strong>
-            <p>Set a daily or per-request cap. Forsig stops the loop before the next provider call.</p>
+            <strong>Pause, ask, resume</strong>
+            <p>The agent submits the task, proposed action, and context. A reviewer approves, rejects, or edits the instruction.</p>
           </div>
         </div>
       </section>
 
-      <section id="why" class="v2-section">
+      <section id="how" class="v2-section">
         <div class="v2-section-heading reveal">
-          <p class="v2-kicker">Why Forsig</p>
-          <h2>Control spend before the provider call.</h2>
-          <p>Agents retry, loop, call tools, and switch models. Forsig checks budget and policy before traffic reaches OpenAI, then logs what happened.</p>
+          <p class="v2-kicker">How it works</p>
+          <h2>Give agents a safe way to ask for help.</h2>
+          <p>Forsig sits beside your existing agent stack. Your agent calls Forsig only when it needs approval, escalation, or human judgment.</p>
         </div>
         <div class="v2-cards">
           <article class="v2-card reveal">
             <span>01</span>
-            <h3>Budget before inference</h3>
-            <p>Per-request, daily, and monthly limits are evaluated before traffic reaches OpenAI.</p>
+            <h3>Pause</h3>
+            <p>The agent reaches a risky action: refund, external message, record update, billing action, deployment, or sensitive workflow.</p>
           </article>
           <article class="v2-card reveal delay-1">
             <span>02</span>
-            <h3>Token-level visibility</h3>
-            <p>See estimated and actual tokens, cost, model, latency, status, and block reason.</p>
+            <h3>Ask</h3>
+            <p>The agent sends Forsig the task, proposed action, risk type, run ID, and context needed for review.</p>
           </article>
           <article class="v2-card reveal delay-2">
             <span>03</span>
-            <h3>One kill switch</h3>
-            <p>Pause an agent instantly when a workflow, customer, or model choice behaves badly.</p>
+            <h3>Decide</h3>
+            <p>A human approves, rejects, or edits the instruction from the web inbox, with Slack and email workflows planned.</p>
+          </article>
+          <article class="v2-card reveal">
+            <span>04</span>
+            <h3>Resume</h3>
+            <p>The agent receives the decision and continues safely with a complete audit trail.</p>
           </article>
         </div>
       </section>
 
-      <section class="usecase-section">
+      <section id="use-cases" class="usecase-section">
         <div class="v2-section-heading reveal">
-          <p class="v2-kicker">Built for real agent traffic</p>
-          <h2>Clear paths for the teams most likely to feel the pain.</h2>
+          <p class="v2-kicker">Use cases</p>
+          <h2>Escalate actions where human judgment matters.</h2>
         </div>
         <div class="usecase-grid">
           <article class="usecase-card reveal">
-            <span>AI SaaS</span>
-            <h3>Per-customer cost boundaries</h3>
-            <p>Keep one tenant or user from burning budget for everyone else.</p>
+            <span>Customer support</span>
+            <h3>Approve refunds before they happen</h3>
+            <p>A support agent asks before issuing a refund outside normal policy.</p>
           </article>
           <article class="usecase-card reveal delay-1">
-            <span>Support agents</span>
-            <h3>Stop repeated conversation loops</h3>
-            <p>Detect repeated sessions, expensive retries, and disallowed models.</p>
+            <span>Sales</span>
+            <h3>Review custom offers</h3>
+            <p>A sales agent asks before sending a discount or non-standard promise to a customer.</p>
           </article>
           <article class="usecase-card reveal delay-2">
-            <span>Internal copilots</span>
-            <h3>Give teams visibility without prompt storage</h3>
-            <p>Track metadata, token counts, spend, latency, and block reasons.</p>
+            <span>Operations</span>
+            <h3>Confirm record changes</h3>
+            <p>An ops agent asks before changing subscription status or customer account data.</p>
+          </article>
+          <article class="usecase-card reveal">
+            <span>Engineering</span>
+            <h3>Pause risky commands</h3>
+            <p>A coding or deployment agent asks before running a destructive command, merge, or release action.</p>
+          </article>
+          <article class="usecase-card reveal delay-1">
+            <span>Finance</span>
+            <h3>Check billing workflows</h3>
+            <p>A finance/admin agent asks before sending invoice reminders or classifying unusual payments.</p>
           </article>
         </div>
       </section>
 
-      <section id="how" class="diagram-section">
+      <section class="diagram-section">
         <div class="v2-section-heading reveal">
-          <p class="v2-kicker">How it works</p>
-          <h2>Your app keeps running. Forsig checks every call before your provider.</h2>
+          <p class="v2-kicker">Approval flow</p>
+          <h2>Your agent keeps running. Forsig handles the decision point.</h2>
         </div>
         <div class="flow-diagram reveal">
-          <div><span>Your agent app</span><strong>OpenAI SDK</strong></div>
+          <div><span>Your agent</span><strong>Risky action</strong></div>
           <b></b>
-          <div><span>Forsig gateway</span><strong>Budget + policy check</strong></div>
+          <div><span>Forsig</span><strong>Approval request</strong></div>
           <b></b>
-          <div><span>Provider</span><strong>OpenAI first</strong></div>
+          <div><span>Human reviewer</span><strong>Approve / reject / edit</strong></div>
+          <b></b>
+          <div><span>Agent</span><strong>Resume safely</strong></div>
         </div>
         <div class="flow-notes reveal delay-1">
-          <span>Policies checked before provider call</span>
-          <span>Logs written after decision</span>
-          <span>Kill switch can pause traffic instantly</span>
+          <span>Context-rich approval cards</span>
+          <span>Reviewer decisions recorded</span>
+          <span>Audit trail for every escalation</span>
         </div>
       </section>
 
-      <section id="control" class="v2-split">
-        <div class="v2-panel reveal">
-          <p class="v2-kicker">Control surface</p>
-          <h2>Register the agent. Keep your code.</h2>
-          <p>Forsig does not host your agent or replace your framework. You create an agent record, store your OpenAI key encrypted, generate a Forsig virtual key, and keep shipping from your own app.</p>
-          <ul>
-            <li>Model allowlists and blocked models</li>
-            <li>Required instructions recorded for audit</li>
-            <li>Metadata-only logs by default</li>
-          </ul>
+      <section id="developers" class="v2-section compact">
+        <div class="v2-section-heading reveal">
+          <p class="v2-kicker">Developer-friendly</p>
+          <h2>Call Forsig when your agent needs approval.</h2>
+          <p>The private beta API is focused on escalation requests, reviewer decisions, and agent resume workflows. SDK examples are illustrative while the beta API is finalized.</p>
         </div>
-        <div class="v2-timeline reveal delay-1">
-          <div><b>1</b><span>Add provider key</span></div>
-          <div><b>2</b><span>Create agent budget</span></div>
-          <div><b>3</b><span>Swap base URL</span></div>
-          <div><b>4</b><span>Watch blocks and spend</span></div>
+        <div class="v2-code-grid">
+          <div class="v2-code reveal">
+            <div><span>JavaScript example</span><button data-copy-target="js-snippet">Copy</button></div>
+            <pre><code id="js-snippet">const decision = await forsig.escalate({
+  agent: "refund-agent",
+  runId: "run_123",
+  task: "Approve refund for customer #123",
+  risk: "refund_over_limit",
+  proposedAction: "Issue $500 refund",
+  context: {
+    customerTier: "VIP",
+    orderValue: 1200,
+    reason: "Product failed twice"
+  }
+});
+
+if (decision.status === "approved") {
+  await issueRefund(decision.instruction);
+}</code></pre>
+          </div>
+          <div class="v2-code reveal delay-1">
+            <div><span>Decision response</span><button data-copy-target="py-snippet">Copy</button></div>
+            <pre><code id="py-snippet">{
+  "status": "approved",
+  "instruction": "Approve the refund, but issue store credit instead of cash.",
+  "reviewer": "support_lead",
+  "auditId": "audit_9J2k"
+}</code></pre>
+          </div>
         </div>
       </section>
 
       <section class="trust-section">
         <div class="trust-item reveal">
-          <span>Privacy posture</span>
-          <strong>Metadata-only logs by default</strong>
+          <span>First beta focus</span>
+          <strong>Human approval and escalation</strong>
         </div>
         <div class="trust-item reveal delay-1">
-          <span>Developer path</span>
-          <strong>OpenAI-compatible gateway first</strong>
+          <span>Reviewer workflow</span>
+          <strong>Web inbox first, Slack/email planned</strong>
         </div>
         <div class="trust-item reveal delay-2">
-          <span>Launch focus</span>
-          <strong>Budget blocks, token counts, kill switch</strong>
+          <span>Trust posture</span>
+          <strong>Audit trail for every decision</strong>
         </div>
       </section>
 
       <section id="security" class="security-section">
         <div class="v2-section-heading reveal">
-          <p class="v2-kicker">Built for sensitive agent traffic</p>
-          <h2>Trust has to be part of the product.</h2>
+          <p class="v2-kicker">Built for sensitive decisions</p>
+          <h2>Forsig receives only the context you choose to escalate.</h2>
         </div>
         <div class="security-grid">
           <article class="security-card reveal">
-            <span>Prompt privacy</span>
-            <h3>Metadata-only by default</h3>
-            <p>Forsig logs spend, tokens, status, latency, model, and block reason. Prompts are not stored by default.</p>
+            <span>Data minimization</span>
+            <h3>Send the context needed for review</h3>
+            <p>Your agent decides what task, proposed action, risk type, and context to include in an approval request.</p>
           </article>
           <article class="security-card reveal delay-1">
-            <span>Provider keys</span>
-            <h3>Your key stays protected</h3>
-            <p>Provider keys are stored server-side and encrypted before storage. Your app uses Forsig virtual keys.</p>
+            <span>Decision record</span>
+            <h3>Every escalation is auditable</h3>
+            <p>Forsig records reviewer decisions, timestamps, status, and the instruction returned to the agent.</p>
           </article>
           <article class="security-card reveal delay-2">
-            <span>Rollback</span>
-            <h3>One-line removal</h3>
-            <p>Remove Forsig by changing your base URL back to your provider. No framework migration required.</p>
+            <span>Channels</span>
+            <h3>Start with web, expand carefully</h3>
+            <p>The private beta starts with a web approval inbox. Slack and email workflows are planned; WhatsApp, Discord, and Teams may follow based on demand.</p>
           </article>
           <article class="security-card reveal">
-            <span>Failure mode</span>
-            <h3>Designed to fail visibly</h3>
-            <p>If traffic is blocked or paused, Forsig returns clear status codes and human-readable reasons.</p>
+            <span>Product boundary</span>
+            <h3>Not a replacement for your framework</h3>
+            <p>Forsig works alongside your agent stack. It handles approval moments, not the entire agent runtime.</p>
           </article>
         </div>
       </section>
@@ -299,101 +334,55 @@
         <div class="founder-card reveal">
           <div>
             <span class="v2-kicker">Founder note</span>
-            <h2>Built for AI builders shipping agents with real provider bills.</h2>
-            <p>Forsig is being built by Nazmul Karim for founders and developers who need practical control before agent traffic becomes expensive, opaque, or risky.</p>
+            <h2>Built for teams that want agents to act, but not act alone.</h2>
+            <p>Forsig is being built by Nazmul Karim for founders and developers shipping AI agents into workflows where a human decision still matters.</p>
           </div>
           <a class="button" href="/contact">Contact founder</a>
-        </div>
-      </section>
-
-      <section id="install" class="v2-section compact">
-        <div class="v2-section-heading reveal">
-          <p class="v2-kicker">Seconds to install</p>
-          <h2>Use the gateway directly, or add SDK headers when you need metadata.</h2>
-        </div>
-        <div class="v2-code-grid">
-          <div class="v2-code reveal">
-            <div><span>JavaScript</span><button data-copy-target="js-snippet">Copy</button></div>
-            <pre><code id="js-snippet">npm install @forsig/sdk
-
-import OpenAI from "openai";
-import { forsigHeaders } from "@forsig/sdk";
-
-const client = new OpenAI({
-  apiKey: process.env.FORSIG_API_KEY,
-  baseURL: "https://gateway.forsig.com/v1",
-});
-
-await client.chat.completions.create({
-  model: "gpt-4o-mini",
-  messages: [{ role: "user", content: "Analyze this ticket" }],
-}, {
-  headers: forsigHeaders({ externalUserId: "user_123" }),
-});</code></pre>
-          </div>
-          <div class="v2-code reveal delay-1">
-            <div><span>Python</span><button data-copy-target="py-snippet">Copy</button></div>
-            <pre><code id="py-snippet">pip install forsig
-
-from openai import OpenAI
-from forsig import forsig_headers
-
-client = OpenAI(
-    api_key=os.environ["FORSIG_API_KEY"],
-    base_url="https://gateway.forsig.com/v1",
-)
-
-client.chat.completions.create(
-    model="gpt-4o-mini",
-    messages=[{"role": "user", "content": "Analyze this ticket"}],
-    extra_headers=forsig_headers(external_user_id="user_123"),
-)</code></pre>
-          </div>
         </div>
       </section>
 
       <section id="waitlist" class="v2-final">
         <div class="reveal">
           <p class="v2-kicker">Private beta</p>
-          <h2>Protect your AI agents before your next provider bill.</h2>
-          <p>Join the private beta for early access, setup help, and free beta usage.</p>
+          <h2>Protect risky agent actions before they happen.</h2>
+          <p>Join the private beta for early access, setup help, and direct feedback loops.</p>
         </div>
-          <form id="waitlist-form" class="v2-form referral-enabled reveal delay-1">
-            <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
-            <input name="referralCode" type="text" placeholder="Referral code (optional)" />
-          <button type="submit">Protect my agents</button>
+        <form id="waitlist-form" class="v2-form referral-enabled reveal delay-1">
+          <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
+          <input name="referralCode" type="text" placeholder="Referral code (optional)" />
+          <button type="submit">Protect risky agent actions</button>
           <p id="form-status" class="mini-status" role="status"></p>
         </form>
       </section>
 
       <section id="faq" class="v2-faq">
         <details open>
-          <summary>Does Forsig store prompts?</summary>
-          <p>Not by default. The MVP stores metadata, token counts, cost, prompt hashes, latency, and policy outcomes.</p>
+          <summary>What is Forsig?</summary>
+          <p>Forsig is a human approval layer for autonomous AI agents. It lets agents pause before risky actions, ask a human for a decision, and resume with an auditable response.</p>
         </details>
         <details open>
+          <summary>Is Forsig an AI gateway?</summary>
+          <p>No. Forsig is not primarily an AI gateway. Agents call Forsig only when they need approval, escalation, or human judgment.</p>
+        </details>
+        <details>
+          <summary>What channels does Forsig support?</summary>
+          <p>The private beta starts with a web approval inbox and planned Slack/email workflows. WhatsApp, Discord, Microsoft Teams, and other channels may be added based on user demand.</p>
+        </details>
+        <details>
+          <summary>Who is Forsig for?</summary>
+          <p>Teams building AI agents, workflow automations, AI support systems, internal operations agents, and human-supervised AI workflows.</p>
+        </details>
+        <details>
+          <summary>What actions should be escalated?</summary>
+          <p>Refunds, external messages, account changes, billing actions, customer-impacting decisions, sensitive data workflows, high-cost operations, and any action where human judgment is required.</p>
+        </details>
+        <details>
           <summary>Does Forsig replace my agent framework?</summary>
-          <p>No. Forsig registers and controls external agents. Your agent remains in your app.</p>
-        </details>
-        <details>
-          <summary>Do I have to use an SDK?</summary>
-          <p>No. Any OpenAI-compatible client can use Forsig by changing the base URL and API key.</p>
-        </details>
-        <details>
-          <summary>What happens when an agent hits its budget?</summary>
-          <p>Forsig blocks the request before the provider call and returns a clear budget error with a reason.</p>
-        </details>
-        <details>
-          <summary>Which providers are supported first?</summary>
-          <p>The first gateway path is OpenAI-compatible chat completions. Anthropic and others come after the MVP.</p>
-        </details>
-        <details>
-          <summary>Can I remove Forsig later?</summary>
-          <p>Yes. Change your base URL and API key back to your provider. Your agent code does not need a rewrite.</p>
+          <p>No. Forsig works alongside your existing agent stack. Your agent calls the Forsig API when it needs human approval.</p>
         </details>
         <details>
           <summary>Is Forsig production-ready?</summary>
-          <p>Forsig is entering private beta. Early users should expect setup help and fast iteration before broad production use.</p>
+          <p>Forsig is currently in private beta. Early users should expect setup help, fast iteration, and active feedback loops.</p>
         </details>
       </section>
 

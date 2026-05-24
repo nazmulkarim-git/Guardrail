@@ -53,18 +53,18 @@
               <option>Product Manager</option>
             </select>
             <select name="provider">
-              <option value="">Primary provider</option>
-              <option>OpenAI</option>
-              <option>Anthropic</option>
-              <option>OpenRouter</option>
-              <option>Azure OpenAI</option>
-              <option>Google Gemini</option>
-              <option>Multiple providers</option>
+              <option value="">Preferred approval channel</option>
+              <option>Web inbox</option>
+              <option>Slack</option>
+              <option>Email</option>
+              <option>Microsoft Teams</option>
+              <option>Discord</option>
+              <option>WhatsApp</option>
               <option>Not sure yet</option>
             </select>
-            <input name="monthlyTokenVolume" type="text" placeholder="Monthly token volume" />
-            <input name="monthlyAiSpend" type="text" placeholder="Monthly AI spend" />
-            <textarea name="useCase" placeholder="What are you building?"></textarea>
+            <input name="monthlyTokenVolume" type="text" placeholder="Expected approval volume" />
+            <input name="monthlyAiSpend" type="text" placeholder="Risky actions you need reviewed" />
+            <textarea name="useCase" placeholder="What agents or workflows are you building?"></textarea>
             <button class="button primary" type="submit">Send context</button>
             <p class="mini-status" role="status"></p>
           </form>

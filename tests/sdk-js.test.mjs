@@ -32,23 +32,23 @@ test("newForsigSession returns a stable prefix", () => {
   assert.match(newForsigSession(), /^sess_[a-zA-Z0-9_]+$/);
 });
 
-test("parseForsigError identifies Forsig block errors", () => {
+test("parseForsigError identifies Forsig approval errors", () => {
   const parsed = parseForsigError({
-    status: 402,
+    status: 409,
     error: {
       type: "forsig_policy_error",
-      code: "daily_budget_exceeded",
-      message: "Daily budget exceeded."
+      code: "approval_required",
+      message: "Human approval is required."
     }
   });
   assert.equal(parsed.isForsigError, true);
-  assert.equal(parsed.status, 402);
-  assert.equal(parsed.code, "daily_budget_exceeded");
+  assert.equal(parsed.status, 409);
+  assert.equal(parsed.code, "approval_required");
 });
 
 test("createForsigOpenAIClient returns config without optional OpenAI class", () => {
   assert.deepEqual(createForsigOpenAIClient({ apiKey: "fsk_test_123" }), {
     apiKey: "fsk_test_123",
-    baseURL: "https://gateway.forsig.com/v1"
+    baseURL: "https://api.forsig.com/v1"
   });
 });

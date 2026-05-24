@@ -34,7 +34,7 @@ export function parseForsigError(error) {
 }
 
 export function createForsigOpenAIClient(options) {
-  const baseURL = options.baseURL ?? "https://gateway.forsig.com/v1";
+  const baseURL = options.baseURL ?? "https://api.forsig.com/v1";
   if (!options.OpenAI) {
     return { apiKey: options.apiKey, baseURL };
   }

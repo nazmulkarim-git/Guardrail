@@ -80,7 +80,7 @@ async function sendInvite({ to, inviterEmail, referralCode, acceptLink, landingL
             <p style="margin:0 0 12px;color:#d7ff72;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:700">Forsig referral</p>
             <h1 style="margin:0 0 16px;font-size:28px;line-height:1.1">You were invited to join Forsig.</h1>
             <p style="color:#c9cedd;line-height:1.65"><strong>${escapeHtml(inviterEmail)}</strong> invited you to the Forsig private beta.</p>
-            <p style="color:#c9cedd;line-height:1.65">Forsig is a budget firewall for AI agents. It helps builders block runaway loops, cap spend, log token usage, and pause risky agent traffic before provider bills spiral.</p>
+            <p style="color:#c9cedd;line-height:1.65">Forsig is the human approval layer for autonomous AI agents. It helps agents pause before risky actions, ask the right human for a decision, and resume with an audit trail.</p>
             <p style="color:#c9cedd;line-height:1.65">Click below to accept the invite. We will automatically add <strong>${escapeHtml(to)}</strong> to early access with referral code <strong>${escapeHtml(referralCode)}</strong>.</p>
             <p style="margin:26px 0">
               <a href="${escapeHtml(acceptLink)}" style="display:inline-block;background:#d7ff72;color:#10110d;text-decoration:none;padding:13px 18px;border-radius:12px;font-weight:800">Accept invite</a>

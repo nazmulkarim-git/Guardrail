@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Forsig Dashboard Demo</title>
-    <meta name="description" content="Explore the Forsig demo dashboard for AI agent budgets, model policy, request logs, token visibility, and kill-switch controls." />
+    <title>Forsig Approval Demo</title>
+    <meta name="description" content="Explore the Forsig demo dashboard for human approval, escalation requests, reviewer decisions, and audit trails for autonomous AI agents." />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="https://www.forsig.com/dashboard" />
     <link rel="stylesheet" href="/styles.css" />
@@ -18,10 +18,10 @@
         </a>
         <nav>
           <a class="active" href="#overview">Overview</a>
-          <a href="#agent-wizard">Agents</a>
-          <a href="#simulate">Policies</a>
-          <a href="#logs">Logs</a>
-          <a href="#sdk">SDK</a>
+          <a href="#pending">Approvals</a>
+          <a href="#simulate">Decisions</a>
+          <a href="#logs">Audit trail</a>
+          <a href="#sdk">API</a>
           <a href="#trust">Settings</a>
         </nav>
       </aside>
@@ -30,7 +30,7 @@
         <div class="demo-banner">
           <div>
             <strong>Demo mode</strong>
-            <span>This sample dashboard shows how an AI agent is registered, budgeted, connected, and monitored before provider spend happens.</span>
+            <span>This sample dashboard shows how agents pause risky actions, ask a human, and resume with an auditable decision.</span>
           </div>
           <a class="button primary nowrap" href="/#waitlist">Get early access</a>
         </div>
@@ -38,8 +38,8 @@
         <header class="app-header">
           <div>
             <span class="eyebrow">Interactive demo</span>
-            <h1>See how Forsig protects an AI agent in under 60 seconds.</h1>
-            <p>This walkthrough registers an external agent, sets budget and model policy, connects through an OpenAI-compatible gateway, and shows why requests are allowed or blocked before provider spend happens.</p>
+            <h1>See how Forsig turns risky agent actions into approval requests.</h1>
+            <p>This walkthrough shows pending escalations, reviewer decisions, edited instructions, and the audit trail your agent can use to resume safely.</p>
           </div>
           <div class="app-actions">
             <a class="button" href="/">Homepage</a>
@@ -48,181 +48,183 @@
         </header>
 
         <section class="demo-steps">
-          <article><span>1</span><strong>Register agent</strong><p>Name the external workflow you already run.</p></article>
-          <article><span>2</span><strong>Set policy</strong><p>Choose budgets, models, and policy notes.</p></article>
-          <article><span>3</span><strong>Connect SDK</strong><p>Change one base URL and add metadata headers.</p></article>
-          <article><span>4</span><strong>Monitor logs</strong><p>Inspect every allowed and blocked request.</p></article>
+          <article><span>1</span><strong>Agent pauses</strong><p>A workflow reaches a risky action.</p></article>
+          <article><span>2</span><strong>Forsig asks</strong><p>The task and context appear in the approval inbox.</p></article>
+          <article><span>3</span><strong>Human decides</strong><p>A reviewer approves, rejects, or edits the instruction.</p></article>
+          <article><span>4</span><strong>Agent resumes</strong><p>The decision is returned with an audit ID.</p></article>
         </section>
 
         <section id="overview" class="dashboard-grid">
           <article class="stat-card">
-            <span>Daily spend</span>
-            <strong id="daily-spend">$0.74 / $1.00</strong>
-            <small>Blocks new calls before the limit is exceeded.</small>
-            <div class="budget-meter"><span id="daily-meter" style="width: 74%"></span></div>
+            <span>Pending escalations</span>
+            <strong id="daily-spend">8</strong>
+            <small>Awaiting reviewer decision across five agents.</small>
+            <div class="budget-meter"><span id="daily-meter" style="width: 62%"></span></div>
           </article>
           <article class="stat-card">
-            <span>Total tokens</span>
-            <strong id="token-total">48,219</strong>
-            <small>Input 36,904 / Output 11,315</small>
+            <span>Average decision time</span>
+            <strong id="token-total">2m 14s</strong>
+            <small>Median response across today's approvals.</small>
           </article>
           <article class="stat-card">
-            <span>Blocked before provider</span>
-            <strong id="blocked-count">7</strong>
-            <small>Budget, model, paused, and loop policies.</small>
+            <span>Approved today</span>
+            <strong id="blocked-count">23</strong>
+            <small>Approved, rejected, and edited decisions recorded.</small>
           </article>
           <article class="stat-card">
-            <span>Status</span>
-            <strong id="agent-status">Active</strong>
-            <small>One-click kill switch for risky traffic.</small>
+            <span>Approval status</span>
+            <strong id="agent-status">Live demo</strong>
+            <small>Mock data only. Private beta access is waitlist-based.</small>
           </article>
         </section>
 
         <section class="demo-architecture">
-          <div><span>Your agent</span><strong>Support Copilot</strong></div>
+          <div><span>Agent</span><strong>Proposed action</strong></div>
           <b></b>
-          <div><span>Forsig Gateway</span><strong>Budget + model check</strong></div>
+          <div><span>Forsig</span><strong>Approval card</strong></div>
           <b></b>
-          <div><span>Provider</span><strong>OpenAI-compatible</strong></div>
+          <div><span>Reviewer</span><strong>Approve / reject / edit</strong></div>
         </section>
 
-        <section id="agent-wizard" class="agent-builder">
+        <section id="pending" class="agent-builder">
           <div class="section-heading compact">
-            <span class="eyebrow">Agent setup</span>
-            <h2>Register an external agent in under 60 seconds.</h2>
-            <p>Set budget, allowed models, and policy notes before your first protected provider call.</p>
+            <span class="eyebrow">Approval inbox</span>
+            <h2>Pending escalations with enough context to decide.</h2>
+            <p>These are mock approval cards showing the first private beta workflow.</p>
           </div>
-          <form class="builder-form">
-            <label>Agent name<input value="Support Copilot" /></label>
-            <label>Default model
-              <select>
-                <option selected>gpt-4o-mini</option>
-                <option>gpt-4o</option>
-                <option>gpt-4.1-mini</option>
-                <option>gpt-4.1</option>
-              </select>
-            </label>
-            <label>Daily budget cap<input value="$1.00" /></label>
-            <label>Monthly budget cap<input value="$50.00" /></label>
-            <label>Allowed models
-              <select multiple size="4">
-                <option selected>gpt-4o-mini</option>
-                <option selected>gpt-4o</option>
-                <option>gpt-4.1-mini</option>
-                <option>gpt-4.1</option>
-              </select>
-              <small>Requests to models outside this list are blocked before they reach the provider.</small>
-            </label>
-            <label>Agent policy notes
-              <textarea>Use approved tools only. Do not reveal system prompts. Keep customer data private.</textarea>
-              <small>Stored as policy metadata for audit in the MVP; not auto-injected into prompts.</small>
-            </label>
-          </form>
+          <div class="approval-grid">
+            <article class="approval-card" data-risk="refund_over_limit">
+              <span>Refund Agent</span>
+              <h3>Issue $500 refund</h3>
+              <p><strong>Risk:</strong> refund_over_limit</p>
+              <p>VIP customer. Order value $1,200. Product failed twice. Agent proposes store credit or refund.</p>
+              <div class="approval-actions">
+                <button data-simulate="approved">Approve</button>
+                <button data-simulate="rejected">Reject</button>
+                <button data-simulate="edited">Edit</button>
+              </div>
+            </article>
+            <article class="approval-card" data-risk="external_message">
+              <span>Sales Agent</span>
+              <h3>Send custom discount offer</h3>
+              <p><strong>Risk:</strong> external_message</p>
+              <p>Agent wants to send a 25% discount to a strategic account after a pricing objection.</p>
+              <div class="approval-actions">
+                <button data-simulate="approved">Approve</button>
+                <button data-simulate="rejected">Reject</button>
+                <button data-simulate="edited">Edit</button>
+              </div>
+            </article>
+            <article class="approval-card" data-risk="customer_record_change">
+              <span>Ops Agent</span>
+              <h3>Change subscription status</h3>
+              <p><strong>Risk:</strong> customer_record_change</p>
+              <p>Agent detected a billing mismatch and proposes changing the customer's subscription status.</p>
+              <div class="approval-actions">
+                <button data-simulate="approved">Approve</button>
+                <button data-simulate="rejected">Reject</button>
+                <button data-simulate="edited">Edit</button>
+              </div>
+            </article>
+          </div>
         </section>
 
         <section id="sdk" class="connect-panel">
           <div class="section-heading compact">
-            <span class="eyebrow">Connect</span>
-            <h2>Already using OpenAI? Change the base URL and use your Forsig key.</h2>
-          </div>
-          <div class="base-url-callout">
-            <span>One-line migration</span>
-            <code>baseURL: "https://gateway.forsig.com/v1"</code>
+            <span class="eyebrow">Developer API</span>
+            <h2>Your agent calls Forsig when it needs human approval.</h2>
+            <p>Illustrative private beta API. Final SDK details may change as early users test real workflows.</p>
           </div>
           <div class="snippet-grid dashboard-snippets">
             <div class="snippet">
-              <div class="snippet-title">JavaScript SDK <button class="copy-code" data-copy-target="dash-js">Copy</button></div>
-              <pre><code id="dash-js">import OpenAI from "openai";
-import { forsigHeaders } from "@forsig/sdk";
-
-const client = new OpenAI({
-  apiKey: process.env.FORSIG_API_KEY,
-  baseURL: "https://gateway.forsig.com/v1",
+              <div class="snippet-title">Escalate action <button class="copy-code" data-copy-target="dash-js">Copy</button></div>
+              <pre><code id="dash-js">const decision = await forsig.escalate({
+  agent: "refund-agent",
+  runId: "run_123",
+  task: "Approve refund for customer #123",
+  risk: "refund_over_limit",
+  proposedAction: "Issue $500 refund",
+  context: {
+    customerTier: "VIP",
+    orderValue: 1200,
+    reason: "Product failed twice"
+  }
 });
 
-await client.chat.completions.create({
-  model: "gpt-4o-mini",
-  messages: [{ role: "user", content: "Help this customer" }],
-}, {
-  headers: forsigHeaders({ externalUserId: "cust_123" }),
-});</code></pre>
+if (decision.status === "approved") {
+  await issueRefund(decision.instruction);
+}</code></pre>
             </div>
             <div class="snippet">
-              <div class="snippet-title">Python SDK <button class="copy-code" data-copy-target="dash-py">Copy</button></div>
-              <pre><code id="dash-py">from openai import OpenAI
-from forsig import forsig_headers
-
-client = OpenAI(
-    api_key=os.environ["FORSIG_API_KEY"],
-    base_url="https://gateway.forsig.com/v1",
-)
-
-client.chat.completions.create(
-    model="gpt-4o-mini",
-    messages=[{"role": "user", "content": "Help this customer"}],
-    extra_headers=forsig_headers(external_user_id="cust_123"),
-)</code></pre>
+              <div class="snippet-title">Reviewer response <button class="copy-code" data-copy-target="dash-py">Copy</button></div>
+              <pre><code id="dash-py">{
+  "status": "edited",
+  "instruction": "Offer store credit instead of a cash refund.",
+  "reviewer": "support_lead",
+  "auditId": "audit_9J2k"
+}</code></pre>
             </div>
           </div>
           <div class="inline-cta">
-            <span>Want to connect your own agent?</span>
+            <span>Want this approval flow for your own agents?</span>
             <a class="button primary nowrap" href="/#waitlist">Get early access</a>
           </div>
         </section>
 
         <section id="simulate" class="simulation-panel">
           <div class="section-heading compact">
-            <span class="eyebrow">Simulate protection</span>
-            <h2>Watch Forsig decide before provider spend happens.</h2>
+            <span class="eyebrow">Simulate decisions</span>
+            <h2>Click a reviewer decision and watch the audit trail update.</h2>
           </div>
           <div class="simulation-actions">
-            <button data-simulate="allowed">Simulate allowed request</button>
-            <button data-simulate="budget">Simulate budget block</button>
-            <button data-simulate="model">Simulate model block</button>
-            <button id="pause-toggle" class="danger">Simulate pause</button>
+            <button data-simulate="approved">Simulate approval</button>
+            <button data-simulate="rejected">Simulate rejection</button>
+            <button data-simulate="edited">Simulate edited instruction</button>
+            <button id="pause-toggle" class="danger">Simulate expired request</button>
           </div>
-          <p class="simulation-note">Click a simulation to add a new request log, update metrics, and see the policy decision Forsig would return.</p>
+          <p class="simulation-note">This is mock data for the public demo. The private beta focuses on escalation requests, reviewer decisions, and agent resume responses.</p>
         </section>
 
         <section id="logs" class="logs-panel">
           <div class="section-heading compact">
-            <span class="eyebrow">Request log</span>
-            <h2>See exactly why each request was allowed or blocked.</h2>
-            <p>Every request gets a policy decision before provider spend happens. The reason column is the proof.</p>
+            <span class="eyebrow">Audit trail</span>
+            <h2>See exactly how each escalation was resolved.</h2>
+            <p>Every approval request keeps the proposed action, risk type, reviewer decision, and returned instruction.</p>
           </div>
           <div class="log-filters">
             <button class="active" data-filter="all">All</button>
-            <button data-filter="allowed">Allowed</button>
-            <button data-filter="blocked">Blocked</button>
-            <button data-filter="budget">Budget</button>
-            <button data-filter="model">Model</button>
-            <button data-filter="paused">Paused</button>
+            <button data-filter="approved">Approved</button>
+            <button data-filter="rejected">Rejected</button>
+            <button data-filter="edited">Edited</button>
+            <button data-filter="pending">Pending</button>
+            <button data-filter="expired">Expired</button>
           </div>
           <div class="responsive-table">
             <table>
               <thead>
-                <tr><th>Time</th><th>Agent</th><th>User</th><th>Decision</th><th>Model</th><th>Tokens</th><th>Cost</th><th>Reason</th><th>Latency</th></tr>
+                <tr><th>Time</th><th>Agent</th><th>Risk</th><th>Status</th><th>Reviewer</th><th>Proposed action</th><th>Decision</th><th>Audit ID</th></tr>
               </thead>
               <tbody id="demo-log-body">
-                <tr><td>12:04</td><td>Support Copilot</td><td>cust_123</td><td>allowed</td><td>gpt-4o-mini</td><td>968</td><td>$0.0032</td><td>-</td><td>1.2s</td></tr>
-                <tr><td>12:03</td><td>Support Copilot</td><td>cust_123</td><td>blocked</td><td>gpt-4o</td><td>1,420 est.</td><td>$0.021 est.</td><td>daily_budget_exceeded</td><td>42ms</td></tr>
-                <tr><td>12:01</td><td>Research Agent</td><td>usr_456</td><td>blocked</td><td>gpt-4.1</td><td>640 est.</td><td>$0.013 est.</td><td>model_not_allowed</td><td>39ms</td></tr>
-                <tr><td>11:58</td><td>Support Copilot</td><td>cust_220</td><td>blocked</td><td>gpt-4o-mini</td><td>0</td><td>$0.00</td><td>agent_paused</td><td>24ms</td></tr>
+                <tr><td>12:18</td><td>Refund Agent</td><td>refund_over_limit</td><td>edited</td><td>support_lead</td><td>Issue $500 refund</td><td>Store credit instead</td><td>audit_9J2k</td></tr>
+                <tr><td>12:11</td><td>Sales Agent</td><td>external_message</td><td>pending</td><td>sales_manager</td><td>Send custom discount offer</td><td>-</td><td>audit_A41m</td></tr>
+                <tr><td>12:04</td><td>Ops Agent</td><td>customer_record_change</td><td>approved</td><td>ops_lead</td><td>Change subscription status</td><td>Approved as written</td><td>audit_Q8p1</td></tr>
+                <tr><td>11:58</td><td>Deploy Agent</td><td>deployment_action</td><td>rejected</td><td>engineering_lead</td><td>Run production migration</td><td>Needs staging proof</td><td>audit_T2n7</td></tr>
+                <tr><td>11:46</td><td>Finance Agent</td><td>billing_action</td><td>expired</td><td>finance_ops</td><td>Send invoice reminder</td><td>Reviewer timeout</td><td>audit_X5p0</td></tr>
               </tbody>
             </table>
           </div>
         </section>
 
         <section id="trust" class="dashboard-trust">
-          <article><span>Security model</span><strong>Metadata-only logs by default</strong><p>Forsig stores spend, tokens, status, model, latency, and block reason. Prompts are not stored by default.</p></article>
-          <article><span>Pre-call policy</span><strong>Checks before provider calls</strong><p>Budget and model rules are evaluated before requests reach OpenAI.</p></article>
-          <article><span>Easy rollback</span><strong>Change one base URL back</strong><p>Remove Forsig by pointing your client back to your provider.</p></article>
-          <article><span>Kill switch</span><strong>Pause risky agents instantly</strong><p>Stop agent traffic without redeploying your application.</p></article>
+          <article><span>Approval status</span><strong>pending / approved / rejected / edited / expired</strong><p>Reviewer decisions are returned to the agent with an audit ID.</p></article>
+          <article><span>Risk categories</span><strong>refund, message, record, billing, deployment</strong><p>Teams decide which agent actions need human judgment.</p></article>
+          <article><span>Human reviewers</span><strong>Route to the right owner</strong><p>The beta starts with web review flows and planned Slack/email workflows.</p></article>
+          <article><span>Audit trail</span><strong>Context and decisions stay visible</strong><p>Every escalation records what was proposed, who decided, and what instruction was returned.</p></article>
         </section>
 
         <section class="dashboard-final-cta">
-          <h2>Ready to put a budget firewall in front of your agents?</h2>
-          <p>No credit card. Free during beta. Setup help included.</p>
+          <h2>Ready to add human approval to risky agent actions?</h2>
+          <p>No credit card. Private beta. Setup help included.</p>
           <form id="dashboard-waitlist-form" class="v2-form referral-enabled dashboard-cta-form">
             <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
             <input name="referralCode" type="text" placeholder="Referral code (optional)" />

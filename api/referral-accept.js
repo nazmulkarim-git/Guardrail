@@ -95,7 +95,7 @@ async function sendConfirmationEmail({ email, referralCode, referralLink, invite
         <div style="max-width:620px;margin:0 auto;border:1px solid rgba(255,255,255,.14);border-radius:16px;padding:30px;background:#111522">
           <p style="margin:0 0 12px;color:#5ef0a4;text-transform:uppercase;font-size:12px;letter-spacing:.08em;font-weight:700">Forsig early access</p>
           <h1 style="margin:0 0 16px;font-size:30px;line-height:1.1">You are on the Forsig waitlist.</h1>
-          <p style="color:#c9cedd;line-height:1.65">You accepted an invite from <strong>${escapeHtml(inviterEmail)}</strong>. Forsig is the budget firewall and kill switch for AI agents.</p>
+          <p style="color:#c9cedd;line-height:1.65">You accepted an invite from <strong>${escapeHtml(inviterEmail)}</strong>. Forsig is the human approval layer for autonomous AI agents.</p>
           <div style="margin:22px 0;padding:18px;border:1px solid rgba(215,255,114,.22);border-radius:14px;background:rgba(215,255,114,.06)">
             <p style="margin:0 0 10px;color:#d7ff72;font-weight:800">Your referral code: ${escapeHtml(referralCode)}</p>
             <p style="margin:0;color:#c9cedd;line-height:1.6">Share this link to move up the waitlist:</p>

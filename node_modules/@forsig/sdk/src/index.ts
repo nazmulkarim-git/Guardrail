@@ -8,16 +8,11 @@ export type ForsigHeadersInput = {
 };
 
 export type ForsigBlockCode =
-  | "invalid_virtual_key"
-  | "daily_budget_exceeded"
-  | "monthly_budget_exceeded"
-  | "per_request_budget_exceeded"
-  | "model_not_allowed"
-  | "model_blocked"
-  | "agent_paused"
-  | "organization_paused"
-  | "instance_paused"
-  | "loop_detected"
+  | "approval_required"
+  | "approval_rejected"
+  | "approval_expired"
+  | "reviewer_unavailable"
+  | "risk_route_not_found"
   | "rate_limited"
   | "safety_policy_block";
 
@@ -70,7 +65,7 @@ export function createForsigOpenAIClient(options: {
   baseURL?: string;
   OpenAI?: new (config: { apiKey: string; baseURL: string }) => unknown;
 }) {
-  const baseURL = options.baseURL ?? "https://gateway.forsig.com/v1";
+  const baseURL = options.baseURL ?? "https://api.forsig.com/v1";
   if (!options.OpenAI) {
     return { apiKey: options.apiKey, baseURL };
   }

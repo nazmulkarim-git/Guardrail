@@ -35,18 +35,18 @@ class ForsigSdkTests(unittest.TestCase):
                 "status": 402,
                 "error": {
                     "type": "forsig_policy_error",
-                    "code": "daily_budget_exceeded",
-                    "message": "Daily budget exceeded.",
+                    "code": "approval_required",
+                    "message": "Human approval is required.",
                 },
             }
         )
         self.assertTrue(parsed["is_forsig_error"])
-        self.assertEqual(parsed["code"], "daily_budget_exceeded")
+        self.assertEqual(parsed["code"], "approval_required")
 
     def test_openai_client_config_without_dependency(self):
         client = create_forsig_openai_client("fsk_test_123")
         self.assertEqual(client["api_key"], "fsk_test_123")
-        self.assertEqual(client["base_url"], "https://gateway.forsig.com/v1")
+        self.assertEqual(client["base_url"], "https://api.forsig.com/v1")
 
 
 if __name__ == "__main__":

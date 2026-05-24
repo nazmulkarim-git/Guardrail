@@ -131,8 +131,8 @@ function initCopyButtons() {
 function initHeroSwap() {
   const code = document.getElementById("hero-code");
   if (!code) return;
-  const before = 'baseURL: "https://api.openai.com/v1"\napiKey: process.env.OPENAI_API_KEY';
-  const after = 'baseURL: "https://gateway.forsig.com/v1"\napiKey: process.env.FORSIG_API_KEY';
+  const before = 'agent proposes: "Issue $500 refund"';
+  const after = 'forsig waits for: approval / rejection / edit';
   let useAfter = false;
   setInterval(() => {
     useAfter = !useAfter;
@@ -146,43 +146,43 @@ function initConsoleMotion() {
   const model = document.getElementById("decision-model");
   const fill = document.getElementById("spend-fill");
   const reason = document.getElementById("decision-reason");
-  const tokens = document.getElementById("metric-tokens");
-  const cost = document.getElementById("metric-cost");
+  const reviewer = document.getElementById("metric-tokens");
+  const responseTime = document.getElementById("metric-cost");
   const policy = document.getElementById("metric-policy");
-  if (!title || !pill || !model || !fill || !reason || !tokens || !cost || !policy) return;
+  if (!title || !pill || !model || !fill || !reason || !reviewer || !responseTime || !policy) return;
 
   const states = [
     {
-      title: "Blocked before provider spend",
-      pill: "402 budget",
-      model: "gpt-4o",
-      fill: "91%",
-      reason: 'Daily budget would exceed <strong>$25.00</strong>. Forsig skipped the OpenAI call.',
-      tokens: "12,840",
-      cost: "$3.14",
-      policy: "budget cap",
+      title: "Refund over limit",
+      pill: "pending",
+      model: "Refund Agent",
+      fill: "68%",
+      reason: 'Proposed action: <strong>Issue $500 refund</strong>. Waiting for a human reviewer before the agent continues.',
+      reviewer: "Support lead",
+      responseTime: "2m 14s",
+      policy: "needs approval",
       danger: true
     },
     {
-      title: "Allowed under policy",
-      pill: "200 allowed",
-      model: "gpt-4o-mini",
-      fill: "34%",
-      reason: 'Request is within the <strong>$0.20</strong> per-call limit. Forwarding to OpenAI.',
-      tokens: "1,248",
-      cost: "$0.004",
-      policy: "allowed",
+      title: "Edited instruction",
+      pill: "edited",
+      model: "Sales Agent",
+      fill: "52%",
+      reason: 'Reviewer changed the instruction to <strong>send a 10% offer</strong> instead of 25%.',
+      reviewer: "Sales manager",
+      responseTime: "1m 03s",
+      policy: "resume",
       danger: false
     },
     {
-      title: "Paused by kill switch",
-      pill: "423 paused",
-      model: "support-agent",
-      fill: "68%",
-      reason: 'Agent is paused while the team investigates a customer workflow.',
-      tokens: "0",
-      cost: "$0.00",
-      policy: "paused",
+      title: "Deployment action rejected",
+      pill: "rejected",
+      model: "Deploy Agent",
+      fill: "86%",
+      reason: 'Reviewer rejected <strong>production migration</strong> until staging proof is attached.',
+      reviewer: "Engineering lead",
+      responseTime: "4m 22s",
+      policy: "stop",
       danger: true
     }
   ];
@@ -196,8 +196,8 @@ function initConsoleMotion() {
     model.textContent = state.model;
     fill.style.width = state.fill;
     reason.innerHTML = state.reason;
-    tokens.textContent = state.tokens;
-    cost.textContent = state.cost;
+    reviewer.textContent = state.reviewer;
+    responseTime.textContent = state.responseTime;
     policy.textContent = state.policy;
     pill.style.borderColor = state.danger ? "rgba(255, 113, 95, 0.35)" : "rgba(120, 242, 194, 0.35)";
     pill.style.color = state.danger ? "#ffd4ca" : "#d7ffe9";
@@ -214,14 +214,12 @@ function initImpactCalculator() {
   if (!requests || !cost || !total || !requestLabel || !costLabel) return;
 
   const update = () => {
-    const requestCount = Number(requests.value);
-    const perRequest = Number(cost.value) / 100;
-    total.textContent = `$${(requestCount * perRequest).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    })}`;
-    requestLabel.textContent = `${requestCount} requests`;
-    costLabel.textContent = `$${perRequest.toFixed(2)}/request`;
+    const confidence = Number(requests.value);
+    const impact = Number(cost.value);
+    const needsHuman = confidence < 60 || impact > 65;
+    total.textContent = needsHuman ? "Human needed" : "Agent can continue";
+    requestLabel.textContent = `${confidence}% confidence`;
+    costLabel.textContent = impact > 70 ? "high impact" : impact > 35 ? "medium impact" : "low impact";
   };
 
   requests.addEventListener("input", update);
@@ -291,10 +289,10 @@ function initDashboard() {
   let activeLogFilter = "all";
 
   const rows = {
-    allowed: ["12:06", "Support Copilot", "cust_789", "allowed", "gpt-4o-mini", "812", "$0.0028", "-", "1.1s"],
-    budget: ["12:07", "Support Copilot", "cust_789", "blocked", "gpt-4o", "2,180 est.", "$0.044 est.", "daily_budget_exceeded", "38ms"],
-    model: ["12:08", "Sales Email Agent", "usr_812", "blocked", "gpt-4.1", "980 est.", "$0.019 est.", "model_not_allowed", "35ms"],
-    paused: ["12:09", "Support Copilot", "cust_789", "blocked", "gpt-4o-mini", "0", "$0.00", "agent_paused", "24ms"]
+    approved: ["12:21", "Refund Agent", "refund_over_limit", "approved", "support_lead", "Issue $500 refund", "Approved as written", "audit_R7x2"],
+    rejected: ["12:22", "Deploy Agent", "deployment_action", "rejected", "engineering_lead", "Run production migration", "Needs staging proof", "audit_D4m8"],
+    edited: ["12:23", "Sales Agent", "external_message", "edited", "sales_manager", "Send 25% discount", "Send 10% offer instead", "audit_E9q1"],
+    expired: ["12:24", "Ops Agent", "billing_action", "expired", "ops_lead", "Retry invoice reminder", "Reviewer timeout", "audit_X5p0"]
   };
 
   function prependLog(type) {
@@ -310,19 +308,12 @@ function initDashboard() {
   function getLogType(row) {
     if (row.dataset.logType) return row.dataset.logType;
     const cells = row.querySelectorAll("td");
-    const decision = cells[3]?.textContent.trim().toLowerCase() || "";
-    const reason = cells[7]?.textContent.trim().toLowerCase() || "";
-    if (decision === "allowed") return "allowed";
-    if (reason.includes("budget")) return "budget";
-    if (reason.includes("model")) return "model";
-    if (reason.includes("paused")) return "paused";
-    return decision === "blocked" ? "blocked" : "all";
+    return cells[3]?.textContent.trim().toLowerCase() || "all";
   }
 
   function matchesLogFilter(row, filter) {
     if (filter === "all") return true;
     const type = getLogType(row);
-    if (filter === "blocked") return type === "budget" || type === "model" || type === "paused" || type === "blocked";
     return type === filter;
   }
 
@@ -339,29 +330,27 @@ function initDashboard() {
   }
 
   function applySimulation(type) {
-    if (type === "allowed") {
-      status.textContent = "Active";
-      if (dailySpend) dailySpend.textContent = "$0.77 / $1.00";
-      if (dailyMeter) dailyMeter.style.width = "77%";
-      if (tokenTotal) tokenTotal.textContent = "49,031";
-      prependLog("allowed");
-      showToast("Allowed under policy");
+    if (type === "approved") {
+      status.textContent = "Approved";
+      if (dailySpend) dailySpend.textContent = "7";
+      if (dailyMeter) dailyMeter.style.width = "54%";
+      if (tokenTotal) tokenTotal.textContent = "2m 02s";
+      prependLog("approved");
+      showToast("Approval recorded");
     }
 
-    if (type === "budget") {
-      status.textContent = "Active";
-      if (dailySpend) dailySpend.textContent = "$0.99 / $1.00";
-      if (dailyMeter) dailyMeter.style.width = "99%";
-      if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "7") + 1);
-      prependLog("budget");
-      showToast("Blocked before provider spend");
+    if (type === "rejected") {
+      status.textContent = "Rejected";
+      if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "23") + 1);
+      prependLog("rejected");
+      showToast("Rejection sent to agent");
     }
 
-    if (type === "model") {
-      status.textContent = "Active";
-      if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "7") + 1);
-      prependLog("model");
-      showToast("Model blocked by policy");
+    if (type === "edited") {
+      status.textContent = "Edited";
+      if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "23") + 1);
+      prependLog("edited");
+      showToast("Edited instruction returned");
     }
 
     track("dashboard_simulation_clicked", { type });
@@ -385,14 +374,14 @@ function initDashboard() {
   let paused = false;
   pause.addEventListener("click", () => {
     paused = !paused;
-    status.textContent = paused ? "Paused" : "Active";
-    pause.textContent = paused ? "Resume simulation" : "Simulate pause";
+    status.textContent = paused ? "Expired" : "Live demo";
+    pause.textContent = paused ? "Reset expiration" : "Simulate expired request";
     if (paused) {
-      if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "7") + 1);
-      prependLog("paused");
-      showToast("Agent paused");
+      if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "23") + 1);
+      prependLog("expired");
+      showToast("Approval request expired");
     }
-    track(paused ? "agent_paused_demo" : "agent_resumed_demo");
+    track(paused ? "approval_expired_demo" : "approval_reset_demo");
   });
 }
 
