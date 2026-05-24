@@ -143,19 +143,19 @@ function initHeroSwap() {
 function initConsoleMotion() {
   const title = document.getElementById("decision-title");
   const pill = document.getElementById("decision-pill");
-  const model = document.getElementById("decision-model");
-  const fill = document.getElementById("spend-fill");
+  const agent = document.getElementById("decision-agent");
+  const fill = document.getElementById("approval-fill");
   const reason = document.getElementById("decision-reason");
-  const reviewer = document.getElementById("metric-tokens");
+  const reviewer = document.getElementById("metric-reviewer");
   const responseTime = document.getElementById("metric-cost");
   const policy = document.getElementById("metric-policy");
-  if (!title || !pill || !model || !fill || !reason || !reviewer || !responseTime || !policy) return;
+  if (!title || !pill || !agent || !fill || !reason || !reviewer || !responseTime || !policy) return;
 
   const states = [
     {
       title: "Refund over limit",
       pill: "pending",
-      model: "Refund Agent",
+      agent: "Refund Agent",
       fill: "68%",
       reason: 'Proposed action: <strong>Issue $500 refund</strong>. Waiting for a human reviewer before the agent continues.',
       reviewer: "Support lead",
@@ -166,7 +166,7 @@ function initConsoleMotion() {
     {
       title: "Edited instruction",
       pill: "edited",
-      model: "Sales Agent",
+      agent: "Sales Agent",
       fill: "52%",
       reason: 'Reviewer changed the instruction to <strong>send a 10% offer</strong> instead of 25%.',
       reviewer: "Sales manager",
@@ -177,7 +177,7 @@ function initConsoleMotion() {
     {
       title: "Deployment action rejected",
       pill: "rejected",
-      model: "Deploy Agent",
+      agent: "Deploy Agent",
       fill: "86%",
       reason: 'Reviewer rejected <strong>production migration</strong> until staging proof is attached.',
       reviewer: "Engineering lead",
@@ -193,7 +193,7 @@ function initConsoleMotion() {
     const state = states[index];
     title.textContent = state.title;
     pill.textContent = state.pill;
-    model.textContent = state.model;
+    agent.textContent = state.agent;
     fill.style.width = state.fill;
     reason.innerHTML = state.reason;
     reviewer.textContent = state.reviewer;
@@ -279,10 +279,10 @@ function initWaitlist() {
 function initDashboard() {
   const pause = document.getElementById("pause-toggle");
   const status = document.getElementById("agent-status");
-  const dailySpend = document.getElementById("daily-spend");
-  const dailyMeter = document.getElementById("daily-meter");
+  const pendingCount = document.getElementById("pending-count");
+  const escalationMeter = document.getElementById("escalation-meter");
   const blockedCount = document.getElementById("blocked-count");
-  const tokenTotal = document.getElementById("token-total");
+  const decisionTime = document.getElementById("decision-time");
   const logBody = document.getElementById("demo-log-body");
   const logFilters = document.querySelectorAll(".log-filters button");
   if (!status) return;
@@ -292,7 +292,10 @@ function initDashboard() {
     approved: ["12:21", "Refund Agent", "refund_over_limit", "approved", "support_lead", "Issue $500 refund", "Approved as written", "audit_R7x2"],
     rejected: ["12:22", "Deploy Agent", "deployment_action", "rejected", "engineering_lead", "Run production migration", "Needs staging proof", "audit_D4m8"],
     edited: ["12:23", "Sales Agent", "external_message", "edited", "sales_manager", "Send 25% discount", "Send 10% offer instead", "audit_E9q1"],
-    expired: ["12:24", "Ops Agent", "billing_action", "expired", "ops_lead", "Retry invoice reminder", "Reviewer timeout", "audit_X5p0"]
+    expired: ["12:24", "Ops Agent", "billing_action", "expired", "ops_lead", "Retry invoice reminder", "Reviewer timeout", "audit_X5p0"],
+    context_added: ["12:25", "Support Agent", "agent_stuck", "context_added", "support_lead", "Ask customer for next step", "Added missing policy context", "audit_C7v4"],
+    taken_over: ["12:26", "Coding Agent", "sensitive_data_access", "taken_over", "engineering_lead", "Read production export", "Human took over", "audit_H3p9"],
+    needs_more_info: ["12:27", "Finance Agent", "billing_action", "needs_more_info", "finance_lead", "Classify failed payment", "Fetch last three invoices", "audit_M8r2"]
   };
 
   function prependLog(type) {
@@ -332,9 +335,9 @@ function initDashboard() {
   function applySimulation(type) {
     if (type === "approved") {
       status.textContent = "Approved";
-      if (dailySpend) dailySpend.textContent = "7";
-      if (dailyMeter) dailyMeter.style.width = "54%";
-      if (tokenTotal) tokenTotal.textContent = "2m 02s";
+      if (pendingCount) pendingCount.textContent = "7";
+      if (escalationMeter) escalationMeter.style.width = "54%";
+      if (decisionTime) decisionTime.textContent = "2m 02s";
       prependLog("approved");
       showToast("Approval recorded");
     }
@@ -351,6 +354,26 @@ function initDashboard() {
       if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "23") + 1);
       prependLog("edited");
       showToast("Edited instruction returned");
+    }
+
+    if (type === "context_added") {
+      status.textContent = "Context added";
+      if (decisionTime) decisionTime.textContent = "3m 18s";
+      prependLog("context_added");
+      showToast("Context returned to agent");
+    }
+
+    if (type === "taken_over") {
+      status.textContent = "Taken over";
+      if (blockedCount) blockedCount.textContent = String(Number(blockedCount.textContent || "23") + 1);
+      prependLog("taken_over");
+      showToast("Human takeover recorded");
+    }
+
+    if (type === "needs_more_info") {
+      status.textContent = "Needs more info";
+      prependLog("needs_more_info");
+      showToast("Agent asked to gather more context");
     }
 
     track("dashboard_simulation_clicked", { type });

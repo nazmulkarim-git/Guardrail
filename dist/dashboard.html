@@ -7,6 +7,9 @@
     <meta name="description" content="Explore the Forsig demo dashboard for human approval, escalation requests, reviewer decisions, and audit trails for autonomous AI agents." />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="https://www.forsig.com/dashboard" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body data-page="dashboard">
@@ -57,19 +60,34 @@
         <section id="overview" class="dashboard-grid">
           <article class="stat-card">
             <span>Pending escalations</span>
-            <strong id="daily-spend">8</strong>
+            <strong id="pending-count">7</strong>
             <small>Awaiting reviewer decision across five agents.</small>
-            <div class="budget-meter"><span id="daily-meter" style="width: 62%"></span></div>
+            <div class="approval-meter"><span id="escalation-meter" style="width: 62%"></span></div>
           </article>
           <article class="stat-card">
             <span>Average decision time</span>
-            <strong id="token-total">2m 14s</strong>
+            <strong id="decision-time">2m 14s</strong>
             <small>Median response across today's approvals.</small>
           </article>
           <article class="stat-card">
             <span>Approved today</span>
-            <strong id="blocked-count">23</strong>
+            <strong id="blocked-count">14</strong>
             <small>Approved, rejected, and edited decisions recorded.</small>
+          </article>
+          <article class="stat-card">
+            <span>Rejected today</span>
+            <strong>3</strong>
+            <small>Actions stopped before they reached customers or systems.</small>
+          </article>
+          <article class="stat-card">
+            <span>Edited instructions</span>
+            <strong>5</strong>
+            <small>Humans changed the agent's next step before resume.</small>
+          </article>
+          <article class="stat-card">
+            <span>Human takeovers</span>
+            <strong>2</strong>
+            <small>Reviewers took ownership and stopped autonomous execution.</small>
           </article>
           <article class="stat-card">
             <span>Approval status</span>
@@ -102,6 +120,9 @@
                 <button data-simulate="approved">Approve</button>
                 <button data-simulate="rejected">Reject</button>
                 <button data-simulate="edited">Edit</button>
+                <button data-simulate="context_added">Add context</button>
+                <button data-simulate="taken_over">Take over</button>
+                <button data-simulate="needs_more_info">More info</button>
               </div>
             </article>
             <article class="approval-card" data-risk="external_message">
@@ -113,6 +134,9 @@
                 <button data-simulate="approved">Approve</button>
                 <button data-simulate="rejected">Reject</button>
                 <button data-simulate="edited">Edit</button>
+                <button data-simulate="context_added">Add context</button>
+                <button data-simulate="taken_over">Take over</button>
+                <button data-simulate="needs_more_info">More info</button>
               </div>
             </article>
             <article class="approval-card" data-risk="customer_record_change">
@@ -124,6 +148,9 @@
                 <button data-simulate="approved">Approve</button>
                 <button data-simulate="rejected">Reject</button>
                 <button data-simulate="edited">Edit</button>
+                <button data-simulate="context_added">Add context</button>
+                <button data-simulate="taken_over">Take over</button>
+                <button data-simulate="needs_more_info">More info</button>
               </div>
             </article>
           </div>
@@ -196,6 +223,9 @@ if (decision.status === "approved") {
             <button data-filter="approved">Approved</button>
             <button data-filter="rejected">Rejected</button>
             <button data-filter="edited">Edited</button>
+            <button data-filter="context_added">Context</button>
+            <button data-filter="taken_over">Takeover</button>
+            <button data-filter="needs_more_info">Needs info</button>
             <button data-filter="pending">Pending</button>
             <button data-filter="expired">Expired</button>
           </div>
@@ -210,6 +240,8 @@ if (decision.status === "approved") {
                 <tr><td>12:04</td><td>Ops Agent</td><td>customer_record_change</td><td>approved</td><td>ops_lead</td><td>Change subscription status</td><td>Approved as written</td><td>audit_Q8p1</td></tr>
                 <tr><td>11:58</td><td>Deploy Agent</td><td>deployment_action</td><td>rejected</td><td>engineering_lead</td><td>Run production migration</td><td>Needs staging proof</td><td>audit_T2n7</td></tr>
                 <tr><td>11:46</td><td>Finance Agent</td><td>billing_action</td><td>expired</td><td>finance_ops</td><td>Send invoice reminder</td><td>Reviewer timeout</td><td>audit_X5p0</td></tr>
+                <tr><td>11:31</td><td>Support Agent</td><td>agent_stuck</td><td>context_added</td><td>support_lead</td><td>Ask customer for next step</td><td>Added policy context</td><td>audit_C7v4</td></tr>
+                <tr><td>11:12</td><td>Coding Agent</td><td>sensitive_data_access</td><td>taken_over</td><td>engineering_lead</td><td>Read production export</td><td>Human took over</td><td>audit_H3p9</td></tr>
               </tbody>
             </table>
           </div>

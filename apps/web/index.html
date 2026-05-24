@@ -15,6 +15,9 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Forsig - Human Approval for Autonomous AI Agents" />
     <meta name="twitter:description" content="Let AI agents pause before risky actions, ask the right human, and continue with an audit trail." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css" />
     <script type="application/ld+json">
       {
@@ -105,10 +108,10 @@
               <div class="request-line">
                 <span>RISK</span>
                 <code>refund_over_limit</code>
-                <em id="decision-model">Refund Agent</em>
+                <em id="decision-agent">Refund Agent</em>
               </div>
-              <div class="spend-bar">
-                <div id="spend-fill" style="width: 68%"></div>
+              <div class="approval-meter">
+                <div id="approval-fill" style="width: 68%"></div>
               </div>
               <div id="decision-reason" class="console-reason">
                 Proposed action: <strong>Issue $500 refund</strong>. Waiting for a human reviewer before the agent continues.
@@ -120,7 +123,7 @@
               </div>
             </section>
             <aside class="console-side">
-              <div><span>Reviewer</span><strong id="metric-tokens">Support lead</strong></div>
+              <div><span>Reviewer</span><strong id="metric-reviewer">Support lead</strong></div>
               <div><span>Decision time</span><strong id="metric-cost">2m 14s</strong></div>
               <div><span>Status</span><strong id="metric-policy">needs approval</strong></div>
             </aside>
