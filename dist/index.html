@@ -20,61 +20,43 @@
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
-  <body data-page="landing" class="ultra-site">
-    <header class="ultra-nav">
-      <a class="ultra-brand" href="/" aria-label="Forsig home">
+  <body data-page="landing" class="helicone-forsig">
+    <div class="hf-bg" aria-hidden="true"></div>
+
+    <header class="hf-nav">
+      <a class="hf-brand" href="/" aria-label="Forsig home">
         <span></span>
         Forsig
       </a>
       <nav aria-label="Primary navigation">
         <a href="/dashboard">Demo</a>
+        <a href="#how">How it works</a>
         <a href="#developers">Developers</a>
         <a href="/contact">Contact</a>
       </nav>
-      <a class="ultra-nav-cta" href="#waitlist">Get early access</a>
+      <a class="hf-nav-button" href="#waitlist">Get early access</a>
     </header>
 
     <main>
-      <section class="ultra-hero">
-        <div class="ultra-copy">
-          <p class="ultra-kicker">Human checkpoints for AI agents</p>
-          <h1>Let agents ask before they act.</h1>
-          <p>Forsig adds a human review step before risky agent actions. Approve, edit, instruct, or take over. Then your workflow continues with a structured decision.</p>
+      <section class="hf-hero">
+        <p class="hf-badge">Private beta for AI agent builders</p>
+        <h1>Build AI agents that know when to ask.</h1>
+        <p class="hf-lede">Forsig adds human checkpoints to risky agent workflows. Agents pause, humans approve or edit, and your application continues with a structured decision.</p>
 
-          <form id="hero-waitlist-form" class="ultra-form referral-enabled">
-            <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
-            <input name="referralCode" type="text" placeholder="Referral code" />
-            <button type="submit">Get early access</button>
-            <p class="mini-status" role="status"></p>
-          </form>
+        <form id="hero-waitlist-form" class="hf-form referral-enabled">
+          <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
+          <input name="referralCode" type="text" placeholder="Referral code" />
+          <button type="submit">Get early access</button>
+          <p class="mini-status" role="status"></p>
+        </form>
 
-          <div class="ultra-actions">
-            <a href="/dashboard">View demo</a>
-            <a href="#developers">See code</a>
-          </div>
+        <div class="hf-hero-links">
+          <a href="/dashboard">View demo</a>
+          <a href="#developers">Read API example</a>
         </div>
-
-        <aside class="ultra-review" aria-label="Forsig review card preview">
-          <div class="ultra-review-head">
-            <span>Review request</span>
-            <strong>pending</strong>
-          </div>
-          <h2>Approve $500 refund?</h2>
-          <p>Refund Agent wants to issue a refund above policy limit.</p>
-          <div class="ultra-fields">
-            <div><span>Risk</span><b>refund_over_limit</b></div>
-            <div><span>Agent</span><b>refund-agent</b></div>
-            <div><span>Return</span><b>structured JSON</b></div>
-          </div>
-          <div class="ultra-review-actions">
-            <button type="button">Approve</button>
-            <button type="button">Edit</button>
-            <button type="button">Take over</button>
-          </div>
-        </aside>
       </section>
 
-      <section class="ultra-logos" aria-label="Works with common AI stacks">
+      <section class="hf-stack" aria-label="Works beside common AI stacks">
         <span>Works beside</span>
         <b>JavaScript</b>
         <b>Python</b>
@@ -86,30 +68,77 @@
         <b>REST</b>
       </section>
 
-      <section class="ultra-flow" aria-label="How Forsig works">
-        <article>
-          <span>01</span>
-          <h3>Request review</h3>
-          <p>Your agent sends the proposed action and context.</p>
-        </article>
-        <article>
-          <span>02</span>
-          <h3>Human decides</h3>
-          <p>A reviewer approves, rejects, edits, instructs, or takes over.</p>
-        </article>
-        <article>
-          <span>03</span>
-          <h3>Agent continues</h3>
-          <p>Forsig returns a decision your workflow can use.</p>
-        </article>
+      <section class="hf-product" aria-label="Forsig intervention dashboard preview">
+        <div class="hf-app-frame">
+          <aside class="hf-sidebar" aria-label="Demo navigation">
+            <strong>Forsig</strong>
+            <span>Inbox</span>
+            <span>Agents</span>
+            <span>Audit</span>
+            <span>Settings</span>
+          </aside>
+          <div class="hf-app-main">
+            <div class="hf-app-top">
+              <div>
+                <span>Pending intervention</span>
+                <h2>Refund Agent needs a decision</h2>
+              </div>
+              <b>pending</b>
+            </div>
+            <div class="hf-review-grid">
+              <article class="hf-review-card">
+                <span>Proposed action</span>
+                <h3>Issue $500 refund</h3>
+                <p>VIP customer. Product failed twice. Refund is above policy limit.</p>
+                <div>
+                  <button>Approve</button>
+                  <button>Edit</button>
+                  <button>Take over</button>
+                </div>
+              </article>
+              <article class="hf-json-card">
+                <span>Returned to agent</span>
+                <pre><code>{
+  "status": "edited_approved",
+  "instruction": "Offer store credit",
+  "auditId": "audit_9J2k"
+}</code></pre>
+              </article>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <section id="developers" class="ultra-developer">
-        <div>
-          <p class="ultra-kicker">Developer API</p>
-          <h2>One call at the risky step.</h2>
+      <section id="how" class="hf-section">
+        <div class="hf-section-head">
+          <span>How it works</span>
+          <h2>One control point for risky agent actions.</h2>
         </div>
-        <div class="ultra-code">
+        <div class="hf-steps">
+          <article>
+            <b>01</b>
+            <h3>Agent requests review</h3>
+            <p>Send the proposed action, context, risk type, and run ID.</p>
+          </article>
+          <article>
+            <b>02</b>
+            <h3>Human decides</h3>
+            <p>Approve, reject, edit, instruct the agent, or take over.</p>
+          </article>
+          <article>
+            <b>03</b>
+            <h3>Workflow continues</h3>
+            <p>Forsig returns structured data and an audit trail.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="developers" class="hf-section hf-dev">
+        <div class="hf-section-head">
+          <span>Developer API</span>
+          <h2>Add a checkpoint where your agent needs judgment.</h2>
+        </div>
+        <div class="hf-code">
           <button data-copy-target="js-snippet">Copy</button>
           <pre><code id="js-snippet">const decision = await forsig.intervene({
   agent: "refund-agent",
@@ -120,12 +149,12 @@
         </div>
       </section>
 
-      <section id="waitlist" class="ultra-final">
+      <section id="waitlist" class="hf-final">
         <div>
-          <p class="ultra-kicker">Private beta</p>
-          <h2>Build agents with human judgment built in.</h2>
+          <span>Private beta</span>
+          <h2>Launch safer AI agents with human judgment built in.</h2>
         </div>
-        <form id="waitlist-form" class="ultra-form referral-enabled">
+        <form id="waitlist-form" class="hf-form referral-enabled">
           <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
           <input name="referralCode" type="text" placeholder="Referral code" />
           <button type="submit">Get early access</button>
@@ -133,7 +162,7 @@
         </form>
       </section>
 
-      <footer class="ultra-footer">
+      <footer class="hf-footer">
         <a href="/">Forsig</a>
         <nav>
           <a href="/privacy">Privacy</a>
