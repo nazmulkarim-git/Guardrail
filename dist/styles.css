@@ -3825,7 +3825,7 @@ pre {
   position: relative;
   z-index: 1;
   overflow: hidden;
-  max-width: 780px;
+  max-width: 1080px;
   margin: 0 auto;
 }
 
@@ -3868,13 +3868,21 @@ pre {
 
 .zip-review-body {
   display: grid;
-  gap: 22px;
-  padding: 24px;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: 16px;
+  padding: 20px;
+}
+
+.zip-review-body > div:first-child,
+.zip-demo-actions,
+.zip-demo-result,
+.zip-demo-editor {
+  grid-column: 1 / -1;
 }
 
 .zip-demo-cards {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 14px;
 }
 
@@ -3948,6 +3956,55 @@ pre {
   color: var(--zip-primary);
 }
 
+.zip-demo-result p {
+  margin: 6px 0 0;
+}
+
+.zip-demo-result code {
+  display: block;
+  margin-top: 10px;
+  color: var(--zip-text);
+  white-space: normal;
+}
+
+.zip-demo-editor {
+  display: grid;
+  gap: 10px;
+  border: 1px solid rgba(0, 255, 194, 0.32);
+  border-radius: 12px;
+  padding: 14px;
+  background: rgba(0, 255, 194, 0.06);
+}
+
+.zip-demo-editor[hidden] {
+  display: none;
+}
+
+.zip-demo-editor label {
+  color: var(--zip-muted);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.zip-demo-editor textarea {
+  min-height: 86px;
+  resize: vertical;
+}
+
+.zip-demo-editor button {
+  justify-self: start;
+  min-height: 40px;
+  border: 0;
+  border-radius: 10px;
+  padding: 0 14px;
+  color: #03120f;
+  background: var(--zip-primary);
+  cursor: pointer;
+  font-weight: 800;
+}
+
 .zip-code-layout,
 .zip-contact-layout {
   display: grid;
@@ -3978,6 +4035,8 @@ pre {
 .zip-install {
   display: inline-block;
   padding: 12px 16px;
+  cursor: pointer;
+  font: inherit;
 }
 
 .zip-code-window {
@@ -4124,7 +4183,8 @@ pre {
   .zip-feature-grid,
   .zip-pricing-grid,
   .zip-code-layout,
-  .zip-contact-layout {
+  .zip-contact-layout,
+  .zip-review-body {
     grid-template-columns: 1fr;
   }
 
@@ -5404,5 +5464,174 @@ th {
 
   .legal-card h2 {
     margin-top: 26px;
+  }
+}
+
+.zip-design.thanks-zip,
+.zip-design.contact-zip,
+.zip-design.legal-zip,
+.zip-design.redirect-zip {
+  overflow-x: hidden;
+}
+
+.zip-design.thanks-zip .thanks-page,
+.zip-design.contact-zip .contact-page,
+.zip-design.legal-zip .legal-page,
+.zip-design.redirect-zip .zip-redirect-page {
+  display: grid;
+  place-items: center;
+  width: min(920px, calc(100% - 40px));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 92px 0 64px;
+}
+
+.zip-design.contact-zip .contact-page {
+  width: min(760px, calc(100% - 40px));
+}
+
+.zip-design.legal-zip .legal-page {
+  place-items: start stretch;
+  width: min(940px, calc(100% - 40px));
+}
+
+.zip-design.thanks-zip .brand,
+.zip-design.contact-zip .brand,
+.zip-design.legal-zip .brand {
+  position: static;
+  width: fit-content;
+  margin-bottom: 24px;
+  color: var(--zip-text);
+}
+
+.zip-design.thanks-zip .brand-mark,
+.zip-design.contact-zip .brand-mark,
+.zip-design.legal-zip .brand-mark {
+  background: linear-gradient(135deg, var(--zip-primary), var(--zip-secondary));
+}
+
+.zip-design.thanks-zip .thanks-card,
+.zip-design.contact-zip .contact-card,
+.zip-design.legal-zip .legal-card,
+.zip-design.redirect-zip .zip-redirect-page section {
+  width: 100%;
+  border: 1px solid rgba(45, 52, 64, 0.72);
+  border-radius: 22px;
+  padding: clamp(22px, 4vw, 42px);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(0, 255, 194, 0.08), transparent 28%),
+    rgba(22, 27, 34, 0.76);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(12px);
+}
+
+.zip-design.thanks-zip .thanks-card h1,
+.zip-design.contact-zip .contact-card h1,
+.zip-design.legal-zip .legal-card h1,
+.zip-design.redirect-zip .zip-redirect-page h1 {
+  margin: 8px 0 12px;
+  max-width: 760px;
+  color: var(--zip-text);
+  font-size: clamp(34px, 6vw, 64px);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.zip-design.thanks-zip .thanks-card h2,
+.zip-design.legal-zip .legal-card h2 {
+  color: var(--zip-text);
+}
+
+.zip-design.thanks-zip .thanks-card p,
+.zip-design.contact-zip .contact-card p,
+.zip-design.legal-zip .legal-card p,
+.zip-design.legal-zip .legal-card li,
+.zip-design.redirect-zip .zip-redirect-page p {
+  color: var(--zip-muted);
+}
+
+.zip-design.thanks-zip .eyebrow,
+.zip-design.contact-zip .eyebrow,
+.zip-design.legal-zip .eyebrow {
+  color: var(--zip-primary);
+}
+
+.zip-design.thanks-zip .button.primary,
+.zip-design.contact-zip .button.primary {
+  color: #03120f;
+  background: var(--zip-primary);
+}
+
+.zip-design.thanks-zip .referral-box,
+.zip-design.thanks-zip .share-box,
+.zip-design.thanks-zip .qualification-box {
+  border-color: rgba(45, 52, 64, 0.72);
+  background: rgba(32, 38, 48, 0.5);
+}
+
+.zip-design.thanks-zip input,
+.zip-design.thanks-zip select,
+.zip-design.thanks-zip textarea,
+.zip-design.contact-zip input,
+.zip-design.contact-zip select,
+.zip-design.contact-zip textarea,
+.zip-design .zip-demo-editor textarea {
+  border: 1px solid rgba(45, 52, 64, 0.9);
+  border-radius: 12px;
+  color: var(--zip-text);
+  background: rgba(11, 14, 17, 0.72);
+}
+
+.zip-design.thanks-zip input::placeholder,
+.zip-design.thanks-zip textarea::placeholder,
+.zip-design.contact-zip input::placeholder,
+.zip-design.contact-zip textarea::placeholder,
+.zip-design .zip-demo-editor textarea::placeholder {
+  color: rgba(155, 163, 175, 0.78);
+}
+
+.zip-design.contact-zip .contact-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.zip-design.legal-zip .legal-card a {
+  color: var(--zip-primary);
+}
+
+.zip-design.legal-zip .legal-updated {
+  color: var(--zip-muted);
+}
+
+.zip-redirect-page {
+  text-align: center;
+}
+
+.zip-redirect-page .zip-brand {
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 620px) {
+  .zip-design.thanks-zip .thanks-page,
+  .zip-design.contact-zip .contact-page,
+  .zip-design.legal-zip .legal-page,
+  .zip-design.redirect-zip .zip-redirect-page {
+    width: min(100% - 24px, 940px);
+    padding: 28px 0 42px;
+  }
+
+  .zip-design.contact-zip .contact-form,
+  .zip-design.thanks-zip .invite-email-form,
+  .zip-design.thanks-zip .qualification-form {
+    grid-template-columns: 1fr;
+  }
+
+  .zip-design.thanks-zip .qualification-form textarea,
+  .zip-design.thanks-zip .qualification-form button,
+  .zip-design.thanks-zip .qualification-form .mini-status,
+  .zip-design.contact-zip .contact-form textarea,
+  .zip-design.contact-zip .contact-form button,
+  .zip-design.contact-zip .contact-form .mini-status {
+    grid-column: 1;
   }
 }

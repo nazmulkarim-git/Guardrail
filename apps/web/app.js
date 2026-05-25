@@ -266,7 +266,7 @@ function initWaitlist() {
           lead: result.leadId,
           code: result.referralCode || ""
         });
-        location.href = `/thanks?${params.toString()}`;
+        location.replace(`/thanks?${params.toString()}`);
       } catch (error) {
         entry.status.textContent = error.message || "Something went wrong.";
         track("waitlist_signup_failed", { message: entry.status.textContent, sourceSection: entry.sourceSection });
@@ -512,46 +512,211 @@ function initZipDemo() {
   const demo = document.querySelector("[data-zip-demo]");
   if (!demo) return;
 
+  const title = document.getElementById("zip-demo-title");
+  const summary = document.getElementById("zip-demo-summary");
+  const agent = document.getElementById("zip-demo-agent");
+  const workflow = document.getElementById("zip-demo-workflow");
+  const riskLevel = document.getElementById("zip-demo-risk-level");
+  const riskReason = document.getElementById("zip-demo-risk-reason");
+  const actionJson = document.getElementById("zip-demo-action-json");
+  const context = document.getElementById("zip-demo-context");
   const status = document.getElementById("zip-demo-status");
   const expiry = document.getElementById("zip-demo-expiry");
   const actions = document.getElementById("zip-demo-actions");
   const result = document.getElementById("zip-demo-result");
+  const editor = document.getElementById("zip-demo-editor");
+  const editorLabel = document.getElementById("zip-demo-editor-label");
+  const editorInput = document.getElementById("zip-demo-editor-input");
+  const editorSubmit = document.getElementById("zip-demo-editor-submit");
   let resetTimer;
+  let scenarioIndex = 0;
+  let pendingDecision = null;
 
-  const labels = {
-    approved: ["Approved", "Decision recorded and sent to the agent."],
-    rejected: ["Rejected", "The risky action was blocked and returned to the agent."],
-    edited_approved: ["Edited & Approved", "The edited instruction was returned to the workflow."],
-    instruct_agent: ["Instructions Sent", "The reviewer gave the agent additional instructions."],
-    human_takeover: ["Human Takeover", "The task was marked as human-owned."]
-  };
+  const scenarios = [
+    {
+      title: "Review refund for customer #123",
+      summary: "The agent wants to issue a $500 refund to a VIP customer.",
+      agent: "Refund Agent v1.2.0",
+      workflow: "refund-review-flow / step: approval",
+      riskLevel: "High",
+      riskReason: "Refund exceeds $250 policy limit",
+      action: {
+        type: "refund",
+        amount: 500,
+        currency: "USD",
+        refund_method: "original_payment_method",
+        customer_id: "cus_123"
+      },
+      context: [
+        ["Customer Tier", "VIP"],
+        ["Order Value", "$1,200"],
+        ["Refund Reason", "Product failed twice"]
+      ],
+      editDefault: "Approve the refund, but issue store credit instead of cash.",
+      instructDefault: "Ask the customer for photos of the failed product before continuing."
+    },
+    {
+      title: "Review outbound discount email",
+      summary: "The sales agent wants to send a custom 30% offer to an enterprise prospect.",
+      agent: "Sales Agent v0.9.4",
+      workflow: "enterprise-outreach / step: custom-offer",
+      riskLevel: "Medium",
+      riskReason: "External customer message with non-standard discount",
+      action: {
+        type: "external_email",
+        recipient: "procurement@example.com",
+        proposed_discount: "30%",
+        deal_value: 18000
+      },
+      context: [
+        ["Prospect", "Enterprise"],
+        ["Deal Value", "$18,000"],
+        ["Concern", "Discount exceeds normal band"]
+      ],
+      editDefault: "Send a 15% discount and ask for a call before offering more.",
+      instructDefault: "Check whether this prospect already has an approved pricing exception."
+    },
+    {
+      title: "Review production migration",
+      summary: "The deployment agent wants to run a migration that touches the billing table.",
+      agent: "Deploy Agent v2.1.0",
+      workflow: "release-flow / step: migration",
+      riskLevel: "Critical",
+      riskReason: "Production database change affecting billing data",
+      action: {
+        type: "database_migration",
+        environment: "production",
+        table: "billing_accounts",
+        rollback_plan: "attached"
+      },
+      context: [
+        ["Environment", "Production"],
+        ["Table", "billing_accounts"],
+        ["Reviewer", "Engineering lead required"]
+      ],
+      editDefault: "Run the migration in staging first and attach the validation result.",
+      instructDefault: "Fetch the latest migration diff and rollback plan for review."
+    },
+    {
+      title: "Review account status change",
+      summary: "The operations agent wants to change a customer's subscription status.",
+      agent: "Ops Agent v1.4.1",
+      workflow: "account-update / step: subscription-change",
+      riskLevel: "High",
+      riskReason: "Customer record change with unclear payment status",
+      action: {
+        type: "subscription_update",
+        customer_id: "cus_884",
+        from: "monthly",
+        to: "annual",
+        payment_status: "unclear"
+      },
+      context: [
+        ["Customer", "cus_884"],
+        ["Requested Change", "Monthly to annual"],
+        ["Issue", "Payment status unclear"]
+      ],
+      editDefault: "Do not update the subscription until payment status is confirmed.",
+      instructDefault: "Check the last invoice and payment method before escalating again."
+    }
+  ];
 
-  const reset = () => {
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
+  function currentScenario() {
+    return scenarios[scenarioIndex % scenarios.length];
+  }
+
+  function renderScenario() {
+    const scenario = currentScenario();
+    if (title) title.textContent = scenario.title;
+    if (summary) summary.textContent = scenario.summary;
+    if (agent) agent.textContent = scenario.agent;
+    if (workflow) workflow.textContent = scenario.workflow;
+    if (riskLevel) riskLevel.textContent = scenario.riskLevel;
+    if (riskReason) riskReason.textContent = scenario.riskReason;
+    if (actionJson) actionJson.textContent = JSON.stringify(scenario.action, null, 2);
+    if (context) {
+      context.innerHTML = scenario.context
+        .map(([label, value]) => `<p><b>${escapeHtml(label)}:</b> ${escapeHtml(value)}</p>`)
+        .join("");
+    }
     if (status) status.textContent = "Pending";
     if (expiry) expiry.textContent = "Expires in 28 minutes";
     if (actions) actions.hidden = false;
+    if (editor) editor.hidden = true;
     if (result) {
       result.hidden = true;
       result.textContent = "";
     }
-  };
+  }
+
+  function showDecision(type, titleText, description, instruction = "") {
+    if (status) status.textContent = "Resolved";
+    if (expiry) expiry.textContent = "Decision returned to agent";
+    if (actions) actions.hidden = true;
+    if (editor) editor.hidden = true;
+    if (result) {
+      result.hidden = false;
+      result.innerHTML = `<strong>${escapeHtml(titleText)}</strong><p>${escapeHtml(description)}</p>${instruction ? `<code>${escapeHtml(instruction)}</code>` : ""}`;
+    }
+    clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => {
+      scenarioIndex += 1;
+      renderScenario();
+    }, 2300);
+  }
+
+  function openEditor(type) {
+    const scenario = currentScenario();
+    pendingDecision = type;
+    if (actions) actions.hidden = true;
+    if (editor) editor.hidden = false;
+    if (editorLabel) {
+      editorLabel.textContent = type === "edited_approved" ? "Edit the instruction returned to the agent" : "Give the agent a new instruction";
+    }
+    if (editorInput) {
+      editorInput.value = type === "edited_approved" ? scenario.editDefault : scenario.instructDefault;
+      editorInput.focus();
+      editorInput.select();
+    }
+  }
 
   demo.querySelectorAll("[data-zip-decision]").forEach((button) => {
     button.addEventListener("click", () => {
       const type = button.dataset.zipDecision;
-      const [title, description] = labels[type] || labels.approved;
       clearTimeout(resetTimer);
-      if (status) status.textContent = "Resolved";
-      if (expiry) expiry.textContent = "Decision returned to agent";
-      if (actions) actions.hidden = true;
-      if (result) {
-        result.hidden = false;
-        result.innerHTML = `<strong>${title}</strong><p>${description}</p><small>Demo resets automatically...</small>`;
+      if (type === "edited_approved" || type === "instruct_agent") {
+        openEditor(type);
+      } else if (type === "approved") {
+        showDecision(type, "Approved", "The proposed action was approved and returned to the agent.");
+      } else if (type === "rejected") {
+        showDecision(type, "Rejected", "The agent receives a rejection and stops the risky action.");
+      } else if (type === "human_takeover") {
+        showDecision(type, "Human Takeover", "The agent is told to stop because a human now owns the task.");
       }
       track("landing_demo_decision_clicked", { type });
-      resetTimer = setTimeout(reset, 2400);
     });
   });
+
+  editorSubmit?.addEventListener("click", () => {
+    const instruction = editorInput?.value.trim() || "Continue with the reviewer instruction.";
+    if (pendingDecision === "edited_approved") {
+      showDecision("edited_approved", "Edited & Approved", "The edited instruction was sent back to the agent.", instruction);
+    } else {
+      showDecision("instruct_agent", "Instruction Sent", "The agent receives new human guidance before continuing.", instruction);
+    }
+    track("landing_demo_instruction_sent", { type: pendingDecision });
+  });
+
+  renderScenario();
 }
 
 function initFaqTracking() {
@@ -690,3 +855,10 @@ function initContactForm() {
 
 prefillReferralCodes();
 initContactForm();
+
+document.querySelectorAll("[data-replace-home]").forEach((link) => {
+  link.addEventListener("click", (event) => {
+    event.preventDefault();
+    location.replace("/");
+  });
+});

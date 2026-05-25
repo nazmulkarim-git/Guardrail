@@ -3,116 +3,34 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Forsig Intervention Demo</title>
-    <meta name="description" content="A minimal live demo of Forsig human intervention for AI agents." />
-    <meta name="robots" content="index,follow" />
-    <link rel="canonical" href="https://www.forsig.com/dashboard" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <title>Forsig Demo</title>
+    <meta name="description" content="The Forsig demo now lives on the homepage." />
+    <meta name="robots" content="noindex,follow" />
+    <meta http-equiv="refresh" content="0; url=/#demo" />
+    <link rel="canonical" href="https://www.forsig.com/#demo" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
-  <body data-page="dashboard" class="minimal-demo-page minimal-site helicone-surface">
-    <main class="minimal-demo">
-      <nav class="minimal-demo-nav">
-        <a class="brand" href="/">
-          <span class="brand-mark"></span>
-          <span>Forsig</span>
-        </a>
-        <div>
-          <a class="button" href="/">Homepage</a>
-          <a class="button primary nowrap" href="/#waitlist">Get early access</a>
-        </div>
-      </nav>
-
-      <header class="minimal-demo-hero">
-        <p class="v2-kicker">Live intervention demo</p>
-        <h1>One risky action. One human checkpoint.</h1>
-        <p>An agent pauses. A human decides. Your workflow gets structured data back.</p>
-      </header>
-
-      <section class="minimal-demo-shell" aria-label="Forsig intervention demo">
-        <div class="approval-request-card">
-          <div class="demo-card-topline">
-            <span>Pending intervention</span>
-            <b id="agent-status">Live demo</b>
-          </div>
-
-          <h2>Refund Agent wants to issue a $500 refund.</h2>
-          <p class="demo-risk-line">Risk: <strong>refund_over_limit</strong> - VIP customer - $1,200 order - product failed twice</p>
-
-          <div class="decision-summary">
-            <div><span>Pending</span><strong id="pending-count">1</strong></div>
-            <div><span>Decision time</span><strong id="decision-time">2m 14s</strong></div>
-            <div><span>Today</span><strong id="blocked-count">14</strong></div>
-          </div>
-
-          <div class="approval-actions minimal-actions">
-            <button data-simulate="approved">Approve</button>
-            <button data-simulate="rejected">Reject</button>
-            <button data-simulate="edited">Edit</button>
-          </div>
-          <div id="edit-instruction-panel" class="edit-instruction-panel" hidden>
-            <label for="edit-instruction">Instruction returned to the agent</label>
-            <textarea id="edit-instruction">Offer store credit instead of a cash refund.</textarea>
-            <button id="send-edit-instruction" type="button">Send edit</button>
-          </div>
-          <button id="pause-toggle" class="minimal-expire-button">Simulate timeout</button>
-        </div>
-
-        <aside class="minimal-side-panel">
-          <div class="mini-flow">
-            <span>Agent pauses</span>
-            <b></b>
-            <span>Human intervenes</span>
-            <b></b>
-            <span>Agent resumes</span>
-          </div>
-
-          <div class="minimal-code">
-            <div class="snippet-title"><span id="demo-code-title">Agent call</span> <button class="copy-code" data-copy-target="dash-js">Copy</button></div>
-            <pre><code id="dash-js">const decision = await forsig.intervene({
-  agent: "refund-agent",
-  risk: "refund_over_limit",
-  proposedAction: "Issue $500 refund",
-  waitForDecision: true
-});</code></pre>
-          </div>
-        </aside>
-      </section>
-
-      <section id="logs" class="minimal-audit">
-        <div>
-          <p class="v2-kicker">Audit trail</p>
-          <h2>Status. Decision. Audit ID.</h2>
-        </div>
-        <div class="responsive-table minimal-table">
-          <table>
-            <thead>
-              <tr><th>Time</th><th>Status</th><th>Decision</th><th>Audit ID</th></tr>
-            </thead>
-            <tbody id="demo-log-body">
-              <tr><td>12:18</td><td>edited</td><td>Offer store credit</td><td>audit_9J2k</td></tr>
-              <tr><td>12:04</td><td>approved</td><td>Approved as written</td><td>audit_Q8p1</td></tr>
-              <tr><td>11:58</td><td>rejected</td><td>Needs proof first</td><td>audit_T2n7</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="minimal-demo-cta">
-        <div>
-          <h2>Want this intervention layer for your own agents?</h2>
-          <p>Private beta. Setup help included.</p>
-        </div>
-        <form id="dashboard-waitlist-form" class="v2-form referral-enabled dashboard-cta-form">
-          <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
-          <input name="referralCode" type="text" placeholder="Referral code" />
-          <button type="submit">Get early access</button>
-          <p class="mini-status" role="status"></p>
-        </form>
+  <body data-page="dashboard" class="zip-design redirect-zip">
+    <main class="zip-redirect-page">
+      <a class="zip-brand" href="/" aria-label="Forsig home">
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M4 20h12M24 20h12" />
+          <circle cx="20" cy="20" r="6" />
+          <path d="M20 8v6M20 26v6" />
+          <circle cx="4" cy="20" r="2" />
+          <circle cx="36" cy="20" r="2" />
+        </svg>
+        <span>Forsig</span>
+      </a>
+      <section>
+        <span class="zip-section-label">Demo moved</span>
+        <h1>Opening the live demo.</h1>
+        <p>The public demo now lives inside the homepage so visitors see the product story in one place.</p>
+        <a class="zip-button zip-button-primary" href="/#demo">Open Demo</a>
       </section>
     </main>
-    <script src="/app.js" type="module"></script>
+    <script>
+      location.replace("/#demo");
+    </script>
   </body>
 </html>

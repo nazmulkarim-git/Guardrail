@@ -39,7 +39,7 @@
           <a href="#pricing">Pricing</a>
           <a href="#contact">Contact</a>
         </div>
-        <a class="zip-button zip-button-primary" href="#waitlist">Join Waitlist</a>
+        <a class="zip-button zip-button-primary" href="#waitlist">Get Early Access</a>
       </nav>
     </header>
 
@@ -61,7 +61,7 @@
           <form id="hero-waitlist-form" class="zip-waitlist-form">
             <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
             <input name="referralCode" type="text" placeholder="Referral code" />
-            <button type="submit">Join Waitlist</button>
+            <button type="submit">Get Early Access</button>
             <p class="mini-status" role="status"></p>
           </form>
 
@@ -138,26 +138,26 @@
 
             <div class="zip-review-body">
               <div>
-                <h3>Review refund for customer #123</h3>
-                <p>The agent wants to issue a $500 refund to a VIP customer.</p>
+                <h3 id="zip-demo-title">Review refund for customer #123</h3>
+                <p id="zip-demo-summary">The agent wants to issue a $500 refund to a VIP customer.</p>
               </div>
 
               <div class="zip-demo-cards">
                 <article>
                   <span>Agent</span>
-                  <b>Refund Agent v1.2.0</b>
-                  <p>refund-review-flow / step: approval</p>
+                  <b id="zip-demo-agent">Refund Agent v1.2.0</b>
+                  <p id="zip-demo-workflow">refund-review-flow / step: approval</p>
                 </article>
                 <article class="zip-danger-card">
                   <span>Risk Level</span>
-                  <b>High</b>
-                  <p>Refund exceeds $250 policy limit</p>
+                  <b id="zip-demo-risk-level">High</b>
+                  <p id="zip-demo-risk-reason">Refund exceeds $250 policy limit</p>
                 </article>
               </div>
 
               <article class="zip-json-box">
                 <span>Proposed Action</span>
-                <pre><code>{
+                <pre><code id="zip-demo-action-json">{
   "type": "refund",
   "amount": 500,
   "currency": "USD",
@@ -168,7 +168,7 @@
 
               <article class="zip-context-box">
                 <span>Context</span>
-                <div>
+                <div id="zip-demo-context">
                   <p><b>Customer Tier:</b> VIP</p>
                   <p><b>Order Value:</b> $1,200</p>
                   <p><b>Refund Reason:</b> Product failed twice</p>
@@ -176,6 +176,11 @@
               </article>
 
               <div id="zip-demo-result" class="zip-demo-result" hidden></div>
+              <div id="zip-demo-editor" class="zip-demo-editor" hidden>
+                <label id="zip-demo-editor-label" for="zip-demo-editor-input">Instruction returned to the agent</label>
+                <textarea id="zip-demo-editor-input"></textarea>
+                <button id="zip-demo-editor-submit" type="button">Send Decision</button>
+              </div>
 
               <div id="zip-demo-actions" class="zip-demo-actions">
                 <p>Your Decision</p>
@@ -201,7 +206,7 @@
               <p><b>2</b> Human receives notification and reviews</p>
               <p><b>3</b> Decision returns to your agent</p>
             </div>
-            <code class="zip-install">$ npm install forsig</code>
+            <button class="zip-install" type="button" data-copy="$ npm install forsig">$ npm install forsig</button>
           </div>
           <div class="zip-code-window">
             <div>
@@ -246,7 +251,7 @@ const decision = await forsig.intervene({
                 <li>Basic audit log</li>
                 <li>1 workspace</li>
               </ul>
-              <a class="zip-button zip-button-primary" href="#waitlist">Join Waitlist</a>
+              <a class="zip-button zip-button-primary" href="#waitlist">Get Early Access</a>
             </article>
             <article>
               <h3>Starter</h3>
@@ -286,7 +291,7 @@ const decision = await forsig.intervene({
           <form id="waitlist-form" class="zip-waitlist-form">
             <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
             <input name="referralCode" type="text" placeholder="Referral code" />
-            <button type="submit">Join Waitlist</button>
+            <button type="submit">Get Early Access</button>
             <p id="form-status" class="mini-status" role="status"></p>
           </form>
           <small>No spam. We will only email you about Forsig updates.</small>
@@ -298,8 +303,7 @@ const decision = await forsig.intervene({
           <div>
             <span class="zip-section-label">Contact</span>
             <h2>Talk to the founder</h2>
-            <p>Have questions about Forsig or want to discuss your agent workflow?</p>
-            <a href="mailto:thenazmulkarim@gmail.com" class="zip-email-link">thenazmulkarim@gmail.com</a>
+            <p>Share what you are building, where your agents need human review, or what would make Forsig useful for you.</p>
           </div>
           <form id="contact-form" class="zip-contact-form">
             <input name="name" type="text" required placeholder="Name" autocomplete="name" />
