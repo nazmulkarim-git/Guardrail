@@ -291,6 +291,7 @@ function initDashboard() {
   const sendEdit = document.getElementById("send-edit-instruction");
   if (!status) return;
   let activeLogFilter = "all";
+  let dashboardResetTimer;
 
   const rows = {
     approved: ["12:21", "approved", "Approved as written", "audit_R7x2"],
@@ -322,6 +323,24 @@ function initDashboard() {
   function setCode(title, code) {
     if (codeTitle) codeTitle.textContent = title;
     if (codeBlock) codeBlock.textContent = code;
+  }
+
+  function resetDashboardDemo() {
+    status.textContent = "Live demo";
+    if (pendingCount) pendingCount.textContent = "1";
+    if (decisionTime) decisionTime.textContent = "2m 14s";
+    if (editPanel) editPanel.hidden = true;
+    setCode("Agent call", `const decision = await forsig.intervene({
+  agent: "refund-agent",
+  risk: "refund_over_limit",
+  proposedAction: "Issue $500 refund",
+  waitForDecision: true
+});`);
+  }
+
+  function scheduleDashboardReset() {
+    clearTimeout(dashboardResetTimer);
+    dashboardResetTimer = setTimeout(resetDashboardDemo, 2600);
   }
 
   function decisionCode(type, instruction, id = auditId()) {
@@ -434,6 +453,7 @@ function initDashboard() {
     }
 
     track("dashboard_simulation_clicked", { type });
+    if (type !== "edited") scheduleDashboardReset();
   }
 
   document.querySelectorAll("[data-simulate]").forEach((button) => {
@@ -456,6 +476,7 @@ function initDashboard() {
       if (editPanel) editPanel.hidden = true;
       showToast("Edited instruction returned");
       track("dashboard_edit_instruction_sent");
+      scheduleDashboardReset();
     });
   }
 
@@ -481,8 +502,55 @@ function initDashboard() {
       const id = prependCustomLog("expired", instruction);
       setCode("Agent receives", decisionCode("expired", instruction, id));
       showToast("Approval request expired");
+      scheduleDashboardReset();
     }
     track(paused ? "approval_expired_demo" : "approval_reset_demo");
+  });
+}
+
+function initZipDemo() {
+  const demo = document.querySelector("[data-zip-demo]");
+  if (!demo) return;
+
+  const status = document.getElementById("zip-demo-status");
+  const expiry = document.getElementById("zip-demo-expiry");
+  const actions = document.getElementById("zip-demo-actions");
+  const result = document.getElementById("zip-demo-result");
+  let resetTimer;
+
+  const labels = {
+    approved: ["Approved", "Decision recorded and sent to the agent."],
+    rejected: ["Rejected", "The risky action was blocked and returned to the agent."],
+    edited_approved: ["Edited & Approved", "The edited instruction was returned to the workflow."],
+    instruct_agent: ["Instructions Sent", "The reviewer gave the agent additional instructions."],
+    human_takeover: ["Human Takeover", "The task was marked as human-owned."]
+  };
+
+  const reset = () => {
+    if (status) status.textContent = "Pending";
+    if (expiry) expiry.textContent = "Expires in 28 minutes";
+    if (actions) actions.hidden = false;
+    if (result) {
+      result.hidden = true;
+      result.textContent = "";
+    }
+  };
+
+  demo.querySelectorAll("[data-zip-decision]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const type = button.dataset.zipDecision;
+      const [title, description] = labels[type] || labels.approved;
+      clearTimeout(resetTimer);
+      if (status) status.textContent = "Resolved";
+      if (expiry) expiry.textContent = "Decision returned to agent";
+      if (actions) actions.hidden = true;
+      if (result) {
+        result.hidden = false;
+        result.innerHTML = `<strong>${title}</strong><p>${description}</p><small>Demo resets automatically...</small>`;
+      }
+      track("landing_demo_decision_clicked", { type });
+      resetTimer = setTimeout(reset, 2400);
+    });
   });
 }
 
@@ -507,6 +575,7 @@ initConsoleMotion();
 initImpactCalculator();
 initWaitlist();
 initDashboard();
+initZipDemo();
 initFaqTracking();
 
 function initThanksReferral() {
