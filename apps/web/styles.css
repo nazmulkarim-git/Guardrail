@@ -3731,6 +3731,15 @@ pre {
   overflow: hidden;
 }
 
+.zip-demo .zip-container {
+  position: relative;
+  z-index: 1;
+}
+
+.zip-demo .zip-section-head {
+  margin-bottom: 34px;
+}
+
 .zip-section-head {
   max-width: 700px;
   margin: 0 auto 52px;
