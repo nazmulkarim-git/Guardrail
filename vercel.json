@@ -7,6 +7,10 @@
       "destination": "/dashboard.html"
     },
     {
+      "source": "/app",
+      "destination": "/app.html"
+    },
+    {
       "source": "/thanks",
       "destination": "/thanks.html"
     },

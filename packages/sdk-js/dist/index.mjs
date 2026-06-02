@@ -40,3 +40,70 @@ export function createForsigOpenAIClient(options) {
   }
   return new options.OpenAI({ apiKey: options.apiKey, baseURL });
 }
+
+export class Forsig {
+  constructor(options) {
+    this.apiKey = options.apiKey;
+    this.baseURL = (options.baseURL ?? "https://api.forsig.com").replace(/\/$/, "");
+    this.fetchImpl = options.fetch ?? globalThis.fetch;
+    if (!this.fetchImpl) throw new Error("Forsig requires fetch. Pass fetch in the constructor for this runtime.");
+  }
+
+  async escalate(input) {
+    const response = await this.request("/api/v1/escalations", {
+      method: "POST",
+      body: JSON.stringify(input)
+    });
+    if (!input.waitForDecision) return response.escalation;
+    return this.waitForDecision(response.escalation.id, {
+      pollIntervalMs: input.pollIntervalMs,
+      timeoutMs: input.timeoutMs
+    });
+  }
+
+  async getEscalation(id) {
+    const response = await this.request(`/api/v1/escalations/${encodeURIComponent(id)}`, {
+      method: "GET"
+    });
+    return response.escalation;
+  }
+
+  async decide(id, decision) {
+    const response = await this.request(`/api/v1/escalations/${encodeURIComponent(id)}/decision`, {
+      method: "POST",
+      body: JSON.stringify(decision)
+    });
+    return response.decision;
+  }
+
+  async waitForDecision(id, options = {}) {
+    const pollIntervalMs = options.pollIntervalMs ?? 1500;
+    const timeoutMs = options.timeoutMs ?? 30 * 60 * 1000;
+    const started = Date.now();
+    while (Date.now() - started <= timeoutMs) {
+      const escalation = await this.getEscalation(id);
+      if (escalation.status !== "pending") return escalation.decision ?? escalation;
+      await new Promise((resolve) => setTimeout(resolve, pollIntervalMs));
+    }
+    throw new Error(`Forsig escalation ${id} did not receive a decision before timeout.`);
+  }
+
+  async request(path, init) {
+    const response = await this.fetchImpl(`${this.baseURL}${path}`, {
+      ...init,
+      headers: {
+        authorization: `Bearer ${this.apiKey}`,
+        "content-type": "application/json",
+        ...(init.headers || {})
+      }
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || payload.ok === false) {
+      const error = new Error(payload.error?.message || "Forsig request failed.");
+      error.status = response.status;
+      error.error = payload.error;
+      throw error;
+    }
+    return payload;
+  }
+}

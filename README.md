@@ -28,11 +28,26 @@ Examples:
 - Optional post-signup qualification form
 - Contact founder form
 - Privacy, Terms, and Security pages
-- JavaScript and Python SDK package placeholders from the earlier prototype
+- JavaScript and Python SDK helpers for the first escalation API
+- Password-protected reviewer app at `/app`
+
+## First MVP Backend
+
+The first product slice is intentionally thin:
+
+- `POST /api/v1/escalations` creates a pending human approval request.
+- `GET /api/v1/escalations/:id` returns the escalation and latest decision.
+- `POST /api/v1/escalations/:id/decision` records approve/reject/edit/context/takeover decisions.
+- `/app` provides a private reviewer inbox, escalation detail view, decision panel, audit trail, workspace setup, and beta API key generation.
+- JavaScript and Python SDKs can create escalations, poll for decisions, and send decisions.
+
+Run `docs/forsig-mvp-schema.sql` in Postgres/Supabase before using the product API.
+
+For private beta auth, set `FORSIG_API_KEY` and optionally `FORSIG_DEFAULT_WORKSPACE_ID=workspace_beta`. Later, per-workspace keys can be stored in the `api_keys` table as SHA-256 hashes.
 
 ## Not Yet Built
 
-The full product backend for escalation requests, reviewer inboxes, channel integrations, and agent resume endpoints has not been built yet. The current work is the waitlist-facing soft-launch site.
+Slack buttons, channel configuration, full user/team accounts, and production account management are not built yet. The current product backend is a private beta approval inbox plus API foundation.
 
 ## Development
 
@@ -66,4 +81,9 @@ NEXT_PUBLIC_POSTHOG_HOST
 POSTHOG_KEY
 POSTHOG_HOST
 REFERRAL_INVITE_SECRET
+FORSIG_API_KEY
+FORSIG_DEFAULT_WORKSPACE_ID
+FORSIG_ADMIN_PASSWORD
+FORSIG_ADMIN_SESSION_SECRET
+FORSIG_REVIEWER_EMAIL
 ```

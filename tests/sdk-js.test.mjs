@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  Forsig,
   createForsigOpenAIClient,
   forsigHeaders,
   newForsigSession,
@@ -51,4 +52,62 @@ test("createForsigOpenAIClient returns config without optional OpenAI class", ()
     apiKey: "fsk_test_123",
     baseURL: "https://api.forsig.com/v1"
   });
+});
+
+test("Forsig client creates escalations with bearer auth", async () => {
+  const calls = [];
+  const client = new Forsig({
+    apiKey: "fsk_test_123",
+    baseURL: "https://example.test",
+    fetch: async (url, init) => {
+      calls.push({ url, init });
+      return {
+        ok: true,
+        json: async () => ({
+          ok: true,
+          escalation: { id: "esc_123", status: "pending" }
+        })
+      };
+    }
+  });
+
+  const escalation = await client.escalate({
+    agent: "refund-agent",
+    task: "Approve refund",
+    risk: { type: "refund_over_limit", level: "high" },
+    proposedAction: "Issue $500 refund"
+  });
+
+  assert.equal(escalation.id, "esc_123");
+  assert.equal(calls[0].url, "https://example.test/api/v1/escalations");
+  assert.equal(calls[0].init.method, "POST");
+  assert.equal(calls[0].init.headers.authorization, "Bearer fsk_test_123");
+  assert.equal(JSON.parse(calls[0].init.body).agent, "refund-agent");
+});
+
+test("Forsig client sends decisions", async () => {
+  const calls = [];
+  const client = new Forsig({
+    apiKey: "fsk_test_123",
+    baseURL: "https://example.test",
+    fetch: async (url, init) => {
+      calls.push({ url, init });
+      return {
+        ok: true,
+        json: async () => ({
+          ok: true,
+          decision: { id: "dec_123", status: "edited", instruction: "Offer store credit." }
+        })
+      };
+    }
+  });
+
+  const decision = await client.decide("esc_123", {
+    status: "edited",
+    instruction: "Offer store credit."
+  });
+
+  assert.equal(decision.status, "edited");
+  assert.equal(calls[0].url, "https://example.test/api/v1/escalations/esc_123/decision");
+  assert.equal(JSON.parse(calls[0].init.body).instruction, "Offer store credit.");
 });

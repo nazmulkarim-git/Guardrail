@@ -1,6 +1,7 @@
 import unittest
 
 from forsig import (
+    Forsig,
     create_forsig_openai_client,
     forsig_headers,
     new_forsig_session,
@@ -47,6 +48,42 @@ class ForsigSdkTests(unittest.TestCase):
         client = create_forsig_openai_client("fsk_test_123")
         self.assertEqual(client["api_key"], "fsk_test_123")
         self.assertEqual(client["base_url"], "https://api.forsig.com/v1")
+
+    def test_client_creates_escalation_with_bearer_auth(self):
+        calls = []
+
+        def http_client(**kwargs):
+            calls.append(kwargs)
+            return {"ok": True, "escalation": {"id": "esc_123", "status": "pending"}}
+
+        client = Forsig(api_key="fsk_test_123", base_url="https://example.test", http_client=http_client)
+        escalation = client.escalate(
+            agent="refund-agent",
+            task="Approve refund",
+            risk={"type": "refund_over_limit", "level": "high"},
+            proposed_action="Issue $500 refund",
+        )
+
+        self.assertEqual(escalation["id"], "esc_123")
+        self.assertEqual(calls[0]["method"], "POST")
+        self.assertEqual(calls[0]["url"], "https://example.test/api/v1/escalations")
+        self.assertEqual(calls[0]["api_key"], "fsk_test_123")
+        self.assertEqual(calls[0]["payload"]["agent"], "refund-agent")
+
+    def test_client_sends_decision(self):
+        calls = []
+
+        def http_client(**kwargs):
+            calls.append(kwargs)
+            return {"ok": True, "decision": {"id": "dec_123", "status": "edited"}}
+
+        client = Forsig(api_key="fsk_test_123", base_url="https://example.test", http_client=http_client)
+        decision = client.decide("esc_123", status="edited", instruction="Offer store credit.")
+
+        self.assertEqual(decision["status"], "edited")
+        self.assertEqual(calls[0]["method"], "POST")
+        self.assertEqual(calls[0]["url"], "https://example.test/api/v1/escalations/esc_123/decision")
+        self.assertEqual(calls[0]["payload"]["instruction"], "Offer store credit.")
 
 
 if __name__ == "__main__":

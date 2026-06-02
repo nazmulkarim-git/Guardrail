@@ -2,7 +2,7 @@ import { createServer } from "node:http";
 import { readFile, mkdir, writeFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, "..");
@@ -22,6 +22,21 @@ const contentTypes = {
 function send(res, status, body, type = "application/json; charset=utf-8") {
   res.writeHead(status, { "content-type": type });
   res.end(body);
+}
+
+function vercelResponse(res) {
+  return {
+    setHeader(name, value) {
+      res.setHeader(name, value);
+    },
+    status(statusCode) {
+      res.statusCode = statusCode;
+      return this;
+    },
+    json(payload) {
+      send(res, res.statusCode || 200, JSON.stringify(payload));
+    }
+  };
 }
 
 async function readJsonBody(req) {
@@ -134,6 +149,15 @@ async function handleWaitlist(req, res) {
   }
 }
 
+async function runApiHandler(req, res, modulePath, query = {}) {
+  if (req.method !== "GET") {
+    req.body = await readJsonBody(req);
+  }
+  req.query = query;
+  const mod = await import(pathToFileURL(path.join(root, modulePath)).href);
+  await mod.default(req, vercelResponse(res));
+}
+
 function handleConfig(_req, res) {
   send(res, 200, JSON.stringify({
     posthogKey: process.env.NEXT_PUBLIC_POSTHOG_KEY || "",
@@ -145,6 +169,7 @@ async function serveStatic(req, res) {
   const url = new URL(req.url, `http://${req.headers.host}`);
   let pathname = decodeURIComponent(url.pathname);
   if (pathname === "/") pathname = "/index.html";
+  if (pathname === "/app") pathname = "/app.html";
   if (pathname === "/dashboard") pathname = "/dashboard.html";
   if (pathname === "/thanks") pathname = "/thanks.html";
   if (pathname === "/contact") pathname = "/contact.html";
@@ -168,8 +193,53 @@ async function serveStatic(req, res) {
 }
 
 createServer(async (req, res) => {
+  const url = new URL(req.url, `http://${req.headers.host}`);
+
   if (req.method === "GET" && req.url?.startsWith("/api/config")) {
     handleConfig(req, res);
+    return;
+  }
+
+  if (url.pathname === "/api/v1/escalations") {
+    await runApiHandler(req, res, path.join("api", "v1", "escalations.js"));
+    return;
+  }
+
+  const adminRoutes = new Map([
+    ["/api/admin/login", path.join("api", "admin", "login.js")],
+    ["/api/admin/logout", path.join("api", "admin", "logout.js")],
+    ["/api/admin/me", path.join("api", "admin", "me.js")],
+    ["/api/admin/workspace", path.join("api", "admin", "workspace.js")],
+    ["/api/admin/api-key", path.join("api", "admin", "api-key.js")],
+    ["/api/admin/escalations", path.join("api", "admin", "escalations.js")]
+  ]);
+
+  if (adminRoutes.has(url.pathname)) {
+    await runApiHandler(req, res, adminRoutes.get(url.pathname), Object.fromEntries(url.searchParams.entries()));
+    return;
+  }
+
+  const adminDecisionMatch = url.pathname.match(/^\/api\/admin\/escalations\/([^/]+)\/decision$/);
+  if (adminDecisionMatch) {
+    await runApiHandler(req, res, path.join("api", "admin", "escalations", "[id]", "decision.js"), { id: adminDecisionMatch[1] });
+    return;
+  }
+
+  const adminEscalationMatch = url.pathname.match(/^\/api\/admin\/escalations\/([^/]+)$/);
+  if (adminEscalationMatch) {
+    await runApiHandler(req, res, path.join("api", "admin", "escalations", "[id].js"), { id: adminEscalationMatch[1] });
+    return;
+  }
+
+  const escalationDecisionMatch = url.pathname.match(/^\/api\/v1\/escalations\/([^/]+)\/decision$/);
+  if (escalationDecisionMatch) {
+    await runApiHandler(req, res, path.join("api", "v1", "escalations", "[id]", "decision.js"), { id: escalationDecisionMatch[1] });
+    return;
+  }
+
+  const escalationMatch = url.pathname.match(/^\/api\/v1\/escalations\/([^/]+)$/);
+  if (escalationMatch) {
+    await runApiHandler(req, res, path.join("api", "v1", "escalations", "[id].js"), { id: escalationMatch[1] });
     return;
   }
 

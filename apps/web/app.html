@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Forsig App</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body data-page="app" class="zip-design admin-app">
+    <main class="admin-shell">
+      <aside id="admin-sidebar" class="admin-sidebar">
+        <a class="zip-brand" href="/" aria-label="Forsig home">
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <path d="M4 20h12M24 20h12" />
+            <circle cx="20" cy="20" r="6" />
+            <path d="M20 8v6M20 26v6" />
+            <circle cx="4" cy="20" r="2" />
+            <circle cx="36" cy="20" r="2" />
+          </svg>
+          <span>Forsig</span>
+        </a>
+        <nav>
+          <button type="button" data-admin-view="inbox" class="active">Inbox</button>
+          <button type="button" data-admin-view="onboarding">Workspace</button>
+          <button type="button" data-admin-view="keys">API Keys</button>
+        </nav>
+        <button id="admin-logout" type="button">Logout</button>
+      </aside>
+
+      <section id="admin-login" class="admin-login-card" hidden>
+        <span class="zip-section-label">Private Beta</span>
+        <h1>Reviewer login</h1>
+        <p>Use your Forsig admin password to open the approval inbox.</p>
+        <form id="admin-login-form">
+          <input name="password" type="password" required placeholder="Admin password" autocomplete="current-password" />
+          <button type="submit">Open Forsig</button>
+          <p class="mini-status" role="status"></p>
+        </form>
+      </section>
+
+      <section id="admin-app" class="admin-main" hidden>
+        <header class="admin-topbar">
+          <div>
+            <span class="zip-section-label">Human approval inbox</span>
+            <h1>Review risky agent actions.</h1>
+          </div>
+          <button id="admin-refresh" type="button">Refresh</button>
+        </header>
+
+        <section class="admin-stats" aria-label="Workspace stats">
+          <article><span>Pending</span><strong id="stat-pending">0</strong></article>
+          <article><span>Approved</span><strong id="stat-approved">0</strong></article>
+          <article><span>Rejected</span><strong id="stat-rejected">0</strong></article>
+          <article><span>Edited</span><strong id="stat-edited">0</strong></article>
+        </section>
+
+        <section id="admin-view-inbox" class="admin-view">
+          <div class="admin-toolbar">
+            <div>
+              <h2>Pending escalations</h2>
+              <p>Approve, reject, edit, or take over before the agent continues.</p>
+            </div>
+            <select id="admin-status-filter">
+              <option value="pending">Pending</option>
+              <option value="all">All</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="edited">Edited</option>
+              <option value="taken_over">Taken over</option>
+            </select>
+          </div>
+
+          <div class="admin-grid">
+            <div id="escalation-list" class="escalation-list"></div>
+            <article id="escalation-detail" class="escalation-detail">
+              <p class="empty-state">Select an escalation to review.</p>
+            </article>
+          </div>
+        </section>
+
+        <section id="admin-view-onboarding" class="admin-view" hidden>
+          <div class="admin-panel">
+            <h2>Workspace onboarding</h2>
+            <p>Set the beta workspace name and owner. This is intentionally small while Forsig is in private beta.</p>
+            <form id="workspace-form" class="admin-form-grid">
+              <input name="name" type="text" placeholder="Workspace name" />
+              <input name="ownerEmail" type="email" placeholder="Owner email" />
+              <button type="submit">Save workspace</button>
+              <p class="mini-status" role="status"></p>
+            </form>
+          </div>
+        </section>
+
+        <section id="admin-view-keys" class="admin-view" hidden>
+          <div class="admin-panel">
+            <h2>API keys</h2>
+            <p>Create a beta API key for a developer. The full key is only shown once.</p>
+            <form id="api-key-form" class="admin-form-grid">
+              <input name="name" type="text" placeholder="Key name, e.g. Refund Agent beta" />
+              <button type="submit">Create API key</button>
+              <p class="mini-status" role="status"></p>
+            </form>
+            <div id="new-api-key" class="new-api-key" hidden></div>
+            <div id="api-key-list" class="api-key-list"></div>
+          </div>
+        </section>
+      </section>
+    </main>
+    <script src="/admin-app.js" type="module"></script>
+  </body>
+</html>
