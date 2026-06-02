@@ -31,10 +31,12 @@ const routes = [
 ];
 
 function routePath(req) {
-  const raw = req.query?.path;
-  if (Array.isArray(raw)) return raw.join("/");
-  if (typeof raw === "string") return raw;
-  return "";
+  const queryPath = req.query?.path;
+  if (Array.isArray(queryPath)) return queryPath.join("/");
+  if (typeof queryPath === "string" && queryPath) return queryPath.replace(/^\/+/, "");
+
+  const url = new URL(req.url || "/api", `https://${req.headers.host || "www.forsig.com"}`);
+  return url.pathname.replace(/^\/api\/?/, "").replace(/^\/+/, "");
 }
 
 export default async function handler(req, res) {
@@ -47,7 +49,7 @@ export default async function handler(req, res) {
       error: {
         type: "forsig_api_error",
         code: "route_not_found",
-        message: "API route not found."
+        message: `API route not found: ${requestedPath || "/"}`
       }
     });
     return;
@@ -66,3 +68,4 @@ export default async function handler(req, res) {
   const mod = await import(pathToFileURL(modulePath).href);
   await mod.default(req, res);
 }
+

@@ -194,13 +194,15 @@ async function serveStatic(req, res) {
 
 createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
+  const rewrittenApiPath = url.pathname === "/api" && url.searchParams.get("path");
+  const apiPathname = rewrittenApiPath ? `/api/${rewrittenApiPath.replace(/^\/+/, "")}` : url.pathname;
 
   if (req.method === "GET" && req.url?.startsWith("/api/config")) {
     handleConfig(req, res);
     return;
   }
 
-  if (url.pathname === "/api/v1/escalations") {
+  if (apiPathname === "/api/v1/escalations") {
     await runApiHandler(req, res, path.join("server", "api-routes", "v1", "escalations.js"));
     return;
   }
@@ -214,30 +216,30 @@ createServer(async (req, res) => {
     ["/api/admin/escalations", path.join("server", "api-routes", "admin", "escalations.js")]
   ]);
 
-  if (adminRoutes.has(url.pathname)) {
-    await runApiHandler(req, res, adminRoutes.get(url.pathname), Object.fromEntries(url.searchParams.entries()));
+  if (adminRoutes.has(apiPathname)) {
+    await runApiHandler(req, res, adminRoutes.get(apiPathname), Object.fromEntries(url.searchParams.entries()));
     return;
   }
 
-  const adminDecisionMatch = url.pathname.match(/^\/api\/admin\/escalations\/([^/]+)\/decision$/);
+  const adminDecisionMatch = apiPathname.match(/^\/api\/admin\/escalations\/([^/]+)\/decision$/);
   if (adminDecisionMatch) {
     await runApiHandler(req, res, path.join("server", "api-routes", "admin", "escalations", "[id]", "decision.js"), { id: adminDecisionMatch[1] });
     return;
   }
 
-  const adminEscalationMatch = url.pathname.match(/^\/api\/admin\/escalations\/([^/]+)$/);
+  const adminEscalationMatch = apiPathname.match(/^\/api\/admin\/escalations\/([^/]+)$/);
   if (adminEscalationMatch) {
     await runApiHandler(req, res, path.join("server", "api-routes", "admin", "escalations", "[id].js"), { id: adminEscalationMatch[1] });
     return;
   }
 
-  const escalationDecisionMatch = url.pathname.match(/^\/api\/v1\/escalations\/([^/]+)\/decision$/);
+  const escalationDecisionMatch = apiPathname.match(/^\/api\/v1\/escalations\/([^/]+)\/decision$/);
   if (escalationDecisionMatch) {
     await runApiHandler(req, res, path.join("server", "api-routes", "v1", "escalations", "[id]", "decision.js"), { id: escalationDecisionMatch[1] });
     return;
   }
 
-  const escalationMatch = url.pathname.match(/^\/api\/v1\/escalations\/([^/]+)$/);
+  const escalationMatch = apiPathname.match(/^\/api\/v1\/escalations\/([^/]+)$/);
   if (escalationMatch) {
     await runApiHandler(req, res, path.join("server", "api-routes", "v1", "escalations", "[id].js"), { id: escalationMatch[1] });
     return;
