@@ -170,6 +170,7 @@ async function serveStatic(req, res) {
   let pathname = decodeURIComponent(url.pathname);
   if (pathname === "/") pathname = "/index.html";
   if (pathname === "/app") pathname = "/app.html";
+  if (pathname === "/developer") pathname = "/developer.html";
   if (pathname === "/dashboard") pathname = "/dashboard.html";
   if (pathname === "/thanks") pathname = "/thanks.html";
   if (pathname === "/contact") pathname = "/contact.html";
@@ -213,6 +214,7 @@ createServer(async (req, res) => {
     ["/api/admin/me", path.join("server", "api-routes", "admin", "me.js")],
     ["/api/admin/workspace", path.join("server", "api-routes", "admin", "workspace.js")],
     ["/api/admin/api-key", path.join("server", "api-routes", "admin", "api-key.js")],
+    ["/api/admin/developers", path.join("server", "api-routes", "admin", "developers.js")],
     ["/api/admin/escalations", path.join("server", "api-routes", "admin", "escalations.js")]
   ]);
 
@@ -230,6 +232,32 @@ createServer(async (req, res) => {
   const adminEscalationMatch = apiPathname.match(/^\/api\/admin\/escalations\/([^/]+)$/);
   if (adminEscalationMatch) {
     await runApiHandler(req, res, path.join("server", "api-routes", "admin", "escalations", "[id].js"), { id: adminEscalationMatch[1] });
+    return;
+  }
+
+  const developerRoutes = new Map([
+    ["/api/developer/login", path.join("server", "api-routes", "developer", "login.js")],
+    ["/api/developer/logout", path.join("server", "api-routes", "developer", "logout.js")],
+    ["/api/developer/me", path.join("server", "api-routes", "developer", "me.js")],
+    ["/api/developer/workspace", path.join("server", "api-routes", "developer", "workspace.js")],
+    ["/api/developer/api-key", path.join("server", "api-routes", "developer", "api-key.js")],
+    ["/api/developer/escalations", path.join("server", "api-routes", "developer", "escalations.js")]
+  ]);
+
+  if (developerRoutes.has(apiPathname)) {
+    await runApiHandler(req, res, developerRoutes.get(apiPathname), Object.fromEntries(url.searchParams.entries()));
+    return;
+  }
+
+  const developerDecisionMatch = apiPathname.match(/^\/api\/developer\/escalations\/([^/]+)\/decision$/);
+  if (developerDecisionMatch) {
+    await runApiHandler(req, res, path.join("server", "api-routes", "developer", "escalations", "[id]", "decision.js"), { id: developerDecisionMatch[1] });
+    return;
+  }
+
+  const developerEscalationMatch = apiPathname.match(/^\/api\/developer\/escalations\/([^/]+)$/);
+  if (developerEscalationMatch) {
+    await runApiHandler(req, res, path.join("server", "api-routes", "developer", "escalations", "[id].js"), { id: developerEscalationMatch[1] });
     return;
   }
 

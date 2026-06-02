@@ -114,6 +114,18 @@ export function clearAdminSessionCookie() {
   return "forsig_admin=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0;";
 }
 
+export function createDeveloperSessionCookie(developer) {
+  const expiresAt = Date.now() + 1000 * 60 * 60 * 24 * 14;
+  const value = `dev.${developer.id}.${developer.workspace_id}.${expiresAt}`;
+  const signature = signValue(value);
+  const secure = process.env.NODE_ENV === "production" ? " Secure;" : "";
+  return `forsig_dev=${encodeURIComponent(`${value}.${signature}`)}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${60 * 60 * 24 * 14};${secure}`;
+}
+
+export function clearDeveloperSessionCookie() {
+  return "forsig_dev=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0;";
+}
+
 export function isAdminAuthenticated(req) {
   const session = parseCookies(req).forsig_admin;
   if (!session) return false;
@@ -130,6 +142,30 @@ export function requireAdmin(req, res) {
   if (isAdminAuthenticated(req)) return true;
   apiError(res, 401, "admin_auth_required", "Admin login is required.");
   return false;
+}
+
+export function getDeveloperSession(req) {
+  const session = parseCookies(req).forsig_dev;
+  if (!session) return null;
+  const parts = session.split(".");
+  if (parts.length !== 5) return null;
+  const value = parts.slice(0, 4).join(".");
+  const signature = parts[4];
+  const expiresAt = Number(parts[3]);
+  if (!Number.isFinite(expiresAt) || expiresAt < Date.now()) return null;
+  if (!verifySignedValue(value, signature)) return null;
+  return {
+    id: parts[1],
+    workspaceId: parts[2],
+    expiresAt
+  };
+}
+
+export function requireDeveloper(req, res) {
+  const session = getDeveloperSession(req);
+  if (session) return session;
+  apiError(res, 401, "developer_auth_required", "Developer login is required.");
+  return null;
 }
 
 export function hashApiKey(key) {

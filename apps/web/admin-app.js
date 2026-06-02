@@ -75,6 +75,7 @@ function setView(view) {
   });
   if (view === "keys") loadKeys();
   if (view === "onboarding") loadWorkspace();
+  if (view === "developers") loadDevelopers();
 }
 
 async function checkSession() {
@@ -113,6 +114,23 @@ async function loadKeys() {
         <small>${key.last_used_at ? `Last used ${formatDate(key.last_used_at)}` : "Never used"}</small>
       </article>
     `).join("") : "<p class='empty-state'>No API keys yet.</p>";
+  } catch (error) {
+    list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
+  }
+}
+
+async function loadDevelopers() {
+  const list = $("#developer-list");
+  list.innerHTML = "<p class='empty-state'>Loading developers...</p>";
+  try {
+    const data = await api("/api/admin/developers");
+    list.innerHTML = data.developers.length ? data.developers.map((developer) => `
+      <article>
+        <strong>${escapeHtml(developer.name || developer.email)}</strong>
+        <span>${escapeHtml(developer.email)} · ${escapeHtml(developer.workspace_name || developer.workspace_id)}</span>
+        <small>${developer.escalation_count || 0} escalations · ${developer.active_key_count || 0} active keys · ${developer.last_login_at ? `last login ${formatDate(developer.last_login_at)}` : "not logged in yet"}</small>
+      </article>
+    `).join("") : "<p class='empty-state'>No developers have beta access yet.</p>";
   } catch (error) {
     list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
   }
@@ -358,6 +376,42 @@ $("#api-key-form").addEventListener("submit", async (event) => {
     status.textContent = "API key created.";
     form.reset();
     await loadKeys();
+  } catch (error) {
+    status.textContent = error.message;
+  }
+});
+
+$("#developer-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const status = form.querySelector(".mini-status");
+  status.textContent = "Creating access...";
+  try {
+    const data = await api("/api/admin/developers", {
+      method: "POST",
+      body: JSON.stringify({
+        email: form.elements.email.value,
+        name: form.elements.name.value,
+        company: form.elements.company.value,
+        workspaceName: form.elements.workspaceName.value
+      })
+    });
+    const loginUrl = `${location.origin}${data.developer.loginUrl}`;
+    const inviteText = [
+      `Forsig developer portal: ${loginUrl}`,
+      `Email: ${data.developer.email}`,
+      `Access code: ${data.developer.accessCode}`
+    ].join("\n");
+    const box = $("#new-developer-access");
+    box.hidden = false;
+    box.innerHTML = `
+      <span>Share this with the developer. The access code is only shown once.</span>
+      <code>${escapeHtml(inviteText)}</code>
+      <button type="button" data-copy-key="${escapeHtml(inviteText)}">Copy</button>
+    `;
+    status.textContent = "Developer access created.";
+    form.reset();
+    await loadDevelopers();
   } catch (error) {
     status.textContent = error.message;
   }

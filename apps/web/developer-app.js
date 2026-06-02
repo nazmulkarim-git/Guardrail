@@ -2,7 +2,8 @@ const state = {
   selectedId: new URLSearchParams(location.search).get("esc"),
   status: "pending",
   escalations: [],
-  detail: null
+  detail: null,
+  developer: null
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -55,33 +56,34 @@ function prettyJson(value) {
 }
 
 function showLogin() {
-  $("#admin-sidebar").hidden = true;
-  $("#admin-login").hidden = false;
-  $("#admin-app").hidden = true;
+  $("#developer-sidebar").hidden = true;
+  $("#developer-login").hidden = false;
+  $("#developer-app").hidden = true;
 }
 
 function showApp() {
-  $("#admin-sidebar").hidden = false;
-  $("#admin-login").hidden = true;
-  $("#admin-app").hidden = false;
+  $("#developer-sidebar").hidden = false;
+  $("#developer-login").hidden = true;
+  $("#developer-app").hidden = false;
 }
 
 function setView(view) {
-  document.querySelectorAll("[data-admin-view]").forEach((button) => {
-    button.classList.toggle("active", button.dataset.adminView === view);
+  document.querySelectorAll("[data-developer-view]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.developerView === view);
   });
   document.querySelectorAll(".admin-view").forEach((section) => {
-    section.hidden = section.id !== `admin-view-${view}`;
+    section.hidden = section.id !== `developer-view-${view}`;
   });
   if (view === "keys") loadKeys();
-  if (view === "onboarding") loadWorkspace();
-  if (view === "developers") loadDevelopers();
+  if (view === "workspace") loadWorkspace();
 }
 
 async function checkSession() {
-  const session = await api("/api/admin/me");
+  const session = await api("/api/developer/me");
   if (session.authenticated) {
+    state.developer = session.developer;
     showApp();
+    $("#developer-workspace-label").textContent = `${session.developer.workspaceName || "Workspace"} · ${session.developer.email}`;
     await Promise.all([loadWorkspace(), loadEscalations()]);
     if (state.selectedId) await loadDetail(state.selectedId);
   } else {
@@ -91,22 +93,22 @@ async function checkSession() {
 
 async function loadWorkspace() {
   try {
-    const data = await api("/api/admin/workspace");
-    const form = $("#workspace-form");
+    const data = await api("/api/developer/workspace");
+    const form = $("#developer-workspace-form");
     if (data.workspace && form) {
       form.elements.name.value = data.workspace.name || "";
-      form.elements.ownerEmail.value = data.workspace.owner_email || "";
+      $("#developer-workspace-label").textContent = `${data.workspace.name || "Workspace"} · ${state.developer?.email || ""}`;
     }
   } catch (error) {
-    $("#workspace-form .mini-status").textContent = error.message;
+    $("#developer-workspace-form .mini-status").textContent = error.message;
   }
 }
 
 async function loadKeys() {
-  const list = $("#api-key-list");
+  const list = $("#developer-api-key-list");
   list.innerHTML = "<p class='empty-state'>Loading keys...</p>";
   try {
-    const data = await api("/api/admin/api-key");
+    const data = await api("/api/developer/api-key");
     list.innerHTML = data.keys.length ? data.keys.map((key) => `
       <article>
         <strong>${escapeHtml(key.name)}</strong>
@@ -119,30 +121,13 @@ async function loadKeys() {
   }
 }
 
-async function loadDevelopers() {
-  const list = $("#developer-list");
-  list.innerHTML = "<p class='empty-state'>Loading developers...</p>";
-  try {
-    const data = await api("/api/admin/developers");
-    list.innerHTML = data.developers.length ? data.developers.map((developer) => `
-      <article>
-        <strong>${escapeHtml(developer.name || developer.email)}</strong>
-        <span>${escapeHtml(developer.email)} · ${escapeHtml(developer.workspace_name || developer.workspace_id)}</span>
-        <small>${developer.escalation_count || 0} escalations · ${developer.active_key_count || 0} active keys · ${developer.last_login_at ? `last login ${formatDate(developer.last_login_at)}` : "not logged in yet"}</small>
-      </article>
-    `).join("") : "<p class='empty-state'>No developers have beta access yet.</p>";
-  } catch (error) {
-    list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
-  }
-}
-
 async function loadEscalations() {
-  const data = await api(`/api/admin/escalations?status=${encodeURIComponent(state.status)}`);
+  const data = await api(`/api/developer/escalations?status=${encodeURIComponent(state.status)}`);
   state.escalations = data.escalations || [];
-  $("#stat-pending").textContent = data.counts?.pending ?? 0;
-  $("#stat-approved").textContent = data.counts?.approved ?? 0;
-  $("#stat-rejected").textContent = data.counts?.rejected ?? 0;
-  $("#stat-edited").textContent = data.counts?.edited ?? 0;
+  $("#dev-stat-pending").textContent = data.counts?.pending ?? 0;
+  $("#dev-stat-approved").textContent = data.counts?.approved ?? 0;
+  $("#dev-stat-rejected").textContent = data.counts?.rejected ?? 0;
+  $("#dev-stat-edited").textContent = data.counts?.edited ?? 0;
   renderList();
   if (!state.selectedId && state.escalations[0]) {
     await loadDetail(state.escalations[0].id);
@@ -150,9 +135,9 @@ async function loadEscalations() {
 }
 
 function renderList() {
-  const list = $("#escalation-list");
+  const list = $("#developer-escalation-list");
   if (!state.escalations.length) {
-    list.innerHTML = "<p class='empty-state'>No escalations in this view.</p>";
+    list.innerHTML = "<p class='empty-state'>No escalations in this view yet.</p>";
     return;
   }
   list.innerHTML = state.escalations.map((item) => `
@@ -167,9 +152,9 @@ function renderList() {
 
 async function loadDetail(id) {
   state.selectedId = id;
-  const data = await api(`/api/admin/escalations/${encodeURIComponent(id)}`);
+  const data = await api(`/api/developer/escalations/${encodeURIComponent(id)}`);
   state.detail = data;
-  history.replaceState(null, "", `/app?esc=${encodeURIComponent(id)}`);
+  history.replaceState(null, "", `/developer?esc=${encodeURIComponent(id)}`);
   renderList();
   renderDetail();
 }
@@ -179,7 +164,7 @@ function decisionButton(status, label) {
 }
 
 function renderDetail() {
-  const detail = $("#escalation-detail");
+  const detail = $("#developer-escalation-detail");
   const item = state.detail?.escalation;
   if (!item) {
     detail.innerHTML = "<p class='empty-state'>Select an escalation to review.</p>";
@@ -216,7 +201,7 @@ function renderDetail() {
           ${decisionButton("taken_over", "Take over")}
           ${decisionButton("needs_more_info", "More info")}
         </div>
-        <form id="decision-form" class="decision-form">
+        <form id="developer-decision-form" class="decision-form">
           <input name="status" type="hidden" value="approved" />
           <label>Instruction returned to the agent</label>
           <textarea name="instruction" placeholder="Proceed with the proposed action.">Proceed with the proposed action.</textarea>
@@ -246,17 +231,14 @@ function renderDetail() {
 }
 
 async function submitDecision(form) {
-  const status = form.elements.status.value;
   const payload = {
-    status,
+    status: form.elements.status.value,
     instruction: form.elements.instruction.value.trim(),
-    comment: form.elements.comment.value.trim(),
-    reviewerName: "Admin reviewer",
-    reviewerChannel: "dashboard"
+    comment: form.elements.comment.value.trim()
   };
   const statusEl = form.querySelector(".mini-status");
   statusEl.textContent = "Sending decision...";
-  await api(`/api/admin/escalations/${encodeURIComponent(state.selectedId)}/decision`, {
+  await api(`/api/developer/escalations/${encodeURIComponent(state.selectedId)}/decision`, {
     method: "POST",
     body: JSON.stringify(payload)
   });
@@ -266,16 +248,20 @@ async function submitDecision(form) {
   await loadDetail(state.selectedId);
 }
 
-$("#admin-login-form").addEventListener("submit", async (event) => {
+$("#developer-login-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
   const status = form.querySelector(".mini-status");
   status.textContent = "Checking...";
   try {
-    await api("/api/admin/login", {
+    const data = await api("/api/developer/login", {
       method: "POST",
-      body: JSON.stringify({ password: form.elements.password.value })
+      body: JSON.stringify({
+        email: form.elements.email.value,
+        accessCode: form.elements.accessCode.value
+      })
     });
+    state.developer = data.developer;
     status.textContent = "";
     showApp();
     await Promise.all([loadWorkspace(), loadEscalations()]);
@@ -284,89 +270,52 @@ $("#admin-login-form").addEventListener("submit", async (event) => {
   }
 });
 
-$("#admin-logout").addEventListener("click", async () => {
-  await api("/api/admin/logout", { method: "POST", body: "{}" }).catch(() => null);
+$("#developer-logout").addEventListener("click", async () => {
+  await api("/api/developer/logout", { method: "POST", body: "{}" }).catch(() => null);
   showLogin();
 });
 
-$("#admin-refresh").addEventListener("click", () => loadEscalations().catch((error) => toast(error.message)));
+$("#developer-refresh").addEventListener("click", () => loadEscalations().catch((error) => toast(error.message)));
 
-$("#admin-status-filter").addEventListener("change", async (event) => {
+$("#developer-status-filter").addEventListener("change", async (event) => {
   state.status = event.target.value;
   state.selectedId = null;
   await loadEscalations();
 });
 
-document.addEventListener("click", async (event) => {
-  const escalationButton = event.target.closest("[data-escalation-id]");
-  if (escalationButton) {
-    await loadDetail(escalationButton.dataset.escalationId);
-    return;
-  }
-
-  const decisionButtonEl = event.target.closest("[data-decision-status]");
-  if (decisionButtonEl) {
-    const status = decisionButtonEl.dataset.decisionStatus;
-    const form = $("#decision-form");
-    form.elements.status.value = status;
-    const templates = {
-      approved: "Proceed with the proposed action.",
-      rejected: "Do not continue with this action.",
-      edited: "Continue, but use this revised instruction:",
-      context_added: "Use the added context and continue.",
-      taken_over: "Human reviewer has taken over. Stop autonomous execution.",
-      needs_more_info: "Gather more information and escalate again."
-    };
-    form.elements.instruction.value = templates[status] || "";
-    document.querySelectorAll("[data-decision-status]").forEach((button) => button.classList.remove("active"));
-    decisionButtonEl.classList.add("active");
-  }
+document.querySelectorAll("[data-developer-view]").forEach((button) => {
+  button.addEventListener("click", () => setView(button.dataset.developerView));
 });
 
-document.addEventListener("submit", async (event) => {
-  if (event.target.id === "decision-form") {
-    event.preventDefault();
-    await submitDecision(event.target).catch((error) => {
-      event.target.querySelector(".mini-status").textContent = error.message;
-    });
-  }
-});
-
-document.querySelectorAll("[data-admin-view]").forEach((button) => {
-  button.addEventListener("click", () => setView(button.dataset.adminView));
-});
-
-$("#workspace-form").addEventListener("submit", async (event) => {
+$("#developer-workspace-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
   const status = form.querySelector(".mini-status");
   status.textContent = "Saving...";
   try {
-    await api("/api/admin/workspace", {
+    await api("/api/developer/workspace", {
       method: "POST",
-      body: JSON.stringify({
-        name: form.elements.name.value,
-        ownerEmail: form.elements.ownerEmail.value
-      })
+      body: JSON.stringify({ name: form.elements.name.value })
     });
     status.textContent = "Workspace saved.";
     toast("Workspace saved");
+    await loadWorkspace();
   } catch (error) {
     status.textContent = error.message;
   }
 });
 
-$("#api-key-form").addEventListener("submit", async (event) => {
+$("#developer-api-key-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
   const status = form.querySelector(".mini-status");
   status.textContent = "Creating key...";
   try {
-    const data = await api("/api/admin/api-key", {
+    const data = await api("/api/developer/api-key", {
       method: "POST",
       body: JSON.stringify({ name: form.elements.name.value })
     });
-    const box = $("#new-api-key");
+    const box = $("#developer-new-api-key");
     box.hidden = false;
     box.innerHTML = `
       <span>Copy this key now. It will not be shown again.</span>
@@ -381,51 +330,49 @@ $("#api-key-form").addEventListener("submit", async (event) => {
   }
 });
 
-$("#developer-form").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const status = form.querySelector(".mini-status");
-  status.textContent = "Creating access...";
-  try {
-    const data = await api("/api/admin/developers", {
-      method: "POST",
-      body: JSON.stringify({
-        email: form.elements.email.value,
-        name: form.elements.name.value,
-        company: form.elements.company.value,
-        workspaceName: form.elements.workspaceName.value
-      })
-    });
-    const loginUrl = `${location.origin}${data.developer.loginUrl}`;
-    const inviteText = [
-      `Forsig developer portal: ${loginUrl}`,
-      `Email: ${data.developer.email}`,
-      `Access code: ${data.developer.accessCode}`
-    ].join("\n");
-    const box = $("#new-developer-access");
-    box.hidden = false;
-    box.innerHTML = `
-      <span>Share this with the developer. The access code is only shown once.</span>
-      <code>${escapeHtml(inviteText)}</code>
-      <button type="button" data-copy-key="${escapeHtml(inviteText)}">Copy</button>
-    `;
-    status.textContent = "Developer access created.";
-    form.reset();
-    await loadDevelopers();
-  } catch (error) {
-    status.textContent = error.message;
+document.addEventListener("click", async (event) => {
+  const escalationButton = event.target.closest("[data-escalation-id]");
+  if (escalationButton) {
+    await loadDetail(escalationButton.dataset.escalationId);
+    return;
+  }
+
+  const decisionButtonEl = event.target.closest("[data-decision-status]");
+  if (decisionButtonEl) {
+    const status = decisionButtonEl.dataset.decisionStatus;
+    const form = $("#developer-decision-form");
+    form.elements.status.value = status;
+    const templates = {
+      approved: "Proceed with the proposed action.",
+      rejected: "Do not continue with this action.",
+      edited: "Continue, but use this revised instruction:",
+      context_added: "Use the added context and continue.",
+      taken_over: "Human reviewer has taken over. Stop autonomous execution.",
+      needs_more_info: "Gather more information and escalate again."
+    };
+    form.elements.instruction.value = templates[status] || "";
+    document.querySelectorAll("[data-decision-status]").forEach((button) => button.classList.remove("active"));
+    decisionButtonEl.classList.add("active");
+  }
+
+  const copy = event.target.closest("[data-copy-key]");
+  if (copy) {
+    await navigator.clipboard.writeText(copy.dataset.copyKey);
+    copy.textContent = "Copied";
+    setTimeout(() => (copy.textContent = "Copy"), 1200);
   }
 });
 
-document.addEventListener("click", async (event) => {
-  const copy = event.target.closest("[data-copy-key]");
-  if (!copy) return;
-  await navigator.clipboard.writeText(copy.dataset.copyKey);
-  copy.textContent = "Copied";
-  setTimeout(() => (copy.textContent = "Copy"), 1200);
+document.addEventListener("submit", async (event) => {
+  if (event.target.id === "developer-decision-form") {
+    event.preventDefault();
+    await submitDecision(event.target).catch((error) => {
+      event.target.querySelector(".mini-status").textContent = error.message;
+    });
+  }
 });
 
 checkSession().catch((error) => {
   showLogin();
-  $("#admin-login-form .mini-status").textContent = error.message;
+  $("#developer-login-form .mini-status").textContent = error.message;
 });

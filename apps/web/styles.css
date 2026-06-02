@@ -5678,6 +5678,8 @@ th {
 .admin-toolbar select,
 .decision-actions button,
 .decision-form button,
+#admin-login-form button,
+#developer-login-form button,
 .admin-form-grid button,
 .new-api-key button {
   min-height: 42px;
@@ -5698,6 +5700,8 @@ th {
 .decision-actions button.active,
 .admin-topbar button,
 .decision-form button,
+#admin-login-form button,
+#developer-login-form button,
 .admin-form-grid button,
 .new-api-key button {
   border-color: rgba(0, 255, 194, 0.4);
@@ -5705,7 +5709,8 @@ th {
   background: var(--zip-primary);
 }
 
-#admin-logout {
+#admin-logout,
+#developer-logout {
   margin-top: auto;
 }
 
@@ -5740,6 +5745,7 @@ th {
 }
 
 #admin-login-form,
+#developer-login-form,
 .admin-form-grid,
 .decision-form {
   display: grid;
@@ -5747,6 +5753,7 @@ th {
 }
 
 #admin-login-form input,
+#developer-login-form input,
 .admin-form-grid input,
 .decision-form input,
 .decision-form textarea {
@@ -5956,7 +5963,7 @@ th {
   }
 
   .admin-sidebar nav {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .admin-grid,

@@ -25,9 +25,22 @@ const routes = [
   { method: "POST", pattern: /^admin\/workspace$/, file: "admin/workspace.js" },
   { method: "GET", pattern: /^admin\/api-key$/, file: "admin/api-key.js" },
   { method: "POST", pattern: /^admin\/api-key$/, file: "admin/api-key.js" },
+  { method: "GET", pattern: /^admin\/developers$/, file: "admin/developers.js" },
+  { method: "POST", pattern: /^admin\/developers$/, file: "admin/developers.js" },
   { method: "GET", pattern: /^admin\/escalations$/, file: "admin/escalations.js" },
   { method: "GET", pattern: /^admin\/escalations\/([^/]+)$/, file: "admin/escalations/[id].js", params: ["id"] },
-  { method: "POST", pattern: /^admin\/escalations\/([^/]+)\/decision$/, file: "admin/escalations/[id]/decision.js", params: ["id"] }
+  { method: "POST", pattern: /^admin\/escalations\/([^/]+)\/decision$/, file: "admin/escalations/[id]/decision.js", params: ["id"] },
+
+  { method: "POST", pattern: /^developer\/login$/, file: "developer/login.js" },
+  { method: "POST", pattern: /^developer\/logout$/, file: "developer/logout.js" },
+  { method: "GET", pattern: /^developer\/me$/, file: "developer/me.js" },
+  { method: "GET", pattern: /^developer\/workspace$/, file: "developer/workspace.js" },
+  { method: "POST", pattern: /^developer\/workspace$/, file: "developer/workspace.js" },
+  { method: "GET", pattern: /^developer\/api-key$/, file: "developer/api-key.js" },
+  { method: "POST", pattern: /^developer\/api-key$/, file: "developer/api-key.js" },
+  { method: "GET", pattern: /^developer\/escalations$/, file: "developer/escalations.js" },
+  { method: "GET", pattern: /^developer\/escalations\/([^/]+)$/, file: "developer/escalations/[id].js", params: ["id"] },
+  { method: "POST", pattern: /^developer\/escalations\/([^/]+)\/decision$/, file: "developer/escalations/[id]/decision.js", params: ["id"] }
 ];
 
 function routePath(req) {
@@ -68,4 +81,3 @@ export default async function handler(req, res) {
   const mod = await import(pathToFileURL(modulePath).href);
   await mod.default(req, res);
 }
-
