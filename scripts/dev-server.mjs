@@ -201,17 +201,17 @@ createServer(async (req, res) => {
   }
 
   if (url.pathname === "/api/v1/escalations") {
-    await runApiHandler(req, res, path.join("api", "v1", "escalations.js"));
+    await runApiHandler(req, res, path.join("server", "api-routes", "v1", "escalations.js"));
     return;
   }
 
   const adminRoutes = new Map([
-    ["/api/admin/login", path.join("api", "admin", "login.js")],
-    ["/api/admin/logout", path.join("api", "admin", "logout.js")],
-    ["/api/admin/me", path.join("api", "admin", "me.js")],
-    ["/api/admin/workspace", path.join("api", "admin", "workspace.js")],
-    ["/api/admin/api-key", path.join("api", "admin", "api-key.js")],
-    ["/api/admin/escalations", path.join("api", "admin", "escalations.js")]
+    ["/api/admin/login", path.join("server", "api-routes", "admin", "login.js")],
+    ["/api/admin/logout", path.join("server", "api-routes", "admin", "logout.js")],
+    ["/api/admin/me", path.join("server", "api-routes", "admin", "me.js")],
+    ["/api/admin/workspace", path.join("server", "api-routes", "admin", "workspace.js")],
+    ["/api/admin/api-key", path.join("server", "api-routes", "admin", "api-key.js")],
+    ["/api/admin/escalations", path.join("server", "api-routes", "admin", "escalations.js")]
   ]);
 
   if (adminRoutes.has(url.pathname)) {
@@ -221,25 +221,25 @@ createServer(async (req, res) => {
 
   const adminDecisionMatch = url.pathname.match(/^\/api\/admin\/escalations\/([^/]+)\/decision$/);
   if (adminDecisionMatch) {
-    await runApiHandler(req, res, path.join("api", "admin", "escalations", "[id]", "decision.js"), { id: adminDecisionMatch[1] });
+    await runApiHandler(req, res, path.join("server", "api-routes", "admin", "escalations", "[id]", "decision.js"), { id: adminDecisionMatch[1] });
     return;
   }
 
   const adminEscalationMatch = url.pathname.match(/^\/api\/admin\/escalations\/([^/]+)$/);
   if (adminEscalationMatch) {
-    await runApiHandler(req, res, path.join("api", "admin", "escalations", "[id].js"), { id: adminEscalationMatch[1] });
+    await runApiHandler(req, res, path.join("server", "api-routes", "admin", "escalations", "[id].js"), { id: adminEscalationMatch[1] });
     return;
   }
 
   const escalationDecisionMatch = url.pathname.match(/^\/api\/v1\/escalations\/([^/]+)\/decision$/);
   if (escalationDecisionMatch) {
-    await runApiHandler(req, res, path.join("api", "v1", "escalations", "[id]", "decision.js"), { id: escalationDecisionMatch[1] });
+    await runApiHandler(req, res, path.join("server", "api-routes", "v1", "escalations", "[id]", "decision.js"), { id: escalationDecisionMatch[1] });
     return;
   }
 
   const escalationMatch = url.pathname.match(/^\/api\/v1\/escalations\/([^/]+)$/);
   if (escalationMatch) {
-    await runApiHandler(req, res, path.join("api", "v1", "escalations", "[id].js"), { id: escalationMatch[1] });
+    await runApiHandler(req, res, path.join("server", "api-routes", "v1", "escalations", "[id].js"), { id: escalationMatch[1] });
     return;
   }
 

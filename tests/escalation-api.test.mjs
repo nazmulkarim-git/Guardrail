@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { hashApiKey, parseBearer } from "../api/_forsig-core.js";
-import { validateEscalationPayload } from "../api/v1/escalations.js";
-import { validateDecisionPayload } from "../api/v1/escalations/[id]/decision.js";
+import { hashApiKey, parseBearer } from "../server/api-routes/_forsig-core.js";
+import { validateEscalationPayload } from "../server/api-routes/v1/escalations.js";
+import { validateDecisionPayload } from "../server/api-routes/v1/escalations/[id]/decision.js";
 
 test("validateEscalationPayload accepts compact JavaScript input", () => {
   const parsed = validateEscalationPayload({
@@ -62,4 +62,3 @@ test("hashApiKey is deterministic", () => {
   assert.equal(hashApiKey("fsk_test_123"), hashApiKey("fsk_test_123"));
   assert.notEqual(hashApiKey("fsk_test_123"), "fsk_test_123");
 });
-
