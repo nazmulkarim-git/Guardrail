@@ -195,11 +195,11 @@
             <h2>Integrate in minutes, not days</h2>
             <p>A simple SDK that works with any agent framework. Create human intervention checkpoints with a few lines of code.</p>
             <div class="zip-code-steps">
-              <p><b>1</b> Agent calls <code>forsig.intervene()</code></p>
+              <p><b>1</b> Agent calls <code>forsig.escalate()</code></p>
               <p><b>2</b> Human receives notification and reviews</p>
               <p><b>3</b> Decision returns to your agent</p>
             </div>
-            <button class="zip-install" type="button" data-copy="$ npm install forsig">$ npm install forsig</button>
+            <button class="zip-install" type="button" data-copy="$ npm install @forsig/sdk">$ npm install @forsig/sdk</button>
           </div>
           <div class="zip-code-window">
             <div>
@@ -207,17 +207,17 @@
               <b>agent.ts</b>
               <button data-copy-target="js-snippet">Copy</button>
             </div>
-            <pre><code id="js-snippet">import { Forsig } from "forsig";
+            <pre><code id="js-snippet">import { Forsig } from "@forsig/sdk";
 
 const forsig = new Forsig({
   apiKey: process.env.FORSIG_API_KEY
 });
 
-const decision = await forsig.intervene({
+const decision = await forsig.escalate({
   agent: { id: "refund-agent", name: "Refund Agent" },
   task: { title: "Review refund for customer #123" },
   risk: { type: "refund_over_limit", level: "high" },
-  proposedAction: { type: "refund", amount: 500 },
+  proposedAction: "Issue a $500 refund",
   waitForDecision: true,
   timeout: "30m"
 });</code></pre>

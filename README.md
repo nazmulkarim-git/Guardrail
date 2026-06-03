@@ -39,9 +39,15 @@ The first product slice is intentionally thin:
 - `GET /api/v1/escalations/:id` returns the escalation and latest decision.
 - `POST /api/v1/escalations/:id/decision` records approve/reject/edit/context/takeover decisions.
 - `/app` provides a private reviewer inbox, escalation detail view, decision panel, audit trail, workspace setup, and beta API key generation.
+- `/developer` provides invited developers with workspace setup, agent registration, API key generation, test escalations, decision review, and quickstart docs.
 - JavaScript and Python SDKs can create escalations, poll for decisions, and send decisions.
 
-Run `docs/forsig-mvp-schema.sql` in Postgres/Supabase before using the product API.
+Run these SQL files in Postgres/Supabase before using the product API:
+
+1. `docs/forsig-mvp-schema.sql`
+2. `docs/forsig-developer-access-migration.sql`
+3. `docs/forsig-p0-mvp-migration.sql`
+4. `docs/forsig-p1-launch-migration.sql`
 
 For private beta auth, set `FORSIG_API_KEY` and optionally `FORSIG_DEFAULT_WORKSPACE_ID=workspace_beta`. Later, per-workspace keys can be stored in the `api_keys` table as SHA-256 hashes.
 

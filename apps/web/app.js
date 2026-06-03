@@ -149,7 +149,7 @@ function initCopyButtons() {
 function initHeroSwap() {
   const code = document.getElementById("hero-code");
   if (!code) return;
-  const before = 'forsig.intervene({ risk: "refund_over_limit" })';
+  const before = 'forsig.escalate({ risk: "refund_over_limit" })';
   const after = 'decision.status === "edited_approved"';
   let useAfter = false;
   setInterval(() => {
@@ -348,7 +348,7 @@ function initDashboard() {
     if (pendingCount) pendingCount.textContent = "1";
     if (decisionTime) decisionTime.textContent = "2m 14s";
     if (editPanel) editPanel.hidden = true;
-    setCode("Agent call", `const decision = await forsig.intervene({
+    setCode("Agent call", `const decision = await forsig.escalate({
   agent: "refund-agent",
   risk: "refund_over_limit",
   proposedAction: "Issue $500 refund",

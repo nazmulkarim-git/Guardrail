@@ -7,8 +7,9 @@ Use this checklist after deploying the P1 build.
 Run these SQL files in Supabase SQL Editor, in order:
 
 1. `docs/forsig-mvp-schema.sql`
-2. `docs/forsig-p0-mvp-migration.sql`
-3. `docs/forsig-p1-launch-migration.sql`
+2. `docs/forsig-developer-access-migration.sql`
+3. `docs/forsig-p0-mvp-migration.sql`
+4. `docs/forsig-p1-launch-migration.sql`
 
 ## 2. Vercel Environment Variables
 
