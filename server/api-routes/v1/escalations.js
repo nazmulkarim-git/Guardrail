@@ -10,6 +10,7 @@ import {
   readBody,
   requireMethod,
   sendEmail,
+  sendSlackNotification,
   toJson
 } from "../_forsig-core.js";
 
@@ -55,7 +56,7 @@ function normalizeTask(body) {
 function dashboardUrl(req, escalationId) {
   const proto = req.headers["x-forwarded-proto"] || "https";
   const host = req.headers["x-forwarded-host"] || req.headers.host || "www.forsig.com";
-  return `${proto}://${host}/app?esc=${encodeURIComponent(escalationId)}`;
+  return `${proto}://${host}/developer?esc=${encodeURIComponent(escalationId)}`;
 }
 
 function escapeHtml(value) {
@@ -96,15 +97,20 @@ export function validateEscalationPayload(body) {
   const risk = normalizeRisk(body.risk);
   const task = normalizeTask(body);
   const review = body.review && typeof body.review === "object" ? body.review : {};
+  const directReviewerEmail = normalizeString(review.reviewerEmail || review.reviewer_email);
   const reviewerEmails = Array.isArray(review.reviewerEmails)
     ? review.reviewerEmails.map(normalizeString).filter(Boolean)
-    : [];
+    : directReviewerEmail
+      ? [directReviewerEmail]
+      : [];
+  const assignedReviewerEmail = normalizeString(review.assignedReviewerEmail || review.assigned_reviewer_email) || reviewerEmails[0] || null;
+  const testMode = normalizeString(review.testMode || review.test_mode || body.testMode || body.test_mode);
   const errors = [];
   if (!agent.id) errors.push("agent is required.");
   if (!task.title) errors.push("task title is required.");
   if (!risk.type) errors.push("risk type is required.");
   if (!task.proposedAction) errors.push("proposedAction is required.");
-  return { valid: errors.length === 0, errors, agent, run, risk, task, review, reviewerEmails };
+  return { valid: errors.length === 0, errors, agent, run, risk, task, review, reviewerEmails, assignedReviewerEmail, testMode };
 }
 
 export default async function handler(req, res) {
@@ -157,6 +163,8 @@ export default async function handler(req, res) {
         allowed_actions_json,
         notify_channels_json,
         callback_url,
+        assigned_reviewer_email,
+        test_mode,
         timeout_at,
         created_at,
         updated_at
@@ -184,6 +192,8 @@ export default async function handler(req, res) {
         ${toJson(parsed.review.allowed_actions || parsed.review.allowedActions || body.allowedActions || body.allowed_actions || ["approve", "reject", "edit", "add_context", "take_over", "needs_more_info"])},
         ${toJson(parsed.review.notify || body.notify || body.notifyChannels || body.notify_channels || ["dashboard"])},
         ${normalizeString(parsed.review.callback_url) || normalizeString(parsed.review.callbackUrl) || normalizeString(body.callbackUrl) || normalizeString(body.callback_url)},
+        ${parsed.assignedReviewerEmail},
+        ${parsed.testMode},
         ${timeoutAt},
         ${createdAt},
         ${createdAt}
@@ -225,12 +235,78 @@ export default async function handler(req, res) {
       `.catch(() => []);
       const agentEmails = agentRows[0]?.default_reviewer_emails;
       if (Array.isArray(agentEmails)) parsed.reviewerEmails = agentEmails.map(normalizeString).filter(Boolean);
+      if (!parsed.assignedReviewerEmail && parsed.reviewerEmails[0]) {
+        parsed.assignedReviewerEmail = parsed.reviewerEmails[0];
+        rows[0].assigned_reviewer_email = parsed.assignedReviewerEmail;
+        await db`
+          update escalations
+          set assigned_reviewer_email = ${parsed.assignedReviewerEmail}
+          where id = ${id}
+            and workspace_id = ${auth.workspaceId}
+        `.catch(() => null);
+      }
     }
 
     const notification = await sendEscalationNotification(req, rows[0], parsed).catch((error) => {
       console.error("Escalation notification failed", { escalationId: id, message: error.message });
       return { sent: false, error: error.message };
     });
+
+    const rawNotifyChannels = parsed.review.notify || body.notify || body.notifyChannels || body.notify_channels || ["dashboard"];
+    const notifyChannels = Array.isArray(rawNotifyChannels) ? rawNotifyChannels : [rawNotifyChannels].filter(Boolean);
+    const wantsSlack = notifyChannels.includes("slack");
+    if (wantsSlack) {
+      const reviewUrl = dashboardUrl(req, id);
+      const slackResult = await sendSlackNotification({
+        text: `Forsig approval needed: ${parsed.task.title}`,
+        blocks: [
+          {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: `*${parsed.task.title}*\n*Agent:* ${parsed.agent.name || parsed.agent.id}\n*Risk:* ${parsed.risk.type}${parsed.risk.level ? ` · ${parsed.risk.level}` : ""}\n*Proposed action:* ${parsed.task.proposedAction}`
+            }
+          },
+          {
+            type: "actions",
+            elements: [
+              {
+                type: "button",
+                text: { type: "plain_text", text: "Review in Forsig" },
+                url: reviewUrl
+              }
+            ]
+          }
+        ]
+      }).catch((error) => ({ sent: false, error: error.message }));
+
+      await db`
+        insert into notification_attempts (
+          id,
+          workspace_id,
+          escalation_id,
+          channel,
+          recipient,
+          status,
+          error,
+          created_at,
+          sent_at
+        )
+        values (
+          ${newId("note")},
+          ${auth.workspaceId},
+          ${id},
+          'slack',
+          ${process.env.FORSIG_SLACK_WEBHOOK_URL ? 'configured_webhook' : 'unconfigured'},
+          ${slackResult.sent ? 'sent' : 'failed'},
+          ${slackResult.sent ? null : slackResult.reason || slackResult.error || slackResult.body || 'Slack not sent'},
+          ${createdAt},
+          ${slackResult.sent ? createdAt : null}
+        )
+      `.catch((error) => {
+        console.error("Slack notification attempt log failed", { escalationId: id, code: error.code, message: error.message });
+      });
+    }
 
     await db`
       insert into notification_attempts (
@@ -266,6 +342,8 @@ export default async function handler(req, res) {
       dashboard_url: dashboardUrl(req, id),
       created_at: createdAt,
       expires_at: timeoutAt,
+      assigned_reviewer_email: parsed.assignedReviewerEmail,
+      test_mode: parsed.testMode,
       escalation: compactEscalation(rows[0]),
       dashboardUrl: dashboardUrl(req, id),
       decisionUrl: `/api/v1/escalations/${id}/decision`,

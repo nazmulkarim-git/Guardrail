@@ -184,6 +184,7 @@ function renderList() {
       <span>${escapeHtml(item.risk?.level || "review")}</span>
       <strong>${escapeHtml(item.task?.title || item.id)}</strong>
       <small>${escapeHtml(item.agent?.name || item.agent?.id || "Agent")} · ${escapeHtml(item.risk?.type || "risk")}</small>
+      ${item.reviewer?.assignedEmail ? `<small>Reviewer: ${escapeHtml(item.reviewer.assignedEmail)}</small>` : ""}
       <em>${escapeHtml(item.status)}</em>
     </button>
   `).join("");
@@ -216,6 +217,7 @@ function renderDetail() {
       <span>${escapeHtml(item.status)}</span>
       <h2>${escapeHtml(item.task?.title)}</h2>
       <p>${escapeHtml(item.agent?.name || item.agent?.id)} · ${escapeHtml(item.risk?.type)} · ${formatDate(item.createdAt)}</p>
+      <p>${item.reviewer?.assignedEmail ? `Assigned to ${escapeHtml(item.reviewer.assignedEmail)} · ` : ""}${item.expiresAt ? `Expires ${formatDate(item.expiresAt)} · ` : ""}${item.testMode ? `Mode: ${escapeHtml(item.testMode)}` : "Mode: manual"}</p>
     </div>
 
     <section class="detail-section">

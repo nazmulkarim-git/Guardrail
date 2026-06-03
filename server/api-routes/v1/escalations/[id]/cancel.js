@@ -1,4 +1,4 @@
-import { apiError, authenticateRequest, getSql, json, newId, publicApiError, requireMethod, toJson } from "../../../_forsig-core.js";
+import { apiError, authenticateRequest, deliverResolutionWebhook, getSql, json, newId, publicApiError, requireMethod, toJson } from "../../../_forsig-core.js";
 
 export default async function handler(req, res) {
   if (!requireMethod(req, res, "POST")) return;
@@ -32,13 +32,28 @@ export default async function handler(req, res) {
       values (${newId("audit")}, ${auth.workspaceId}, ${id}, 'api', ${auth.apiKeyId}, 'escalation.canceled', ${toJson({ apiKeyId: auth.apiKeyId })}, now())
     `;
 
+    const webhook = await deliverResolutionWebhook(db, {
+      workspaceId: auth.workspaceId,
+      escalationId: id,
+      decision: {
+        status: "canceled",
+        instruction: "Escalation was canceled by the agent workflow.",
+        reviewer: { name: "Forsig API", channel: "api" }
+      },
+      event: "escalation.canceled"
+    }).catch((webhookError) => {
+      console.error("Cancel webhook delivery failed", { escalationId: id, message: webhookError.message });
+      return { sent: false, error: webhookError.message };
+    });
+
     json(res, 200, {
       ok: true,
       escalation: {
         id: rows[0].id,
         status: rows[0].status,
         canceledAt: rows[0].resolved_at
-      }
+      },
+      webhook: { sent: Boolean(webhook.sent), reason: webhook.reason || webhook.error || null }
     });
   } catch (error) {
     const publicError = publicApiError(error);

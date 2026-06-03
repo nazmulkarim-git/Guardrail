@@ -2,6 +2,7 @@ import {
   DECISION_STATUSES,
   apiError,
   authenticateRequest,
+  deliverResolutionWebhook,
   getSql,
   json,
   newId,
@@ -138,6 +139,21 @@ export default async function handler(req, res) {
     `;
 
     const decision = decisionRows[0];
+    const webhook = await deliverResolutionWebhook(db, {
+      workspaceId: auth.workspaceId,
+      escalationId: id,
+      decision: {
+        id: decision.id,
+        status: decision.status,
+        instruction: decision.instruction,
+        addedContext: decision.added_context_json,
+        comment: decision.comment
+      }
+    }).catch((error) => {
+      console.error("API decision webhook failed", { escalationId: id, message: error.message });
+      return { sent: false, error: error.message };
+    });
+
     json(res, 200, {
       ok: true,
       decision: {
@@ -154,7 +170,8 @@ export default async function handler(req, res) {
         },
         auditId,
         createdAt: decision.created_at
-      }
+      },
+      webhook: { sent: Boolean(webhook.sent), reason: webhook.reason || webhook.error || null }
     });
   } catch (error) {
     const publicError = publicApiError(error);
@@ -162,4 +179,3 @@ export default async function handler(req, res) {
     apiError(res, publicError.status, publicError.code, publicError.message);
   }
 }
-

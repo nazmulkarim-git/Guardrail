@@ -43,6 +43,14 @@ export type ForsigEscalationInput = {
   context?: Record<string, unknown>;
   trace?: Record<string, unknown>;
   model?: Record<string, unknown>;
+  review?: {
+    notify?: string[];
+    reviewerEmail?: string;
+    reviewerEmails?: string[];
+    timeoutSeconds?: number;
+    testMode?: "manual" | "auto_approve" | "auto_reject" | "auto_timeout" | string;
+    allowedActions?: string[];
+  };
   notify?: string[];
   allowedActions?: string[];
   callbackUrl?: string;

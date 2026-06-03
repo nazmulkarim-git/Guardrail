@@ -30,10 +30,15 @@ Creates a pending human approval request.
   "context": { "refund_amount": 500 },
   "review": {
     "notify": ["dashboard", "email"],
-    "timeout_seconds": 1800
-  }
+    "timeout_seconds": 1800,
+    "reviewerEmail": "reviewer@example.com",
+    "testMode": "manual"
+  },
+  "callbackUrl": "https://your-app.com/forsig/webhook"
 }
 ```
+
+`review.testMode` can be `manual`, `auto_approve`, `auto_reject`, or `auto_timeout`. Auto modes are for local/beta testing and resolve after the escalation is polled for at least five seconds.
 
 ## Get Escalation
 
@@ -59,3 +64,20 @@ Dashboard reviewers submit decisions through Forsig. Decision statuses are:
 - `needs_more_info`
 
 Expired escalations reject by default.
+
+## Webhooks
+
+If `callbackUrl` is provided, Forsig sends a decision webhook when an escalation is resolved, expired, canceled, or auto-resolved by test mode.
+
+Headers:
+
+```http
+x-forsig-event: escalation.resolved
+x-forsig-signature: hmac_sha256_body_signature
+```
+
+Set `FORSIG_WEBHOOK_SECRET` in production and verify the signature before trusting the payload.
+
+## Slack Notifications
+
+The beta supports Slack through an incoming webhook URL configured as `FORSIG_SLACK_WEBHOOK_URL`. Add `"slack"` to `review.notify` to send a Slack review link. Full Slack OAuth and interactive buttons are planned after the first beta feedback loop.

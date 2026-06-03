@@ -46,6 +46,11 @@ const decision = await forsig.escalate({
     customerImpact: true
   },
   context: { customerTier: "VIP", orderValue: 1200, refundAmount: 500 },
+  review: {
+    notify: ["dashboard", "email"],
+    reviewerEmail: "reviewer@example.com"
+  },
+  callbackUrl: "https://your-app.com/forsig/webhook",
   waitForDecision: true,
   timeoutSeconds: 1800
 });
@@ -54,3 +59,23 @@ console.log(decision.status, decision.instruction);
 ```
 
 Private beta note: send only the minimum context needed for human review. Avoid secrets, credentials, unnecessary PII, and regulated data.
+
+## Test Modes
+
+Use these only while testing:
+
+- `manual`: reviewer decides in Forsig.
+- `auto_approve`: Forsig approves after the agent polls the escalation for at least five seconds.
+- `auto_reject`: Forsig rejects after polling.
+- `auto_timeout`: Forsig simulates the safest timeout path and rejects.
+
+```ts
+await forsig.escalate({
+  agent: "refund-agent",
+  risk: "refund_over_limit",
+  task: { title: "Approve refund", proposedAction: "Issue $500 refund" },
+  review: { testMode: "auto_approve" },
+  waitForDecision: true,
+  timeoutSeconds: 20
+});
+```

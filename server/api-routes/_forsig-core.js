@@ -253,6 +253,11 @@ export function compactEscalation(row) {
       customerImpact: row.customer_impact
     },
     context: row.context_json,
+    reviewer: {
+      assignedEmail: row.assigned_reviewer_email || null
+    },
+    testMode: row.test_mode || null,
+    expiresAt: row.timeout_at || null,
     decision: row.decision_status ? {
       status: row.decision_status,
       instruction: row.decision_instruction,
@@ -294,6 +299,116 @@ export async function sendEmail({ to, replyTo, subject, html }) {
     return { sent: false, status: response.status, body: await response.text() };
   }
   return { sent: true, response: await response.json() };
+}
+
+export async function sendSlackNotification({ text, blocks }) {
+  const webhookUrl = process.env.FORSIG_SLACK_WEBHOOK_URL;
+  if (!webhookUrl) return { sent: false, reason: "FORSIG_SLACK_WEBHOOK_URL not configured" };
+
+  const response = await fetch(webhookUrl, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ text, blocks })
+  });
+
+  if (!response.ok) {
+    return { sent: false, status: response.status, body: await response.text() };
+  }
+  return { sent: true };
+}
+
+export function webhookSignature(payload) {
+  const secret = process.env.FORSIG_WEBHOOK_SECRET || process.env.FORSIG_ADMIN_SESSION_SECRET || process.env.FORSIG_API_KEY || "forsig-dev-webhook-secret";
+  return createHmac("sha256", secret).update(payload).digest("hex");
+}
+
+export async function deliverResolutionWebhook(db, { workspaceId, escalationId, decision, event = "escalation.resolved" }) {
+  const rows = await db`
+    select id, callback_url, status, external_agent_id, agent_name, run_id, task_title
+    from escalations
+    where id = ${escalationId}
+      and workspace_id = ${workspaceId}
+    limit 1
+  `;
+  const escalation = rows[0];
+  if (!escalation?.callback_url) return { sent: false, reason: "No callback URL configured" };
+
+  const payload = JSON.stringify({
+    event,
+    escalation: {
+      id: escalation.id,
+      status: escalation.status,
+      agent: {
+        id: escalation.external_agent_id,
+        name: escalation.agent_name
+      },
+      runId: escalation.run_id,
+      title: escalation.task_title
+    },
+    decision
+  });
+
+  try {
+    const response = await fetch(escalation.callback_url, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-forsig-event": event,
+        "x-forsig-signature": webhookSignature(payload)
+      },
+      body: payload
+    });
+    const body = response.ok ? null : await response.text();
+    await db`
+      insert into notification_attempts (
+        id,
+        workspace_id,
+        escalation_id,
+        channel,
+        recipient,
+        status,
+        error,
+        created_at,
+        sent_at
+      )
+      values (
+        ${newId("note")},
+        ${workspaceId},
+        ${escalationId},
+        'webhook',
+        ${escalation.callback_url},
+        ${response.ok ? 'sent' : 'failed'},
+        ${response.ok ? null : body || `HTTP ${response.status}`},
+        now(),
+        ${response.ok ? new Date() : null}
+      )
+    `.catch(() => null);
+    return { sent: response.ok, status: response.status, body };
+  } catch (error) {
+    await db`
+      insert into notification_attempts (
+        id,
+        workspace_id,
+        escalation_id,
+        channel,
+        recipient,
+        status,
+        error,
+        created_at
+      )
+      values (
+        ${newId("note")},
+        ${workspaceId},
+        ${escalationId},
+        'webhook',
+        ${escalation.callback_url},
+        'failed',
+        ${error.message || "Webhook delivery failed"},
+        now()
+      )
+    `.catch(() => null);
+    return { sent: false, error: error.message };
+  }
 }
 
 export function escapeHtml(value) {

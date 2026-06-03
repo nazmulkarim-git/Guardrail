@@ -85,6 +85,10 @@ class Forsig:
         response = self._request("POST", f"/api/v1/escalations/{escalation_id}/decision", decision)
         return response["decision"]
 
+    def cancel_escalation(self, escalation_id: str) -> Dict[str, Any]:
+        response = self._request("POST", f"/api/v1/escalations/{escalation_id}/cancel", {})
+        return response["escalation"]
+
     def wait_for_decision(self, escalation_id: str, poll_interval_seconds: float = 1.5, timeout_seconds: float = 30 * 60) -> Dict[str, Any]:
         started = time.time()
         while time.time() - started <= timeout_seconds:

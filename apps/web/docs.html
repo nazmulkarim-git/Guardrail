@@ -45,8 +45,16 @@ const decision = await forsig.escalate({
     customerImpact: true
   },
   context: { refundAmount: 500, customerTier: "VIP" },
+  review: { notify: ["dashboard", "email"], testMode: "manual" },
+  callbackUrl: "https://your-app.com/forsig/webhook",
   waitForDecision: true
 });</code></pre>
+
+        <h2>Test modes</h2>
+        <p>Use <code>auto_approve</code>, <code>auto_reject</code>, or <code>auto_timeout</code> while testing agent control flow. Production workflows should use <code>manual</code>.</p>
+
+        <h2>Decision webhooks</h2>
+        <p>When <code>callbackUrl</code> is set, Forsig posts the resolved decision with <code>x-forsig-event</code> and <code>x-forsig-signature</code> headers.</p>
 
         <h2>Private beta safety</h2>
         <p>Send only the minimum context needed for review. Avoid secrets, credentials, unnecessary PII, and regulated data.</p>

@@ -99,6 +99,7 @@ export default async function handler(req, res) {
           context_json,
           allowed_actions_json,
           notify_channels_json,
+          test_mode,
           created_at,
           updated_at
         )
@@ -122,6 +123,7 @@ export default async function handler(req, res) {
           ${toJson(sample.context)},
           ${toJson(["approve", "reject", "edit", "add_context", "take_over", "needs_more_info"])},
           ${toJson(["dashboard"])},
+          'manual',
           now(),
           now()
         )
