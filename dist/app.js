@@ -280,17 +280,149 @@ function initWaitlist() {
           return;
         }
         showToast("You are on the waitlist");
-        const params = new URLSearchParams({
-          lead: result.leadId,
-          code: result.referralCode || ""
-        });
-        location.replace(`/thanks?${params.toString()}`);
+        entry.status.textContent = "You are on the beta list. A few optional details help me prioritize access.";
+        const followup = document.getElementById("waitlist-followup-form");
+        const leadInput = followup?.querySelector('input[name="leadId"]');
+        if (followup && leadInput) {
+          leadInput.value = result.leadId;
+          followup.hidden = false;
+          followup.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
+          const params = new URLSearchParams({ lead: result.leadId, code: result.referralCode || "" });
+          location.replace(`/thanks?${params.toString()}`);
+        }
       } catch (error) {
         entry.status.textContent = error.message || "Something went wrong.";
         track("waitlist_signup_failed", { message: entry.status.textContent, sourceSection: entry.sourceSection });
       }
     });
   }
+}
+
+function initWaitlistFollowup() {
+  const form = document.getElementById("waitlist-followup-form");
+  if (!form) return;
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const status = form.querySelector(".mini-status");
+    const data = Object.fromEntries(new FormData(form).entries());
+    if (status) status.textContent = "Sending...";
+    try {
+      const response = await fetch("/api/waitlist-profile", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      const result = await response.json();
+      if (!response.ok || !result.ok) throw new Error(result.error || "Context could not be saved.");
+      if (status) status.textContent = "Context saved. Thank you.";
+      showToast("Context saved");
+      track("waitlist_followup_submitted", {
+        frameworkInterest: data.frameworkInterest,
+        founderCallInterest: data.founderCallInterest
+      });
+    } catch (error) {
+      if (status) status.textContent = error.message || "Context could not be saved.";
+      track("waitlist_followup_failed", { message: status?.textContent });
+    }
+  });
+}
+
+function initPricingIntent() {
+  document.querySelectorAll("[data-plan-interest]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const plan = button.dataset.planInterest || "free";
+      const input = document.querySelector('#waitlist-form input[name="planInterest"]');
+      if (input) input.value = plan;
+      track("pricing_cta_clicked", { planInterest: plan });
+    });
+  });
+}
+
+function initHeroApprovalCard() {
+  const status = document.getElementById("hero-approval-status");
+  const preview = document.getElementById("hero-returned-json");
+  if (!status || !preview) return;
+  const responses = {
+    approved: {
+      label: "Approved",
+      payload: { status: "approved", instruction: "Proceed with the $500 refund." }
+    },
+    rejected: {
+      label: "Rejected",
+      payload: { status: "rejected", instruction: "Do not issue the refund. Ask for proof first." }
+    },
+    edited: {
+      label: "Edited",
+      payload: { status: "edited", instruction: "Offer store credit instead of a cash refund." }
+    },
+    taken_over: {
+      label: "Taken over",
+      payload: { status: "taken_over", instruction: "Human reviewer took over. Stop autonomous execution." }
+    }
+  };
+  document.querySelectorAll("[data-hero-decision]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const response = responses[button.dataset.heroDecision] || responses.approved;
+      status.textContent = response.label;
+      preview.textContent = JSON.stringify(response.payload, null, 2);
+      track("hero_demo_decision_clicked", { decision: response.payload.status });
+    });
+  });
+}
+
+function initSdkTabs() {
+  const code = document.getElementById("sdk-code");
+  const title = document.getElementById("sdk-code-title");
+  if (!code || !title) return;
+  const snippets = {
+    ts: {
+      title: "agent.ts",
+      code: `npm install @forsig/sdk
+
+import { Forsig } from "@forsig/sdk";
+
+const forsig = new Forsig({
+  apiKey: process.env.FORSIG_API_KEY
+});
+
+const decision = await forsig.escalate({
+  agent: "refund-agent",
+  risk: { type: "refund_over_limit", level: "high" },
+  task: {
+    title: "Approve refund",
+    proposedAction: "Issue $500 refund"
+  },
+  waitForDecision: true
+});`
+    },
+    py: {
+      title: "agent.py",
+      code: `pip install forsig
+
+# Planned for beta
+from forsig import Forsig
+
+forsig = Forsig(api_key=os.environ["FORSIG_API_KEY"])
+
+decision = forsig.escalate(
+    agent="refund-agent",
+    risk={"type": "refund_over_limit", "level": "high"},
+    task={"title": "Approve refund", "proposed_action": "Issue $500 refund"},
+    wait_for_decision=True,
+)`
+    }
+  };
+  function show(language) {
+    title.textContent = snippets[language].title;
+    code.textContent = snippets[language].code;
+    document.querySelectorAll("[data-sdk-tab]").forEach((button) => button.classList.toggle("active", button.dataset.sdkTab === language));
+    track("sdk_language_toggled", { language });
+  }
+  document.querySelectorAll("[data-sdk-tab]").forEach((button) => {
+    button.addEventListener("click", () => show(button.dataset.sdkTab));
+  });
+  show("ts");
 }
 
 function initDashboard() {
@@ -552,6 +684,7 @@ function initZipDemo() {
 
   const scenarios = [
     {
+      key: "refund",
       title: "Review refund for customer #123",
       summary: "The agent wants to issue a $500 refund to a VIP customer.",
       agent: "Refund Agent v1.2.0",
@@ -574,6 +707,7 @@ function initZipDemo() {
       instructDefault: "Ask the customer for photos of the failed product before continuing."
     },
     {
+      key: "sales",
       title: "Review outbound discount email",
       summary: "The sales agent wants to send a custom 30% offer to an enterprise prospect.",
       agent: "Sales Agent v0.9.4",
@@ -595,6 +729,7 @@ function initZipDemo() {
       instructDefault: "Check whether this prospect already has an approved pricing exception."
     },
     {
+      key: "migration",
       title: "Review production migration",
       summary: "The deployment agent wants to run a migration that touches the billing table.",
       agent: "Deploy Agent v2.1.0",
@@ -636,6 +771,28 @@ function initZipDemo() {
       ],
       editDefault: "Do not update the subscription until payment status is confirmed.",
       instructDefault: "Check the last invoice and payment method before escalating again."
+    },
+    {
+      key: "spend",
+      title: "Review external tool spend",
+      summary: "The research agent wants to buy a paid data export through an external tool.",
+      agent: "Research Agent v0.8.2",
+      workflow: "market-research / step: paid-export",
+      riskLevel: "High",
+      riskReason: "External tool call spends money",
+      action: {
+        type: "tool_purchase",
+        tool: "market_data_export",
+        amount: 300,
+        currency: "USD"
+      },
+      context: [
+        ["Budget Remaining", "$420"],
+        ["Requested Spend", "$300"],
+        ["Issue", "Large one-time external purchase"]
+      ],
+      editDefault: "Approve only if the export is limited to the top 100 accounts.",
+      instructDefault: "Get a lower-cost sample export first."
     }
   ];
 
@@ -676,6 +833,15 @@ function initZipDemo() {
     }
   }
 
+  function selectScenario(key) {
+    const nextIndex = scenarios.findIndex((scenario) => scenario.key === key);
+    if (nextIndex >= 0) scenarioIndex = nextIndex;
+    document.querySelectorAll("[data-scenario-tab]").forEach((button) => button.classList.toggle("active", button.dataset.scenarioTab === key));
+    clearTimeout(resetTimer);
+    renderScenario();
+    track("demo_scenario_tab_clicked", { scenario: key });
+  }
+
   function showDecision(type, titleText, description, instruction = "") {
     if (status) status.textContent = "Resolved";
     if (expiry) expiry.textContent = "Decision returned to agent";
@@ -685,7 +851,7 @@ function initZipDemo() {
       approved: ["> decision.status: approved", "> Agent resuming execution...", "> Success"],
       rejected: ["> decision.status: rejected", "> Risky action stopped", "> Workflow closed safely"],
       human_takeover: ["> decision.status: taken_over", "> Agent paused", "> Human now owns the task"],
-      edited_approved: ["> decision.status: edited", "> Applying reviewer instruction...", "> Agent continues with edited plan"],
+      edited: ["> decision.status: edited", "> Applying reviewer instruction...", "> Agent continues with edited plan"],
       instruct_agent: ["> decision.status: context_added", "> Reviewer instruction attached", "> Agent resumes with new context"]
     }[type] || ["> Decision recorded", "> Agent updated"];
     if (result) {
@@ -726,7 +892,7 @@ function initZipDemo() {
     button.addEventListener("click", () => {
       const type = button.dataset.zipDecision;
       clearTimeout(resetTimer);
-      if (type === "edited_approved" || type === "instruct_agent") {
+      if (type === "edited") {
         openEditor(type);
       } else if (type === "approved") {
         showDecision(type, "Approved", "The proposed action was approved and returned to the agent.");
@@ -741,8 +907,8 @@ function initZipDemo() {
 
   editorSubmit?.addEventListener("click", () => {
     const instruction = editorInput?.value.trim() || "Continue with the reviewer instruction.";
-    if (pendingDecision === "edited_approved") {
-      showDecision("edited_approved", "Edited & Approved", "The edited instruction was sent back to the agent.", instruction);
+    if (pendingDecision === "edited") {
+      showDecision("edited", "Edited & Approved", "The edited instruction was sent back to the agent.", instruction);
     } else {
       showDecision("instruct_agent", "Instruction Sent", "The agent receives new human guidance before continuing.", instruction);
     }
@@ -750,6 +916,10 @@ function initZipDemo() {
   });
 
   renderScenario();
+  document.querySelectorAll("[data-scenario-tab]").forEach((button) => {
+    button.addEventListener("click", () => selectScenario(button.dataset.scenarioTab));
+  });
+  selectScenario("refund");
 }
 
 function initFaqTracking() {
@@ -772,6 +942,10 @@ initHeroSwap();
 initConsoleMotion();
 initImpactCalculator();
 initWaitlist();
+initWaitlistFollowup();
+initPricingIntent();
+initHeroApprovalCard();
+initSdkTabs();
 initDashboard();
 initZipDemo();
 initFaqTracking();

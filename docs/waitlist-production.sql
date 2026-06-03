@@ -5,6 +5,11 @@ create table if not exists waitlist_leads (
   company text,
   role text,
   provider text,
+  source text,
+  plan_interest text,
+  framework_interest text,
+  external_actions text,
+  founder_call_interest text,
   use_case text,
   monthly_ai_spend text,
   monthly_token_volume text,
@@ -33,6 +38,11 @@ create index if not exists waitlist_leads_referral_code_idx on waitlist_leads (r
 create unique index if not exists waitlist_leads_own_referral_code_idx on waitlist_leads (own_referral_code);
 
 alter table waitlist_leads add column if not exists monthly_token_volume text;
+alter table waitlist_leads add column if not exists source text;
+alter table waitlist_leads add column if not exists plan_interest text;
+alter table waitlist_leads add column if not exists framework_interest text;
+alter table waitlist_leads add column if not exists external_actions text;
+alter table waitlist_leads add column if not exists founder_call_interest text;
 
 create table if not exists contact_messages (
   id text primary key,

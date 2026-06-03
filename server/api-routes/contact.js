@@ -90,31 +90,77 @@ export default async function handler(req, res) {
     if (!message) return res.status(400).json({ ok: false, error: "Message is required." });
 
     const id = `msg_${randomUUID().replaceAll("-", "")}`;
+    const leadId = `lead_${randomUUID().replaceAll("-", "")}`;
     const db = getSql();
-    await db`
-      insert into contact_messages (
-        id,
-        name,
-        email,
-        company,
-        role,
-        message,
-        user_agent,
-        ip_address,
-        created_at
-      )
-      values (
-        ${id},
-        ${name},
-        ${email},
-        ${company},
-        ${role},
-        ${message},
-        ${req.headers["user-agent"] || null},
-        ${getIp(req)},
-        now()
-      )
-    `;
+    await db.begin(async (tx) => {
+      await tx`
+        insert into contact_messages (
+          id,
+          name,
+          email,
+          company,
+          role,
+          message,
+          user_agent,
+          ip_address,
+          created_at
+        )
+        values (
+          ${id},
+          ${name},
+          ${email},
+          ${company},
+          ${role},
+          ${message},
+          ${req.headers["user-agent"] || null},
+          ${getIp(req)},
+          now()
+        )
+      `;
+      await tx`
+        insert into waitlist_leads (
+          id,
+          email,
+          name,
+          company,
+          role,
+          source,
+          use_case,
+          source_section,
+          user_agent,
+          ip_address,
+          signup_count,
+          created_at,
+          updated_at
+        )
+        values (
+          ${leadId},
+          ${email},
+          ${name},
+          ${company},
+          ${role},
+          'founder_contact',
+          ${message},
+          'founder_contact',
+          ${req.headers["user-agent"] || null},
+          ${getIp(req)},
+          1,
+          now(),
+          now()
+        )
+        on conflict (email) do update set
+          name = coalesce(excluded.name, waitlist_leads.name),
+          company = coalesce(excluded.company, waitlist_leads.company),
+          role = coalesce(excluded.role, waitlist_leads.role),
+          source = coalesce(excluded.source, waitlist_leads.source),
+          use_case = coalesce(excluded.use_case, waitlist_leads.use_case),
+          source_section = coalesce(excluded.source_section, waitlist_leads.source_section),
+          user_agent = coalesce(excluded.user_agent, waitlist_leads.user_agent),
+          ip_address = coalesce(excluded.ip_address, waitlist_leads.ip_address),
+          signup_count = waitlist_leads.signup_count + 1,
+          updated_at = now()
+      `;
+    });
 
     const ownerEmail = process.env.WAITLIST_OWNER_EMAIL || "thenazmulkarim@gmail.com";
     const ownerHtml = `

@@ -204,13 +204,16 @@ async function sendOwnerNotification(lead) {
         reply_to: lead.email,
         subject: `New Forsig waitlist signup: ${lead.email}`,
         html: `
-          <div style="font-family:Inter,Arial,sans-serif;color:#111827">
+      <div style="font-family:Inter,Arial,sans-serif;color:#111827">
             <h2>New Forsig waitlist signup</h2>
             <p><strong>Name:</strong> ${escapeHtml(lead.name || "-")}</p>
             <p><strong>Email:</strong> ${escapeHtml(lead.email)}</p>
             <p><strong>Company:</strong> ${escapeHtml(lead.company || "-")}</p>
             <p><strong>Role:</strong> ${escapeHtml(lead.role || "-")}</p>
             <p><strong>Preferred approval channel:</strong> ${escapeHtml(lead.provider || "-")}</p>
+            <p><strong>Plan interest:</strong> ${escapeHtml(lead.planInterest || "-")}</p>
+            <p><strong>Framework:</strong> ${escapeHtml(lead.frameworkInterest || "-")}</p>
+            <p><strong>External actions:</strong> ${escapeHtml(lead.externalActions || "-")}</p>
             <p><strong>Risky actions to review:</strong> ${escapeHtml(lead.monthlyAiSpend || "-")}</p>
             <p><strong>Use case:</strong></p>
             <p>${escapeHtml(lead.useCase || "-")}</p>
@@ -303,6 +306,11 @@ export default async function handler(req, res) {
       company: normalizeString(body.company),
       role: normalizeString(body.role),
       provider: normalizeString(body.provider),
+      source: normalizeString(body.source) || normalizeString(body.sourceSection) || "landing",
+      planInterest: normalizeString(body.planInterest) || normalizeString(body.plan_interest),
+      frameworkInterest: normalizeString(body.frameworkInterest) || normalizeString(body.framework_interest),
+      externalActions: normalizeString(body.externalActions) || normalizeString(body.external_actions),
+      founderCallInterest: normalizeString(body.founderCallInterest) || normalizeString(body.founder_call_interest),
       useCase: normalizeString(body.useCase),
       monthlyAiSpend: normalizeString(body.monthlyAiSpend),
       urgency: null,
@@ -328,6 +336,11 @@ export default async function handler(req, res) {
         company,
         role,
         provider,
+        source,
+        plan_interest,
+        framework_interest,
+        external_actions,
+        founder_call_interest,
         use_case,
         monthly_ai_spend,
         urgency,
@@ -353,6 +366,11 @@ export default async function handler(req, res) {
         ${lead.company},
         ${lead.role},
         ${lead.provider},
+        ${lead.source},
+        ${lead.planInterest},
+        ${lead.frameworkInterest},
+        ${lead.externalActions},
+        ${lead.founderCallInterest},
         ${lead.useCase},
         ${lead.monthlyAiSpend},
         ${lead.urgency},
@@ -376,6 +394,11 @@ export default async function handler(req, res) {
         company = coalesce(excluded.company, waitlist_leads.company),
         role = coalesce(excluded.role, waitlist_leads.role),
         provider = coalesce(excluded.provider, waitlist_leads.provider),
+        source = coalesce(excluded.source, waitlist_leads.source),
+        plan_interest = coalesce(excluded.plan_interest, waitlist_leads.plan_interest),
+        framework_interest = coalesce(excluded.framework_interest, waitlist_leads.framework_interest),
+        external_actions = coalesce(excluded.external_actions, waitlist_leads.external_actions),
+        founder_call_interest = coalesce(excluded.founder_call_interest, waitlist_leads.founder_call_interest),
         use_case = coalesce(excluded.use_case, waitlist_leads.use_case),
         monthly_ai_spend = coalesce(excluded.monthly_ai_spend, waitlist_leads.monthly_ai_spend),
         urgency = coalesce(excluded.urgency, waitlist_leads.urgency),

@@ -6622,6 +6622,278 @@ th {
   }
 }
 
+/* Launch-ready landing conversion pass */
+.launch-page {
+  font-family: "Instrument Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+}
+
+.launch-hero {
+  padding-bottom: 54px;
+}
+
+.launch-hero-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(360px, 0.72fr);
+  gap: clamp(24px, 5vw, 64px);
+  align-items: center;
+  min-height: 680px;
+}
+
+.launch-hero-copy h1 {
+  max-width: 860px;
+  margin: 16px 0;
+  font-size: clamp(44px, 6.4vw, 82px);
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+}
+
+.launch-hero-copy .zip-hero-copy {
+  max-width: 740px;
+  margin: 0;
+  color: var(--zip-muted);
+  font-size: clamp(17px, 2vw, 21px);
+  line-height: 1.52;
+}
+
+.stack-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-width: 780px;
+  margin-top: 22px;
+}
+
+.stack-strip span,
+.stack-strip b,
+.usecase-pills span,
+.security-list span {
+  border: 1px solid rgba(45, 52, 64, 0.78);
+  border-radius: 999px;
+  padding: 8px 11px;
+  color: var(--zip-muted);
+  background: rgba(22, 27, 34, 0.62);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.stack-strip span {
+  color: var(--zip-text);
+  background: rgba(0, 255, 194, 0.08);
+}
+
+.hero-approval-card {
+  border: 1px solid rgba(45, 52, 64, 0.86);
+  border-radius: 24px;
+  padding: 22px;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(0, 255, 194, 0.12), transparent 36%),
+    rgba(22, 27, 34, 0.8);
+  box-shadow: 0 32px 100px rgba(0, 0, 0, 0.34);
+}
+
+.hero-approval-top,
+.hero-risk-meta,
+.hero-approval-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.hero-approval-top span,
+.hero-risk-meta span {
+  color: var(--zip-muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.hero-approval-top b {
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: var(--zip-primary);
+  background: rgba(0, 255, 194, 0.1);
+  font-size: 12px;
+}
+
+.hero-approval-card h2 {
+  margin: 26px 0 10px;
+  font-size: clamp(25px, 3vw, 36px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.hero-approval-card p {
+  color: var(--zip-muted);
+  line-height: 1.55;
+}
+
+.hero-risk-meta {
+  margin: 18px 0;
+}
+
+.hero-risk-meta b {
+  display: block;
+  margin-top: 5px;
+  color: var(--zip-text);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.hero-approval-actions {
+  justify-content: flex-start;
+  margin: 18px 0;
+}
+
+.hero-approval-actions button,
+.scenario-tabs button,
+.sdk-tabs button {
+  min-height: 38px;
+  border: 1px solid rgba(45, 52, 64, 0.9);
+  border-radius: 999px;
+  padding: 0 13px;
+  color: var(--zip-text);
+  background: rgba(11, 14, 17, 0.68);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.hero-approval-actions button:hover,
+.scenario-tabs button:hover,
+.scenario-tabs button.active,
+.sdk-tabs button:hover,
+.sdk-tabs button.active {
+  border-color: rgba(0, 255, 194, 0.42);
+  color: #06120f;
+  background: var(--zip-primary);
+}
+
+.returned-json {
+  overflow: auto;
+  border: 1px solid rgba(45, 52, 64, 0.86);
+  border-radius: 14px;
+  padding: 14px;
+  color: #d9fff5;
+  background: rgba(4, 7, 10, 0.72);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.compact-section {
+  padding-top: 76px;
+  padding-bottom: 34px;
+}
+
+.four-step-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.usecase-pills,
+.security-list,
+.scenario-tabs,
+.sdk-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.usecase-pills span,
+.security-list span {
+  border-radius: 14px;
+  padding: 14px 16px;
+  color: var(--zip-text);
+}
+
+.launch-demo {
+  padding-top: 76px;
+}
+
+.scenario-tabs {
+  justify-content: center;
+  margin: -8px 0 22px;
+}
+
+.objection-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.6fr) minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+
+.sdk-tabs {
+  margin-top: 18px;
+}
+
+.sdk-tabs button span {
+  margin-left: 4px;
+  opacity: 0.7;
+  font-size: 11px;
+}
+
+.waitlist-card {
+  position: relative;
+  z-index: 1;
+}
+
+.launch-waitlist-form {
+  grid-template-columns: minmax(240px, 1fr) auto;
+}
+
+.waitlist-followup {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  max-width: 760px;
+  margin: 16px auto 0;
+}
+
+.waitlist-followup[hidden] {
+  display: none;
+}
+
+.waitlist-followup textarea,
+.waitlist-followup button,
+.waitlist-followup .mini-status {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 980px) {
+  .launch-hero-grid,
+  .objection-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .launch-hero-grid {
+    min-height: auto;
+    padding-top: 52px;
+  }
+
+  .four-step-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .launch-hero-copy h1 {
+    font-size: clamp(38px, 13vw, 56px);
+  }
+
+  .four-step-grid,
+  .launch-waitlist-form,
+  .waitlist-followup {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-approval-card {
+    padding: 16px;
+  }
+}
+
 @media (max-width: 620px) {
   .admin-main {
     width: min(100% - 24px, 1280px);
