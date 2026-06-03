@@ -46,6 +46,24 @@ function prefillReferralCodes() {
   if (!referral) return;
   document.querySelectorAll('input[name="referralCode"]').forEach((input) => {
     input.value = referral;
+    const wrapper = input.closest(".zip-referral-field");
+    if (wrapper) wrapper.hidden = false;
+    const toggle = wrapper?.parentElement?.querySelector("[data-toggle-referral]");
+    if (toggle) toggle.hidden = true;
+  });
+}
+
+function initReferralToggle() {
+  document.querySelectorAll("[data-toggle-referral]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const form = button.closest("form");
+      const wrapper = form?.querySelector(".zip-referral-field");
+      const input = wrapper?.querySelector('input[name="referralCode"]');
+      if (wrapper) wrapper.hidden = false;
+      button.hidden = true;
+      input?.focus();
+      track("referral_code_field_opened", { sourceSection: form?.id || "unknown" });
+    });
   });
 }
 
@@ -663,9 +681,24 @@ function initZipDemo() {
     if (expiry) expiry.textContent = "Decision returned to agent";
     if (actions) actions.hidden = true;
     if (editor) editor.hidden = true;
+    const terminalLines = {
+      approved: ["> decision.status: approved", "> Agent resuming execution...", "> Success"],
+      rejected: ["> decision.status: rejected", "> Risky action stopped", "> Workflow closed safely"],
+      human_takeover: ["> decision.status: taken_over", "> Agent paused", "> Human now owns the task"],
+      edited_approved: ["> decision.status: edited", "> Applying reviewer instruction...", "> Agent continues with edited plan"],
+      instruct_agent: ["> decision.status: context_added", "> Reviewer instruction attached", "> Agent resumes with new context"]
+    }[type] || ["> Decision recorded", "> Agent updated"];
     if (result) {
       result.hidden = false;
-      result.innerHTML = `<strong>${escapeHtml(titleText)}</strong><p>${escapeHtml(description)}</p>${instruction ? `<code>${escapeHtml(instruction)}</code>` : ""}`;
+      result.innerHTML = `
+        <div class="zip-demo-result-icon" aria-hidden="true">✓</div>
+        <div>
+          <strong>${escapeHtml(titleText)}</strong>
+          <p>${escapeHtml(description)}</p>
+          ${instruction ? `<code>${escapeHtml(instruction)}</code>` : ""}
+        </div>
+        <pre class="zip-demo-terminal">${terminalLines.map((line) => `<span>${escapeHtml(line)}</span>`).join("")}</pre>
+      `;
     }
     clearTimeout(resetTimer);
     resetTimer = setTimeout(() => {
@@ -854,6 +887,7 @@ function initContactForm() {
 }
 
 prefillReferralCodes();
+initReferralToggle();
 initContactForm();
 
 document.querySelectorAll("[data-replace-home]").forEach((link) => {

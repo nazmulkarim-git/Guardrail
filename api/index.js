@@ -38,6 +38,7 @@ const routes = [
   { method: "POST", pattern: /^developer\/workspace$/, file: "developer/workspace.js" },
   { method: "GET", pattern: /^developer\/api-key$/, file: "developer/api-key.js" },
   { method: "POST", pattern: /^developer\/api-key$/, file: "developer/api-key.js" },
+  { method: "POST", pattern: /^developer\/test-escalation$/, file: "developer/test-escalation.js" },
   { method: "GET", pattern: /^developer\/escalations$/, file: "developer/escalations.js" },
   { method: "GET", pattern: /^developer\/escalations\/([^/]+)$/, file: "developer/escalations/[id].js", params: ["id"] },
   { method: "POST", pattern: /^developer\/escalations\/([^/]+)\/decision$/, file: "developer/escalations/[id]/decision.js", params: ["id"] }

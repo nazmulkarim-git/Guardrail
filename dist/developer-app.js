@@ -277,6 +277,25 @@ $("#developer-logout").addEventListener("click", async () => {
 
 $("#developer-refresh").addEventListener("click", () => loadEscalations().catch((error) => toast(error.message)));
 
+$("#developer-test-escalation").addEventListener("click", async () => {
+  const button = $("#developer-test-escalation");
+  button.disabled = true;
+  button.textContent = "Creating...";
+  try {
+    const data = await api("/api/developer/test-escalation", { method: "POST", body: "{}" });
+    toast("Test escalation created");
+    state.status = "pending";
+    $("#developer-status-filter").value = "pending";
+    await loadEscalations();
+    await loadDetail(data.escalationId);
+  } catch (error) {
+    toast(error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Send test escalation";
+  }
+});
+
 $("#developer-status-filter").addEventListener("change", async (event) => {
   state.status = event.target.value;
   state.selectedId = null;

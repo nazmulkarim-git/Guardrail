@@ -58,19 +58,12 @@
           <h1>Let humans <em>approve, edit, or take over</em> risky AI agent actions</h1>
           <p class="zip-hero-copy">Add secure human review checkpoints to AI agents in minutes. Pause risky actions, notify a reviewer, collect a decision, and resume safely with an audit trail.</p>
 
-          <form id="hero-waitlist-form" class="zip-waitlist-form">
-            <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
-            <input name="referralCode" type="text" placeholder="Referral code" />
-            <button type="submit">Get Early Access</button>
-            <p class="mini-status" role="status"></p>
-          </form>
-
           <div class="zip-hero-actions">
-            <a class="zip-button zip-button-secondary" href="#demo">See Demo</a>
-            <a class="zip-button zip-button-ghost" href="#developers">View SDK</a>
+            <a class="zip-button zip-button-primary" href="#waitlist">Get Early Access</a>
+            <a class="zip-button zip-button-secondary" href="#demo">View Demo</a>
           </div>
 
-          <p class="zip-stack-note">Built for teams using <b>LangGraph</b>, <b>CrewAI</b>, <b>Vercel AI SDK</b>, <b>n8n</b>, and custom agents.</p>
+          <p class="zip-stack-note">Built for teams using <b>LangGraph</b>, <b>CrewAI</b>, <b>Vercel AI SDK</b>, <b>n8n</b>, and custom agents. <a href="#developers">View SDK</a></p>
         </div>
       </section>
 
@@ -290,8 +283,11 @@ const decision = await forsig.intervene({
           <p>Be among the first to add human control to your AI agents.</p>
           <form id="waitlist-form" class="zip-waitlist-form">
             <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
-            <input name="referralCode" type="text" placeholder="Referral code" />
+            <div class="zip-referral-field" hidden>
+              <input name="referralCode" type="text" placeholder="Referral code" />
+            </div>
             <button type="submit">Get Early Access</button>
+            <button class="zip-referral-toggle" type="button" data-toggle-referral>+ Have a referral code?</button>
             <p id="form-status" class="mini-status" role="status"></p>
           </form>
           <small>No spam. We will only email you about Forsig updates.</small>

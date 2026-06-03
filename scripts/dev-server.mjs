@@ -241,6 +241,7 @@ createServer(async (req, res) => {
     ["/api/developer/me", path.join("server", "api-routes", "developer", "me.js")],
     ["/api/developer/workspace", path.join("server", "api-routes", "developer", "workspace.js")],
     ["/api/developer/api-key", path.join("server", "api-routes", "developer", "api-key.js")],
+    ["/api/developer/test-escalation", path.join("server", "api-routes", "developer", "test-escalation.js")],
     ["/api/developer/escalations", path.join("server", "api-routes", "developer", "escalations.js")]
   ]);
 
