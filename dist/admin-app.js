@@ -152,7 +152,7 @@ async function loadEscalations() {
 function renderList() {
   const list = $("#escalation-list");
   if (!state.escalations.length) {
-    list.innerHTML = "<p class='empty-state'>No escalations in this view.</p>";
+    list.innerHTML = "<p class='empty-state'>No escalations yet. Invite a developer, ask them to create an API key, then send a test escalation.</p>";
     return;
   }
   list.innerHTML = state.escalations.map((item) => `
@@ -194,10 +194,19 @@ function renderDetail() {
       <p>${escapeHtml(item.agent?.name || item.agent?.id)} · ${escapeHtml(item.risk?.type)} · ${formatDate(item.createdAt)}</p>
     </div>
 
-    <section class="detail-section">
-      <h3>Proposed action</h3>
-      <p>${escapeHtml(item.task?.proposedAction)}</p>
-      ${item.risk?.reason ? `<small>${escapeHtml(item.risk.reason)}</small>` : ""}
+    <section class="detail-snapshot">
+      <article>
+        <span>Agent wants to</span>
+        <strong>${escapeHtml(item.task?.proposedAction)}</strong>
+      </article>
+      <article>
+        <span>Risk</span>
+        <strong>${escapeHtml(item.risk?.level || "review")} / ${escapeHtml(item.risk?.type || "unknown")}</strong>
+      </article>
+      <article>
+        <span>Reason</span>
+        <strong>${escapeHtml(item.risk?.reason || "Human review requested.")}</strong>
+      </article>
     </section>
 
     <section class="detail-section">
@@ -207,6 +216,7 @@ function renderDetail() {
 
     <section class="detail-section">
       <h3>Decision</h3>
+      <p class="section-helper">Choose the instruction Forsig should return to the agent. This is the handback point in the workflow.</p>
       ${canDecide ? `
         <div class="decision-actions">
           ${decisionButton("approved", "Approve")}

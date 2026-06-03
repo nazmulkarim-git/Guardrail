@@ -7,7 +7,7 @@
     <meta name="robots" content="noindex,nofollow" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body data-page="app" class="zip-design admin-app">
@@ -46,11 +46,32 @@
       <section id="admin-app" class="admin-main" hidden>
         <header class="admin-topbar">
           <div>
-            <span class="zip-section-label">Human approval inbox</span>
-            <h1>Review risky agent actions.</h1>
+            <span class="zip-section-label">Founder console</span>
+            <h1>Launch and supervise Forsig beta workspaces.</h1>
+            <p class="admin-meta">Invite developers, monitor escalations, and keep early beta feedback close to the product.</p>
           </div>
-          <button id="admin-refresh" type="button">Refresh</button>
+          <div class="admin-topbar-actions">
+            <button id="admin-refresh" type="button">Refresh inbox</button>
+          </div>
         </header>
+
+        <section class="admin-journey" aria-label="Admin launch flow">
+          <article>
+            <span>01</span>
+            <strong>Invite developer</strong>
+            <p>Create access from Developers.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <strong>They test Forsig</strong>
+            <p>Workspace, agent, key, escalation.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <strong>Review feedback</strong>
+            <p>Watch actions, decisions, and usage.</p>
+          </article>
+        </section>
 
         <section class="admin-stats" aria-label="Workspace stats">
           <article><span>Pending</span><strong id="stat-pending">0</strong></article>
@@ -63,7 +84,7 @@
           <div class="admin-toolbar">
             <div>
               <h2>Pending escalations</h2>
-              <p>Approve, reject, edit, or take over before the agent continues.</p>
+              <p>Review risky agent actions before workflows continue.</p>
             </div>
             <select id="admin-status-filter">
               <option value="pending">Pending</option>
@@ -86,7 +107,7 @@
         <section id="admin-view-developers" class="admin-view" hidden>
           <div class="admin-panel">
             <h2>Developer beta access</h2>
-            <p>Invite selected developers into their own Forsig workspace so they can create keys, test escalations, and respond to decisions without waiting on you.</p>
+            <p>Give selected developers a workspace where they can create agents, generate API keys, test escalations, and send you real product feedback.</p>
             <form id="developer-form" class="admin-form-grid">
               <input name="email" type="email" required placeholder="Developer email" />
               <input name="name" type="text" placeholder="Name" />

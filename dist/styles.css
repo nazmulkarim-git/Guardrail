@@ -6102,6 +6102,526 @@ th {
   }
 }
 
+/* Final product-console polish for /app and /developer */
+.admin-app {
+  --product-bg: #090b0f;
+  --product-surface: rgba(15, 19, 25, 0.78);
+  --product-surface-2: rgba(18, 23, 31, 0.9);
+  --product-line: rgba(130, 146, 166, 0.18);
+  --product-line-strong: rgba(130, 146, 166, 0.28);
+  --product-text: #f4f7fb;
+  --product-muted: #9ba6b6;
+  --product-soft: #6f7a8c;
+  --product-accent: #00ffc2;
+  --product-accent-2: #9effe8;
+  --product-radius: 16px;
+  color: var(--product-text);
+  background:
+    radial-gradient(circle at 18% 4%, rgba(0, 255, 194, 0.075), transparent 28rem),
+    radial-gradient(circle at 88% -8%, rgba(126, 113, 255, 0.12), transparent 26rem),
+    linear-gradient(180deg, #0c1016 0%, var(--product-bg) 100%);
+  font-family: "Instrument Sans", "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.admin-app .zip-brand {
+  gap: 11px;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+
+.admin-app .zip-brand svg {
+  width: 30px;
+  height: 30px;
+}
+
+.admin-shell {
+  grid-template-columns: 248px minmax(0, 1fr);
+}
+
+.admin-sidebar {
+  gap: 20px;
+  border-right: 1px solid var(--product-line);
+  padding: 24px 16px;
+  background:
+    linear-gradient(180deg, rgba(12, 16, 22, 0.94), rgba(8, 11, 15, 0.92)),
+    rgba(8, 11, 15, 0.92);
+}
+
+.admin-sidebar nav {
+  gap: 5px;
+}
+
+.admin-sidebar nav button,
+#admin-logout,
+#developer-logout {
+  min-height: 40px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 0 12px;
+  color: var(--product-muted);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.admin-sidebar nav button:hover,
+#admin-logout:hover,
+#developer-logout:hover {
+  color: var(--product-text);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.admin-sidebar button.active {
+  border-color: rgba(0, 255, 194, 0.24);
+  color: #e7fff9;
+  background: rgba(0, 255, 194, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(0, 255, 194, 0.06);
+}
+
+#admin-logout,
+#developer-logout {
+  border-color: var(--product-line);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.admin-main {
+  width: min(1360px, calc(100% - 48px));
+  padding: 24px 0 48px;
+}
+
+.admin-login-card {
+  border-color: var(--product-line-strong);
+  border-radius: 20px;
+  padding: 30px;
+  background: var(--product-surface);
+  box-shadow: 0 26px 90px rgba(0, 0, 0, 0.34);
+}
+
+.admin-login-card h1,
+.admin-topbar h1 {
+  max-width: 760px;
+  margin: 7px 0 0;
+  color: var(--product-text);
+  font-size: clamp(28px, 3.4vw, 42px);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+.admin-login-card p,
+.admin-meta,
+.admin-toolbar p,
+.admin-panel p,
+.section-helper {
+  max-width: 760px;
+  color: var(--product-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.admin-topbar {
+  align-items: flex-start;
+  border: 1px solid var(--product-line);
+  border-radius: 20px;
+  padding: 20px;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(0, 255, 194, 0.07), transparent 22rem),
+    var(--product-surface);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.22);
+}
+
+.zip-section-label {
+  color: var(--product-accent);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+
+.admin-topbar-actions {
+  gap: 8px;
+}
+
+.admin-topbar button,
+.admin-form-grid button,
+.decision-form button,
+#admin-login-form button,
+#developer-login-form button,
+.new-api-key button {
+  min-height: 40px;
+  border: 0;
+  border-radius: 10px;
+  padding: 0 14px;
+  color: #03140f;
+  background: linear-gradient(135deg, var(--product-accent), var(--product-accent-2));
+  box-shadow: 0 14px 34px rgba(0, 255, 194, 0.12);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.admin-journey {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.admin-journey article,
+.admin-stats article,
+.admin-panel,
+.escalation-list,
+.escalation-detail {
+  border: 1px solid var(--product-line);
+  border-radius: var(--product-radius);
+  background: var(--product-surface);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+}
+
+.admin-journey article {
+  display: grid;
+  gap: 5px;
+  padding: 14px;
+}
+
+.admin-journey span,
+.admin-stats span,
+.detail-section h3,
+.detail-snapshot span,
+.escalation-list span,
+.new-api-key span {
+  color: var(--product-soft);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.admin-journey strong {
+  color: var(--product-text);
+  font-size: 15px;
+  letter-spacing: -0.01em;
+}
+
+.admin-journey p {
+  margin: 0;
+  color: var(--product-muted);
+  font-size: 13px;
+  line-height: 1.42;
+}
+
+.admin-stats {
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.admin-stats article {
+  padding: 14px;
+}
+
+.admin-stats strong {
+  margin-top: 6px;
+  font-size: 25px;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+
+.admin-toolbar {
+  align-items: center;
+  margin-bottom: 10px;
+  border: 1px solid var(--product-line);
+  border-radius: var(--product-radius);
+  padding: 14px;
+  background: rgba(15, 19, 25, 0.62);
+}
+
+.admin-toolbar h2,
+.admin-panel h2 {
+  margin: 0 0 4px;
+  font-size: 22px;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.admin-toolbar select {
+  min-width: 156px;
+  min-height: 38px;
+  border-color: var(--product-line-strong);
+  color: var(--product-text);
+  background: rgba(7, 10, 14, 0.75);
+  font-size: 14px;
+}
+
+.admin-grid {
+  grid-template-columns: minmax(300px, 0.7fr) minmax(0, 1.5fr);
+  gap: 12px;
+}
+
+.escalation-list {
+  gap: 7px;
+  max-height: calc(100vh - 320px);
+  min-height: 420px;
+  padding: 8px;
+}
+
+.escalation-list button {
+  gap: 6px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 12px;
+  color: var(--product-text);
+  background: rgba(255, 255, 255, 0.032);
+  transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+}
+
+.escalation-list button:hover {
+  transform: translateY(-1px);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.escalation-list button.active {
+  border-color: rgba(0, 255, 194, 0.36);
+  background: rgba(0, 255, 194, 0.09);
+}
+
+.escalation-list strong {
+  font-size: 14px;
+  line-height: 1.28;
+}
+
+.escalation-list small,
+.escalation-list em,
+.detail-head p,
+.detail-section small,
+.audit-list span,
+.audit-list small,
+.api-key-list span,
+.api-key-list small {
+  color: var(--product-muted);
+  font-size: 12px;
+}
+
+.escalation-list em,
+.detail-head span {
+  border: 1px solid rgba(0, 255, 194, 0.25);
+  border-radius: 999px;
+  color: #cafff3;
+  background: rgba(0, 255, 194, 0.08);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.escalation-detail,
+.admin-panel {
+  padding: 18px;
+  background: var(--product-surface-2);
+}
+
+.escalation-detail {
+  min-height: 560px;
+}
+
+.detail-head {
+  margin: -18px -18px 16px;
+  border-color: var(--product-line);
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.detail-head h2 {
+  max-width: 820px;
+  margin: 8px 0 4px;
+  font-size: clamp(22px, 2.5vw, 30px);
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+
+.detail-snapshot {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(180px, 0.7fr) minmax(0, 1fr);
+  gap: 10px;
+}
+
+.detail-snapshot article,
+.detail-section {
+  border: 1px solid var(--product-line);
+  border-radius: 14px;
+  padding: 13px;
+  background: rgba(7, 10, 14, 0.34);
+}
+
+.detail-snapshot strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--product-text);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.detail-section {
+  gap: 9px;
+  margin-top: 10px;
+}
+
+.detail-section h3 {
+  margin: 0;
+}
+
+.detail-section p {
+  color: var(--product-text);
+  font-size: 14px;
+}
+
+.detail-section pre,
+.api-key-list article pre,
+.new-api-key code {
+  max-height: 210px;
+  border: 1px solid var(--product-line);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(3, 6, 10, 0.72);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.decision-actions {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.decision-actions button {
+  min-height: 36px;
+  border: 1px solid var(--product-line-strong);
+  border-radius: 999px;
+  color: var(--product-muted);
+  background: rgba(255, 255, 255, 0.032);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.decision-actions button:hover,
+.decision-actions button.active {
+  border-color: rgba(0, 255, 194, 0.42);
+  color: #eafffa;
+  background: rgba(0, 255, 194, 0.11);
+}
+
+#admin-login-form input,
+#developer-login-form input,
+.admin-form-grid input,
+.admin-form-grid select,
+.admin-form-grid textarea,
+.decision-form input,
+.decision-form textarea {
+  min-height: 42px;
+  border-color: var(--product-line-strong);
+  border-radius: 10px;
+  padding: 0 12px;
+  color: var(--product-text);
+  background: rgba(5, 8, 12, 0.72);
+  font-size: 14px;
+}
+
+.admin-form-grid textarea,
+.decision-form textarea {
+  padding-top: 11px;
+}
+
+.decision-form label {
+  color: var(--product-muted);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.audit-list,
+.api-key-list {
+  gap: 8px;
+}
+
+.audit-list article,
+.api-key-list article,
+.new-api-key {
+  border-color: var(--product-line);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.032);
+}
+
+.api-key-list article button {
+  border-color: var(--product-line-strong);
+  border-radius: 999px;
+  color: var(--product-text);
+  background: rgba(255, 255, 255, 0.045);
+  font-size: 12px;
+}
+
+.empty-state {
+  min-height: 180px;
+  border-color: var(--product-line-strong);
+  color: var(--product-muted);
+  font-size: 14px;
+}
+
+@media (max-width: 1120px) {
+  .admin-grid,
+  .detail-snapshot {
+    grid-template-columns: 1fr;
+  }
+
+  .escalation-list {
+    min-height: auto;
+    max-height: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .admin-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-sidebar {
+    position: static;
+    height: auto;
+  }
+
+  .admin-sidebar nav {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .admin-journey,
+  .admin-stats,
+  .decision-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-main {
+    width: min(100% - 24px, 1360px);
+    padding: 18px 0 36px;
+  }
+
+  .admin-sidebar {
+    padding: 14px;
+  }
+
+  .admin-sidebar nav {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-topbar,
+  .admin-toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-topbar h1 {
+    font-size: 28px;
+  }
+
+  .admin-topbar-actions,
+  .admin-topbar-actions button,
+  .admin-toolbar select {
+    width: 100%;
+  }
+}
+
 @media (max-width: 620px) {
   .admin-main {
     width: min(100% - 24px, 1280px);

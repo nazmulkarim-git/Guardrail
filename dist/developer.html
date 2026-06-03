@@ -7,7 +7,7 @@
     <meta name="robots" content="noindex,nofollow" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body data-page="developer" class="zip-design admin-app">
@@ -48,8 +48,8 @@
       <section id="developer-app" class="admin-main" hidden>
         <header class="admin-topbar">
           <div>
-            <span class="zip-section-label">Beta workspace</span>
-            <h1>Test Forsig on your agent.</h1>
+            <span class="zip-section-label">Developer workspace</span>
+            <h1>Add human approval to one agent workflow.</h1>
             <p id="developer-workspace-label" class="admin-meta"></p>
           </div>
           <div class="admin-topbar-actions">
@@ -57,6 +57,24 @@
             <button id="developer-refresh" type="button">Refresh</button>
           </div>
         </header>
+
+        <section class="admin-journey" aria-label="Developer setup flow">
+          <article>
+            <span>01</span>
+            <strong>Create an agent</strong>
+            <p>Name the workflow Forsig will review.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <strong>Generate API key</strong>
+            <p>Use it from your agent code.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <strong>Escalate risky steps</strong>
+            <p>Pause, ask a human, resume safely.</p>
+          </article>
+        </section>
 
         <section class="admin-stats" aria-label="Workspace stats">
           <article><span>Pending</span><strong id="dev-stat-pending">0</strong></article>
@@ -69,7 +87,7 @@
           <div class="admin-toolbar">
             <div>
               <h2>Escalation inbox</h2>
-              <p>Create an API key, send a test escalation, then approve, reject, edit, or take over from here.</p>
+              <p>Decide what the agent should do next. The returned instruction is what your workflow reads from Forsig.</p>
             </div>
             <select id="developer-status-filter">
               <option value="pending">Pending</option>
@@ -92,7 +110,7 @@
         <section id="developer-view-agents" class="admin-view" hidden>
           <div class="admin-panel">
             <h2>Agents</h2>
-            <p>Create the agent identity your code will send with each escalation. The slug is the value to use as <code>agent.id</code>.</p>
+            <p>Create the identity your code sends with each escalation. Use the slug as <code>agent.id</code>.</p>
             <form id="developer-agent-form" class="admin-form-grid">
               <input name="name" type="text" required placeholder="Agent name, e.g. Refund Agent" />
               <input name="slug" type="text" placeholder="Agent slug, e.g. refund-agent" />
@@ -125,7 +143,7 @@
         <section id="developer-view-keys" class="admin-view" hidden>
           <div class="admin-panel">
             <h2>API keys</h2>
-            <p>Create a key for your own test agent. The full key is only shown once.</p>
+            <p>Create one key per environment or test workflow. The full key is only shown once.</p>
             <form id="developer-api-key-form" class="admin-form-grid">
               <input name="name" type="text" placeholder="Key name, e.g. Refund Agent test" />
               <button type="submit">Create API key</button>
@@ -139,7 +157,7 @@
         <section id="developer-view-docs" class="admin-view" hidden>
           <div class="admin-panel">
             <h2>Quickstart</h2>
-            <p>Install the SDK, create an agent, create an API key, then call Forsig at risky moments.</p>
+            <p>Install the SDK, create an agent and API key, then call Forsig only when your workflow needs human judgment.</p>
             <div class="detail-section">
               <h3>Install</h3>
               <pre><code>npm install @forsig/sdk</code></pre>
@@ -162,8 +180,19 @@ const decision = await forsig.escalate({
     customerImpact: true
   },
   context: { refundAmount: 500, customerTier: "VIP" },
+  review: { notify: ["dashboard", "email"] },
   waitForDecision: true
 });</code></pre>
+            </div>
+            <div class="detail-section">
+              <h3>Agent control flow</h3>
+              <pre><code>if (decision.status === "approved" || decision.status === "edited") {
+  await continueWorkflow(decision.instruction);
+} else if (decision.status === "context_added") {
+  await continueWorkflow(decision.addedContext);
+} else {
+  await stopWorkflow(decision.instruction);
+}</code></pre>
             </div>
             <p class="admin-meta">Private beta note: send only the minimum context needed for review. Avoid secrets, credentials, unnecessary PII, and regulated data.</p>
           </div>
