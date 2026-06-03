@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Forsig Docs</title>
+    <meta name="description" content="Quickstart documentation for Forsig human approval infrastructure." />
+    <meta name="robots" content="index,follow" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body data-page="docs" class="zip-design legal-zip">
+    <main class="legal-page">
+      <a class="zip-brand" href="/" aria-label="Forsig home">
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M4 20h12M24 20h12" />
+          <circle cx="20" cy="20" r="6" />
+          <path d="M20 8v6M20 26v6" />
+          <circle cx="4" cy="20" r="2" />
+          <circle cx="36" cy="20" r="2" />
+        </svg>
+        <span>Forsig</span>
+      </a>
+      <article class="legal-card">
+        <p class="eyebrow">Docs</p>
+        <h1>Human approval in one API call.</h1>
+        <p>Create an agent, create an API key, call Forsig when your AI agent reaches a risky action, and wait for a human decision.</p>
+
+        <h2>Install</h2>
+        <pre><code>npm install @forsig/sdk</code></pre>
+
+        <h2>Escalate</h2>
+        <pre><code>import { Forsig } from "@forsig/sdk";
+
+const forsig = new Forsig({
+  apiKey: process.env.FORSIG_API_KEY,
+  baseUrl: "https://www.forsig.com"
+});
+
+const decision = await forsig.escalate({
+  agent: { id: "refund-agent", name: "Refund Agent", environment: "production" },
+  risk: { type: "refund_over_limit", level: "high" },
+  task: {
+    title: "Approve refund for customer #123",
+    proposedAction: "Issue a $500 refund",
+    customerImpact: true
+  },
+  context: { refundAmount: 500, customerTier: "VIP" },
+  waitForDecision: true
+});</code></pre>
+
+        <h2>Private beta safety</h2>
+        <p>Send only the minimum context needed for review. Avoid secrets, credentials, unnecessary PII, and regulated data.</p>
+      </article>
+    </main>
+  </body>
+</html>

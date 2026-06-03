@@ -68,8 +68,8 @@ function escapeHtml(value) {
 }
 
 async function sendEscalationNotification(req, escalation, parsed) {
-  const reviewerEmail = process.env.FORSIG_REVIEWER_EMAIL || process.env.WAITLIST_OWNER_EMAIL;
-  if (!reviewerEmail) return { sent: false, reason: "FORSIG_REVIEWER_EMAIL or WAITLIST_OWNER_EMAIL not configured" };
+  const reviewerEmail = parsed.reviewerEmails?.[0] || process.env.FORSIG_REVIEWER_EMAIL || process.env.WAITLIST_OWNER_EMAIL;
+  if (!reviewerEmail) return { sent: false, reason: "No reviewer email configured" };
   const reviewUrl = dashboardUrl(req, escalation.id);
   return sendEmail({
     to: reviewerEmail,
@@ -95,12 +95,16 @@ export function validateEscalationPayload(body) {
   const run = normalizeRun(body);
   const risk = normalizeRisk(body.risk);
   const task = normalizeTask(body);
+  const review = body.review && typeof body.review === "object" ? body.review : {};
+  const reviewerEmails = Array.isArray(review.reviewerEmails)
+    ? review.reviewerEmails.map(normalizeString).filter(Boolean)
+    : [];
   const errors = [];
   if (!agent.id) errors.push("agent is required.");
   if (!task.title) errors.push("task title is required.");
   if (!risk.type) errors.push("risk type is required.");
   if (!task.proposedAction) errors.push("proposedAction is required.");
-  return { valid: errors.length === 0, errors, agent, run, risk, task };
+  return { valid: errors.length === 0, errors, agent, run, risk, task, review, reviewerEmails };
 }
 
 export default async function handler(req, res) {
@@ -124,7 +128,7 @@ export default async function handler(req, res) {
     const id = newId("esc");
     const nowRows = await db`select now() as now`;
     const createdAt = nowRows[0].now;
-    const timeoutSeconds = Number(body.timeoutSeconds ?? body.timeout_seconds ?? null);
+    const timeoutSeconds = Number(body.timeoutSeconds ?? body.timeout_seconds ?? parsed.review.timeoutSeconds ?? parsed.review.timeout_seconds ?? null);
     const timeoutAt = Number.isFinite(timeoutSeconds) && timeoutSeconds > 0
       ? new Date(Date.now() + timeoutSeconds * 1000)
       : null;
@@ -177,9 +181,9 @@ export default async function handler(req, res) {
         ${toJson(body.context)},
         ${toJson(body.trace)},
         ${toJson(body.model)},
-        ${toJson(body.allowedActions || body.allowed_actions || ["approve", "reject", "edit", "add_context", "take_over", "needs_more_info"])},
-        ${toJson(body.notify || body.notifyChannels || body.notify_channels || ["dashboard"])},
-        ${normalizeString(body.callbackUrl) || normalizeString(body.callback_url)},
+        ${toJson(parsed.review.allowed_actions || parsed.review.allowedActions || body.allowedActions || body.allowed_actions || ["approve", "reject", "edit", "add_context", "take_over", "needs_more_info"])},
+        ${toJson(parsed.review.notify || body.notify || body.notifyChannels || body.notify_channels || ["dashboard"])},
+        ${normalizeString(parsed.review.callback_url) || normalizeString(parsed.review.callbackUrl) || normalizeString(body.callbackUrl) || normalizeString(body.callback_url)},
         ${timeoutAt},
         ${createdAt},
         ${createdAt}
@@ -210,13 +214,58 @@ export default async function handler(req, res) {
       )
     `;
 
+    if (!parsed.reviewerEmails.length) {
+      const agentRows = await db`
+        select default_reviewer_emails
+        from agents
+        where workspace_id = ${auth.workspaceId}
+          and archived_at is null
+          and (slug = ${parsed.agent.id} or id = ${parsed.agent.id})
+        limit 1
+      `.catch(() => []);
+      const agentEmails = agentRows[0]?.default_reviewer_emails;
+      if (Array.isArray(agentEmails)) parsed.reviewerEmails = agentEmails.map(normalizeString).filter(Boolean);
+    }
+
     const notification = await sendEscalationNotification(req, rows[0], parsed).catch((error) => {
       console.error("Escalation notification failed", { escalationId: id, message: error.message });
       return { sent: false, error: error.message };
     });
 
+    await db`
+      insert into notification_attempts (
+        id,
+        workspace_id,
+        escalation_id,
+        channel,
+        recipient,
+        status,
+        error,
+        created_at,
+        sent_at
+      )
+      values (
+        ${newId("note")},
+        ${auth.workspaceId},
+        ${id},
+        'email',
+        ${parsed.reviewerEmails?.[0] || process.env.FORSIG_REVIEWER_EMAIL || process.env.WAITLIST_OWNER_EMAIL || 'unconfigured'},
+        ${notification.sent ? 'sent' : 'failed'},
+        ${notification.sent ? null : notification.reason || notification.error || notification.body || 'Email not sent'},
+        ${createdAt},
+        ${notification.sent ? createdAt : null}
+      )
+    `.catch((error) => {
+      console.error("Notification attempt log failed", { escalationId: id, code: error.code, message: error.message });
+    });
+
     json(res, 201, {
       ok: true,
+      id,
+      status: "pending",
+      dashboard_url: dashboardUrl(req, id),
+      created_at: createdAt,
+      expires_at: timeoutAt,
       escalation: compactEscalation(rows[0]),
       dashboardUrl: dashboardUrl(req, id),
       decisionUrl: `/api/v1/escalations/${id}/decision`,

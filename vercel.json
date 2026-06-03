@@ -19,6 +19,10 @@
       "destination": "/developer.html"
     },
     {
+      "source": "/docs",
+      "destination": "/docs.html"
+    },
+    {
       "source": "/thanks",
       "destination": "/thanks.html"
     },

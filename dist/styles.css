@@ -5870,6 +5870,8 @@ th {
 #admin-login-form input,
 #developer-login-form input,
 .admin-form-grid input,
+.admin-form-grid select,
+.admin-form-grid textarea,
 .decision-form input,
 .decision-form textarea {
   min-height: 46px;
@@ -5878,6 +5880,12 @@ th {
   padding: 0 12px;
   color: var(--zip-text);
   background: rgba(11, 14, 17, 0.72);
+}
+
+.admin-form-grid textarea {
+  min-height: 96px;
+  padding-top: 12px;
+  resize: vertical;
 }
 
 .decision-form textarea {
@@ -6371,6 +6379,8 @@ th {
 #admin-login-form input,
 #developer-login-form input,
 .admin-form-grid input,
+.admin-form-grid select,
+.admin-form-grid textarea,
 .decision-form input,
 .decision-form textarea {
   border-color: var(--console-line);
@@ -6383,6 +6393,26 @@ th {
 .new-api-key {
   border-color: var(--console-soft-line);
   background: rgba(255, 255, 255, 0.035);
+}
+
+.api-key-list article pre {
+  max-height: 210px;
+  overflow: auto;
+  border: 1px solid var(--console-soft-line);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(4, 7, 10, 0.72);
+}
+
+.api-key-list article button {
+  justify-self: start;
+  min-height: 34px;
+  border: 1px solid var(--console-line);
+  border-radius: 999px;
+  padding: 0 12px;
+  color: var(--console-text);
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
 }
 
 .new-api-key code {
@@ -6417,7 +6447,7 @@ th {
   }
 
   .admin-sidebar nav {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .admin-grid,

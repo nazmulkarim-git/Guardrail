@@ -76,6 +76,7 @@ function setView(view) {
   });
   if (view === "keys") loadKeys();
   if (view === "workspace") loadWorkspace();
+  if (view === "agents") loadAgents();
 }
 
 async function checkSession() {
@@ -114,8 +115,46 @@ async function loadKeys() {
         <strong>${escapeHtml(key.name)}</strong>
         <span>${escapeHtml(key.prefix || key.id)} · created ${formatDate(key.created_at)}</span>
         <small>${key.last_used_at ? `Last used ${formatDate(key.last_used_at)}` : "Never used"}</small>
+        ${key.revoked_at ? `<em>Revoked ${formatDate(key.revoked_at)}</em>` : `<button type="button" data-revoke-key="${escapeHtml(key.id)}">Revoke</button>`}
       </article>
     `).join("") : "<p class='empty-state'>No API keys yet.</p>";
+  } catch (error) {
+    list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
+  }
+}
+
+function agentSnippet(agent) {
+  const slug = agent.slug || "refund-agent";
+  const name = agent.name || "Refund Agent";
+  const environment = agent.environment || "development";
+  return `const decision = await forsig.escalate({
+  agent: { id: "${slug}", name: "${name}", environment: "${environment}" },
+  risk: { type: "refund_over_limit", level: "high" },
+  task: {
+    title: "Approve refund for customer #123",
+    proposedAction: "Issue a $500 refund",
+    customerImpact: true
+  },
+  context: { customerTier: "VIP", refundAmount: 500 },
+  waitForDecision: true
+});`;
+}
+
+async function loadAgents() {
+  const list = $("#developer-agent-list");
+  list.innerHTML = "<p class='empty-state'>Loading agents...</p>";
+  try {
+    const data = await api("/api/developer/agents");
+    list.innerHTML = data.agents.length ? data.agents.map((agent) => `
+      <article>
+        <strong>${escapeHtml(agent.name)}</strong>
+        <span>${escapeHtml(agent.slug)} &middot; ${escapeHtml(agent.environment)} &middot; ${agent.escalation_count || 0} escalations</span>
+        <small>${escapeHtml(agent.description || "No description yet.")}</small>
+        <pre><code>${escapeHtml(agentSnippet(agent))}</code></pre>
+        <button type="button" data-copy-key="${escapeHtml(agentSnippet(agent))}">Copy snippet</button>
+        ${agent.archived_at ? `<em>Archived ${formatDate(agent.archived_at)}</em>` : `<button type="button" data-archive-agent="${escapeHtml(agent.id)}">Archive</button>`}
+      </article>
+    `).join("") : "<p class='empty-state'>No agents yet. Create one, then send a test escalation.</p>";
   } catch (error) {
     list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
   }
@@ -349,6 +388,31 @@ $("#developer-api-key-form").addEventListener("submit", async (event) => {
   }
 });
 
+$("#developer-agent-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const status = form.querySelector(".mini-status");
+  status.textContent = "Creating agent...";
+  try {
+    await api("/api/developer/agents", {
+      method: "POST",
+      body: JSON.stringify({
+        name: form.elements.name.value,
+        slug: form.elements.slug.value,
+        environment: form.elements.environment.value,
+        defaultReviewerEmails: form.elements.defaultReviewerEmails.value,
+        description: form.elements.description.value
+      })
+    });
+    status.textContent = "Agent created.";
+    toast("Agent created");
+    form.reset();
+    await loadAgents();
+  } catch (error) {
+    status.textContent = error.message;
+  }
+});
+
 document.addEventListener("click", async (event) => {
   const escalationButton = event.target.closest("[data-escalation-id]");
   if (escalationButton) {
@@ -379,6 +443,39 @@ document.addEventListener("click", async (event) => {
     await navigator.clipboard.writeText(copy.dataset.copyKey);
     copy.textContent = "Copied";
     setTimeout(() => (copy.textContent = "Copy"), 1200);
+  }
+
+  const revoke = event.target.closest("[data-revoke-key]");
+  if (revoke) {
+    revoke.disabled = true;
+    revoke.textContent = "Revoking...";
+    try {
+      await api(`/api/developer/api-key/${encodeURIComponent(revoke.dataset.revokeKey)}/revoke`, { method: "POST", body: "{}" });
+      toast("API key revoked");
+      await loadKeys();
+    } catch (error) {
+      toast(error.message);
+      revoke.disabled = false;
+      revoke.textContent = "Revoke";
+    }
+  }
+
+  const archiveAgent = event.target.closest("[data-archive-agent]");
+  if (archiveAgent) {
+    archiveAgent.disabled = true;
+    archiveAgent.textContent = "Archiving...";
+    try {
+      await api(`/api/developer/agents/${encodeURIComponent(archiveAgent.dataset.archiveAgent)}`, {
+        method: "POST",
+        body: JSON.stringify({ archive: true })
+      });
+      toast("Agent archived");
+      await loadAgents();
+    } catch (error) {
+      toast(error.message);
+      archiveAgent.disabled = false;
+      archiveAgent.textContent = "Archive";
+    }
   }
 });
 

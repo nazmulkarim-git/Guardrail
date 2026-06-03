@@ -44,7 +44,7 @@ export function createForsigOpenAIClient(options) {
 export class Forsig {
   constructor(options) {
     this.apiKey = options.apiKey;
-    this.baseURL = (options.baseURL ?? "https://api.forsig.com").replace(/\/$/, "");
+    this.baseURL = (options.baseURL ?? options.baseUrl ?? "https://api.forsig.com").replace(/\/$/, "");
     this.fetchImpl = options.fetch ?? globalThis.fetch;
     if (!this.fetchImpl) throw new Error("Forsig requires fetch. Pass fetch in the constructor for this runtime.");
   }
@@ -57,7 +57,7 @@ export class Forsig {
     if (!input.waitForDecision) return response.escalation;
     return this.waitForDecision(response.escalation.id, {
       pollIntervalMs: input.pollIntervalMs,
-      timeoutMs: input.timeoutMs
+      timeoutMs: input.timeoutMs ?? (input.timeoutSeconds ? input.timeoutSeconds * 1000 : undefined)
     });
   }
 
@@ -74,6 +74,14 @@ export class Forsig {
       body: JSON.stringify(decision)
     });
     return response.decision;
+  }
+
+  async cancelEscalation(id) {
+    const response = await this.request(`/api/v1/escalations/${encodeURIComponent(id)}/cancel`, {
+      method: "POST",
+      body: "{}"
+    });
+    return response.escalation;
   }
 
   async waitForDecision(id, options = {}) {

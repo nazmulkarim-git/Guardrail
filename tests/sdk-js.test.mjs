@@ -111,3 +111,27 @@ test("Forsig client sends decisions", async () => {
   assert.equal(calls[0].url, "https://example.test/api/v1/escalations/esc_123/decision");
   assert.equal(JSON.parse(calls[0].init.body).instruction, "Offer store credit.");
 });
+
+test("Forsig client supports baseUrl alias and cancellation", async () => {
+  const calls = [];
+  const client = new Forsig({
+    apiKey: "fsk_test_123",
+    baseUrl: "https://forsig.local/",
+    fetch: async (url, init) => {
+      calls.push({ url, init });
+      return {
+        ok: true,
+        json: async () => ({
+          ok: true,
+          escalation: { id: "esc_123", status: "canceled" }
+        })
+      };
+    }
+  });
+
+  const escalation = await client.cancelEscalation("esc_123");
+
+  assert.equal(escalation.status, "canceled");
+  assert.equal(calls[0].url, "https://forsig.local/api/v1/escalations/esc_123/cancel");
+  assert.equal(calls[0].init.method, "POST");
+});

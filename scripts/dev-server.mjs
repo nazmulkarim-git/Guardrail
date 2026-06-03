@@ -171,6 +171,7 @@ async function serveStatic(req, res) {
   if (pathname === "/") pathname = "/index.html";
   if (pathname === "/app") pathname = "/app.html";
   if (pathname === "/developer") pathname = "/developer.html";
+  if (pathname === "/docs") pathname = "/docs.html";
   if (pathname === "/dashboard") pathname = "/dashboard.html";
   if (pathname === "/thanks") pathname = "/thanks.html";
   if (pathname === "/contact") pathname = "/contact.html";
@@ -240,6 +241,7 @@ createServer(async (req, res) => {
     ["/api/developer/logout", path.join("server", "api-routes", "developer", "logout.js")],
     ["/api/developer/me", path.join("server", "api-routes", "developer", "me.js")],
     ["/api/developer/workspace", path.join("server", "api-routes", "developer", "workspace.js")],
+    ["/api/developer/agents", path.join("server", "api-routes", "developer", "agents.js")],
     ["/api/developer/api-key", path.join("server", "api-routes", "developer", "api-key.js")],
     ["/api/developer/test-escalation", path.join("server", "api-routes", "developer", "test-escalation.js")],
     ["/api/developer/escalations", path.join("server", "api-routes", "developer", "escalations.js")]
@@ -247,6 +249,18 @@ createServer(async (req, res) => {
 
   if (developerRoutes.has(apiPathname)) {
     await runApiHandler(req, res, developerRoutes.get(apiPathname), Object.fromEntries(url.searchParams.entries()));
+    return;
+  }
+
+  const developerKeyRevokeMatch = apiPathname.match(/^\/api\/developer\/api-key\/([^/]+)\/revoke$/);
+  if (developerKeyRevokeMatch) {
+    await runApiHandler(req, res, path.join("server", "api-routes", "developer", "api-key", "[id]", "revoke.js"), { id: developerKeyRevokeMatch[1] });
+    return;
+  }
+
+  const developerAgentMatch = apiPathname.match(/^\/api\/developer\/agents\/([^/]+)$/);
+  if (developerAgentMatch) {
+    await runApiHandler(req, res, path.join("server", "api-routes", "developer", "agents", "[id].js"), { id: developerAgentMatch[1] });
     return;
   }
 
@@ -265,6 +279,12 @@ createServer(async (req, res) => {
   const escalationDecisionMatch = apiPathname.match(/^\/api\/v1\/escalations\/([^/]+)\/decision$/);
   if (escalationDecisionMatch) {
     await runApiHandler(req, res, path.join("server", "api-routes", "v1", "escalations", "[id]", "decision.js"), { id: escalationDecisionMatch[1] });
+    return;
+  }
+
+  const escalationCancelMatch = apiPathname.match(/^\/api\/v1\/escalations\/([^/]+)\/cancel$/);
+  if (escalationCancelMatch) {
+    await runApiHandler(req, res, path.join("server", "api-routes", "v1", "escalations", "[id]", "cancel.js"), { id: escalationCancelMatch[1] });
     return;
   }
 

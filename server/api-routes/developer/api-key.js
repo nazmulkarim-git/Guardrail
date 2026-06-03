@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 
     const body = readBody(req);
     const name = normalizeString(body.name) || "Developer beta key";
-    const key = generateApiKey();
+    const key = generateApiKey("fsk_test");
     const prefix = key.split("_").slice(0, 3).join("_");
     const id = newId("key");
 

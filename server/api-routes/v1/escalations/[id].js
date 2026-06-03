@@ -4,8 +4,10 @@ import {
   compactEscalation,
   getSql,
   json,
+  newId,
   publicApiError,
-  requireMethod
+  requireMethod,
+  toJson
 } from "../../_forsig-core.js";
 
 export default async function handler(req, res) {
@@ -20,6 +22,53 @@ export default async function handler(req, res) {
     }
 
     const id = req.query?.id;
+    const expiredRows = await db`
+      update escalations
+      set status = 'rejected',
+          resolved_at = now(),
+          updated_at = now()
+      where id = ${id}
+        and workspace_id = ${auth.workspaceId}
+        and status = 'pending'
+        and timeout_at is not null
+        and timeout_at <= now()
+      returning id
+    `;
+    if (expiredRows[0]) {
+      await db`
+        insert into decisions (
+          id,
+          escalation_id,
+          workspace_id,
+          reviewer_user_id,
+          reviewer_name,
+          reviewer_channel,
+          status,
+          instruction,
+          added_context_json,
+          comment,
+          created_at
+        )
+        values (
+          ${newId("dec")},
+          ${id},
+          ${auth.workspaceId},
+          null,
+          'Forsig timeout',
+          'system',
+          'rejected',
+          'No reviewer responded before timeout. Stop the risky action.',
+          ${toJson({ reason: "timeout" })},
+          'Expired escalations reject by default.',
+          now()
+        )
+      `;
+      await db`
+        insert into audit_events (id, workspace_id, escalation_id, actor_type, actor_id, event_type, metadata_json, created_at)
+        values (${newId("audit")}, ${auth.workspaceId}, ${id}, 'system', 'timeout', 'escalation.expired', ${toJson({ defaultDecision: "rejected" })}, now())
+      `;
+    }
+
     const rows = await db`
       select
         e.*,

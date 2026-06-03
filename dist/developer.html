@@ -25,8 +25,10 @@
         </a>
         <nav>
           <button type="button" data-developer-view="inbox" class="active">Inbox</button>
+          <button type="button" data-developer-view="agents">Agents</button>
           <button type="button" data-developer-view="workspace">Workspace</button>
           <button type="button" data-developer-view="keys">API Keys</button>
+          <button type="button" data-developer-view="docs">Docs</button>
         </nav>
         <button id="developer-logout" type="button">Logout</button>
       </aside>
@@ -87,6 +89,27 @@
           </div>
         </section>
 
+        <section id="developer-view-agents" class="admin-view" hidden>
+          <div class="admin-panel">
+            <h2>Agents</h2>
+            <p>Create the agent identity your code will send with each escalation. The slug is the value to use as <code>agent.id</code>.</p>
+            <form id="developer-agent-form" class="admin-form-grid">
+              <input name="name" type="text" required placeholder="Agent name, e.g. Refund Agent" />
+              <input name="slug" type="text" placeholder="Agent slug, e.g. refund-agent" />
+              <select name="environment">
+                <option value="development">Development</option>
+                <option value="staging">Staging</option>
+                <option value="production">Production</option>
+              </select>
+              <input name="defaultReviewerEmails" type="text" placeholder="Reviewer emails, comma separated" />
+              <textarea name="description" placeholder="What risky actions should this agent escalate?"></textarea>
+              <button type="submit">Create agent</button>
+              <p class="mini-status" role="status"></p>
+            </form>
+            <div id="developer-agent-list" class="api-key-list"></div>
+          </div>
+        </section>
+
         <section id="developer-view-workspace" class="admin-view" hidden>
           <div class="admin-panel">
             <h2>Workspace</h2>
@@ -110,6 +133,39 @@
             </form>
             <div id="developer-new-api-key" class="new-api-key" hidden></div>
             <div id="developer-api-key-list" class="api-key-list"></div>
+          </div>
+        </section>
+
+        <section id="developer-view-docs" class="admin-view" hidden>
+          <div class="admin-panel">
+            <h2>Quickstart</h2>
+            <p>Install the SDK, create an agent, create an API key, then call Forsig at risky moments.</p>
+            <div class="detail-section">
+              <h3>Install</h3>
+              <pre><code>npm install @forsig/sdk</code></pre>
+            </div>
+            <div class="detail-section">
+              <h3>Escalate a risky action</h3>
+              <pre><code>import { Forsig } from "@forsig/sdk";
+
+const forsig = new Forsig({
+  apiKey: process.env.FORSIG_API_KEY,
+  baseUrl: "https://www.forsig.com"
+});
+
+const decision = await forsig.escalate({
+  agent: { id: "refund-agent", name: "Refund Agent", environment: "production" },
+  risk: { type: "refund_over_limit", level: "high" },
+  task: {
+    title: "Approve refund for customer #123",
+    proposedAction: "Issue a $500 refund",
+    customerImpact: true
+  },
+  context: { refundAmount: 500, customerTier: "VIP" },
+  waitForDecision: true
+});</code></pre>
+            </div>
+            <p class="admin-meta">Private beta note: send only the minimum context needed for review. Avoid secrets, credentials, unnecessary PII, and regulated data.</p>
           </div>
         </section>
       </section>
