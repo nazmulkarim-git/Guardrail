@@ -221,36 +221,42 @@ function renderDetail() {
 
   const canDecide = item.status === "pending";
   detail.innerHTML = `
-    <div class="detail-head">
-      <span>${escapeHtml(item.status)}</span>
-      <h2>${escapeHtml(item.task?.title)}</h2>
-      <p>${escapeHtml(item.agent?.name || item.agent?.id)} · ${escapeHtml(item.risk?.type)} · ${formatDate(item.createdAt)}</p>
-      <p>${item.reviewer?.assignedEmail ? `Assigned to ${escapeHtml(item.reviewer.assignedEmail)} · ` : ""}${item.expiresAt ? `Expires ${formatDate(item.expiresAt)} · ` : ""}${item.testMode ? `Mode: ${escapeHtml(item.testMode)}` : "Mode: manual"}</p>
-    </div>
+    <div class="product-review-page">
+      <div class="product-review-header">
+        <div class="zip-risk-icon">!</div>
+        <div>
+          <h2>${escapeHtml(item.task?.title)}</h2>
+          <p>${escapeHtml(item.task?.description || "The agent is waiting for human judgment before it continues.")}</p>
+        </div>
+        <span>${escapeHtml(item.status)}</span>
+      </div>
 
-    <section class="detail-snapshot">
-      <article>
-        <span>Agent wants to</span>
-        <strong>${escapeHtml(item.task?.proposedAction)}</strong>
-      </article>
-      <article>
-        <span>Risk</span>
-        <strong>${escapeHtml(item.risk?.level || "review")} / ${escapeHtml(item.risk?.type || "unknown")}</strong>
-      </article>
-      <article>
-        <span>Reason</span>
-        <strong>${escapeHtml(item.risk?.reason || "Human review requested.")}</strong>
-      </article>
-    </section>
+      <section class="product-review-grid">
+        <article class="product-review-card">
+          <span>Agent</span>
+          <strong>${escapeHtml(item.agent?.name || item.agent?.id || "Agent")}</strong>
+          <p>${escapeHtml(item.workflow || "approval workflow")}${item.runId ? ` / ${escapeHtml(item.runId)}` : ""}</p>
+        </article>
+        <article class="product-review-card risk">
+          <span>Risk</span>
+          <strong>${escapeHtml(item.risk?.level || "review")}</strong>
+          <p>${escapeHtml(item.risk?.reason || item.risk?.type || "Human review requested.")}</p>
+        </article>
+      </section>
 
-    <section class="detail-section">
-      <h3>Context</h3>
-      <pre><code>${escapeHtml(prettyJson(item.context))}</code></pre>
-    </section>
+      <section class="detail-section product-action-box">
+        <h3>Proposed action</h3>
+        <pre><code>${escapeHtml(JSON.stringify({ action: item.task?.proposedAction, customerImpact: item.task?.customerImpact, risk: item.risk?.type }, null, 2))}</code></pre>
+      </section>
 
-    <section class="detail-section">
-      <h3>Decision</h3>
-      <p class="section-helper">Choose what Forsig should return to your agent. In production, your workflow reads this decision and continues, stops, or asks for more context.</p>
+      <section class="detail-section product-context-box">
+        <h3>Context</h3>
+        <pre><code>${escapeHtml(prettyJson(item.context))}</code></pre>
+      </section>
+
+      <section class="detail-section product-decision-box">
+      <h3>Decision returned to agent</h3>
+      <p class="section-helper">${item.reviewer?.assignedEmail ? `Assigned to ${escapeHtml(item.reviewer.assignedEmail)}. ` : ""}${item.expiresAt ? `Expires ${formatDate(item.expiresAt)}. ` : ""}${item.testMode ? `Mode: ${escapeHtml(item.testMode)}.` : "Mode: manual."}</p>
       ${canDecide ? `
         <div class="decision-actions">
           ${decisionButton("approved", "Approve")}
@@ -270,22 +276,26 @@ function renderDetail() {
           <p class="mini-status" role="status"></p>
         </form>
       ` : `
-        <p>${escapeHtml(item.decision?.instruction || "Decision recorded.")}</p>
+        <div class="product-result-box">
+          <strong>${escapeHtml(item.decision?.status || item.status)}</strong>
+          <p>${escapeHtml(item.decision?.instruction || "Decision recorded.")}</p>
+        </div>
       `}
-    </section>
+      </section>
 
-    <section class="detail-section">
-      <h3>Audit trail</h3>
-      <div class="audit-list">
-        ${(state.detail.auditEvents || []).map((event) => `
-          <article>
-            <strong>${escapeHtml(event.event_type)}</strong>
-            <span>${formatDate(event.created_at)} · ${escapeHtml(event.actor_type)}</span>
-            <small>${escapeHtml(JSON.stringify(event.metadata_json || {}))}</small>
-          </article>
-        `).join("") || "<p class='empty-state'>No audit events yet.</p>"}
-      </div>
-    </section>
+      <section class="detail-section product-audit-box">
+        <h3>Audit trail</h3>
+        <div class="audit-list">
+          ${(state.detail.auditEvents || []).map((event) => `
+            <article>
+              <strong>${escapeHtml(event.event_type)}</strong>
+              <span>${formatDate(event.created_at)} · ${escapeHtml(event.actor_type)}</span>
+              <small>${escapeHtml(JSON.stringify(event.metadata_json || {}))}</small>
+            </article>
+          `).join("") || "<p class='empty-state'>No audit events yet.</p>"}
+        </div>
+      </section>
+    </div>
   `;
 }
 

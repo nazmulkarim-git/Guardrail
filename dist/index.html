@@ -60,13 +60,24 @@
             </div>
             <div class="stack-strip" aria-label="Built for your existing agent stack">
               <span>Built for your existing agent stack</span>
-              <b>LangGraph</b>
-              <b>CrewAI</b>
-              <b>Vercel AI SDK</b>
-              <b>OpenAI Agents</b>
-              <b>n8n</b>
-              <b>Zapier</b>
-              <b>Custom agents</b>
+              <div class="stack-marquee">
+                <div class="stack-marquee-track">
+                  <b><i>LG</i>LangGraph</b>
+                  <b><i>CA</i>CrewAI</b>
+                  <b><i>V</i>Vercel AI SDK</b>
+                  <b><i>OA</i>OpenAI Agents</b>
+                  <b><i>n8n</i>n8n</b>
+                  <b><i>Z</i>Zapier</b>
+                  <b><i>{}</i>Custom agents</b>
+                  <b><i>LG</i>LangGraph</b>
+                  <b><i>CA</i>CrewAI</b>
+                  <b><i>V</i>Vercel AI SDK</b>
+                  <b><i>OA</i>OpenAI Agents</b>
+                  <b><i>n8n</i>n8n</b>
+                  <b><i>Z</i>Zapier</b>
+                  <b><i>{}</i>Custom agents</b>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -118,13 +129,25 @@
             <h2>Built for agents that can affect the real world</h2>
             <p>Use Forsig when a hallucination, bad tool call, or missing context can create real damage.</p>
           </div>
-          <div class="usecase-pills">
-            <span>External emails</span>
-            <span>Refunds and credits</span>
-            <span>Production data changes</span>
-            <span>Deployments</span>
-            <span>Spending money</span>
-            <span>External tool calls</span>
+          <div class="usecase-pills moving-pill-row">
+            <div class="moving-pill-track">
+              <span>External emails</span>
+              <span>Refunds and credits</span>
+              <span>Production data changes</span>
+              <span>Deployments</span>
+              <span>Spending money</span>
+              <span>External tool calls</span>
+              <span>Billing changes</span>
+              <span>Customer record updates</span>
+              <span>External emails</span>
+              <span>Refunds and credits</span>
+              <span>Production data changes</span>
+              <span>Deployments</span>
+              <span>Spending money</span>
+              <span>External tool calls</span>
+              <span>Billing changes</span>
+              <span>Customer record updates</span>
+            </div>
           </div>
         </div>
       </section>
@@ -181,11 +204,13 @@
             <span class="zip-section-label">Why Forsig</span>
             <h2>Why not just use Slack or a custom approval queue?</h2>
           </div>
-          <div class="zip-feature-grid">
+          <div class="zip-feature-grid why-forsig-grid">
             <article><h3>Signed review links</h3><p>Each approval request can be scoped, time-limited, and tied to the exact escalation.</p></article>
             <article><h3>Structured decisions</h3><p>Your agent receives a machine-readable approve, reject, edit, context, or takeover response.</p></article>
             <article><h3>Fail-closed defaults</h3><p>If nobody responds before timeout, risky actions should stop by default.</p></article>
             <article><h3>Audit trails</h3><p>Track what the agent proposed, who decided, what changed, and when the agent resumed.</p></article>
+            <article><h3>Agent-native handoff</h3><p>Forsig returns a clean instruction your workflow can branch on without parsing chat messages.</p></article>
+            <article><h3>Reviewer context</h3><p>Humans see the action, risk, context, and options in one place before deciding.</p></article>
           </div>
         </div>
       </section>
@@ -215,13 +240,21 @@
             <h2>Designed to fail closed</h2>
             <p>Forsig is built around explicit human decisions and minimal context sharing. No compliance certifications are claimed yet.</p>
           </div>
-          <div class="security-list">
-            <span>Time-limited approval links</span>
-            <span>Timestamped decisions</span>
-            <span>Explicit approval required</span>
-            <span>Timeout defaults stop risky actions</span>
-            <span>Share only needed context</span>
-            <span>Audit trail for each escalation</span>
+          <div class="security-list security-motion">
+            <div class="security-motion-track">
+              <span><b>Fail closed</b><small>Timeouts stop risky actions by default.</small></span>
+              <span><b>Minimal context</b><small>Send only what a reviewer needs.</small></span>
+              <span><b>Signed webhooks</b><small>Verify returned decisions before trusting them.</small></span>
+              <span><b>Scoped API keys</b><small>Issue separate keys per beta workflow.</small></span>
+              <span><b>Audit trail</b><small>Record proposal, decision, reviewer, and time.</small></span>
+              <span><b>Explicit approval</b><small>No silent continuation for sensitive actions.</small></span>
+              <span><b>Fail closed</b><small>Timeouts stop risky actions by default.</small></span>
+              <span><b>Minimal context</b><small>Send only what a reviewer needs.</small></span>
+              <span><b>Signed webhooks</b><small>Verify returned decisions before trusting them.</small></span>
+              <span><b>Scoped API keys</b><small>Issue separate keys per beta workflow.</small></span>
+              <span><b>Audit trail</b><small>Record proposal, decision, reviewer, and time.</small></span>
+              <span><b>Explicit approval</b><small>No silent continuation for sensitive actions.</small></span>
+            </div>
           </div>
         </div>
       </section>
