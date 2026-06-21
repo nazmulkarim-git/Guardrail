@@ -6102,6 +6102,69 @@ th {
   }
 }
 
+/* Absolute final hero alignment override */
+.launch-hero-copy {
+  justify-items: start !important;
+}
+
+.launch-hero-copy .zip-hero-actions {
+  width: min(100%, 640px) !important;
+  justify-content: flex-start !important;
+  margin-top: 34px !important;
+}
+
+.launch-hero-copy .zip-hero-actions .zip-button {
+  width: 220px;
+  min-width: 220px !important;
+  justify-content: center !important;
+}
+
+.launch-hero-copy .stack-strip {
+  display: grid !important;
+  width: min(100%, 640px) !important;
+  max-width: 640px !important;
+  margin-top: 26px !important;
+  gap: 12px !important;
+  overflow: hidden !important;
+}
+
+.launch-hero-copy .stack-strip > span {
+  justify-self: start !important;
+}
+
+.launch-hero-copy .stack-marquee {
+  mask-image: none !important;
+}
+
+.launch-hero-copy .stack-marquee-track {
+  gap: 12px !important;
+  animation-duration: 58s !important;
+}
+
+.launch-hero-copy .stack-strip b {
+  min-height: 52px !important;
+  padding: 8px 18px 8px 10px !important;
+  font-size: 16px !important;
+}
+
+.launch-hero-copy .stack-strip b i {
+  width: 36px !important;
+  height: 36px !important;
+}
+
+.launch-hero-copy .stack-strip svg {
+  width: 23px !important;
+  height: 23px !important;
+}
+
+@media (max-width: 760px) {
+  .launch-hero-copy .zip-hero-actions,
+  .launch-hero-copy .zip-hero-actions .zip-button,
+  .launch-hero-copy .stack-strip {
+    width: 100% !important;
+  }
+}
+
 /* Final hero stack alignment fix */
 .launch-hero-copy .zip-hero-actions {
   width: min(100%, 640px);
