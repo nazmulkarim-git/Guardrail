@@ -10,7 +10,6 @@ export default async function handler(req, res) {
 
   try {
     const db = getSql();
-    const workspaceId = process.env.FORSIG_DEFAULT_WORKSPACE_ID || "workspace_beta";
     const id = req.query?.id;
 
     const rows = await db`
@@ -32,7 +31,6 @@ export default async function handler(req, res) {
         limit 1
       ) d on true
       where e.id = ${id}
-        and e.workspace_id = ${workspaceId}
       limit 1
     `;
 
@@ -40,6 +38,7 @@ export default async function handler(req, res) {
       apiError(res, 404, "escalation_not_found", "Escalation not found.");
       return;
     }
+    const workspaceId = rows[0].workspace_id;
 
     const [events, decisions] = await Promise.all([
       db`
@@ -71,4 +70,3 @@ export default async function handler(req, res) {
     apiError(res, publicError.status, publicError.code, publicError.message);
   }
 }
-

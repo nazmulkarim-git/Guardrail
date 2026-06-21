@@ -1,7 +1,8 @@
 import postgres from "postgres";
-import { createHash, createHmac, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, pbkdf2Sync, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 
 let sql;
+const rateLimitBuckets = new Map();
 
 export const DECISION_STATUSES = new Set([
   "approved",
@@ -89,8 +90,47 @@ export function parseCookies(req) {
   );
 }
 
+export function requestIp(req) {
+  const forwarded = req.headers["x-forwarded-for"];
+  if (typeof forwarded === "string") return forwarded.split(",")[0]?.trim() || "unknown";
+  return req.socket?.remoteAddress || "unknown";
+}
+
+export function checkRateLimit(req, res, key, { limit = 20, windowMs = 60_000 } = {}) {
+  const now = Date.now();
+  const bucketKey = `${key}:${requestIp(req)}`;
+  const bucket = rateLimitBuckets.get(bucketKey) || { count: 0, resetAt: now + windowMs };
+  if (bucket.resetAt <= now) {
+    bucket.count = 0;
+    bucket.resetAt = now + windowMs;
+  }
+  bucket.count += 1;
+  rateLimitBuckets.set(bucketKey, bucket);
+  res.setHeader("x-ratelimit-limit", String(limit));
+  res.setHeader("x-ratelimit-remaining", String(Math.max(0, limit - bucket.count)));
+  if (bucket.count <= limit) return true;
+  apiError(res, 429, "rate_limited", "Too many requests. Try again shortly.");
+  return false;
+}
+
+export function isSameOrigin(req) {
+  const origin = req.headers.origin;
+  if (!origin || typeof origin !== "string") return true;
+  const host = req.headers["x-forwarded-host"] || req.headers.host;
+  if (!host) return false;
+  try {
+    return new URL(origin).host === host;
+  } catch {
+    return false;
+  }
+}
+
 export function signValue(value) {
-  const secret = process.env.FORSIG_ADMIN_SESSION_SECRET || process.env.REFERRAL_INVITE_SECRET || process.env.FORSIG_API_KEY || "forsig-dev-session-secret";
+  const configuredSecret = process.env.FORSIG_ADMIN_SESSION_SECRET || process.env.REFERRAL_INVITE_SECRET || process.env.FORSIG_API_KEY;
+  if (!configuredSecret && process.env.NODE_ENV === "production") {
+    throw new Error("FORSIG_ADMIN_SESSION_SECRET is required in production.");
+  }
+  const secret = configuredSecret || "forsig-dev-session-secret";
   return createHmac("sha256", secret).update(value).digest("hex");
 }
 
@@ -139,6 +179,10 @@ export function isAdminAuthenticated(req) {
 }
 
 export function requireAdmin(req, res) {
+  if (!["GET", "HEAD", "OPTIONS"].includes(req.method) && !isSameOrigin(req)) {
+    apiError(res, 403, "same_origin_required", "Admin actions must come from the Forsig app.");
+    return false;
+  }
   if (isAdminAuthenticated(req)) return true;
   apiError(res, 401, "admin_auth_required", "Admin login is required.");
   return false;
@@ -162,6 +206,10 @@ export function getDeveloperSession(req) {
 }
 
 export function requireDeveloper(req, res) {
+  if (!["GET", "HEAD", "OPTIONS"].includes(req.method) && !isSameOrigin(req)) {
+    apiError(res, 403, "same_origin_required", "Developer actions must come from the Forsig app.");
+    return null;
+  }
   const session = getDeveloperSession(req);
   if (session) return session;
   apiError(res, 401, "developer_auth_required", "Developer login is required.");
@@ -172,8 +220,27 @@ export function hashApiKey(key) {
   return createHash("sha256").update(key).digest("hex");
 }
 
+export function hashPassword(password, salt = randomBytes(16).toString("hex")) {
+  const hash = pbkdf2Sync(String(password), salt, 120000, 32, "sha256").toString("hex");
+  return `pbkdf2_sha256$120000$${salt}$${hash}`;
+}
+
+export function verifyPassword(password, storedHash) {
+  if (!password || !storedHash || typeof storedHash !== "string") return false;
+  const [algorithm, iterations, salt, hash] = storedHash.split("$");
+  if (algorithm !== "pbkdf2_sha256" || !iterations || !salt || !hash) return false;
+  const expected = pbkdf2Sync(String(password), salt, Number(iterations), 32, "sha256").toString("hex");
+  const a = Buffer.from(expected);
+  const b = Buffer.from(hash);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
 export function generateApiKey(prefix = "fsk_beta") {
   return `${prefix}_${randomBytes(24).toString("base64url")}`;
+}
+
+export function generateTemporaryPassword() {
+  return `Forsig-${randomBytes(5).toString("base64url")}`;
 }
 
 export async function authenticateRequest(req, db = getSql()) {

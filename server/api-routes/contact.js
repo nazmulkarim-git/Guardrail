@@ -1,5 +1,6 @@
 import postgres from "postgres";
 import { randomUUID } from "node:crypto";
+import { checkRateLimit } from "./_forsig-core.js";
 
 let sql;
 
@@ -78,6 +79,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    if (!checkRateLimit(req, res, "contact", { limit: 6, windowMs: 60_000 })) return;
     const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
     const name = normalizeString(body.name);
     const email = normalizeString(body.email)?.toLowerCase();

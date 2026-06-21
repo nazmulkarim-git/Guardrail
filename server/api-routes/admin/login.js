@@ -1,7 +1,8 @@
-import { createAdminSessionCookie, json, readBody, requireMethod } from "../_forsig-core.js";
+import { checkRateLimit, createAdminSessionCookie, json, readBody, requireMethod } from "../_forsig-core.js";
 
 export default async function handler(req, res) {
   if (!requireMethod(req, res, "POST")) return;
+  if (!checkRateLimit(req, res, "admin_login", { limit: 8, windowMs: 10 * 60_000 })) return;
   const body = readBody(req);
   const password = typeof body.password === "string" ? body.password : "";
   const expected = process.env.FORSIG_ADMIN_PASSWORD;
@@ -19,4 +20,3 @@ export default async function handler(req, res) {
   res.setHeader("Set-Cookie", createAdminSessionCookie());
   json(res, 200, { ok: true, user: { role: "admin" } });
 }
-

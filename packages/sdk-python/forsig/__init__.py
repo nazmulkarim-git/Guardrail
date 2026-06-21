@@ -55,14 +55,14 @@ def parse_forsig_error(error: Any) -> Dict[str, Any]:
     }
 
 
-def create_forsig_openai_client(api_key: str, base_url: str = "https://api.forsig.com/v1", openai_client_cls: Any = None) -> Any:
+def create_forsig_openai_client(api_key: str, base_url: str = "https://www.forsig.com/api/v1", openai_client_cls: Any = None) -> Any:
     if openai_client_cls is None:
         return {"api_key": api_key, "base_url": base_url}
     return openai_client_cls(api_key=api_key, base_url=base_url)
 
 
 class Forsig:
-    def __init__(self, api_key: str, base_url: str = "https://api.forsig.com", http_client: Optional[Callable[..., Dict[str, Any]]] = None):
+    def __init__(self, api_key: str, base_url: str = "https://www.forsig.com", http_client: Optional[Callable[..., Dict[str, Any]]] = None):
         self.api_key = api_key
         self.base_url = base_url.rstrip("/")
         self.http_client = http_client

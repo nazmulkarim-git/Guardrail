@@ -1,6 +1,7 @@
 import {
   apiError,
   authenticateRequest,
+  checkRateLimit,
   compactEscalation,
   getSql,
   json,
@@ -117,6 +118,7 @@ export default async function handler(req, res) {
   if (!requireMethod(req, res, "POST")) return;
 
   try {
+    if (!checkRateLimit(req, res, "create_escalation", { limit: 120, windowMs: 60_000 })) return;
     const db = getSql();
     const auth = await authenticateRequest(req, db);
     if (!auth.ok) {

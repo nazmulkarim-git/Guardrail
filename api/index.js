@@ -24,6 +24,8 @@ const routes = [
   { method: "GET", pattern: /^admin\/me$/, file: "admin/me.js" },
   { method: "GET", pattern: /^admin\/workspace$/, file: "admin/workspace.js" },
   { method: "POST", pattern: /^admin\/workspace$/, file: "admin/workspace.js" },
+  { method: "GET", pattern: /^admin\/waitlist$/, file: "admin/waitlist.js" },
+  { method: "POST", pattern: /^admin\/waitlist$/, file: "admin/waitlist.js" },
   { method: "GET", pattern: /^admin\/api-key$/, file: "admin/api-key.js" },
   { method: "POST", pattern: /^admin\/api-key$/, file: "admin/api-key.js" },
   { method: "GET", pattern: /^admin\/developers$/, file: "admin/developers.js" },
@@ -33,6 +35,8 @@ const routes = [
   { method: "POST", pattern: /^admin\/escalations\/([^/]+)\/decision$/, file: "admin/escalations/[id]/decision.js", params: ["id"] },
 
   { method: "POST", pattern: /^developer\/login$/, file: "developer/login.js" },
+  { method: "POST", pattern: /^developer\/forgot-password$/, file: "developer/forgot-password.js" },
+  { method: "POST", pattern: /^developer\/password$/, file: "developer/password.js" },
   { method: "POST", pattern: /^developer\/logout$/, file: "developer/logout.js" },
   { method: "GET", pattern: /^developer\/me$/, file: "developer/me.js" },
   { method: "GET", pattern: /^developer\/workspace$/, file: "developer/workspace.js" },

@@ -7216,6 +7216,53 @@ th {
   background: rgba(4, 7, 10, 0.72);
 }
 
+#developer-reset-password-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+#developer-reset-password-form input {
+  min-height: 48px;
+  border: 1px solid var(--console-soft-line);
+  border-radius: 12px;
+  padding: 0 14px;
+  color: var(--console-text);
+  background: rgba(255, 255, 255, 0.045);
+}
+
+#developer-reset-password-form button {
+  min-height: 42px;
+  border: 0;
+  border-radius: 12px;
+  color: #041511;
+  background: linear-gradient(135deg, var(--zip-primary), #8effde);
+  font-weight: 800;
+}
+
+#developer-forgot-password {
+  color: var(--console-muted) !important;
+  background: transparent !important;
+  border: 1px solid var(--console-soft-line) !important;
+  box-shadow: none !important;
+}
+
+.mini-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.mini-list span {
+  border: 1px solid var(--console-soft-line);
+  border-radius: 999px;
+  padding: 5px 8px;
+  color: var(--console-text);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 11px;
+}
+
 .empty-state {
   display: grid;
   place-items: center;

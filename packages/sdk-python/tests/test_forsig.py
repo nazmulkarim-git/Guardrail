@@ -47,7 +47,7 @@ class ForsigSdkTests(unittest.TestCase):
     def test_openai_client_config_without_dependency(self):
         client = create_forsig_openai_client("fsk_test_123")
         self.assertEqual(client["api_key"], "fsk_test_123")
-        self.assertEqual(client["base_url"], "https://api.forsig.com/v1")
+        self.assertEqual(client["base_url"], "https://www.forsig.com/api/v1")
 
     def test_client_creates_escalation_with_bearer_auth(self):
         calls = []

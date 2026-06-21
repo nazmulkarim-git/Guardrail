@@ -76,6 +76,7 @@ function setView(view) {
   if (view === "keys") loadKeys();
   if (view === "onboarding") loadWorkspace();
   if (view === "developers") loadDevelopers();
+  if (view === "waitlist") loadWaitlist();
 }
 
 async function checkSession() {
@@ -128,9 +129,31 @@ async function loadDevelopers() {
       <article>
         <strong>${escapeHtml(developer.name || developer.email)}</strong>
         <span>${escapeHtml(developer.email)} · ${escapeHtml(developer.workspace_name || developer.workspace_id)}</span>
-        <small>${developer.escalation_count || 0} escalations · ${developer.active_key_count || 0} active keys · ${developer.last_login_at ? `last login ${formatDate(developer.last_login_at)}` : "not logged in yet"}</small>
+        <small>${developer.escalation_count || 0} escalations · ${developer.agent_count || 0} agents · ${developer.active_key_count || 0} active keys · ${developer.last_login_at ? `last login ${formatDate(developer.last_login_at)}` : "not logged in yet"}</small>
+        <small>${developer.password_set_at ? "Password set" : "Awaiting first login"}${developer.must_reset_password ? " · temporary password active" : ""}</small>
+        ${(developer.agents || []).length ? `<div class="mini-list">${developer.agents.map((agent) => `<span>${escapeHtml(agent.name)} / ${escapeHtml(agent.environment)} / ${agent.escalationCount || 0} escalations</span>`).join("")}</div>` : ""}
       </article>
     `).join("") : "<p class='empty-state'>No developers have beta access yet.</p>";
+  } catch (error) {
+    list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
+  }
+}
+
+async function loadWaitlist() {
+  const list = $("#waitlist-lead-list");
+  list.innerHTML = "<p class='empty-state'>Loading waitlist...</p>";
+  try {
+    const data = await api("/api/admin/waitlist");
+    list.innerHTML = data.leads.length ? data.leads.map((lead) => `
+      <article>
+        <strong>${escapeHtml(lead.name || lead.email)}</strong>
+        <span>${escapeHtml(lead.email)}${lead.company ? ` · ${escapeHtml(lead.company)}` : ""}${lead.role ? ` · ${escapeHtml(lead.role)}` : ""}</span>
+        <small>${escapeHtml(lead.use_case || "No use case yet.")}</small>
+        <small>${escapeHtml(lead.framework_interest || "Framework unknown")} · ${escapeHtml(lead.external_actions || "Actions unknown")} · ${escapeHtml(lead.founder_call_interest || "Call interest unknown")}</small>
+        <small>Source: ${escapeHtml(lead.source_section || lead.source || "unknown")} · ${formatDate(lead.created_at)}</small>
+        ${lead.has_beta_access ? "<em>Beta access granted</em>" : `<button type="button" data-invite-lead="${escapeHtml(lead.id)}">Send beta access</button>`}
+      </article>
+    `).join("") : "<p class='empty-state'>No waitlist leads yet.</p>";
   } catch (error) {
     list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
   }
@@ -415,7 +438,7 @@ $("#developer-form").addEventListener("submit", async (event) => {
     const box = $("#new-developer-access");
     box.hidden = false;
     box.innerHTML = `
-      <span>Share this with the developer. The access code is only shown once.</span>
+      <span>${data.inviteEmail?.sent ? "Invite email sent. The access code is also shown once below." : "Invite email was not sent. Share this access manually."}</span>
       <code>${escapeHtml(inviteText)}</code>
       <button type="button" data-copy-key="${escapeHtml(inviteText)}">Copy</button>
     `;
@@ -428,6 +451,40 @@ $("#developer-form").addEventListener("submit", async (event) => {
 });
 
 document.addEventListener("click", async (event) => {
+  const inviteLead = event.target.closest("[data-invite-lead]");
+  if (inviteLead) {
+    inviteLead.disabled = true;
+    inviteLead.textContent = "Sending...";
+    try {
+      const data = await api("/api/admin/waitlist", {
+        method: "POST",
+        body: JSON.stringify({ leadId: inviteLead.dataset.inviteLead })
+      });
+      const loginUrl = `${location.origin}${data.developer.loginUrl}`;
+      const inviteText = [
+        `Forsig developer portal: ${loginUrl}`,
+        `Email: ${data.developer.email}`,
+        `Access code: ${data.developer.accessCode}`
+      ].join("\n");
+      const box = $("#waitlist-new-developer-access") || $("#new-developer-access");
+      if (box) {
+        box.hidden = false;
+        box.innerHTML = `
+          <span>${data.developer.inviteEmail?.sent ? "Invite email sent. The access code is also shown once below." : "Invite email was not sent. Share this access manually."}</span>
+          <code>${escapeHtml(inviteText)}</code>
+          <button type="button" data-copy-key="${escapeHtml(inviteText)}">Copy</button>
+        `;
+      }
+      toast("Beta access created");
+      await Promise.all([loadWaitlist(), loadDevelopers()]);
+    } catch (error) {
+      toast(error.message);
+      inviteLead.disabled = false;
+      inviteLead.textContent = "Send beta access";
+    }
+    return;
+  }
+
   const copy = event.target.closest("[data-copy-key]");
   if (!copy) return;
   await navigator.clipboard.writeText(copy.dataset.copyKey);

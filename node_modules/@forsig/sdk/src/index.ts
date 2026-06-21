@@ -120,7 +120,7 @@ export function createForsigOpenAIClient(options: {
   baseURL?: string;
   OpenAI?: new (config: { apiKey: string; baseURL: string }) => unknown;
 }) {
-  const baseURL = options.baseURL ?? "https://api.forsig.com/v1";
+  const baseURL = options.baseURL ?? "https://www.forsig.com/api/v1";
   if (!options.OpenAI) {
     return { apiKey: options.apiKey, baseURL };
   }
@@ -134,7 +134,7 @@ export class Forsig {
 
   constructor(options: ForsigClientOptions) {
     this.apiKey = options.apiKey;
-    this.baseURL = (options.baseURL ?? options.baseUrl ?? "https://api.forsig.com").replace(/\/$/, "");
+    this.baseURL = (options.baseURL ?? options.baseUrl ?? "https://www.forsig.com").replace(/\/$/, "");
     this.fetchImpl = options.fetch ?? globalThis.fetch;
     if (!this.fetchImpl) throw new Error("Forsig requires fetch. Pass fetch in the constructor for this runtime.");
   }

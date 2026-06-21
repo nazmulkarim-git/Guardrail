@@ -10,7 +10,6 @@ export default async function handler(req, res) {
 
   try {
     const db = getSql();
-    const workspaceId = process.env.FORSIG_DEFAULT_WORKSPACE_ID || "workspace_beta";
     const status = req.query?.status || "pending";
     const statusFilter = status === "all" ? null : status;
 
@@ -33,7 +32,7 @@ export default async function handler(req, res) {
         limit 1
       ) d on true
       where e.workspace_id = ${workspaceId}
-        and (${statusFilter}::text is null or e.status = ${statusFilter})
+      where (${statusFilter}::text is null or e.status = ${statusFilter})
       order by e.created_at desc
       limit 100
     `;
@@ -46,7 +45,6 @@ export default async function handler(req, res) {
         count(*) filter (where status = 'edited')::int as edited,
         count(*)::int as total
       from escalations
-      where workspace_id = ${workspaceId}
     `;
 
     json(res, 200, {
@@ -60,4 +58,3 @@ export default async function handler(req, res) {
     apiError(res, publicError.status, publicError.code, publicError.message);
   }
 }
-

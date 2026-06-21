@@ -3,7 +3,8 @@ const state = {
   status: "pending",
   escalations: [],
   detail: null,
-  developer: null
+  developer: null,
+  setupRequired: false
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -59,6 +60,7 @@ function showLogin() {
   $("#developer-sidebar").hidden = true;
   $("#developer-login").hidden = false;
   $("#developer-app").hidden = true;
+  $("#developer-reset-password-form").hidden = true;
 }
 
 function showApp() {
@@ -83,6 +85,12 @@ async function checkSession() {
   const session = await api("/api/developer/me");
   if (session.authenticated) {
     state.developer = session.developer;
+    if (session.developer.mustResetPassword) {
+      showLogin();
+      $("#developer-login-form").hidden = true;
+      $("#developer-reset-password-form").hidden = false;
+      return;
+    }
     showApp();
     $("#developer-workspace-label").textContent = `${session.developer.workspaceName || "Workspace"} · ${session.developer.email}`;
     await Promise.all([loadWorkspace(), loadEscalations()]);
@@ -305,15 +313,91 @@ $("#developer-login-form").addEventListener("submit", async (event) => {
   const status = form.querySelector(".mini-status");
   status.textContent = "Checking...";
   try {
+    const payload = {
+      email: form.elements.email.value,
+      accessCode: form.elements.accessCode.value,
+      password: form.elements.password.value,
+      confirmPassword: form.elements.confirmPassword.value
+    };
+    if (state.setupRequired && !payload.password) {
+      status.textContent = "Create a password to finish setup.";
+      form.elements.confirmPassword.hidden = false;
+      form.elements.password.focus();
+      return;
+    }
     const data = await api("/api/developer/login", {
       method: "POST",
-      body: JSON.stringify({
-        email: form.elements.email.value,
-        accessCode: form.elements.accessCode.value
-      })
+      body: JSON.stringify(payload)
     });
+    if (data.setupRequired) {
+      state.setupRequired = true;
+      status.textContent = data.message || "Create a password to finish opening your beta workspace.";
+      $("#developer-login-copy").textContent = "Create your password. Next time you will log in with email and password.";
+      form.elements.confirmPassword.hidden = false;
+      form.elements.accessCode.required = true;
+      form.elements.password.required = true;
+      form.elements.confirmPassword.required = true;
+      form.elements.password.placeholder = "Create password";
+      form.elements.password.autocomplete = "new-password";
+      form.elements.password.focus();
+      return;
+    }
     state.developer = data.developer;
     status.textContent = "";
+    state.setupRequired = false;
+    if (data.mustResetPassword || data.developer?.mustResetPassword) {
+      $("#developer-login-form").hidden = true;
+      $("#developer-reset-password-form").hidden = false;
+      return;
+    }
+    $("#developer-login-form").hidden = false;
+    $("#developer-reset-password-form").hidden = true;
+    showApp();
+    await Promise.all([loadWorkspace(), loadEscalations()]);
+  } catch (error) {
+    status.textContent = error.message;
+  }
+});
+
+$("#developer-forgot-password").addEventListener("click", async () => {
+  const form = $("#developer-login-form");
+  const status = form.querySelector(".mini-status");
+  const email = form.elements.email.value.trim();
+  if (!email) {
+    status.textContent = "Enter your beta access email first.";
+    return;
+  }
+  status.textContent = "Sending temporary password...";
+  try {
+    const result = await api("/api/developer/forgot-password", {
+      method: "POST",
+      body: JSON.stringify({ email })
+    });
+    status.textContent = result.sent
+      ? "Temporary password sent. Log in with it, then create a new password."
+      : "If this email has beta password access, a temporary password will be sent.";
+  } catch (error) {
+    status.textContent = error.message;
+  }
+});
+
+$("#developer-reset-password-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const status = form.querySelector(".mini-status");
+  status.textContent = "Saving password...";
+  try {
+    await api("/api/developer/password", {
+      method: "POST",
+      body: JSON.stringify({
+        password: form.elements.password.value,
+        confirmPassword: form.elements.confirmPassword.value
+      })
+    });
+    status.textContent = "";
+    toast("Password updated");
+    $("#developer-login-form").hidden = false;
+    $("#developer-reset-password-form").hidden = true;
     showApp();
     await Promise.all([loadWorkspace(), loadEscalations()]);
   } catch (error) {

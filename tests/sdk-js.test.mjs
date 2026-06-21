@@ -50,7 +50,7 @@ test("parseForsigError identifies Forsig approval errors", () => {
 test("createForsigOpenAIClient returns config without optional OpenAI class", () => {
   assert.deepEqual(createForsigOpenAIClient({ apiKey: "fsk_test_123" }), {
     apiKey: "fsk_test_123",
-    baseURL: "https://api.forsig.com/v1"
+    baseURL: "https://www.forsig.com/api/v1"
   });
 });
 

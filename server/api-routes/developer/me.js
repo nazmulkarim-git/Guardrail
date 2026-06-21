@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   try {
     const db = getSql();
     const rows = await db`
-      select d.id, d.email, d.name, d.company, d.workspace_id, w.name as workspace_name
+      select d.id, d.email, d.name, d.company, d.workspace_id, d.must_reset_password, w.name as workspace_name
       from developer_users d
       join workspaces w on w.id = d.workspace_id
       where d.id = ${session.id}
@@ -31,7 +31,8 @@ export default async function handler(req, res) {
         name: rows[0].name,
         company: rows[0].company,
         workspaceId: rows[0].workspace_id,
-        workspaceName: rows[0].workspace_name
+        workspaceName: rows[0].workspace_name,
+        mustResetPassword: Boolean(rows[0].must_reset_password)
       }
     });
   } catch (error) {

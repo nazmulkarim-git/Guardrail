@@ -41,7 +41,7 @@
           <a href="#security">Security</a>
           <a href="#contact">Contact</a>
         </div>
-        <a class="zip-button zip-button-primary" data-track="nav_get_sdk_access_clicked" href="#waitlist">Get SDK Access</a>
+        <a class="zip-button zip-button-primary" data-track="nav_get_sdk_access_clicked" href="#waitlist">Request SDK Access</a>
       </nav>
     </header>
 
@@ -55,7 +55,7 @@
             <h1>Human approval for risky AI agent actions</h1>
             <p class="zip-hero-copy">Prevent AI hallucinations from ruining customer trust or breaking production. Drop a secure human-in-the-loop checkpoint into your agent workflows with just a few lines of code.</p>
             <div class="zip-hero-actions">
-              <a class="zip-button zip-button-primary" data-track="hero_get_sdk_access_clicked" href="#waitlist">Get SDK Access</a>
+              <a class="zip-button zip-button-primary" data-track="hero_get_sdk_access_clicked" href="#waitlist">Request SDK Access</a>
               <a class="zip-button zip-button-secondary" data-track="hero_try_live_demo_clicked" href="#demo">Try Live Demo</a>
             </div>
             <div class="stack-strip" aria-label="Built for your existing agent stack">
@@ -244,17 +244,17 @@
       <section id="waitlist" class="zip-waitlist">
         <div class="zip-grid"></div>
         <div class="zip-container waitlist-card">
-          <h2>Get SDK access</h2>
-          <p>Start with email. After that, tell me what you are building so I can prioritize the right beta users.</p>
+          <h2>Request SDK access</h2>
+          <p>Start with email. Early access is prioritized for teams already building agents that can take external actions.</p>
           <form id="waitlist-form" class="zip-waitlist-form launch-waitlist-form" data-lead-form>
             <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
             <input name="planInterest" type="hidden" value="free" />
-            <button type="submit">Get SDK Access</button>
+            <button type="submit">Request SDK Access</button>
             <p id="form-status" class="mini-status" role="status"></p>
           </form>
           <form id="waitlist-followup-form" class="waitlist-followup" hidden>
             <input name="leadId" type="hidden" />
-            <textarea name="useCase" placeholder="What agent workflow are you building?"></textarea>
+            <textarea name="useCase" placeholder="What real-world action can your agent take?"></textarea>
             <input name="frameworkInterest" type="text" placeholder="Framework: LangGraph, CrewAI, n8n, custom..." />
             <input name="externalActions" type="text" placeholder="Risky actions: email, refund, deploy, spend..." />
             <select name="founderCallInterest">

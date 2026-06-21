@@ -850,7 +850,7 @@ function initZipDemo() {
     const terminalLines = {
       approved: ["> decision.status: approved", "> Agent resuming execution...", "> Success"],
       rejected: ["> decision.status: rejected", "> Risky action stopped", "> Workflow closed safely"],
-      human_takeover: ["> decision.status: taken_over", "> Agent paused", "> Human now owns the task"],
+      taken_over: ["> decision.status: taken_over", "> Agent paused", "> Human now owns the task"],
       edited: ["> decision.status: edited", "> Applying reviewer instruction...", "> Agent continues with edited plan"],
       instruct_agent: ["> decision.status: context_added", "> Reviewer instruction attached", "> Agent resumes with new context"]
     }[type] || ["> Decision recorded", "> Agent updated"];
@@ -898,7 +898,7 @@ function initZipDemo() {
         showDecision(type, "Approved", "The proposed action was approved and returned to the agent.");
       } else if (type === "rejected") {
         showDecision(type, "Rejected", "The agent receives a rejection and stops the risky action.");
-      } else if (type === "human_takeover") {
+      } else if (type === "taken_over") {
         showDecision(type, "Human Takeover", "The agent is told to stop because a human now owns the task.");
       }
       track("landing_demo_decision_clicked", { type });

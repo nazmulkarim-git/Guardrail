@@ -25,6 +25,7 @@
         </a>
         <nav>
           <button type="button" data-admin-view="inbox" class="active">Inbox</button>
+          <button type="button" data-admin-view="waitlist">Waitlist</button>
           <button type="button" data-admin-view="developers">Developers</button>
           <button type="button" data-admin-view="onboarding">Workspace</button>
           <button type="button" data-admin-view="keys">API Keys</button>
@@ -104,10 +105,19 @@
           </div>
         </section>
 
+        <section id="admin-view-waitlist" class="admin-view" hidden>
+          <div class="admin-panel">
+            <h2>Waitlist leads</h2>
+            <p>Review qualified leads and send private beta access to the developers you want to onboard.</p>
+            <div id="waitlist-new-developer-access" class="new-api-key" hidden></div>
+            <div id="waitlist-lead-list" class="api-key-list"></div>
+          </div>
+        </section>
+
         <section id="admin-view-developers" class="admin-view" hidden>
           <div class="admin-panel">
             <h2>Developer beta access</h2>
-            <p>Give selected developers a workspace where they can create agents, generate API keys, test escalations, and send you real product feedback.</p>
+            <p>Give selected developers a workspace where they can create agents, generate API keys, test escalations, and send you real product feedback. They will create a password after first entering their email and access code.</p>
             <form id="developer-form" class="admin-form-grid">
               <input name="email" type="email" required placeholder="Developer email" />
               <input name="name" type="text" placeholder="Name" />

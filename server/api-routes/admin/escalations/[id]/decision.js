@@ -44,7 +44,6 @@ export default async function handler(req, res) {
 
   try {
     const db = getSql();
-    const workspaceId = process.env.FORSIG_DEFAULT_WORKSPACE_ID || "workspace_beta";
     const id = req.query?.id;
     const body = readBody(req);
     const parsed = validateDecisionPayload(body);
@@ -54,10 +53,9 @@ export default async function handler(req, res) {
     }
 
     const escalationRows = await db`
-      select id, status
+      select id, status, workspace_id
       from escalations
       where id = ${id}
-        and workspace_id = ${workspaceId}
       limit 1
     `;
     const escalation = escalationRows[0];
@@ -65,6 +63,7 @@ export default async function handler(req, res) {
       apiError(res, 404, "escalation_not_found", "Escalation not found.");
       return;
     }
+    const workspaceId = escalation.workspace_id;
     if (escalation.status !== "pending") {
       apiError(res, 409, "escalation_already_resolved", "This escalation is already resolved.");
       return;

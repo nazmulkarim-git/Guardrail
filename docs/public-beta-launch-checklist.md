@@ -32,17 +32,22 @@ Recommended for P1:
 
 1. Open `/app`.
 2. Log in with `FORSIG_ADMIN_PASSWORD`.
-3. Invite one test developer from the admin workspace.
-4. Confirm the developer invite email arrives.
+3. Open the Waitlist tab and confirm waitlist leads load.
+4. Send beta access to one waitlist lead, or manually invite one test developer from Developers.
+5. Confirm the developer invite email arrives and the one-time access code is shown to admin.
 
 ## 4. Developer Smoke Test
 
 1. Open `/developer`.
-2. Log in with the invited developer email and access code.
-3. Create an agent.
-4. Create an API key and copy it.
-5. Click **Send test escalation**.
-6. Approve, reject, edit, and take over at least one escalation.
+2. Enter the invited developer email and access code.
+3. Create and confirm a password.
+4. Log out, then log back in with email and password.
+5. Test **Forgot password** with the same invited email and confirm the temporary password email arrives.
+6. Log in with the temporary password and set a new password.
+7. Create an agent.
+8. Create an API key and copy it.
+9. Click **Send test escalation**.
+10. Approve, reject, edit, and take over at least one escalation.
 
 ## 5. SDK Smoke Test
 
@@ -71,3 +76,4 @@ Say clearly to developers:
 - Send only the context needed for human review.
 - Avoid secrets, credentials, unnecessary PII, and regulated data.
 - Slack support currently uses incoming webhooks; Slack OAuth and interactive buttons are planned.
+- Beta access is invite-only. Developers create a password only after entering an admin-issued access code.

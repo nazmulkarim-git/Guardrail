@@ -36,11 +36,21 @@
       <section id="developer-login" class="admin-login-card" hidden>
         <span class="zip-section-label">Private Beta</span>
         <h1>Developer login</h1>
-        <p>Use the email and access code shared by Forsig to open your beta workspace.</p>
+        <p id="developer-login-copy">First time here? Use your email and access code. After that, log in with email and password.</p>
         <form id="developer-login-form">
           <input name="email" type="email" required placeholder="Developer email" autocomplete="email" />
-          <input name="accessCode" type="password" required placeholder="Access code" autocomplete="current-password" />
+          <input name="accessCode" type="password" placeholder="Access code" autocomplete="one-time-code" />
+          <input name="password" type="password" placeholder="Password" autocomplete="current-password" />
+          <input name="confirmPassword" type="password" placeholder="Confirm password" autocomplete="new-password" hidden />
           <button type="submit">Open workspace</button>
+          <button id="developer-forgot-password" type="button">Forgot password</button>
+          <p class="mini-status" role="status"></p>
+        </form>
+        <form id="developer-reset-password-form" hidden>
+          <p>Create a new password before continuing.</p>
+          <input name="password" type="password" required placeholder="New password" autocomplete="new-password" />
+          <input name="confirmPassword" type="password" required placeholder="Confirm new password" autocomplete="new-password" />
+          <button type="submit">Save password</button>
           <p class="mini-status" role="status"></p>
         </form>
       </section>
