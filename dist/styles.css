@@ -6102,6 +6102,114 @@ th {
   }
 }
 
+/* Final hero stack alignment fix */
+.launch-hero-copy .zip-hero-actions {
+  width: min(100%, 640px);
+  justify-content: flex-start;
+  margin-top: 34px;
+}
+
+.launch-hero-copy .zip-hero-actions .zip-button {
+  min-width: 220px;
+  min-height: 50px;
+  font-size: 16px;
+}
+
+.launch-hero-copy .stack-strip {
+  display: grid;
+  width: min(100%, 640px);
+  max-width: 640px;
+  margin-top: 24px;
+  gap: 12px;
+  overflow: hidden;
+}
+
+.launch-hero-copy .stack-strip > span {
+  justify-self: start;
+  border: 1px solid rgba(0, 255, 194, 0.28);
+  border-radius: 999px;
+  padding: 9px 13px;
+  color: var(--zip-text);
+  background: rgba(0, 255, 194, 0.08);
+  font-size: 14px;
+  font-weight: 850;
+}
+
+.launch-hero-copy .stack-marquee {
+  width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, #000 0%, #000 84%, transparent 100%);
+}
+
+.launch-hero-copy .stack-marquee-track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  gap: 12px;
+  animation: forsigMarquee 50s linear infinite;
+}
+
+.launch-hero-copy .stack-strip b {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  flex: 0 0 auto;
+  min-height: 50px;
+  border: 1px solid rgba(72, 84, 101, 0.46);
+  border-radius: 999px;
+  padding: 8px 16px 8px 10px;
+  color: var(--zip-text);
+  background: rgba(15, 20, 27, 0.88);
+  font-size: 15px;
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.launch-hero-copy .stack-strip b i {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 11px;
+  color: #06120f;
+  background: #7dff9e;
+}
+
+.launch-hero-copy .stack-strip svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.launch-hero-copy .stack-strip .logo-vercel svg,
+.launch-hero-copy .stack-strip .logo-openai svg {
+  fill: currentColor;
+  stroke-width: 1.5;
+}
+
+.launch-hero-copy .stack-strip .logo-langgraph { background: #7dff9e; }
+.launch-hero-copy .stack-strip .logo-crewai { background: #8fe1ff; }
+.launch-hero-copy .stack-strip .logo-vercel { background: #ffffff; }
+.launch-hero-copy .stack-strip .logo-openai { background: #00ffc2; }
+.launch-hero-copy .stack-strip .logo-n8n { background: #ff9a62; }
+.launch-hero-copy .stack-strip .logo-zapier { background: #ffbd5a; }
+.launch-hero-copy .stack-strip .logo-custom { background: #d7ff72; }
+
+@media (max-width: 760px) {
+  .launch-hero-copy .zip-hero-actions,
+  .launch-hero-copy .stack-strip {
+    width: 100%;
+  }
+
+  .launch-hero-copy .zip-hero-actions .zip-button {
+    width: 100%;
+  }
+}
+
 /* Launch visual alignment pass */
 .launch-hero-copy {
   display: grid;
