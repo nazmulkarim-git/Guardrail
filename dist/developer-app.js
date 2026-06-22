@@ -487,11 +487,11 @@ function renderInboxRows() {
     return;
   }
   list.innerHTML = `
-    <div class="inbox-table-row inbox-table-head">
+    <div class="resend-table-row resend-table-head inbox-table-row inbox-table-head">
       <span>Request</span><span>Status</span><span>Mode</span><span>Agent</span><span>Risk</span><span>Created</span>
     </div>
     ${escalations.map((item) => `
-      <button type="button" data-escalation-id="${escapeHtml(item.id)}" class="inbox-table-row ${item.id === state.selectedId ? "active" : ""}">
+      <button type="button" data-escalation-id="${escapeHtml(item.id)}" class="resend-table-row selectable-row inbox-table-row ${item.id === state.selectedId ? "active" : ""}">
         <span>
           <b>${escapeHtml(item.task?.title || item.id)}</b>
           <small>${escapeHtml(item.workflow || item.step || "Approval request")}</small>
