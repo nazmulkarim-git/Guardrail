@@ -458,8 +458,9 @@ async function loadEscalations() {
 function showInboxList() {
   state.selectedId = null;
   state.detail = null;
-  $("#developer-view-inbox").classList.remove("developer-detail-mode");
-  $("#developer-escalation-detail").hidden = true;
+  $("#developer-view-escalation").hidden = true;
+  $("#developer-view-inbox").hidden = false;
+  $("#developer-escalation-detail").innerHTML = "<p class='empty-state'>Select an escalation to review.</p>";
   $("#developer-escalation-list").hidden = false;
   $("#developer-view-inbox .admin-toolbar").hidden = false;
   $("#developer-view-inbox .developer-page-head").hidden = false;
@@ -511,13 +512,14 @@ async function loadDetail(id) {
   const data = await api(`/api/developer/escalations/${encodeURIComponent(id)}`);
   state.detail = data;
   history.replaceState(null, "", `/developer?esc=${encodeURIComponent(id)}`);
-  $("#developer-view-inbox").classList.add("developer-detail-mode");
-  $("#developer-escalation-list").hidden = true;
-  $("#developer-view-inbox .admin-toolbar").hidden = true;
-  $("#developer-view-inbox .developer-page-head").hidden = true;
-  $("#developer-escalation-detail").hidden = false;
+  document.querySelectorAll(".admin-view").forEach((section) => {
+    section.hidden = section.id !== "developer-view-escalation";
+  });
+  document.querySelectorAll("[data-developer-view]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.developerView === "inbox");
+  });
   renderDetail();
-  $("#developer-escalation-detail").scrollIntoView({ behavior: "smooth", block: "start" });
+  $("#developer-view-escalation").scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function decisionButton(status, label) {
