@@ -9,6 +9,7 @@ const state = {
   keys: [],
   keyStatus: "all",
   keySearch: "",
+  inboxSearch: "",
   auditEvents: []
 };
 
@@ -148,7 +149,9 @@ async function checkSession() {
       return;
     }
     showApp();
-    $("#developer-workspace-label").textContent = session.developer.workspaceName || "Workspace";
+    $("#developer-workspace-label").textContent = "";
+    $("#developer-workspace-name").textContent = session.developer.workspaceName || "Forsig";
+    $("#developer-user-email").textContent = session.developer.email || "Developer console";
     await Promise.all([loadWorkspace(), loadEscalations()]);
     if (state.selectedId) await loadDetail(state.selectedId);
   } else {
@@ -163,7 +166,9 @@ async function loadWorkspace() {
     if (data.workspace && form) {
       form.elements.name.value = data.workspace.name || "";
       if (state.developer) state.developer.workspaceName = data.workspace.name || "Workspace";
-      $("#developer-workspace-label").textContent = data.workspace.name || "Workspace";
+      $("#developer-workspace-label").textContent = "";
+      $("#developer-workspace-name").textContent = data.workspace.name || "Forsig";
+      if (state.developer?.email) $("#developer-user-email").textContent = state.developer.email;
     }
   } catch (error) {
     $("#developer-workspace-form .mini-status").textContent = error.message;
@@ -291,7 +296,7 @@ async function loadAgents() {
     list.innerHTML = data.agents.length ? data.agents.map((agent) => `
       <article>
         <strong>${escapeHtml(agent.name)}</strong>
-        <span>${escapeHtml(agent.slug)} &middot; ${escapeHtml(agent.environment)} &middot; ${agent.escalation_count || 0} escalations</span>
+        <span>${escapeHtml(agent.slug)} / ${escapeHtml(agent.environment)} / ${agent.escalation_count || 0} escalations</span>
         <small>${escapeHtml(agent.description || "No description yet.")}</small>
         <pre><code>${escapeHtml(agentSnippet(agent))}</code></pre>
         <button type="button" data-copy-key="${escapeHtml(agentSnippet(agent))}">Copy snippet</button>
@@ -306,7 +311,7 @@ async function loadAgents() {
 async function loadEscalations() {
   const data = await api(`/api/developer/escalations?status=${encodeURIComponent(state.status)}`);
   state.escalations = data.escalations || [];
-  renderList();
+  renderInboxRows();
   if (!state.selectedId && state.escalations[0]) {
     await loadDetail(state.escalations[0].id);
   }
@@ -329,12 +334,49 @@ function renderList() {
   `).join("");
 }
 
+function renderInboxRows() {
+  const list = $("#developer-escalation-list");
+  const query = state.inboxSearch.trim().toLowerCase();
+  const escalations = state.escalations.filter((item) => {
+    if (!query) return true;
+    return [
+      item.task?.title,
+      item.status,
+      item.agent?.name,
+      item.agent?.id,
+      item.risk?.level,
+      item.risk?.type
+    ].filter(Boolean).join(" ").toLowerCase().includes(query);
+  });
+  if (!escalations.length) {
+    list.innerHTML = "<p class='empty-state'>No escalations yet. Create an agent and API key, then send an escalation from your app.</p>";
+    return;
+  }
+  list.innerHTML = `
+    <div class="inbox-table-row inbox-table-head">
+      <span>Request</span><span>Status</span><span>Agent</span><span>Risk</span><span>Created</span>
+    </div>
+    ${escalations.map((item) => `
+      <button type="button" data-escalation-id="${escapeHtml(item.id)}" class="inbox-table-row ${item.id === state.selectedId ? "active" : ""}">
+        <span>
+          <b>${escapeHtml(item.task?.title || item.id)}</b>
+          <small>${escapeHtml(item.workflow || item.step || "Approval request")}</small>
+        </span>
+        <span><em class="key-state key-state-${escapeHtml(item.status)}">${escapeHtml(item.status)}</em></span>
+        <span>${escapeHtml(item.agent?.name || item.agent?.id || "Agent")}</span>
+        <span>${escapeHtml(item.risk?.level || "review")}</span>
+        <span>${formatDate(item.createdAt)}</span>
+      </button>
+    `).join("")}
+  `;
+}
+
 async function loadDetail(id) {
   state.selectedId = id;
   const data = await api(`/api/developer/escalations/${encodeURIComponent(id)}`);
   state.detail = data;
   history.replaceState(null, "", `/developer?esc=${encodeURIComponent(id)}`);
-  renderList();
+  renderInboxRows();
   renderDetail();
 }
 
@@ -551,6 +593,11 @@ $("#developer-status-filter").addEventListener("change", async (event) => {
   state.status = event.target.value;
   state.selectedId = null;
   await loadEscalations();
+});
+
+$("#developer-inbox-search").addEventListener("input", (event) => {
+  state.inboxSearch = event.target.value;
+  renderInboxRows();
 });
 
 document.querySelectorAll("[data-developer-view]").forEach((button) => {
