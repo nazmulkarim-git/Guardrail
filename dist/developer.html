@@ -91,7 +91,7 @@
 
           <div class="admin-grid developer-inbox-grid">
             <div id="developer-escalation-list" class="escalation-list"></div>
-            <article id="developer-escalation-detail" class="escalation-detail">
+            <article id="developer-escalation-detail" class="escalation-detail developer-detail-page" hidden>
               <p class="empty-state">Select an escalation to review.</p>
             </article>
           </div>
@@ -100,37 +100,18 @@
         <section id="developer-view-agents" class="admin-view" hidden>
           <div class="developer-page-head">
             <h1>Agents</h1>
+            <button id="developer-create-agent" class="developer-primary-button" type="button">+ Create agent</button>
           </div>
-          <div class="admin-panel">
-            <form id="developer-agent-form" class="admin-form-grid">
-              <input name="name" type="text" required placeholder="Agent name, e.g. Refund Agent" />
-              <input name="slug" type="text" placeholder="Agent slug, e.g. refund-agent" />
-              <select name="environment">
-                <option value="development">Development</option>
-                <option value="staging">Staging</option>
-                <option value="production">Production</option>
-              </select>
-              <input name="defaultReviewerEmails" type="text" placeholder="Reviewer emails, comma separated" />
-              <textarea name="description" placeholder="What risky actions should this agent escalate?"></textarea>
-              <button type="submit">Create agent</button>
-              <p class="mini-status" role="status"></p>
-            </form>
-            <div id="developer-agent-list" class="api-key-list"></div>
-          </div>
+          <div id="developer-agent-list" class="resend-table"></div>
+          <article id="developer-agent-detail" class="developer-detail-page" hidden></article>
         </section>
 
         <section id="developer-view-keys" class="admin-view" hidden>
           <div class="developer-page-head">
             <h1>API keys</h1>
+            <button id="developer-create-api-key" class="developer-primary-button" type="button">+ Create API key</button>
           </div>
           <div class="resend-panel">
-            <div class="resend-panel-head">
-              <form id="developer-api-key-form" class="inline-create-form">
-                <input name="name" type="text" placeholder="Key name" />
-                <button type="submit">+ Create API key</button>
-                <p class="mini-status" role="status"></p>
-              </form>
-            </div>
             <div class="key-table-toolbar">
               <input id="developer-key-search" type="search" placeholder="Search keys..." />
               <select id="developer-key-filter">
@@ -142,6 +123,7 @@
             </div>
             <div id="developer-api-key-list" class="resend-table"></div>
           </div>
+          <article id="developer-api-key-detail" class="developer-detail-page" hidden></article>
         </section>
 
         <section id="developer-view-audit" class="admin-view" hidden>
@@ -182,6 +164,38 @@
           </div>
         </section>
       </section>
+
+      <div id="agent-create-modal" class="api-key-modal developer-form-modal" hidden role="dialog" aria-modal="true" aria-labelledby="agent-create-modal-title">
+        <div>
+          <button id="agent-create-modal-close" type="button" aria-label="Close">x</button>
+          <h2 id="agent-create-modal-title">Create agent</h2>
+          <form id="developer-agent-form" class="admin-form-grid">
+            <input name="name" type="text" required placeholder="Agent name, e.g. Refund Agent" />
+            <input name="slug" type="text" placeholder="Agent slug, e.g. refund-agent" />
+            <select name="environment">
+              <option value="development">Development</option>
+              <option value="staging">Staging</option>
+              <option value="production">Production</option>
+            </select>
+            <input name="defaultReviewerEmails" type="text" placeholder="Reviewer emails, comma separated" />
+            <textarea name="description" placeholder="What risky actions should this agent escalate?"></textarea>
+            <button type="submit">Create agent</button>
+            <p class="mini-status" role="status"></p>
+          </form>
+        </div>
+      </div>
+
+      <div id="api-key-create-modal" class="api-key-modal developer-form-modal" hidden role="dialog" aria-modal="true" aria-labelledby="api-key-create-modal-title">
+        <div>
+          <button id="api-key-create-modal-close" type="button" aria-label="Close">x</button>
+          <h2 id="api-key-create-modal-title">Create API key</h2>
+          <form id="developer-api-key-form" class="admin-form-grid">
+            <input name="name" type="text" placeholder="Key name" />
+            <button type="submit">Create API key</button>
+            <p class="mini-status" role="status"></p>
+          </form>
+        </div>
+      </div>
 
       <div id="api-key-modal" class="api-key-modal" hidden role="dialog" aria-modal="true" aria-labelledby="api-key-modal-title">
         <div>

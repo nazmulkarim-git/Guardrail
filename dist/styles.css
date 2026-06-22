@@ -6716,6 +6716,172 @@ body[data-page="developer"] .api-key-modal > div {
   }
 }
 
+body[data-page="developer"] .developer-primary-button,
+body[data-page="developer"] .developer-back-button {
+  min-height: 40px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 16px;
+  color: #000;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+body[data-page="developer"] .developer-back-button {
+  justify-self: start;
+  border: 1px solid var(--developer-line);
+  color: var(--developer-text);
+  background: #18191d;
+}
+
+body[data-page="developer"] .developer-detail-page {
+  display: grid;
+  gap: 22px;
+  width: min(1380px, 100%);
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+body[data-page="developer"] .developer-detail-page[hidden] {
+  display: none;
+}
+
+body[data-page="developer"] .developer-detail-hero {
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 0 12px;
+}
+
+body[data-page="developer"] .developer-detail-icon {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  border: 3px solid #2d2f37;
+  border-radius: 28px;
+  color: #d8d2ff;
+  background: radial-gradient(circle at 50% 45%, rgba(119, 89, 255, 0.55), rgba(35, 31, 59, 0.85));
+  font-size: 26px;
+  font-weight: 850;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+}
+
+body[data-page="developer"] .developer-detail-hero span,
+body[data-page="developer"] .developer-detail-grid article span {
+  color: var(--developer-dim);
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+body[data-page="developer"] .developer-detail-hero h2 {
+  margin: 6px 0 0;
+  color: #fff;
+  font-size: clamp(32px, 4vw, 44px);
+  line-height: 1;
+  letter-spacing: -0.05em;
+}
+
+body[data-page="developer"] .developer-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 12px;
+}
+
+body[data-page="developer"] .developer-detail-grid article {
+  display: grid;
+  gap: 12px;
+  min-height: 84px;
+  border: 1px solid var(--developer-line);
+  border-radius: 16px;
+  padding: 18px;
+  background: #050505;
+}
+
+body[data-page="developer"] .developer-detail-grid article strong {
+  overflow: hidden;
+  color: #fff;
+  font-size: 17px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body[data-page="developer"] .developer-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-top: 1px solid var(--developer-soft-line);
+  padding-top: 18px;
+}
+
+body[data-page="developer"] .developer-detail-actions button {
+  min-height: 38px;
+  border: 1px solid var(--developer-line);
+  border-radius: 12px;
+  padding: 0 14px;
+  color: var(--developer-text);
+  background: #18191d;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+body[data-page="developer"] .agent-table-row {
+  grid-template-columns: minmax(240px, 1.6fr) minmax(140px, 0.8fr) minmax(120px, 0.7fr) minmax(100px, 0.6fr) minmax(110px, 0.7fr);
+}
+
+body[data-page="developer"] button.resend-table-row {
+  border-left: 0;
+  border-right: 0;
+  border-top: 0;
+  cursor: pointer;
+}
+
+body[data-page="developer"] .selectable-row:hover {
+  background: #08090c;
+}
+
+body[data-page="developer"] .developer-form-modal > div {
+  width: min(560px, calc(100vw - 32px));
+}
+
+body[data-page="developer"] .developer-form-modal h2 {
+  margin: 0 0 18px;
+  color: #fff;
+  font-size: 24px;
+  letter-spacing: -0.03em;
+}
+
+body[data-page="developer"] .developer-form-modal .admin-form-grid {
+  grid-template-columns: 1fr;
+}
+
+body[data-page="developer"] #agent-create-modal-close,
+body[data-page="developer"] #api-key-create-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  min-height: 32px;
+  width: 32px;
+  border: 1px solid var(--developer-line);
+  border-radius: 10px;
+  color: var(--developer-muted);
+  background: #18191d;
+}
+
+@media (max-width: 1100px) {
+  body[data-page="developer"] .developer-detail-hero,
+  body[data-page="developer"] .developer-detail-grid,
+  body[data-page="developer"] .agent-table-row {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Absolute final hero alignment override */
 .launch-hero-copy {
   justify-items: start !important;

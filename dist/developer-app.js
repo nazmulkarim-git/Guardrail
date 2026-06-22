@@ -7,6 +7,9 @@ const state = {
   setupRequired: false,
   authMode: "signup",
   keys: [],
+  agents: [],
+  selectedAgentId: null,
+  selectedKeyId: null,
   keyStatus: "all",
   keySearch: "",
   inboxSearch: "",
@@ -129,8 +132,15 @@ function setView(view) {
   document.querySelectorAll(".admin-view").forEach((section) => {
     section.hidden = section.id !== `developer-view-${view}`;
   });
-  if (view === "keys") loadKeys();
-  if (view === "agents") loadAgents();
+  if (view === "inbox" && state.selectedId) showInboxList();
+  if (view === "keys") {
+    showKeyList();
+    loadKeys();
+  }
+  if (view === "agents") {
+    showAgentList();
+    loadAgents();
+  }
   if (view === "audit") loadAudit();
   if (view === "settings") {
     loadWorkspace();
@@ -182,6 +192,7 @@ async function loadKeys() {
     const data = await api("/api/developer/api-key");
     state.keys = data.keys || [];
     renderKeys();
+    if (state.selectedKeyId) showKeyDetail(state.selectedKeyId);
   } catch (error) {
     list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
   }
@@ -191,6 +202,11 @@ function keyStatus(key) {
   if (key.revoked_at) return "revoked";
   if (key.held_at) return "held";
   return "active";
+}
+
+function maskedKey(key) {
+  const prefix = key.prefix || key.id || "forsig";
+  return `${prefix}...`;
 }
 
 function renderKeys() {
@@ -213,9 +229,9 @@ function renderKeys() {
     ${keys.map((key) => {
       const status = keyStatus(key);
       return `
-        <div class="resend-table-row">
+        <div class="resend-table-row selectable-row" data-api-key-id="${escapeHtml(key.id)}">
           <span><b>${escapeHtml(key.name)}</b></span>
-          <span><code>${escapeHtml(key.prefix || key.id)}</code></span>
+          <span><code>${escapeHtml(maskedKey(key))}</code></span>
           <span><em class="key-state key-state-${status}">${status}</em></span>
           <span>${key.last_used_at ? formatDate(key.last_used_at) : "Never"}</span>
           <span>${formatDate(key.created_at)}</span>
@@ -228,6 +244,49 @@ function renderKeys() {
         </div>
       `;
     }).join("")}
+  `;
+}
+
+function showKeyList() {
+  state.selectedKeyId = null;
+  $("#developer-api-key-detail").hidden = true;
+  $(".key-table-toolbar").hidden = false;
+  $("#developer-api-key-list").hidden = false;
+  $("#developer-view-keys .developer-page-head").hidden = false;
+}
+
+function showKeyDetail(id) {
+  const key = state.keys.find((item) => item.id === id);
+  if (!key) return;
+  state.selectedKeyId = id;
+  const status = keyStatus(key);
+  $("#developer-api-key-list").hidden = true;
+  $(".key-table-toolbar").hidden = true;
+  $("#developer-view-keys .developer-page-head").hidden = true;
+  const detail = $("#developer-api-key-detail");
+  detail.hidden = false;
+  detail.innerHTML = `
+    <button type="button" class="developer-back-button" data-back-keys>Back to API keys</button>
+    <div class="developer-detail-hero">
+      <div class="developer-detail-icon">K</div>
+      <div>
+        <span>API key</span>
+        <h2>${escapeHtml(key.name)}</h2>
+      </div>
+      <em class="key-state key-state-${status}">${status}</em>
+    </div>
+    <div class="developer-detail-grid">
+      <article><span>Token</span><strong>${escapeHtml(maskedKey(key))}</strong></article>
+      <article><span>Last used</span><strong>${key.last_used_at ? formatDate(key.last_used_at) : "Never"}</strong></article>
+      <article><span>Created</span><strong>${formatDate(key.created_at)}</strong></article>
+      <article><span>Permission</span><strong>Full access</strong></article>
+    </div>
+    <div class="developer-detail-actions">
+      ${status === "revoked" ? "" : `
+        <button type="button" data-hold-key="${escapeHtml(key.id)}" data-hold-value="${status === "held" ? "false" : "true"}">${status === "held" ? "Unhold key" : "Hold key"}</button>
+        <button type="button" data-revoke-key="${escapeHtml(key.id)}">Revoke key</button>
+      `}
+    </div>
   `;
 }
 
@@ -261,7 +320,7 @@ async function loadAudit() {
         <div class="resend-table-row audit-row">
           <span><b>${escapeHtml(event.event_type)}</b><small>${escapeHtml(JSON.stringify(event.metadata_json || {}))}</small></span>
           <span>${escapeHtml(event.task_title || event.escalation_id || "Workspace")}</span>
-          <span>${escapeHtml(event.actor_type)} · ${escapeHtml(event.actor_id || "-")}</span>
+          <span>${escapeHtml(event.actor_type)} / ${escapeHtml(event.actor_id || "-")}</span>
           <span>${formatDate(event.created_at)}</span>
         </div>
       `).join("")}
@@ -293,45 +352,97 @@ async function loadAgents() {
   list.innerHTML = "<p class='empty-state'>Loading agents...</p>";
   try {
     const data = await api("/api/developer/agents");
-    list.innerHTML = data.agents.length ? data.agents.map((agent) => `
-      <article>
-        <strong>${escapeHtml(agent.name)}</strong>
-        <span>${escapeHtml(agent.slug)} / ${escapeHtml(agent.environment)} / ${agent.escalation_count || 0} escalations</span>
-        <small>${escapeHtml(agent.description || "No description yet.")}</small>
-        <pre><code>${escapeHtml(agentSnippet(agent))}</code></pre>
-        <button type="button" data-copy-key="${escapeHtml(agentSnippet(agent))}">Copy snippet</button>
-        ${agent.archived_at ? `<em>Archived ${formatDate(agent.archived_at)}</em><button type="button" data-archive-agent="${escapeHtml(agent.id)}" data-archive-value="false">Unarchive</button>` : `<button type="button" data-archive-agent="${escapeHtml(agent.id)}" data-archive-value="true">Archive</button>`}
-      </article>
-    `).join("") : "<p class='empty-state'>No agents yet. Create one, then send a test escalation.</p>";
+    state.agents = data.agents || [];
+    renderAgents();
+    if (state.selectedAgentId) showAgentDetail(state.selectedAgentId);
   } catch (error) {
     list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
   }
+}
+
+function renderAgents() {
+  const list = $("#developer-agent-list");
+  if (!state.agents.length) {
+    list.innerHTML = "<p class='empty-state'>No agents yet. Create one to start sending escalations.</p>";
+    return;
+  }
+  list.innerHTML = `
+    <div class="resend-table-row agent-table-row resend-table-head">
+      <span>Agent</span><span>Environment</span><span>Escalations</span><span>Pending</span><span>Status</span>
+    </div>
+    ${state.agents.map((agent) => `
+      <button type="button" class="resend-table-row agent-table-row selectable-row" data-agent-id="${escapeHtml(agent.id)}">
+        <span><b>${escapeHtml(agent.name)}</b><small>${escapeHtml(agent.slug)}</small></span>
+        <span>${escapeHtml(agent.environment)}</span>
+        <span>${agent.escalation_count || 0}</span>
+        <span>${agent.pending_count || 0}</span>
+        <span><em class="key-state key-state-${agent.archived_at ? "held" : "active"}">${agent.archived_at ? "Archived" : "Active"}</em></span>
+      </button>
+    `).join("")}
+  `;
+}
+
+function showAgentList() {
+  state.selectedAgentId = null;
+  $("#developer-agent-detail").hidden = true;
+  $("#developer-agent-list").hidden = false;
+  $("#developer-view-agents .developer-page-head").hidden = false;
+}
+
+function showAgentDetail(id) {
+  const agent = state.agents.find((item) => item.id === id);
+  if (!agent) return;
+  state.selectedAgentId = id;
+  $("#developer-agent-list").hidden = true;
+  $("#developer-view-agents .developer-page-head").hidden = true;
+  const detail = $("#developer-agent-detail");
+  detail.hidden = false;
+  detail.innerHTML = `
+    <button type="button" class="developer-back-button" data-back-agents>Back to agents</button>
+    <div class="developer-detail-hero">
+      <div class="developer-detail-icon">A</div>
+      <div>
+        <span>Agent</span>
+        <h2>${escapeHtml(agent.name)}</h2>
+      </div>
+      <em class="key-state key-state-${agent.archived_at ? "held" : "active"}">${agent.archived_at ? "Archived" : "Active"}</em>
+    </div>
+    <div class="developer-detail-grid">
+      <article><span>Slug</span><strong>${escapeHtml(agent.slug)}</strong></article>
+      <article><span>Environment</span><strong>${escapeHtml(agent.environment)}</strong></article>
+      <article><span>Escalations</span><strong>${agent.escalation_count || 0}</strong></article>
+      <article><span>Pending</span><strong>${agent.pending_count || 0}</strong></article>
+    </div>
+    <section class="detail-section">
+      <h3>Description</h3>
+      <p>${escapeHtml(agent.description || "No description yet.")}</p>
+    </section>
+    <section class="detail-section">
+      <h3>SDK snippet</h3>
+      <pre><code>${escapeHtml(agentSnippet(agent))}</code></pre>
+    </section>
+    <div class="developer-detail-actions">
+      <button type="button" data-copy-key="${escapeHtml(agentSnippet(agent))}">Copy snippet</button>
+      ${agent.archived_at ? `<button type="button" data-archive-agent="${escapeHtml(agent.id)}" data-archive-value="false">Unarchive</button>` : `<button type="button" data-archive-agent="${escapeHtml(agent.id)}" data-archive-value="true">Archive</button>`}
+    </div>
+  `;
 }
 
 async function loadEscalations() {
   const data = await api(`/api/developer/escalations?status=${encodeURIComponent(state.status)}`);
   state.escalations = data.escalations || [];
   renderInboxRows();
-  if (!state.selectedId && state.escalations[0]) {
-    await loadDetail(state.escalations[0].id);
-  }
 }
 
-function renderList() {
-  const list = $("#developer-escalation-list");
-  if (!state.escalations.length) {
-    list.innerHTML = "<p class='empty-state'>No escalations yet. Create an agent and API key, then send an escalation from your app.</p>";
-    return;
-  }
-  list.innerHTML = state.escalations.map((item) => `
-    <button type="button" data-escalation-id="${escapeHtml(item.id)}" class="${item.id === state.selectedId ? "active" : ""}">
-      <span>${escapeHtml(item.risk?.level || "review")}</span>
-      <strong>${escapeHtml(item.task?.title || item.id)}</strong>
-      <small>${escapeHtml(item.agent?.name || item.agent?.id || "Agent")} · ${escapeHtml(item.risk?.type || "risk")}</small>
-      ${item.reviewer?.assignedEmail ? `<small>Reviewer: ${escapeHtml(item.reviewer.assignedEmail)}</small>` : ""}
-      <em>${escapeHtml(item.status)}</em>
-    </button>
-  `).join("");
+function showInboxList() {
+  state.selectedId = null;
+  state.detail = null;
+  $("#developer-escalation-detail").hidden = true;
+  $("#developer-escalation-list").hidden = false;
+  $("#developer-view-inbox .admin-toolbar").hidden = false;
+  $("#developer-view-inbox .developer-page-head").hidden = false;
+  history.replaceState(null, "", "/developer");
+  renderInboxRows();
 }
 
 function renderInboxRows() {
@@ -376,7 +487,10 @@ async function loadDetail(id) {
   const data = await api(`/api/developer/escalations/${encodeURIComponent(id)}`);
   state.detail = data;
   history.replaceState(null, "", `/developer?esc=${encodeURIComponent(id)}`);
-  renderInboxRows();
+  $("#developer-escalation-list").hidden = true;
+  $("#developer-view-inbox .admin-toolbar").hidden = true;
+  $("#developer-view-inbox .developer-page-head").hidden = true;
+  $("#developer-escalation-detail").hidden = false;
   renderDetail();
 }
 
@@ -395,6 +509,7 @@ function renderDetail() {
   const canDecide = item.status === "pending";
   detail.innerHTML = `
     <div class="product-review-page">
+      <button type="button" class="developer-back-button" data-back-inbox>Back to inbox</button>
       <div class="product-review-header">
         <div class="zip-risk-icon">!</div>
         <div>
@@ -462,7 +577,7 @@ function renderDetail() {
           ${(state.detail.auditEvents || []).map((event) => `
             <article>
               <strong>${escapeHtml(event.event_type)}</strong>
-              <span>${formatDate(event.created_at)} · ${escapeHtml(event.actor_type)}</span>
+              <span>${formatDate(event.created_at)} / ${escapeHtml(event.actor_type)}</span>
               <small>${escapeHtml(JSON.stringify(event.metadata_json || {}))}</small>
             </article>
           `).join("") || "<p class='empty-state'>No audit events yet.</p>"}
@@ -591,7 +706,7 @@ $("#developer-logout").addEventListener("click", async () => {
 
 $("#developer-status-filter").addEventListener("change", async (event) => {
   state.status = event.target.value;
-  state.selectedId = null;
+  showInboxList();
   await loadEscalations();
 });
 
@@ -655,6 +770,7 @@ $("#developer-api-key-form").addEventListener("submit", async (event) => {
       method: "POST",
       body: JSON.stringify({ name: form.elements.name.value })
     });
+    closeModal("#api-key-create-modal");
     showApiKeyModal(data.apiKey.key);
     status.textContent = "API key created.";
     form.reset();
@@ -675,6 +791,21 @@ $("#developer-key-filter").addEventListener("change", (event) => {
 });
 
 $("#developer-audit-refresh").addEventListener("click", () => loadAudit().catch((error) => toast(error.message)));
+
+function openModal(selector) {
+  const modal = $(selector);
+  if (modal) modal.hidden = false;
+}
+
+function closeModal(selector) {
+  const modal = $(selector);
+  if (modal) modal.hidden = true;
+}
+
+$("#developer-create-agent").addEventListener("click", () => openModal("#agent-create-modal"));
+$("#agent-create-modal-close").addEventListener("click", () => closeModal("#agent-create-modal"));
+$("#developer-create-api-key").addEventListener("click", () => openModal("#api-key-create-modal"));
+$("#api-key-create-modal-close").addEventListener("click", () => closeModal("#api-key-create-modal"));
 
 function showApiKeyModal(key) {
   const modal = $("#api-key-modal");
@@ -711,6 +842,7 @@ $("#developer-agent-form").addEventListener("submit", async (event) => {
     status.textContent = "Agent created.";
     toast("Agent created");
     form.reset();
+    closeModal("#agent-create-modal");
     await loadAgents();
   } catch (error) {
     status.textContent = error.message;
@@ -718,6 +850,21 @@ $("#developer-agent-form").addEventListener("submit", async (event) => {
 });
 
 document.addEventListener("click", async (event) => {
+  if (event.target.closest("[data-back-inbox]")) {
+    showInboxList();
+    return;
+  }
+
+  if (event.target.closest("[data-back-agents]")) {
+    showAgentList();
+    return;
+  }
+
+  if (event.target.closest("[data-back-keys]")) {
+    showKeyList();
+    return;
+  }
+
   const escalationButton = event.target.closest("[data-escalation-id]");
   if (escalationButton) {
     await loadDetail(escalationButton.dataset.escalationId);
@@ -765,6 +912,7 @@ document.addEventListener("click", async (event) => {
       toast(error.message);
       await loadKeys();
     }
+    return;
   }
 
   const revoke = event.target.closest("[data-revoke-key]");
@@ -780,6 +928,7 @@ document.addEventListener("click", async (event) => {
       revoke.disabled = false;
       revoke.textContent = "Revoke";
     }
+    return;
   }
 
   const archiveAgent = event.target.closest("[data-archive-agent]");
@@ -799,6 +948,17 @@ document.addEventListener("click", async (event) => {
       archiveAgent.disabled = false;
       archiveAgent.textContent = shouldArchive ? "Archive" : "Unarchive";
     }
+    return;
+  }
+
+  const agentRow = event.target.closest("[data-agent-id]");
+  if (agentRow) {
+    showAgentDetail(agentRow.dataset.agentId);
+  }
+
+  const apiKeyRow = event.target.closest("[data-api-key-id]");
+  if (apiKeyRow && !event.target.closest(".row-actions")) {
+    showKeyDetail(apiKeyRow.dataset.apiKeyId);
   }
 });
 
