@@ -394,26 +394,39 @@ function initSdkTabs() {
   const snippets = {
     ts: {
       title: "agent.ts",
-      code: `npm install @forsig/sdk
-
-import { Forsig } from "@forsig/sdk";
+      code: `import { Forsig } from "@forsig/sdk";
+import Stripe from "stripe";
 
 const forsig = new Forsig({
   apiKey: process.env.FORSIG_API_KEY
 });
 
-const decision = await forsig.escalate({
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+const decision = await forsig.escalations.create({
   agent: "refund-agent",
-  risk: { type: "refund_over_limit", level: "high" },
-  task: {
-    title: "Approve $500 refund",
-    proposedAction: "Issue refund to VIP customer #123"
+  action: "stripe.refund",
+  risk: "refund_over_limit",
+  context: {
+    customer: "VIP customer #123",
+    amount: 500,
+    reason: "Refund exceeds policy limit"
   },
-  waitForDecision: true
 });
 
 if (decision.status === "approved") {
-  await issueRefund();
+  await stripe.refunds.create({
+    amount: 50000,
+    customer: "cus_123"
+  });
+}
+
+if (decision.status === "rejected") {
+  return "Refund rejected by reviewer";
+}
+
+if (decision.status === "edited") {
+  return decision.instruction;
 }`
     },
     py: {
@@ -425,14 +438,15 @@ from forsig import Forsig
 
 forsig = Forsig(api_key=os.environ["FORSIG_API_KEY"])
 
-decision = forsig.escalate(
+decision = forsig.escalations.create(
     agent="refund-agent",
-    risk={"type": "refund_over_limit", "level": "high"},
-    task={
-        "title": "Approve $500 refund",
-        "proposed_action": "Issue refund to VIP customer #123",
+    action="stripe.refund",
+    risk="refund_over_limit",
+    context={
+        "customer": "VIP customer #123",
+        "amount": 500,
+        "reason": "Refund exceeds policy limit",
     },
-    wait_for_decision=True,
 )
 
 if decision.status == "approved":
