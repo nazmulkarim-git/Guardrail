@@ -5,7 +5,11 @@ const state = {
   detail: null,
   developer: null,
   setupRequired: false,
-  authMode: "signup"
+  authMode: "signup",
+  keys: [],
+  keyStatus: "all",
+  keySearch: "",
+  auditEvents: []
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -127,6 +131,8 @@ function setView(view) {
   if (view === "keys") loadKeys();
   if (view === "workspace") loadWorkspace();
   if (view === "agents") loadAgents();
+  if (view === "profile") loadProfile();
+  if (view === "audit") loadAudit();
 }
 
 async function checkSession() {
@@ -154,6 +160,7 @@ async function loadWorkspace() {
     const form = $("#developer-workspace-form");
     if (data.workspace && form) {
       form.elements.name.value = data.workspace.name || "";
+      if (state.developer) state.developer.workspaceName = data.workspace.name || "Workspace";
       $("#developer-workspace-label").textContent = `${data.workspace.name || "Workspace"} · ${state.developer?.email || ""}`;
     }
   } catch (error) {
@@ -166,14 +173,92 @@ async function loadKeys() {
   list.innerHTML = "<p class='empty-state'>Loading keys...</p>";
   try {
     const data = await api("/api/developer/api-key");
-    list.innerHTML = data.keys.length ? data.keys.map((key) => `
-      <article>
-        <strong>${escapeHtml(key.name)}</strong>
-        <span>${escapeHtml(key.prefix || key.id)} · created ${formatDate(key.created_at)}</span>
-        <small>${key.last_used_at ? `Last used ${formatDate(key.last_used_at)}` : "Never used"}</small>
-        ${key.revoked_at ? `<em>Revoked ${formatDate(key.revoked_at)}</em>` : `<button type="button" data-revoke-key="${escapeHtml(key.id)}">Revoke</button>`}
-      </article>
-    `).join("") : "<p class='empty-state'>No API keys yet.</p>";
+    state.keys = data.keys || [];
+    renderKeys();
+  } catch (error) {
+    list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
+  }
+}
+
+function keyStatus(key) {
+  if (key.revoked_at) return "revoked";
+  if (key.held_at) return "held";
+  return "active";
+}
+
+function renderKeys() {
+  const list = $("#developer-api-key-list");
+  const query = state.keySearch.trim().toLowerCase();
+  const keys = state.keys.filter((key) => {
+    const status = keyStatus(key);
+    const matchesStatus = state.keyStatus === "all" || state.keyStatus === status;
+    const matchesQuery = !query || `${key.name} ${key.prefix}`.toLowerCase().includes(query);
+    return matchesStatus && matchesQuery;
+  });
+  if (!keys.length) {
+    list.innerHTML = "<p class='empty-state'>No API keys match this view.</p>";
+    return;
+  }
+  list.innerHTML = `
+    <div class="resend-table-row resend-table-head">
+      <span>Name</span><span>Token</span><span>Status</span><span>Last used</span><span>Created</span><span></span>
+    </div>
+    ${keys.map((key) => {
+      const status = keyStatus(key);
+      return `
+        <div class="resend-table-row">
+          <span><b>${escapeHtml(key.name)}</b></span>
+          <span><code>${escapeHtml(key.prefix || key.id)}</code></span>
+          <span><em class="key-state key-state-${status}">${status}</em></span>
+          <span>${key.last_used_at ? formatDate(key.last_used_at) : "Never"}</span>
+          <span>${formatDate(key.created_at)}</span>
+          <span class="row-actions">
+            ${status === "revoked" ? "" : `
+              <button type="button" data-hold-key="${escapeHtml(key.id)}" data-hold-value="${status === "held" ? "false" : "true"}">${status === "held" ? "Unhold" : "Hold"}</button>
+              <button type="button" data-revoke-key="${escapeHtml(key.id)}">Revoke</button>
+            `}
+          </span>
+        </div>
+      `;
+    }).join("")}
+  `;
+}
+
+async function loadProfile() {
+  const form = $("#developer-profile-form");
+  const status = form.querySelector(".mini-status");
+  status.textContent = "";
+  try {
+    const data = await api("/api/developer/profile");
+    if (data.profile) {
+      form.elements.name.value = data.profile.name || "";
+      form.elements.email.value = data.profile.email || "";
+      form.elements.company.value = data.profile.company || "";
+    }
+  } catch (error) {
+    status.textContent = error.message;
+  }
+}
+
+async function loadAudit() {
+  const list = $("#developer-audit-list");
+  list.innerHTML = "<p class='empty-state'>Loading audit trail...</p>";
+  try {
+    const data = await api("/api/developer/audit");
+    state.auditEvents = data.events || [];
+    list.innerHTML = state.auditEvents.length ? `
+      <div class="resend-table-row resend-table-head">
+        <span>Event</span><span>Target</span><span>Actor</span><span>Time</span>
+      </div>
+      ${state.auditEvents.map((event) => `
+        <div class="resend-table-row audit-row">
+          <span><b>${escapeHtml(event.event_type)}</b><small>${escapeHtml(JSON.stringify(event.metadata_json || {}))}</small></span>
+          <span>${escapeHtml(event.task_title || event.escalation_id || "Workspace")}</span>
+          <span>${escapeHtml(event.actor_type)} · ${escapeHtml(event.actor_id || "-")}</span>
+          <span>${formatDate(event.created_at)}</span>
+        </div>
+      `).join("")}
+    ` : "<p class='empty-state'>No audit events yet.</p>";
   } catch (error) {
     list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
   }
@@ -208,7 +293,7 @@ async function loadAgents() {
         <small>${escapeHtml(agent.description || "No description yet.")}</small>
         <pre><code>${escapeHtml(agentSnippet(agent))}</code></pre>
         <button type="button" data-copy-key="${escapeHtml(agentSnippet(agent))}">Copy snippet</button>
-        ${agent.archived_at ? `<em>Archived ${formatDate(agent.archived_at)}</em>` : `<button type="button" data-archive-agent="${escapeHtml(agent.id)}">Archive</button>`}
+        ${agent.archived_at ? `<em>Archived ${formatDate(agent.archived_at)}</em><button type="button" data-archive-agent="${escapeHtml(agent.id)}" data-archive-value="false">Unarchive</button>` : `<button type="button" data-archive-agent="${escapeHtml(agent.id)}" data-archive-value="true">Archive</button>`}
       </article>
     `).join("") : "<p class='empty-state'>No agents yet. Create one, then send a test escalation.</p>";
   } catch (error) {
@@ -513,6 +598,29 @@ $("#developer-workspace-form").addEventListener("submit", async (event) => {
   }
 });
 
+$("#developer-profile-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const status = form.querySelector(".mini-status");
+  status.textContent = "Saving...";
+  try {
+    const data = await api("/api/developer/profile", {
+      method: "POST",
+      body: JSON.stringify({
+        name: form.elements.name.value,
+        company: form.elements.company.value
+      })
+    });
+    if (data.profile) {
+      state.developer = { ...state.developer, ...data.profile };
+    }
+    status.textContent = "Profile saved.";
+    toast("Profile saved");
+  } catch (error) {
+    status.textContent = error.message;
+  }
+});
+
 $("#developer-api-key-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
@@ -523,13 +631,7 @@ $("#developer-api-key-form").addEventListener("submit", async (event) => {
       method: "POST",
       body: JSON.stringify({ name: form.elements.name.value })
     });
-    const box = $("#developer-new-api-key");
-    box.hidden = false;
-    box.innerHTML = `
-      <span>Copy this key now. It will not be shown again.</span>
-      <code>${escapeHtml(data.apiKey.key)}</code>
-      <button type="button" data-copy-key="${escapeHtml(data.apiKey.key)}">Copy</button>
-    `;
+    showApiKeyModal(data.apiKey.key);
     status.textContent = "API key created.";
     form.reset();
     await loadKeys();
@@ -537,6 +639,34 @@ $("#developer-api-key-form").addEventListener("submit", async (event) => {
     status.textContent = error.message;
   }
 });
+
+$("#developer-key-search").addEventListener("input", (event) => {
+  state.keySearch = event.target.value;
+  renderKeys();
+});
+
+$("#developer-key-filter").addEventListener("change", (event) => {
+  state.keyStatus = event.target.value;
+  renderKeys();
+});
+
+$("#developer-audit-refresh").addEventListener("click", () => loadAudit().catch((error) => toast(error.message)));
+
+function showApiKeyModal(key) {
+  const modal = $("#api-key-modal");
+  $("#api-key-modal-value").textContent = key;
+  $("#api-key-modal-copy").dataset.copyKey = key;
+  modal.hidden = false;
+}
+
+function closeApiKeyModal() {
+  const modal = $("#api-key-modal");
+  $("#api-key-modal-value").textContent = "";
+  $("#api-key-modal-copy").dataset.copyKey = "";
+  modal.hidden = true;
+}
+
+$("#api-key-modal-close").addEventListener("click", closeApiKeyModal);
 
 $("#developer-agent-form").addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -595,6 +725,24 @@ document.addEventListener("click", async (event) => {
     setTimeout(() => (copy.textContent = "Copy"), 1200);
   }
 
+  const hold = event.target.closest("[data-hold-key]");
+  if (hold) {
+    const shouldHold = hold.dataset.holdValue !== "false";
+    hold.disabled = true;
+    hold.textContent = shouldHold ? "Holding..." : "Unholding...";
+    try {
+      await api(`/api/developer/api-key/${encodeURIComponent(hold.dataset.holdKey)}/hold`, {
+        method: "POST",
+        body: JSON.stringify({ hold: shouldHold })
+      });
+      toast(shouldHold ? "API key held" : "API key unheld");
+      await loadKeys();
+    } catch (error) {
+      toast(error.message);
+      await loadKeys();
+    }
+  }
+
   const revoke = event.target.closest("[data-revoke-key]");
   if (revoke) {
     revoke.disabled = true;
@@ -612,19 +760,20 @@ document.addEventListener("click", async (event) => {
 
   const archiveAgent = event.target.closest("[data-archive-agent]");
   if (archiveAgent) {
+    const shouldArchive = archiveAgent.dataset.archiveValue !== "false";
     archiveAgent.disabled = true;
-    archiveAgent.textContent = "Archiving...";
+    archiveAgent.textContent = shouldArchive ? "Archiving..." : "Unarchiving...";
     try {
       await api(`/api/developer/agents/${encodeURIComponent(archiveAgent.dataset.archiveAgent)}`, {
         method: "POST",
-        body: JSON.stringify({ archive: true })
+        body: JSON.stringify({ archive: shouldArchive })
       });
-      toast("Agent archived");
+      toast(shouldArchive ? "Agent archived" : "Agent unarchived");
       await loadAgents();
     } catch (error) {
       toast(error.message);
       archiveAgent.disabled = false;
-      archiveAgent.textContent = "Archive";
+      archiveAgent.textContent = shouldArchive ? "Archive" : "Unarchive";
     }
   }
 });

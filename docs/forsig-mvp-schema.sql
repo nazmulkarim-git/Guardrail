@@ -17,6 +17,7 @@ create table if not exists api_keys (
   prefix text,
   last_used_at timestamptz,
   created_at timestamptz not null default now(),
+  held_at timestamptz,
   revoked_at timestamptz
 );
 
@@ -92,4 +93,3 @@ create index if not exists audit_events_escalation_idx
 insert into workspaces (id, name, owner_email)
 values ('workspace_beta', 'Forsig Private Beta', null)
 on conflict (id) do nothing;
-

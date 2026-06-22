@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
     if (req.method === "GET") {
       const keys = await db`
-        select id, name, prefix, last_used_at, created_at, revoked_at
+        select id, name, prefix, last_used_at, created_at, revoked_at, held_at
         from api_keys
         where workspace_id = ${session.workspaceId}
         order by created_at desc

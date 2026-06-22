@@ -26,8 +26,10 @@
         <nav>
           <button type="button" data-developer-view="inbox" class="active">Inbox</button>
           <button type="button" data-developer-view="agents">Agents</button>
-          <button type="button" data-developer-view="workspace">Workspace</button>
           <button type="button" data-developer-view="keys">API Keys</button>
+          <button type="button" data-developer-view="audit">Audit trails</button>
+          <button type="button" data-developer-view="workspace">Workspace</button>
+          <button type="button" data-developer-view="profile">Profile</button>
           <button type="button" data-developer-view="docs">Docs</button>
         </nav>
         <button id="developer-logout" type="button">Logout</button>
@@ -159,16 +161,55 @@
         </section>
 
         <section id="developer-view-keys" class="admin-view" hidden>
+          <div class="resend-panel">
+            <div class="resend-panel-head">
+              <div>
+                <h2>API keys</h2>
+                <p>Create one key per environment or test workflow. Full keys are shown once.</p>
+              </div>
+              <form id="developer-api-key-form" class="inline-create-form">
+                <input name="name" type="text" placeholder="Key name" />
+                <button type="submit">+ Create API key</button>
+                <p class="mini-status" role="status"></p>
+              </form>
+            </div>
+            <div class="key-table-toolbar">
+              <input id="developer-key-search" type="search" placeholder="Search keys..." />
+              <select id="developer-key-filter">
+                <option value="all">All statuses</option>
+                <option value="active">Active</option>
+                <option value="held">Held</option>
+                <option value="revoked">Revoked</option>
+              </select>
+            </div>
+            <div id="developer-api-key-list" class="resend-table"></div>
+          </div>
+        </section>
+
+        <section id="developer-view-profile" class="admin-view" hidden>
           <div class="admin-panel">
-            <h2>API keys</h2>
-            <p>Create one key per environment or test workflow. The full key is only shown once.</p>
-            <form id="developer-api-key-form" class="admin-form-grid">
-              <input name="name" type="text" placeholder="Key name, e.g. Refund Agent test" />
-              <button type="submit">Create API key</button>
+            <h2>Profile</h2>
+            <p>Keep your developer profile current for beta support and workspace ownership.</p>
+            <form id="developer-profile-form" class="admin-form-grid">
+              <input name="name" type="text" placeholder="Your name" autocomplete="name" />
+              <input name="email" type="email" placeholder="Email" autocomplete="email" disabled />
+              <input name="company" type="text" placeholder="Company" autocomplete="organization" />
+              <button type="submit">Save profile</button>
               <p class="mini-status" role="status"></p>
             </form>
-            <div id="developer-new-api-key" class="new-api-key" hidden></div>
-            <div id="developer-api-key-list" class="api-key-list"></div>
+          </div>
+        </section>
+
+        <section id="developer-view-audit" class="admin-view" hidden>
+          <div class="resend-panel">
+            <div class="resend-panel-head">
+              <div>
+                <h2>Audit trails</h2>
+                <p>Review workspace actions, API key changes, agent changes, and escalation decisions.</p>
+              </div>
+              <button id="developer-audit-refresh" type="button">Refresh</button>
+            </div>
+            <div id="developer-audit-list" class="audit-table"></div>
           </div>
         </section>
 
@@ -216,6 +257,17 @@ const decision = await forsig.escalate({
           </div>
         </section>
       </section>
+
+      <div id="api-key-modal" class="api-key-modal" hidden role="dialog" aria-modal="true" aria-labelledby="api-key-modal-title">
+        <div>
+          <button id="api-key-modal-close" type="button" aria-label="Close">x</button>
+          <span class="zip-section-label">API key created</span>
+          <h2 id="api-key-modal-title">Copy this key now</h2>
+          <p>This is the only time Forsig will show the full API key.</p>
+          <code id="api-key-modal-value"></code>
+          <button id="api-key-modal-copy" type="button">Copy API key</button>
+        </div>
+      </div>
     </main>
     <script src="/developer-app.js" type="module"></script>
   </body>

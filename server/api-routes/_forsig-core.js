@@ -265,6 +265,7 @@ export async function authenticateRequest(req, db = getSql()) {
     from api_keys
     where hashed_key = ${keyHash}
       and revoked_at is null
+      and held_at is null
     limit 1
   `;
   const apiKey = rows[0];

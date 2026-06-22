@@ -45,6 +45,7 @@ export default async function handler(req, res) {
       return;
     }
 
+    const wantsArchiveChange = body.archive !== undefined || body.archived !== undefined;
     const archive = Boolean(body.archive || body.archived);
     const reviewerEmails = parseReviewerEmails(body.defaultReviewerEmails || body.default_reviewer_emails);
     const hasReviewerEmails = body.defaultReviewerEmails !== undefined || body.default_reviewer_emails !== undefined;
@@ -55,7 +56,11 @@ export default async function handler(req, res) {
         description = coalesce(${body.description === undefined ? null : normalizeString(body.description)}, description),
         environment = coalesce(${environment}, environment),
         default_reviewer_emails = case when ${hasReviewerEmails}::boolean then ${toJson(reviewerEmails)} else default_reviewer_emails end,
-        archived_at = case when ${archive}::boolean then now() else archived_at end,
+        archived_at = case
+          when ${wantsArchiveChange}::boolean and ${archive}::boolean then now()
+          when ${wantsArchiveChange}::boolean and not ${archive}::boolean then null
+          else archived_at
+        end,
         updated_at = now()
       where id = ${id}
         and workspace_id = ${session.workspaceId}
@@ -69,7 +74,7 @@ export default async function handler(req, res) {
 
     await db`
       insert into audit_events (id, workspace_id, escalation_id, actor_type, actor_id, event_type, metadata_json, created_at)
-      values (${newId("audit")}, ${session.workspaceId}, null, 'user', ${session.id}, ${archive ? 'agent.archived' : 'agent.updated'}, ${toJson({ agentId: id })}, now())
+      values (${newId("audit")}, ${session.workspaceId}, null, 'user', ${session.id}, ${wantsArchiveChange ? (archive ? 'agent.archived' : 'agent.unarchived') : 'agent.updated'}, ${toJson({ agentId: id })}, now())
     `;
 
     json(res, 200, { ok: true, agent: rows[0] });

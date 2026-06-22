@@ -383,14 +383,21 @@
           <form id="waitlist-followup-form" class="waitlist-followup" hidden>
             <input name="leadId" type="hidden" />
             <textarea name="useCase" placeholder="What real-world action can your agent take?"></textarea>
-            <input name="frameworkInterest" type="text" placeholder="Framework: LangGraph, CrewAI, n8n, custom..." />
+            <label class="framework-picker">
+              <span>Frameworks</span>
+              <select name="frameworkInterest" multiple>
+                <option>LangGraph</option>
+                <option>CrewAI</option>
+                <option>OpenAI Agents SDK</option>
+                <option>Vercel AI SDK</option>
+                <option>n8n</option>
+                <option>Zapier</option>
+                <option>Custom agent</option>
+                <option>Other</option>
+              </select>
+            </label>
+            <input name="frameworkOther" type="text" placeholder="Other framework name" hidden />
             <input name="externalActions" type="text" placeholder="Risky actions: email, refund, deploy, spend..." />
-            <select name="founderCallInterest">
-              <option value="">Want a founder setup call?</option>
-              <option value="yes">Yes, I want a setup call</option>
-              <option value="later">Maybe later</option>
-              <option value="no">No, just send access</option>
-            </select>
             <button type="submit">Send context</button>
             <p class="mini-status" role="status"></p>
           </form>

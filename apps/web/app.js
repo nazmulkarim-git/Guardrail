@@ -302,10 +302,27 @@ function initWaitlist() {
 function initWaitlistFollowup() {
   const form = document.getElementById("waitlist-followup-form");
   if (!form) return;
+  const frameworkSelect = form.elements.frameworkInterest;
+  const frameworkOther = form.elements.frameworkOther;
+  function selectedFrameworks() {
+    const selected = Array.from(frameworkSelect?.selectedOptions || []).map((option) => option.value).filter(Boolean);
+    const other = frameworkOther?.value?.trim();
+    return selected.map((name) => (name === "Other" && other ? `Other: ${other}` : name)).join(", ");
+  }
+  frameworkSelect?.addEventListener("change", () => {
+    const wantsOther = Array.from(frameworkSelect.selectedOptions).some((option) => option.value === "Other");
+    if (frameworkOther) {
+      frameworkOther.hidden = !wantsOther;
+      frameworkOther.required = wantsOther;
+      if (!wantsOther) frameworkOther.value = "";
+    }
+  });
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     const status = form.querySelector(".mini-status");
     const data = Object.fromEntries(new FormData(form).entries());
+    data.frameworkInterest = selectedFrameworks();
+    delete data.frameworkOther;
     if (status) status.textContent = "Sending...";
     try {
       const response = await fetch("/api/waitlist-profile", {
@@ -318,8 +335,7 @@ function initWaitlistFollowup() {
       if (status) status.textContent = "Context saved. Thank you.";
       showToast("Context saved");
       track("waitlist_followup_submitted", {
-        frameworkInterest: data.frameworkInterest,
-        founderCallInterest: data.founderCallInterest
+        frameworkInterest: data.frameworkInterest
       });
     } catch (error) {
       if (status) status.textContent = error.message || "Context could not be saved.";

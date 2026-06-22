@@ -30,7 +30,7 @@ export default async function handler(req, res) {
         w.*,
         (select count(*)::int from escalations where workspace_id = w.id and status = 'pending') as pending_count,
         (select count(*)::int from escalations where workspace_id = w.id) as escalation_count,
-        (select count(*)::int from api_keys where workspace_id = w.id and revoked_at is null) as active_key_count
+        (select count(*)::int from api_keys where workspace_id = w.id and revoked_at is null and held_at is null) as active_key_count
       from workspaces w
       where w.id = ${session.workspaceId}
       limit 1

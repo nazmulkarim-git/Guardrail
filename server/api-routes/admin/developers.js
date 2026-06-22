@@ -36,7 +36,7 @@ export default async function handler(req, res) {
           d.last_login_at,
           d.created_at,
           w.name as workspace_name,
-          (select count(*)::int from api_keys where workspace_id = d.workspace_id and revoked_at is null) as active_key_count,
+          (select count(*)::int from api_keys where workspace_id = d.workspace_id and revoked_at is null and held_at is null) as active_key_count,
           (select count(*)::int from agents where workspace_id = d.workspace_id and archived_at is null) as agent_count,
           (select count(*)::int from escalations where workspace_id = d.workspace_id) as escalation_count,
           (select count(*)::int from escalations where workspace_id = d.workspace_id and status = 'pending') as pending_count,
