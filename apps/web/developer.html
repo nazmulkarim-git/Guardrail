@@ -28,9 +28,7 @@
           <button type="button" data-developer-view="agents">Agents</button>
           <button type="button" data-developer-view="keys">API Keys</button>
           <button type="button" data-developer-view="audit">Audit trails</button>
-          <button type="button" data-developer-view="workspace">Workspace</button>
-          <button type="button" data-developer-view="profile">Profile</button>
-          <button type="button" data-developer-view="docs">Docs</button>
+          <button type="button" data-developer-view="settings">Settings</button>
         </nav>
         <button id="developer-logout" type="button">Logout</button>
       </aside>
@@ -66,48 +64,15 @@
       </section>
 
       <section id="developer-app" class="admin-main" hidden>
-        <header class="admin-topbar">
-          <div>
-            <span class="zip-section-label">Developer workspace</span>
-            <h1>Add human approval to one agent workflow.</h1>
-            <p id="developer-workspace-label" class="admin-meta"></p>
-          </div>
-          <div class="admin-topbar-actions">
-            <button id="developer-test-escalation" type="button">Send test escalation</button>
-            <button id="developer-refresh" type="button">Refresh</button>
-          </div>
-        </header>
-
-        <section class="admin-journey" aria-label="Developer setup flow">
-          <article>
-            <span>01</span>
-            <strong>Create an agent</strong>
-            <p>Name the workflow Forsig will review.</p>
-          </article>
-          <article>
-            <span>02</span>
-            <strong>Generate API key</strong>
-            <p>Use it from your agent code.</p>
-          </article>
-          <article>
-            <span>03</span>
-            <strong>Escalate risky steps</strong>
-            <p>Pause, ask a human, resume safely.</p>
-          </article>
-        </section>
-
-        <section class="admin-stats" aria-label="Workspace stats">
-          <article><span>Pending</span><strong id="dev-stat-pending">0</strong></article>
-          <article><span>Approved</span><strong id="dev-stat-approved">0</strong></article>
-          <article><span>Rejected</span><strong id="dev-stat-rejected">0</strong></article>
-          <article><span>Edited</span><strong id="dev-stat-edited">0</strong></article>
-        </section>
+        <div class="developer-topline">
+          <span id="developer-workspace-label" class="admin-meta"></span>
+          <a href="/docs">Docs</a>
+        </div>
 
         <section id="developer-view-inbox" class="admin-view">
           <div class="admin-toolbar">
             <div>
-              <h2>Escalation inbox</h2>
-              <p>Decide what the agent should do next. The returned instruction is what your workflow reads from Forsig.</p>
+              <h2>Inbox</h2>
             </div>
             <select id="developer-status-filter">
               <option value="pending">Pending</option>
@@ -130,7 +95,6 @@
         <section id="developer-view-agents" class="admin-view" hidden>
           <div class="admin-panel">
             <h2>Agents</h2>
-            <p>Create the identity your code sends with each escalation. Use the slug as <code>agent.id</code>.</p>
             <form id="developer-agent-form" class="admin-form-grid">
               <input name="name" type="text" required placeholder="Agent name, e.g. Refund Agent" />
               <input name="slug" type="text" placeholder="Agent slug, e.g. refund-agent" />
@@ -148,24 +112,11 @@
           </div>
         </section>
 
-        <section id="developer-view-workspace" class="admin-view" hidden>
-          <div class="admin-panel">
-            <h2>Workspace</h2>
-            <p>Name your workspace so your feedback and test escalations are easy to understand.</p>
-            <form id="developer-workspace-form" class="admin-form-grid">
-              <input name="name" type="text" required placeholder="Workspace name" />
-              <button type="submit">Save workspace</button>
-              <p class="mini-status" role="status"></p>
-            </form>
-          </div>
-        </section>
-
         <section id="developer-view-keys" class="admin-view" hidden>
           <div class="resend-panel">
             <div class="resend-panel-head">
               <div>
                 <h2>API keys</h2>
-                <p>Create one key per environment or test workflow. Full keys are shown once.</p>
               </div>
               <form id="developer-api-key-form" class="inline-create-form">
                 <input name="name" type="text" placeholder="Key name" />
@@ -186,26 +137,11 @@
           </div>
         </section>
 
-        <section id="developer-view-profile" class="admin-view" hidden>
-          <div class="admin-panel">
-            <h2>Profile</h2>
-            <p>Keep your developer profile current for beta support and workspace ownership.</p>
-            <form id="developer-profile-form" class="admin-form-grid">
-              <input name="name" type="text" placeholder="Your name" autocomplete="name" />
-              <input name="email" type="email" placeholder="Email" autocomplete="email" disabled />
-              <input name="company" type="text" placeholder="Company" autocomplete="organization" />
-              <button type="submit">Save profile</button>
-              <p class="mini-status" role="status"></p>
-            </form>
-          </div>
-        </section>
-
         <section id="developer-view-audit" class="admin-view" hidden>
           <div class="resend-panel">
             <div class="resend-panel-head">
               <div>
                 <h2>Audit trails</h2>
-                <p>Review workspace actions, API key changes, agent changes, and escalation decisions.</p>
               </div>
               <button id="developer-audit-refresh" type="button">Refresh</button>
             </div>
@@ -213,47 +149,26 @@
           </div>
         </section>
 
-        <section id="developer-view-docs" class="admin-view" hidden>
-          <div class="admin-panel">
-            <h2>Quickstart</h2>
-            <p>Install the SDK, create an agent and API key, then call Forsig only when your workflow needs human judgment.</p>
-            <div class="detail-section">
-              <h3>Install</h3>
-              <pre><code>npm install @forsig/sdk</code></pre>
+        <section id="developer-view-settings" class="admin-view" hidden>
+          <div class="settings-grid">
+            <div class="admin-panel">
+              <h2>Profile</h2>
+              <form id="developer-profile-form" class="admin-form-grid">
+                <input name="name" type="text" placeholder="Your name" autocomplete="name" />
+                <input name="email" type="email" placeholder="Email" autocomplete="email" disabled />
+                <input name="company" type="text" placeholder="Company" autocomplete="organization" />
+                <button type="submit">Save profile</button>
+                <p class="mini-status" role="status"></p>
+              </form>
             </div>
-            <div class="detail-section">
-              <h3>Escalate a risky action</h3>
-              <pre><code>import { Forsig } from "@forsig/sdk";
-
-const forsig = new Forsig({
-  apiKey: process.env.FORSIG_API_KEY,
-  baseUrl: "https://www.forsig.com"
-});
-
-const decision = await forsig.escalate({
-  agent: { id: "refund-agent", name: "Refund Agent", environment: "production" },
-  risk: { type: "refund_over_limit", level: "high" },
-  task: {
-    title: "Approve refund for customer #123",
-    proposedAction: "Issue a $500 refund",
-    customerImpact: true
-  },
-  context: { refundAmount: 500, customerTier: "VIP" },
-  review: { notify: ["dashboard", "email"] },
-  waitForDecision: true
-});</code></pre>
+            <div class="admin-panel">
+              <h2>Workspace</h2>
+              <form id="developer-workspace-form" class="admin-form-grid">
+                <input name="name" type="text" required placeholder="Workspace name" />
+                <button type="submit">Save workspace</button>
+                <p class="mini-status" role="status"></p>
+              </form>
             </div>
-            <div class="detail-section">
-              <h3>Agent control flow</h3>
-              <pre><code>if (decision.status === "approved" || decision.status === "edited") {
-  await continueWorkflow(decision.instruction);
-} else if (decision.status === "context_added") {
-  await continueWorkflow(decision.addedContext);
-} else {
-  await stopWorkflow(decision.instruction);
-}</code></pre>
-            </div>
-            <p class="admin-meta">Private beta note: send only the minimum context needed for review. Avoid secrets, credentials, unnecessary PII, and regulated data.</p>
           </div>
         </section>
       </section>

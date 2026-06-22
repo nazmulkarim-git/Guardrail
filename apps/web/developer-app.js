@@ -129,10 +129,12 @@ function setView(view) {
     section.hidden = section.id !== `developer-view-${view}`;
   });
   if (view === "keys") loadKeys();
-  if (view === "workspace") loadWorkspace();
   if (view === "agents") loadAgents();
-  if (view === "profile") loadProfile();
   if (view === "audit") loadAudit();
+  if (view === "settings") {
+    loadWorkspace();
+    loadProfile();
+  }
 }
 
 async function checkSession() {
@@ -146,7 +148,7 @@ async function checkSession() {
       return;
     }
     showApp();
-    $("#developer-workspace-label").textContent = `${session.developer.workspaceName || "Workspace"} · ${session.developer.email}`;
+    $("#developer-workspace-label").textContent = session.developer.workspaceName || "Workspace";
     await Promise.all([loadWorkspace(), loadEscalations()]);
     if (state.selectedId) await loadDetail(state.selectedId);
   } else {
@@ -161,7 +163,7 @@ async function loadWorkspace() {
     if (data.workspace && form) {
       form.elements.name.value = data.workspace.name || "";
       if (state.developer) state.developer.workspaceName = data.workspace.name || "Workspace";
-      $("#developer-workspace-label").textContent = `${data.workspace.name || "Workspace"} · ${state.developer?.email || ""}`;
+      $("#developer-workspace-label").textContent = data.workspace.name || "Workspace";
     }
   } catch (error) {
     $("#developer-workspace-form .mini-status").textContent = error.message;
@@ -304,10 +306,6 @@ async function loadAgents() {
 async function loadEscalations() {
   const data = await api(`/api/developer/escalations?status=${encodeURIComponent(state.status)}`);
   state.escalations = data.escalations || [];
-  $("#dev-stat-pending").textContent = data.counts?.pending ?? 0;
-  $("#dev-stat-approved").textContent = data.counts?.approved ?? 0;
-  $("#dev-stat-rejected").textContent = data.counts?.rejected ?? 0;
-  $("#dev-stat-edited").textContent = data.counts?.edited ?? 0;
   renderList();
   if (!state.selectedId && state.escalations[0]) {
     await loadDetail(state.escalations[0].id);
@@ -317,7 +315,7 @@ async function loadEscalations() {
 function renderList() {
   const list = $("#developer-escalation-list");
   if (!state.escalations.length) {
-    list.innerHTML = "<p class='empty-state'>No escalations yet. Create an agent, create an API key, then click Send test escalation to see the full loop.</p>";
+    list.innerHTML = "<p class='empty-state'>No escalations yet. Create an agent and API key, then send an escalation from your app.</p>";
     return;
   }
   list.innerHTML = state.escalations.map((item) => `
@@ -547,27 +545,6 @@ $("#developer-reset-password-form").addEventListener("submit", async (event) => 
 $("#developer-logout").addEventListener("click", async () => {
   await api("/api/developer/logout", { method: "POST", body: "{}" }).catch(() => null);
   showLogin();
-});
-
-$("#developer-refresh").addEventListener("click", () => loadEscalations().catch((error) => toast(error.message)));
-
-$("#developer-test-escalation").addEventListener("click", async () => {
-  const button = $("#developer-test-escalation");
-  button.disabled = true;
-  button.textContent = "Creating...";
-  try {
-    const data = await api("/api/developer/test-escalation", { method: "POST", body: "{}" });
-    toast("Test escalation created");
-    state.status = "pending";
-    $("#developer-status-filter").value = "pending";
-    await loadEscalations();
-    await loadDetail(data.escalationId);
-  } catch (error) {
-    toast(error.message);
-  } finally {
-    button.disabled = false;
-    button.textContent = "Send test escalation";
-  }
 });
 
 $("#developer-status-filter").addEventListener("change", async (event) => {
