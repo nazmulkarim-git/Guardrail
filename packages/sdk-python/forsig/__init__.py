@@ -73,7 +73,7 @@ class Forsig:
         timeout = float(payload.pop("timeout_seconds", 30 * 60))
         response = self._request("POST", "/api/v1/escalations", payload)
         escalation = response["escalation"]
-        if not wait_for_decision:
+        if not wait_for_decision or escalation.get("status") == "shadow_logged":
             return escalation
         return self.wait_for_decision(escalation["id"], poll_interval_seconds=poll_interval, timeout_seconds=timeout)
 

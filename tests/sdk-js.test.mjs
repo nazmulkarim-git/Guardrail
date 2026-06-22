@@ -85,6 +85,37 @@ test("Forsig client creates escalations with bearer auth", async () => {
   assert.equal(JSON.parse(calls[0].init.body).agent, "refund-agent");
 });
 
+test("Forsig client returns shadow escalation without polling", async () => {
+  const calls = [];
+  const client = new Forsig({
+    apiKey: "fsk_test_123",
+    baseURL: "https://example.test",
+    fetch: async (url, init) => {
+      calls.push({ url, init });
+      return {
+        ok: true,
+        json: async () => ({
+          ok: true,
+          escalation: { id: "esc_shadow", status: "shadow_logged", mode: "shadow", wouldHaveEscalated: true }
+        })
+      };
+    }
+  });
+
+  const escalation = await client.escalate({
+    mode: "shadow",
+    agent: "refund-agent",
+    task: "Approve refund",
+    risk: "refund_over_threshold",
+    proposedAction: "Issue refund",
+    waitForDecision: true
+  });
+
+  assert.equal(escalation.status, "shadow_logged");
+  assert.equal(calls.length, 1);
+  assert.equal(JSON.parse(calls[0].init.body).mode, "shadow");
+});
+
 test("Forsig client sends decisions", async () => {
   const calls = [];
   const client = new Forsig({

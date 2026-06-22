@@ -18,6 +18,32 @@ test("validateEscalationPayload accepts compact JavaScript input", () => {
   assert.equal(parsed.risk.type, "refund_over_limit");
 });
 
+test("validateEscalationPayload accepts shadow mode", () => {
+  const parsed = validateEscalationPayload({
+    mode: "shadow",
+    agent: "refund-agent",
+    task: "Approve refund",
+    risk: "refund_over_threshold",
+    proposedAction: "Issue refund"
+  });
+
+  assert.equal(parsed.valid, true);
+  assert.equal(parsed.mode, "shadow");
+});
+
+test("validateEscalationPayload rejects unknown mode", () => {
+  const parsed = validateEscalationPayload({
+    mode: "maybe",
+    agent: "refund-agent",
+    task: "Approve refund",
+    risk: "refund_over_threshold",
+    proposedAction: "Issue refund"
+  });
+
+  assert.equal(parsed.valid, false);
+  assert.match(parsed.errors.join(" "), /mode must be shadow or active/);
+});
+
 test("validateEscalationPayload accepts Python-style proposed_action", () => {
   const parsed = validateEscalationPayload({
     agent: { id: "sales-agent", name: "Sales Agent" },

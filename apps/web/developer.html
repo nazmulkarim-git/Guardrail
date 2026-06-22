@@ -23,6 +23,8 @@
         <nav>
           <button type="button" data-developer-view="inbox" class="active"><span>Inbox</span></button>
           <button type="button" data-developer-view="quickstart"><span>Quickstart</span></button>
+          <button type="button" data-developer-view="integration"><span>Integration prompt</span></button>
+          <button type="button" data-developer-view="shadow"><span>Shadow simulations</span></button>
           <button type="button" data-developer-view="agents"><span>Agents</span></button>
           <button type="button" data-developer-view="keys"><span>API Keys</span></button>
           <button type="button" data-developer-view="audit"><span>Audit trails</span></button>
@@ -105,9 +107,8 @@
             <button id="developer-generate-real-snippet" class="developer-primary-button" type="button">Generate example</button>
           </div>
           <div class="quickstart-layout">
-            <aside class="quickstart-checklist" id="developer-quickstart-checklist"></aside>
             <article class="quickstart-main">
-              <p class="admin-meta">Use these examples as a guide for creating escalations from your app. Pick a runtime, copy the pattern, then approve or reject the escalation from Inbox.</p>
+              <p class="admin-meta">Use these examples as a guide for creating Forsig checkpoints from your app. They default to shadow mode so you can observe what would require approval before switching to active mode.</p>
               <div class="quickstart-tabs" role="tablist" aria-label="Quickstart language">
                 <button class="active" type="button" data-quickstart-tab="node">Node</button>
                 <button type="button" data-quickstart-tab="python">Python</button>
@@ -127,13 +128,21 @@
               </div>
             </article>
           </div>
+        </section>
+
+        <section id="developer-view-integration" class="admin-view" hidden>
           <article class="quickstart-main ai-install-card">
             <div class="developer-page-head compact">
               <div>
-                <h2>Generate a Codex / Cursor / Claude install prompt</h2>
+                <h1>Forsig Integration Prompt</h1>
                 <p class="admin-meta">Describe which risky actions need approval. Forsig will draft a precise prompt you can paste into your coding assistant so it can refactor your codebase around Forsig checkpoints.</p>
               </div>
               <button id="developer-generate-ai-prompt" type="button">Generate prompt</button>
+            </div>
+            <div class="quickstart-tabs" role="tablist" aria-label="Coding assistant target">
+              <button class="active" type="button" data-prompt-tool="codex">Codex</button>
+              <button type="button" data-prompt-tool="cursor">Cursor</button>
+              <button type="button" data-prompt-tool="claude">Claude Code</button>
             </div>
             <textarea id="developer-ai-prompt-input" placeholder="Example: In my Next.js support app, require approval before issuing refunds over $250, sending outbound discount emails, or running production migrations. Use minimal context and email reviewers."></textarea>
             <pre class="quickstart-code ai-prompt-output"><code id="developer-ai-prompt-output"></code></pre>
@@ -141,6 +150,18 @@
               <button id="developer-copy-ai-prompt" type="button">Copy AI prompt</button>
             </div>
           </article>
+        </section>
+
+        <section id="developer-view-shadow" class="admin-view" hidden>
+          <div class="developer-page-head">
+            <div>
+              <h1>Shadow simulations</h1>
+              <p class="admin-meta">Shadow mode logs where approval would have been required without blocking your agent.</p>
+            </div>
+          </div>
+          <div class="resend-panel">
+            <div id="developer-shadow-list" class="resend-table"></div>
+          </div>
         </section>
 
         <section id="developer-view-escalation" class="admin-view developer-escalation-page" hidden>
@@ -222,9 +243,9 @@
               <h2>Log preferences</h2>
               <label class="developer-checkline developer-checkline-panel">
                 <input id="developer-settings-include-tests" type="checkbox" checked />
-                <span>Include test cases in Inbox and Audit trails</span>
+                <span>Include test cases in Inbox</span>
               </label>
-              <p class="admin-meta">Turn this off when you want to see only real production-like escalations.</p>
+              <p class="admin-meta">Audit trails always include real, test, and shadow events for review. This setting only changes the Inbox list.</p>
             </div>
             <div class="admin-panel">
               <h2>Email notifications</h2>
@@ -301,7 +322,7 @@
           <code id="api-key-modal-value"></code>
           <button id="api-key-modal-copy" type="button">Copy API key</button>
           <div class="api-key-next-step">
-            <h3>Next: run a real escalation</h3>
+            <h3>Next: run a checkpoint</h3>
             <p>Set this key as an environment variable, then open Quickstart for copy-paste code.</p>
             <pre><code id="api-key-modal-env"></code></pre>
             <button type="button" data-developer-view="quickstart">Open Quickstart</button>

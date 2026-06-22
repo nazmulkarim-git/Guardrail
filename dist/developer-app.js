@@ -1,3 +1,5 @@
+import { generateIntegrationPrompt } from "./prompt-generator.mjs";
+
 const state = {
   selectedId: new URLSearchParams(location.search).get("esc"),
   status: "pending",
@@ -16,9 +18,11 @@ const state = {
   includeTests: localStorage.getItem("forsig_include_tests") !== "false",
   auditRange: "all",
   quickstartTab: "node",
+  promptTargetTool: "codex",
   workspace: null,
   lastApiKey: "",
   selectedAuditId: null,
+  shadowSimulations: [],
   auditEvents: []
 };
 
@@ -162,6 +166,12 @@ function setView(view) {
   }
   if (view === "quickstart") {
     renderQuickstart();
+  }
+  if (view === "integration") {
+    renderIntegrationPrompt();
+  }
+  if (view === "shadow") {
+    loadShadowSimulations();
   }
   if (view === "audit") loadAudit();
   if (view !== "audit-detail") state.selectedAuditId = null;
@@ -370,11 +380,7 @@ async function loadAudit() {
   try {
     const data = await api("/api/developer/audit");
     const cutoff = rangeCutoff(state.auditRange);
-    state.auditEvents = (data.events || []).filter((event) => {
-      const isTest = event.metadata_json?.testMode === "manual_test";
-      const inRange = !cutoff || new Date(event.created_at) >= cutoff;
-      return (state.includeTests || !isTest) && inRange;
-    });
+    state.auditEvents = (data.events || []).filter((event) => !cutoff || new Date(event.created_at) >= cutoff);
     list.innerHTML = state.auditEvents.length ? `
       <div class="resend-table-row resend-table-head audit-table-row">
         <span>Event</span><span>Target</span><span>Actor</span><span>Time</span>
@@ -519,6 +525,7 @@ function quickstartSnippets() {
       customerImpact: true
     },
     context: { customerId: "cus_123", customerTier: "VIP", refundAmount: 500 },
+    mode: "shadow",
     review: { notify: ["dashboard", "email"] },
     timeoutSeconds: 900
   };
@@ -628,59 +635,27 @@ GET ${baseUrl}/api/v1/escalations/{{$json.id}}`
   };
 }
 
+function renderIntegrationPrompt() {
+  const output = $("#developer-ai-prompt-output");
+  if (!output) return;
+  output.textContent = generateAiInstallPrompt();
+  document.querySelectorAll("[data-prompt-tool]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.promptTool === state.promptTargetTool);
+  });
+}
+
 function generateAiInstallPrompt() {
   const request = $("#developer-ai-prompt-input")?.value.trim()
     || "Add Forsig approval checkpoints before refunds over $250, production deployments, outbound customer emails, and paid external tool calls.";
   const agent = starterAgent();
   const agentId = agent.slug || agent.id || "refund-agent";
   const baseUrl = location.origin || "https://www.forsig.com";
-  return `You are editing my existing codebase. Integrate Forsig human approval checkpoints with the smallest safe change set.
-
-Goal:
-${request}
-
-Forsig details:
-- Base URL: ${baseUrl}
-- API key env var: FORSIG_API_KEY
-- Default agent id/slug: ${agentId}
-- Use minimal review context only. Never send secrets, passwords, API keys, full payment details, or unnecessary personal data to Forsig.
-- For each risky action, create a Forsig escalation before the action executes.
-- The app must wait for the decision, then branch:
-  - approved: continue with the proposed action
-  - rejected: stop safely
-  - edited or context_added: follow the returned instruction
-  - taken_over: stop autonomous execution and mark the task as human-owned
-  - timeout/no decision: fail closed
-
-Implementation instructions:
-1. Search the codebase for the risky action points described above.
-2. Add a small Forsig client/helper if one does not exist.
-3. Wrap each risky action in an approval call using agent, risk, task, context, review.notify = ["dashboard", "email"], and timeoutSeconds.
-4. Keep payloads small and redact secrets.
-5. Add or update tests for approved, rejected, edited, and timeout/fail-closed branches.
-6. Update README/env docs with FORSIG_API_KEY and the local test command.
-
-Example payload shape:
-{
-  agent: { id: "${agentId}", name: "${agent.name || "Forsig Agent"}", environment: "production" },
-  risk: { type: "external_action", level: "high", reason: "Human approval required before this action." },
-  task: {
-    title: "Approve risky agent action",
-    proposedAction: "Describe the action in one sentence",
-    customerImpact: true
-  },
-  context: {
-    includeOnly: "small reviewer-safe facts"
-  },
-  review: { notify: ["dashboard", "email"] },
-  timeoutSeconds: 900
-}
-
-After implementing, show me:
-- files changed
-- where each Forsig checkpoint was inserted
-- how to run the real escalation test
-- any assumptions or missing env vars.`;
+  return generateIntegrationPrompt({
+    goal: request,
+    targetTool: state.promptTargetTool,
+    agentId,
+    baseUrl
+  });
 }
 
 function renderQuickstart() {
@@ -694,7 +669,34 @@ function renderQuickstart() {
   });
   const promptOutput = $("#developer-ai-prompt-output");
   if (promptOutput && !promptOutput.textContent.trim()) {
-    promptOutput.textContent = generateAiInstallPrompt();
+    renderIntegrationPrompt();
+  }
+}
+
+async function loadShadowSimulations() {
+  const list = $("#developer-shadow-list");
+  if (!list) return;
+  list.innerHTML = "<p class='empty-state'>Loading shadow simulations...</p>";
+  try {
+    const data = await api("/api/developer/escalations?status=shadow_logged");
+    state.shadowSimulations = data.escalations || [];
+    list.innerHTML = state.shadowSimulations.length ? `
+      <div class="resend-table-row inbox-table-row resend-table-head">
+        <span>Checkpoint</span><span>Status</span><span>Mode</span><span>Agent</span><span>Risk</span><span>Created</span>
+      </div>
+      ${state.shadowSimulations.map((item) => `
+        <button type="button" data-escalation-id="${escapeHtml(item.id)}" class="resend-table-row selectable-row inbox-table-row">
+          <span><b>${escapeHtml(item.task?.title || item.id)}</b><small>Would have required approval</small></span>
+          <span><em class="key-state key-state-held">Shadow logged</em></span>
+          <span><em class="key-state key-state-active">Shadow</em></span>
+          <span>${escapeHtml(item.agent?.name || item.agent?.id || "Agent")}</span>
+          <span>${escapeHtml(item.risk?.type || item.risk?.level || "review")}</span>
+          <span>${formatDate(item.createdAt)}</span>
+        </button>
+      `).join("")}
+    ` : "<p class='empty-state'>No shadow simulations yet. Use <code>mode: \"shadow\"</code> in an escalation request to log non-blocking checkpoints.</p>";
+  } catch (error) {
+    list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
   }
 }
 
@@ -846,7 +848,7 @@ function renderInboxRows() {
           <small>${escapeHtml(item.workflow || item.step || "Approval request")}</small>
         </span>
         <span><em class="key-state key-state-${escapeHtml(item.status)}">${escapeHtml(item.status)}</em></span>
-        <span><em class="key-state key-state-${item.testMode ? "held" : "active"}">${item.testMode ? "Test" : "Real"}</em></span>
+        <span><em class="key-state key-state-${item.mode === "shadow" ? "held" : item.testMode ? "held" : "active"}">${item.mode === "shadow" ? "Shadow" : item.testMode ? "Test" : "Real"}</em></span>
         <span>${escapeHtml(item.agent?.name || item.agent?.id || "Agent")}</span>
         <span>${escapeHtml(item.risk?.level || "review")}</span>
         <span>${formatDate(item.createdAt)}</span>
@@ -892,7 +894,7 @@ function renderDetail() {
           <h2>${escapeHtml(item.task?.title)}</h2>
           <p>${escapeHtml(item.task?.description || "The agent is waiting for human judgment before it continues.")}</p>
         </div>
-        <span>${item.testMode ? "test escalation" : escapeHtml(item.status)}</span>
+        <span>${item.mode === "shadow" ? "shadow simulation" : item.testMode ? "test escalation" : escapeHtml(item.status)}</span>
       </div>
 
       <section class="product-review-grid">
@@ -920,7 +922,7 @@ function renderDetail() {
 
       <section class="detail-section product-decision-box">
       <h3>Decision returned to agent</h3>
-      <p class="section-helper">${item.reviewer?.assignedEmail ? `Assigned to ${escapeHtml(item.reviewer.assignedEmail)}. ` : ""}${item.expiresAt ? `Expires ${formatDate(item.expiresAt)}. ` : ""}${item.testMode ? `Mode: ${escapeHtml(item.testMode)}.` : "Mode: manual."}</p>
+      <p class="section-helper">${item.mode === "shadow" ? "Shadow mode: approval would have been required, but execution was not blocked. " : ""}${item.reviewer?.assignedEmail ? `Assigned to ${escapeHtml(item.reviewer.assignedEmail)}. ` : ""}${item.expiresAt ? `Expires ${formatDate(item.expiresAt)}. ` : ""}${item.testMode ? `Mode: ${escapeHtml(item.testMode)}.` : `Mode: ${escapeHtml(item.mode || "active")}.`}</p>
       ${canDecide ? `
         <div class="decision-actions">
           ${decisionButton("approved", "Approve")}
@@ -1317,6 +1319,14 @@ document.addEventListener("click", async (event) => {
     state.quickstartTab = quickstartTab.dataset.quickstartTab;
     renderQuickstart();
     track("quickstart_tab_selected", { tab: state.quickstartTab });
+    return;
+  }
+
+  const promptTool = event.target.closest("[data-prompt-tool]");
+  if (promptTool) {
+    state.promptTargetTool = promptTool.dataset.promptTool;
+    renderIntegrationPrompt();
+    track("integration_prompt_tool_selected", { targetTool: state.promptTargetTool });
     return;
   }
 

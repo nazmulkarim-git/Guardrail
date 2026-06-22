@@ -302,6 +302,8 @@ export function compactEscalation(row) {
   return {
     id: row.id,
     status: row.status,
+    mode: row.status === "shadow_logged" ? "shadow" : "active",
+    wouldHaveEscalated: row.status === "shadow_logged" ? true : undefined,
     agent: {
       id: row.external_agent_id,
       name: row.agent_name

@@ -120,12 +120,15 @@ export function validateEscalationPayload(body) {
       : [];
   const assignedReviewerEmail = normalizeString(review.assignedReviewerEmail || review.assigned_reviewer_email) || reviewerEmails[0] || null;
   const testMode = normalizeString(review.testMode || review.test_mode || body.testMode || body.test_mode);
+  const rawMode = normalizeString(body.mode || review.mode);
+  const mode = rawMode === "shadow" ? "shadow" : "active";
   const errors = [];
   if (!agent.id) errors.push("agent is required.");
   if (!task.title) errors.push("task title is required.");
   if (!risk.type) errors.push("risk type is required.");
   if (!task.proposedAction) errors.push("proposedAction is required.");
-  return { valid: errors.length === 0, errors, agent, run, risk, task, review, reviewerEmails, assignedReviewerEmail, testMode };
+  if (rawMode && !["shadow", "active"].includes(rawMode)) errors.push("mode must be shadow or active.");
+  return { valid: errors.length === 0, errors, agent, run, risk, task, review, reviewerEmails, assignedReviewerEmail, testMode, mode };
 }
 
 export default async function handler(req, res) {
@@ -183,6 +186,7 @@ export default async function handler(req, res) {
         test_mode,
         timeout_at,
         created_at,
+        resolved_at,
         updated_at
       )
       values (
@@ -194,7 +198,7 @@ export default async function handler(req, res) {
         ${parsed.run.id},
         ${parsed.run.workflow},
         ${parsed.run.step},
-        'pending',
+        ${parsed.mode === "shadow" ? "shadow_logged" : "pending"},
         ${parsed.risk.type},
         ${parsed.risk.level},
         ${parsed.risk.reason},
@@ -212,6 +216,7 @@ export default async function handler(req, res) {
         ${parsed.testMode},
         ${timeoutAt},
         ${createdAt},
+        ${parsed.mode === "shadow" ? createdAt : null},
         ${createdAt}
       )
       returning *
@@ -234,11 +239,35 @@ export default async function handler(req, res) {
         ${id},
         'agent',
         ${parsed.agent.id},
-        'escalation.created',
-        ${toJson({ apiKeyId: auth.apiKeyId, risk: parsed.risk, task: parsed.task.title })},
+        ${parsed.mode === "shadow" ? "escalation.shadow_logged" : "escalation.created"},
+        ${toJson({
+          apiKeyId: auth.apiKeyId,
+          mode: parsed.mode,
+          wouldHaveEscalated: true,
+          risk: parsed.risk,
+          task: parsed.task.title,
+          message: parsed.mode === "shadow" ? "Shadow mode: approval would have been required, but execution was not blocked." : "Active mode: approval escalation created."
+        })},
         ${createdAt}
       )
     `;
+
+    if (parsed.mode === "shadow") {
+      json(res, 201, {
+        ok: true,
+        id,
+        mode: "shadow",
+        status: "shadow_logged",
+        wouldHaveEscalated: true,
+        reason: parsed.risk.type,
+        message: "Shadow mode: approval would have been required, but execution was not blocked.",
+        created_at: createdAt,
+        escalation: compactEscalation(rows[0]),
+        dashboard_url: dashboardUrl(req, id),
+        dashboardUrl: dashboardUrl(req, id)
+      });
+      return;
+    }
 
     if (!parsed.reviewerEmails.length) {
       const agentRows = await db`

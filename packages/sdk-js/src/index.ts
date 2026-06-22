@@ -33,6 +33,7 @@ export type ForsigRisk =
     };
 
 export type ForsigEscalationInput = {
+  mode?: "shadow" | "active";
   agent: string | { id?: string; name?: string; version?: string; environment?: string };
   runId?: string;
   workflow?: string;
@@ -49,6 +50,7 @@ export type ForsigEscalationInput = {
     reviewerEmails?: string[];
     timeoutSeconds?: number;
     testMode?: "manual" | "auto_approve" | "auto_reject" | "auto_timeout" | string;
+    mode?: "shadow" | "active";
     allowedActions?: string[];
   };
   notify?: string[];
@@ -144,7 +146,7 @@ export class Forsig {
       method: "POST",
       body: JSON.stringify(input)
     });
-    if (!input.waitForDecision) return response.escalation;
+    if (!input.waitForDecision || response.escalation?.status === "shadow_logged") return response.escalation;
     return this.waitForDecision(response.escalation.id, {
       pollIntervalMs: input.pollIntervalMs,
       timeoutMs: input.timeoutMs ?? (input.timeoutSeconds ? input.timeoutSeconds * 1000 : undefined)

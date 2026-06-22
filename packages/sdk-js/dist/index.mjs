@@ -54,7 +54,7 @@ export class Forsig {
       method: "POST",
       body: JSON.stringify(input)
     });
-    if (!input.waitForDecision) return response.escalation;
+    if (!input.waitForDecision || response.escalation?.status === "shadow_logged") return response.escalation;
     return this.waitForDecision(response.escalation.id, {
       pollIntervalMs: input.pollIntervalMs,
       timeoutMs: input.timeoutMs ?? (input.timeoutSeconds ? input.timeoutSeconds * 1000 : undefined)

@@ -45,6 +45,20 @@ npx create-forsig-demo</code></pre>
         </section>
 
         <section data-doc-section>
+          <h2>Shadow mode and active mode</h2>
+          <p>Start new integrations in <code>shadow</code> mode. Forsig logs that approval would have been required, but your agent keeps running. Switch to <code>active</code> mode when you are ready to block execution until a human decides.</p>
+          <pre><code>FORSIG_MODE=shadow
+
+{
+  "mode": "shadow",
+  "status": "shadow_logged",
+  "wouldHaveEscalated": true,
+  "message": "Shadow mode: approval would have been required, but execution was not blocked."
+}</code></pre>
+          <p>Use <code>FORSIG_MODE=active</code> when the action should pause until approval. Active mode keeps the existing approval, notification, audit, and decision flow.</p>
+        </section>
+
+        <section data-doc-section>
           <h2>Plain Node</h2>
           <pre><code>const baseUrl = process.env.FORSIG_BASE_URL || "https://www.forsig.com";
 const apiKey = process.env.FORSIG_API_KEY;
@@ -60,6 +74,7 @@ const payload = {
     customerImpact: true
   },
   context: { refundAmount: 500, customerTier: "VIP" },
+  mode: process.env.FORSIG_MODE || "shadow",
   review: { notify: ["dashboard", "email"] }
 };
 
