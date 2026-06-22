@@ -60,8 +60,8 @@ function prettyJson(value) {
 function showLogin() {
   $("#developer-sidebar").hidden = true;
   $("#developer-login").hidden = false;
+  $("#developer-password").hidden = true;
   $("#developer-app").hidden = true;
-  $("#developer-reset-password-form").hidden = true;
   $("#developer-login-form").hidden = false;
   setAuthMode("signup");
 }
@@ -69,6 +69,7 @@ function showLogin() {
 function showApp() {
   $("#developer-sidebar").hidden = false;
   $("#developer-login").hidden = true;
+  $("#developer-password").hidden = true;
   $("#developer-app").hidden = false;
 }
 
@@ -82,11 +83,11 @@ function passwordStrengthError(password) {
 }
 
 function showPasswordReset(copy = "Use at least 10 characters with uppercase, lowercase, number, and special character.") {
-  $("#developer-login-form").hidden = true;
+  $("#developer-sidebar").hidden = true;
+  $("#developer-login").hidden = true;
+  $("#developer-password").hidden = false;
+  $("#developer-app").hidden = true;
   $("#developer-reset-password-form").hidden = false;
-  $(".auth-mode-tabs").hidden = true;
-  $("#developer-login-title").textContent = "Create password";
-  $("#developer-login-copy").textContent = "Your beta access is verified. Create a password before opening the workspace.";
   $("#developer-reset-copy").textContent = copy;
   $("#developer-reset-password-form").elements.password.focus();
 }
@@ -104,7 +105,7 @@ function setAuthMode(mode) {
     ? "Use the email and access code your admin sent you. You will create a password next."
     : "Use your email and password. Temporary passwords from forgot password also work here.";
   form.hidden = false;
-  $("#developer-reset-password-form").hidden = true;
+  $("#developer-password").hidden = true;
   form.elements.accessCode.hidden = !isSignup;
   form.elements.accessCode.required = isSignup;
   form.elements.password.hidden = isSignup;
@@ -393,7 +394,6 @@ $("#developer-login-form").addEventListener("submit", async (event) => {
     status.textContent = "";
     state.setupRequired = false;
     $("#developer-login-form").hidden = false;
-    $("#developer-reset-password-form").hidden = true;
     showApp();
     await Promise.all([loadWorkspace(), loadEscalations()]);
   } catch (error) {
@@ -452,7 +452,6 @@ $("#developer-reset-password-form").addEventListener("submit", async (event) => 
     if (state.developer) state.developer.mustResetPassword = false;
     toast("Password updated");
     $("#developer-login-form").hidden = false;
-    $("#developer-reset-password-form").hidden = true;
     showApp();
     await Promise.all([loadWorkspace(), loadEscalations()]);
   } catch (error) {
