@@ -390,11 +390,15 @@ const decision = await forsig.escalate({
   agent: "refund-agent",
   risk: { type: "refund_over_limit", level: "high" },
   task: {
-    title: "Approve refund",
-    proposedAction: "Issue $500 refund"
+    title: "Approve $500 refund",
+    proposedAction: "Issue refund to VIP customer #123"
   },
   waitForDecision: true
-});`
+});
+
+if (decision.status === "approved") {
+  await issueRefund();
+}`
     },
     py: {
       title: "agent.py",
@@ -408,9 +412,15 @@ forsig = Forsig(api_key=os.environ["FORSIG_API_KEY"])
 decision = forsig.escalate(
     agent="refund-agent",
     risk={"type": "refund_over_limit", "level": "high"},
-    task={"title": "Approve refund", "proposed_action": "Issue $500 refund"},
+    task={
+        "title": "Approve $500 refund",
+        "proposed_action": "Issue refund to VIP customer #123",
+    },
     wait_for_decision=True,
-)`
+)
+
+if decision.status == "approved":
+    issue_refund()`
     }
   };
   function show(language) {

@@ -7447,6 +7447,666 @@ th {
   }
 }
 
+/* DevTool launch flow: Mac codebase, live architecture, MacBook demo */
+.codebase-section {
+  padding-top: 88px;
+  padding-bottom: 48px;
+}
+
+.codebase-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.68fr) minmax(420px, 1fr);
+  gap: clamp(28px, 5vw, 72px);
+  align-items: center;
+}
+
+.codebase-layout h2,
+.architecture-section h2 {
+  margin: 10px 0 14px;
+}
+
+.codebase-layout p {
+  max-width: 560px;
+  color: var(--zip-muted);
+  line-height: 1.65;
+}
+
+.mac-code-stage,
+.macbook-demo {
+  position: relative;
+}
+
+.mac-code-stage::before,
+.macbook-demo::before {
+  position: absolute;
+  inset: 10% 4% auto;
+  height: 72%;
+  border-radius: 36px;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(0, 255, 194, 0.18), transparent 34%),
+    radial-gradient(circle at 86% 18%, rgba(122, 92, 255, 0.2), transparent 30%);
+  filter: blur(24px);
+  opacity: 0.82;
+  content: "";
+}
+
+.mac-window {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  border: 1px solid rgba(77, 90, 108, 0.55);
+  border-radius: 22px;
+  background: rgba(9, 12, 16, 0.92);
+  box-shadow: 0 38px 120px rgba(0, 0, 0, 0.42);
+}
+
+.mac-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(77, 90, 108, 0.34);
+  background: linear-gradient(180deg, rgba(28, 34, 43, 0.96), rgba(16, 20, 27, 0.94));
+}
+
+.mac-titlebar span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.mac-titlebar span:nth-child(1) { background: #ff5f57; }
+.mac-titlebar span:nth-child(2) { background: #ffbd2e; }
+.mac-titlebar span:nth-child(3) { background: #28c840; }
+
+.mac-titlebar b {
+  margin-left: 10px;
+  color: #aab5c4;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.mac-code-body {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  min-height: 430px;
+}
+
+.codebase-sidebar {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 18px 12px;
+  border-right: 1px solid rgba(77, 90, 108, 0.28);
+  background: rgba(13, 17, 23, 0.82);
+}
+
+.codebase-sidebar strong {
+  margin-bottom: 8px;
+  color: #ecf3ff;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+
+.codebase-sidebar span {
+  overflow: hidden;
+  border-radius: 8px;
+  padding: 8px;
+  color: #8792a3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12px;
+}
+
+.codebase-sidebar span.active {
+  color: #dcfff6;
+  background: rgba(0, 255, 194, 0.1);
+}
+
+.codebase-editor {
+  min-width: 0;
+}
+
+.editor-tab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(77, 90, 108, 0.24);
+  background: rgba(15, 19, 26, 0.72);
+}
+
+.editor-tab b {
+  color: #d8e1ef;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12px;
+}
+
+.editor-tab button {
+  min-height: 30px;
+  border: 1px solid rgba(0, 255, 194, 0.32);
+  border-radius: 999px;
+  padding: 0 11px;
+  color: var(--zip-primary);
+  background: rgba(0, 255, 194, 0.08);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.codebase-editor pre {
+  overflow: auto;
+  min-height: 386px;
+  margin: 0;
+  padding: 22px;
+  color: #b8c7d9;
+  font-size: 13px;
+  line-height: 1.72;
+}
+
+.mac-terminal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 16px;
+  border-top: 1px solid rgba(77, 90, 108, 0.28);
+  color: #99ffe4;
+  background: rgba(3, 6, 9, 0.88);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 12px;
+}
+
+.architecture-section {
+  padding-top: 72px;
+}
+
+.architecture-live {
+  position: relative;
+  overflow: hidden;
+  min-height: 560px;
+  border: 1px solid rgba(77, 90, 108, 0.42);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 50% 44%, rgba(0, 255, 194, 0.13), transparent 28%),
+    radial-gradient(circle at 20% 18%, rgba(104, 119, 255, 0.13), transparent 24%),
+    linear-gradient(135deg, rgba(12, 16, 22, 0.96), rgba(5, 8, 12, 0.96));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 32px 110px rgba(0, 0, 0, 0.28);
+}
+
+.architecture-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.42;
+  background-image:
+    linear-gradient(rgba(104, 119, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 194, 0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+  animation: archGrid 18s linear infinite;
+}
+
+.arch-node,
+.arch-core,
+.arch-telemetry {
+  position: absolute;
+  z-index: 2;
+  border: 1px solid rgba(86, 99, 119, 0.58);
+  background: rgba(16, 21, 29, 0.88);
+  box-shadow: 0 20px 70px rgba(0, 0, 0, 0.32);
+  backdrop-filter: blur(18px);
+}
+
+.arch-node {
+  width: min(250px, 28%);
+  border-radius: 18px;
+  padding: 17px;
+  animation: archFloat 5.2s ease-in-out infinite;
+}
+
+.arch-node small {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--zip-primary);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.arch-node strong {
+  display: block;
+  color: #f4f7fb;
+  font-size: 18px;
+}
+
+.arch-node span {
+  display: block;
+  margin-top: 6px;
+  color: #a8b2c0;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.arch-agent { top: 74px; left: 58px; }
+.arch-risk { top: 332px; left: 128px; animation-delay: -1.2s; }
+.arch-human { top: 74px; right: 74px; animation-delay: -2.1s; }
+.arch-resume { right: 138px; bottom: 62px; animation-delay: -3s; }
+
+.arch-core {
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 214px;
+  height: 214px;
+  border-color: rgba(0, 255, 194, 0.45);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.arch-core b {
+  color: #f7fffd;
+  font-size: 34px;
+}
+
+.arch-core span {
+  max-width: 150px;
+  color: #a7b6c8;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.arch-core-ring {
+  position: absolute;
+  inset: -18px;
+  border: 1px solid rgba(0, 255, 194, 0.28);
+  border-radius: 50%;
+  animation: archPulse 2.8s ease-out infinite;
+}
+
+.arch-path {
+  position: absolute;
+  z-index: 1;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 194, 0.72), transparent);
+  transform-origin: left center;
+}
+
+.path-one { top: 166px; left: 286px; width: 290px; transform: rotate(16deg); }
+.path-two { top: 383px; left: 350px; width: 250px; transform: rotate(-24deg); }
+.path-three { top: 183px; right: 300px; width: 300px; transform: rotate(164deg); }
+.path-four { right: 348px; bottom: 177px; width: 260px; transform: rotate(24deg); }
+
+.arch-packet {
+  position: absolute;
+  z-index: 3;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--zip-primary);
+  box-shadow: 0 0 22px rgba(0, 255, 194, 0.9);
+}
+
+.packet-one { animation: packetOne 3.8s linear infinite; }
+.packet-two { animation: packetTwo 4.2s linear infinite; animation-delay: -1s; }
+.packet-three { animation: packetThree 4s linear infinite; animation-delay: -1.7s; }
+.packet-four { animation: packetFour 4.4s linear infinite; animation-delay: -2.2s; }
+
+.arch-telemetry {
+  left: 50%;
+  bottom: 24px;
+  display: flex;
+  gap: 10px;
+  max-width: calc(100% - 48px);
+  border-radius: 16px;
+  padding: 10px;
+  transform: translateX(-50%);
+}
+
+.arch-telemetry span {
+  border: 1px solid rgba(77, 90, 108, 0.42);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: #aeb8c7;
+  background: rgba(7, 10, 14, 0.56);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.arch-telemetry b {
+  color: var(--zip-primary);
+}
+
+.macbook-demo {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+  padding-bottom: 34px;
+}
+
+.macbook-lid {
+  position: relative;
+  z-index: 1;
+  border: 1px solid rgba(82, 94, 111, 0.66);
+  border-radius: 28px 28px 20px 20px;
+  padding: 12px;
+  background: linear-gradient(145deg, #29313d, #0a0d12 44%, #232a34);
+  box-shadow: 0 42px 130px rgba(0, 0, 0, 0.46);
+}
+
+.macbook-screen {
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.82);
+  border-radius: 20px 20px 12px 12px;
+  background: #080b10;
+}
+
+.demo-titlebar {
+  min-height: 38px;
+}
+
+.mac-demo-app {
+  display: grid;
+  grid-template-columns: 176px minmax(0, 1fr);
+  min-height: 650px;
+  background:
+    radial-gradient(circle at 74% 4%, rgba(0, 255, 194, 0.1), transparent 24%),
+    linear-gradient(180deg, #0d1117, #090c11);
+}
+
+.demo-sidebar {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 22px 14px;
+  border-right: 1px solid rgba(77, 90, 108, 0.26);
+  background: rgba(12, 16, 22, 0.76);
+}
+
+.demo-sidebar b {
+  margin-bottom: 14px;
+  color: #f7fffd;
+  font-size: 18px;
+}
+
+.demo-sidebar span {
+  border-radius: 10px;
+  padding: 10px;
+  color: #8894a6;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.demo-sidebar span.active {
+  color: #06120f;
+  background: var(--zip-primary);
+}
+
+.mac-demo-app main {
+  min-width: 0;
+  padding: 18px;
+}
+
+.mac-demo-app .scenario-tabs {
+  justify-content: flex-start;
+  margin: 0 0 14px;
+}
+
+.mac-demo-app .zip-review-page {
+  max-width: none;
+  margin: 0;
+  border-radius: 18px;
+  box-shadow: none;
+}
+
+.macbook-base {
+  position: relative;
+  z-index: 0;
+  width: 92%;
+  height: 26px;
+  margin: -1px auto 0;
+  border-radius: 0 0 34px 34px;
+  background: linear-gradient(180deg, #c6ccd5, #69717d 48%, #15191f);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.38);
+}
+
+.macbook-base::before {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 168px;
+  height: 10px;
+  border-radius: 0 0 16px 16px;
+  background: rgba(17, 21, 28, 0.55);
+  transform: translateX(-50%);
+  content: "";
+}
+
+.beta-pricing-card {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.9fr) minmax(180px, 0.5fr);
+  gap: 22px 34px;
+  max-width: 920px;
+  margin: 0 auto;
+  border: 1px solid rgba(0, 255, 194, 0.28);
+  border-radius: 24px;
+  padding: clamp(22px, 4vw, 36px);
+  background:
+    radial-gradient(circle at 82% 0%, rgba(0, 255, 194, 0.14), transparent 32%),
+    rgba(17, 22, 30, 0.88);
+  box-shadow: 0 26px 90px rgba(0, 0, 0, 0.26);
+}
+
+.beta-pricing-card h3 {
+  margin: 0 0 8px;
+  color: #f7fbff;
+  font-size: 30px;
+}
+
+.beta-pricing-card p,
+.beta-pricing-card li {
+  color: var(--zip-muted);
+  line-height: 1.55;
+}
+
+.beta-pricing-card strong {
+  align-self: start;
+  justify-self: end;
+  color: #f7fffd;
+  font-size: 44px;
+  line-height: 1;
+  text-align: right;
+}
+
+.beta-pricing-card strong span {
+  display: block;
+  margin-top: 8px;
+  color: var(--zip-muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.beta-pricing-card ul {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.beta-pricing-card li::marker {
+  color: var(--zip-primary);
+}
+
+.beta-pricing-note {
+  margin: 0;
+}
+
+.beta-pricing-card .zip-button {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+@keyframes archGrid {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 96px 48px, 96px 48px; }
+}
+
+@keyframes archFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes archPulse {
+  0% { opacity: 0.8; transform: scale(0.92); }
+  100% { opacity: 0; transform: scale(1.18); }
+}
+
+@keyframes packetOne {
+  0% { left: 286px; top: 160px; opacity: 0; }
+  12%, 82% { opacity: 1; }
+  100% { left: 558px; top: 238px; opacity: 0; }
+}
+
+@keyframes packetTwo {
+  0% { left: 354px; top: 377px; opacity: 0; }
+  12%, 82% { opacity: 1; }
+  100% { left: 564px; top: 286px; opacity: 0; }
+}
+
+@keyframes packetThree {
+  0% { right: 300px; top: 176px; opacity: 0; }
+  12%, 82% { opacity: 1; }
+  100% { right: 560px; top: 241px; opacity: 0; }
+}
+
+@keyframes packetFour {
+  0% { right: 556px; bottom: 252px; opacity: 0; }
+  12%, 82% { opacity: 1; }
+  100% { right: 340px; bottom: 171px; opacity: 0; }
+}
+
+@media (max-width: 980px) {
+  .codebase-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .architecture-live {
+    min-height: 720px;
+  }
+
+  .arch-node {
+    width: calc(50% - 46px);
+  }
+
+  .arch-agent { top: 40px; left: 28px; }
+  .arch-human { top: 40px; right: 28px; }
+  .arch-risk { top: auto; bottom: 116px; left: 28px; }
+  .arch-resume { right: 28px; bottom: 116px; }
+  .arch-core { width: 190px; height: 190px; }
+  .arch-path,
+  .arch-packet {
+    display: none;
+  }
+
+  .mac-demo-app {
+    grid-template-columns: 1fr;
+  }
+
+  .demo-sidebar {
+    display: flex;
+    overflow-x: auto;
+    border-right: 0;
+    border-bottom: 1px solid rgba(77, 90, 108, 0.26);
+  }
+
+  .demo-sidebar b {
+    margin: 0 8px 0 0;
+  }
+}
+
+@media (max-width: 680px) {
+  .mac-code-body {
+    grid-template-columns: 1fr;
+  }
+
+  .codebase-sidebar {
+    display: none;
+  }
+
+  .codebase-editor pre {
+    min-height: 330px;
+    padding: 16px;
+    font-size: 12px;
+  }
+
+  .architecture-live {
+    min-height: auto;
+    padding: 18px;
+  }
+
+  .architecture-grid,
+  .arch-core-ring {
+    display: none;
+  }
+
+  .arch-node,
+  .arch-core,
+  .arch-telemetry {
+    position: relative;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: auto;
+    margin-bottom: 12px;
+    transform: none;
+    animation: none;
+  }
+
+  .arch-core {
+    width: auto;
+    height: auto;
+    border-radius: 20px;
+    padding: 22px;
+  }
+
+  .arch-telemetry {
+    display: grid;
+    max-width: none;
+    margin-bottom: 0;
+  }
+
+  .arch-telemetry span {
+    white-space: normal;
+  }
+
+  .macbook-lid {
+    border-radius: 18px;
+    padding: 7px;
+  }
+
+  .mac-demo-app main {
+    padding: 12px;
+  }
+
+  .macbook-base {
+    display: none;
+  }
+
+  .beta-pricing-card {
+    grid-template-columns: 1fr;
+  }
+
+  .beta-pricing-card strong {
+    justify-self: start;
+    text-align: left;
+  }
+}
+
 @media (max-width: 620px) {
   .admin-main {
     width: min(100% - 24px, 1280px);
