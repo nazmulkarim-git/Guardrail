@@ -21,7 +21,7 @@
         <span>Forsig</span>
       </a>
       <article class="legal-card docs-card">
-        <p><a class="docs-back-link" href="/developer">Back to developer console</a></p>
+        <p><button class="docs-back-link" type="button" id="docs-back-button">Back</button></p>
         <p class="eyebrow">Docs</p>
         <h1>Run a real approval in minutes.</h1>
         <p>Forsig pauses a risky AI-agent action, asks a human for a decision, and returns a structured result your code can branch on.</p>
@@ -173,6 +173,10 @@ function verifyForsigWebhook(rawBody, signature, secret) {
         document.querySelectorAll("[data-doc-section]").forEach((section) => {
           section.hidden = query && !section.textContent.toLowerCase().includes(query);
         });
+      });
+      document.getElementById("docs-back-button")?.addEventListener("click", () => {
+        if (history.length > 1) history.back();
+        else location.href = "/";
       });
     </script>
   </body>

@@ -20,10 +20,13 @@ export default async function handler(req, res) {
         a.event_type,
         a.metadata_json,
         a.created_at,
+        du.email as actor_email,
+        du.name as actor_name,
         e.task_title,
         e.status as escalation_status
       from audit_events a
       left join escalations e on e.id = a.escalation_id and e.workspace_id = a.workspace_id
+      left join developer_users du on du.id = a.actor_id and du.workspace_id = a.workspace_id
       where a.workspace_id = ${session.workspaceId}
       order by a.created_at desc
       limit 100

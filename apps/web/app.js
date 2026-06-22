@@ -391,10 +391,14 @@ function initSdkTabs() {
   const code = document.getElementById("sdk-code");
   const title = document.getElementById("sdk-code-title");
   if (!code || !title) return;
+  let activeLanguage = "ts";
+  let activeScenario = "refunds";
   const snippets = {
     ts: {
-      title: "agent.ts",
-      code: `import { Forsig } from "@forsig/sdk";
+      refunds: {
+        title: "src/agents/refund.ts",
+        terminal: "forsig: intercepted refund_over_limit",
+        code: `import { Forsig } from "@forsig/sdk";
 import Stripe from "stripe";
 
 const forsig = new Forsig({
@@ -428,12 +432,101 @@ if (decision.status === "rejected") {
 if (decision.status === "edited") {
   return decision.instruction;
 }`
+      },
+      deployments: {
+        title: "src/agents/deploy.ts",
+        terminal: "forsig: intercepted production_deploy",
+        code: `import { Forsig } from "@forsig/sdk";
+import { deployRelease } from "../deployments";
+
+const forsig = new Forsig({
+  apiKey: process.env.FORSIG_API_KEY
+});
+
+const decision = await forsig.escalations.create({
+  agent: "deploy-agent",
+  action: "production.deploy",
+  risk: "production_deploy",
+  context: {
+    service: "billing-api",
+    environment: "production",
+    commit: "8f41c2a",
+    rollback: "rollback plan attached"
+  },
+});
+
+if (decision.status !== "approved") {
+  return decision.instruction || "Deployment stopped";
+}
+
+await deployRelease({
+  service: "billing-api",
+  environment: "production",
+  commit: "8f41c2a"
+});`
+      },
+      emails: {
+        title: "src/agents/outreach.ts",
+        terminal: "forsig: intercepted external_email",
+        code: `import { Forsig } from "@forsig/sdk";
+import { sendEmail } from "../mail";
+
+const forsig = new Forsig({
+  apiKey: process.env.FORSIG_API_KEY
+});
+
+const decision = await forsig.escalations.create({
+  agent: "sales-agent",
+  action: "email.send",
+  risk: "external_email",
+  context: {
+    recipient: "procurement@example.com",
+    subject: "Custom enterprise offer",
+    discount: "30%",
+    reason: "Discount is outside policy"
+  },
+});
+
+if (decision.status === "approved") {
+  await sendEmail("procurement@example.com", approvedOfferCopy);
+}
+
+if (decision.status === "edited") {
+  await sendEmail("procurement@example.com", decision.instruction);
+}`
+      },
+      spend: {
+        title: "src/agents/research.ts",
+        terminal: "forsig: intercepted paid_tool_call",
+        code: `import { Forsig } from "@forsig/sdk";
+import { buyExport } from "../tools/market-data";
+
+const forsig = new Forsig({
+  apiKey: process.env.FORSIG_API_KEY
+});
+
+const decision = await forsig.escalations.create({
+  agent: "research-agent",
+  action: "market_data_export.purchase",
+  risk: "paid_tool_call",
+  context: {
+    tool: "market_data_export",
+    requestedSpend: 300,
+    budgetRemaining: 420,
+    reason: "Large one-time external purchase"
+  },
+});
+
+if (decision.status === "approved") {
+  await buyExport({ limit: 1000, maxSpend: 300 });
+}`
+      }
     },
     py: {
-      title: "agent.py",
-      code: `pip install forsig
-
-# Planned for beta
+      refunds: {
+        title: "agents/refund.py",
+        terminal: "forsig: intercepted refund_over_limit",
+        code: `import os
 from forsig import Forsig
 
 forsig = Forsig(api_key=os.environ["FORSIG_API_KEY"])
@@ -451,18 +544,102 @@ decision = forsig.escalations.create(
 
 if decision.status == "approved":
     issue_refund()`
+      },
+      deployments: {
+        title: "agents/deploy.py",
+        terminal: "forsig: intercepted production_deploy",
+        code: `import os
+from forsig import Forsig
+
+forsig = Forsig(api_key=os.environ["FORSIG_API_KEY"])
+
+decision = forsig.escalations.create(
+    agent="deploy-agent",
+    action="production.deploy",
+    risk="production_deploy",
+    context={
+        "service": "billing-api",
+        "environment": "production",
+        "commit": "8f41c2a",
+        "rollback": "rollback plan attached",
+    },
+)
+
+if decision.status == "approved":
+    deploy_release(service="billing-api", environment="production")
+else:
+    stop_deployment(decision.instruction)`
+      },
+      emails: {
+        title: "agents/outreach.py",
+        terminal: "forsig: intercepted external_email",
+        code: `import os
+from forsig import Forsig
+
+forsig = Forsig(api_key=os.environ["FORSIG_API_KEY"])
+
+decision = forsig.escalations.create(
+    agent="sales-agent",
+    action="email.send",
+    risk="external_email",
+    context={
+        "recipient": "procurement@example.com",
+        "subject": "Custom enterprise offer",
+        "discount": "30%",
+        "reason": "Discount is outside policy",
+    },
+)
+
+if decision.status == "approved":
+    send_email("procurement@example.com", approved_offer_copy)
+elif decision.status == "edited":
+    send_email("procurement@example.com", decision.instruction)`
+      },
+      spend: {
+        title: "agents/research.py",
+        terminal: "forsig: intercepted paid_tool_call",
+        code: `import os
+from forsig import Forsig
+
+forsig = Forsig(api_key=os.environ["FORSIG_API_KEY"])
+
+decision = forsig.escalations.create(
+    agent="research-agent",
+    action="market_data_export.purchase",
+    risk="paid_tool_call",
+    context={
+        "tool": "market_data_export",
+        "requestedSpend": 300,
+        "budgetRemaining": 420,
+        "reason": "Large one-time external purchase",
+    },
+)
+
+if decision.status == "approved":
+    buy_export(limit=1000, max_spend=300)`
+      }
     }
   };
-  function show(language) {
-    title.textContent = snippets[language].title;
-    code.textContent = snippets[language].code;
-    document.querySelectorAll("[data-sdk-tab]").forEach((button) => button.classList.toggle("active", button.dataset.sdkTab === language));
-    track("sdk_language_toggled", { language });
+  function show(language = activeLanguage, scenario = activeScenario) {
+    activeLanguage = language;
+    activeScenario = scenario;
+    const snippet = snippets[activeLanguage][activeScenario] || snippets.ts.refunds;
+    title.textContent = snippet.title;
+    code.textContent = snippet.code;
+    document.querySelector(".mac-titlebar b").textContent = `~/agent-workflows/${snippet.title}`;
+    const terminal = document.querySelector(".mac-terminal span:first-child");
+    if (terminal) terminal.textContent = snippet.terminal;
+    document.querySelectorAll("[data-sdk-tab]").forEach((button) => button.classList.toggle("active", button.dataset.sdkTab === activeLanguage));
+    document.querySelectorAll("[data-sdk-scenario]").forEach((button) => button.classList.toggle("active", button.dataset.sdkScenario === activeScenario));
+    track("sdk_snippet_changed", { language: activeLanguage, scenario: activeScenario });
   }
   document.querySelectorAll("[data-sdk-tab]").forEach((button) => {
-    button.addEventListener("click", () => show(button.dataset.sdkTab));
+    button.addEventListener("click", () => show(button.dataset.sdkTab, activeScenario));
   });
-  show("ts");
+  document.querySelectorAll("[data-sdk-scenario]").forEach((button) => {
+    button.addEventListener("click", () => show(activeLanguage, button.dataset.sdkScenario));
+  });
+  show();
 }
 
 function initDashboard() {

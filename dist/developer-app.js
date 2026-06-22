@@ -18,6 +18,7 @@ const state = {
   quickstartTab: "node",
   workspace: null,
   lastApiKey: "",
+  selectedAuditId: null,
   auditEvents: []
 };
 
@@ -163,6 +164,7 @@ function setView(view) {
     renderQuickstart();
   }
   if (view === "audit") loadAudit();
+  if (view !== "audit-detail") state.selectedAuditId = null;
   if (view === "profile") loadProfile();
   if (view === "settings") {
     loadWorkspace();
@@ -374,22 +376,69 @@ async function loadAudit() {
       return (state.includeTests || !isTest) && inRange;
     });
     list.innerHTML = state.auditEvents.length ? `
-      <div class="resend-table-row resend-table-head">
+      <div class="resend-table-row resend-table-head audit-table-row">
         <span>Event</span><span>Target</span><span>Actor</span><span>Time</span>
       </div>
       ${state.auditEvents.map((event) => `
-        <div class="resend-table-row audit-row">
+        <button type="button" class="resend-table-row audit-row audit-table-row selectable-row" data-audit-id="${escapeHtml(event.id)}">
           <span><b>${escapeHtml(event.event_type)}</b><small>${escapeHtml(JSON.stringify(event.metadata_json || {}))}</small></span>
           <span>${escapeHtml(event.task_title || event.escalation_id || "Workspace")}</span>
-          <span>${escapeHtml(event.actor_type)} / ${escapeHtml(event.actor_id || "-")}</span>
+          <span>${escapeHtml(auditActorLabel(event))}</span>
           <span>${formatDate(event.created_at)}</span>
-        </div>
+        </button>
       `).join("")}
-    ` : "<p class='empty-state'>No audit events yet.</p>";
+    ` : "<p class='empty-state'>No audit events for this time range.</p>";
     renderOnboarding();
   } catch (error) {
     list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
   }
+}
+
+function auditActorLabel(event) {
+  if (event.actor_email) return event.actor_name ? `${event.actor_name} (${event.actor_email})` : event.actor_email;
+  if (event.metadata_json?.reviewerName) return event.metadata_json.reviewerName;
+  if (event.metadata_json?.reviewerEmail) return event.metadata_json.reviewerEmail;
+  if (event.actor_type === "agent") return event.actor_id || "Agent";
+  if (event.actor_type === "system") return "System";
+  return event.actor_id || event.actor_type || "-";
+}
+
+function showAuditDetail(id) {
+  const event = state.auditEvents.find((item) => item.id === id);
+  if (!event) return;
+  state.selectedAuditId = id;
+  document.querySelectorAll(".admin-view").forEach((section) => {
+    section.hidden = section.id !== "developer-view-audit-detail";
+  });
+  document.querySelectorAll("[data-developer-view]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.developerView === "audit");
+  });
+  const detail = $("#developer-audit-detail");
+  detail.innerHTML = `
+    <button type="button" class="developer-back-button" data-back-audit>Back to audit trails</button>
+    <div class="developer-detail-hero">
+      <div class="developer-detail-icon">L</div>
+      <div>
+        <span>Audit event</span>
+        <h2>${escapeHtml(event.event_type)}</h2>
+      </div>
+      <em class="key-state key-state-active">${formatDate(event.created_at)}</em>
+    </div>
+    <div class="developer-detail-grid">
+      <article><span>Actor</span><strong>${escapeHtml(auditActorLabel(event))}</strong></article>
+      <article><span>Actor type</span><strong>${escapeHtml(event.actor_type || "-")}</strong></article>
+      <article><span>Target</span><strong>${escapeHtml(event.task_title || event.escalation_id || "Workspace")}</strong></article>
+      <article><span>Status</span><strong>${escapeHtml(event.escalation_status || "Recorded")}</strong></article>
+    </div>
+    <section class="detail-section">
+      <h3>Metadata</h3>
+      <pre><code>${escapeHtml(JSON.stringify(event.metadata_json || {}, null, 2))}</code></pre>
+    </section>
+    <section class="detail-section">
+      <h3>Raw event</h3>
+      <pre><code>${escapeHtml(JSON.stringify(event, null, 2))}</code></pre>
+    </section>
+  `;
 }
 
 function agentSnippet(agent) {
@@ -449,7 +498,6 @@ function renderChecklist(container) {
 }
 
 function renderOnboarding() {
-  renderChecklist($("#developer-onboarding-panel"));
   renderChecklist($("#developer-quickstart-checklist"));
 }
 
@@ -580,6 +628,61 @@ GET ${baseUrl}/api/v1/escalations/{{$json.id}}`
   };
 }
 
+function generateAiInstallPrompt() {
+  const request = $("#developer-ai-prompt-input")?.value.trim()
+    || "Add Forsig approval checkpoints before refunds over $250, production deployments, outbound customer emails, and paid external tool calls.";
+  const agent = starterAgent();
+  const agentId = agent.slug || agent.id || "refund-agent";
+  const baseUrl = location.origin || "https://www.forsig.com";
+  return `You are editing my existing codebase. Integrate Forsig human approval checkpoints with the smallest safe change set.
+
+Goal:
+${request}
+
+Forsig details:
+- Base URL: ${baseUrl}
+- API key env var: FORSIG_API_KEY
+- Default agent id/slug: ${agentId}
+- Use minimal review context only. Never send secrets, passwords, API keys, full payment details, or unnecessary personal data to Forsig.
+- For each risky action, create a Forsig escalation before the action executes.
+- The app must wait for the decision, then branch:
+  - approved: continue with the proposed action
+  - rejected: stop safely
+  - edited or context_added: follow the returned instruction
+  - taken_over: stop autonomous execution and mark the task as human-owned
+  - timeout/no decision: fail closed
+
+Implementation instructions:
+1. Search the codebase for the risky action points described above.
+2. Add a small Forsig client/helper if one does not exist.
+3. Wrap each risky action in an approval call using agent, risk, task, context, review.notify = ["dashboard", "email"], and timeoutSeconds.
+4. Keep payloads small and redact secrets.
+5. Add or update tests for approved, rejected, edited, and timeout/fail-closed branches.
+6. Update README/env docs with FORSIG_API_KEY and the local test command.
+
+Example payload shape:
+{
+  agent: { id: "${agentId}", name: "${agent.name || "Forsig Agent"}", environment: "production" },
+  risk: { type: "external_action", level: "high", reason: "Human approval required before this action." },
+  task: {
+    title: "Approve risky agent action",
+    proposedAction: "Describe the action in one sentence",
+    customerImpact: true
+  },
+  context: {
+    includeOnly: "small reviewer-safe facts"
+  },
+  review: { notify: ["dashboard", "email"] },
+  timeoutSeconds: 900
+}
+
+After implementing, show me:
+- files changed
+- where each Forsig checkpoint was inserted
+- how to run the real escalation test
+- any assumptions or missing env vars.`;
+}
+
 function renderQuickstart() {
   const code = $("#developer-quickstart-code");
   if (!code) return;
@@ -589,6 +692,10 @@ function renderQuickstart() {
   document.querySelectorAll("[data-quickstart-tab]").forEach((button) => {
     button.classList.toggle("active", button.dataset.quickstartTab === state.quickstartTab);
   });
+  const promptOutput = $("#developer-ai-prompt-output");
+  if (promptOutput && !promptOutput.textContent.trim()) {
+    promptOutput.textContent = generateAiInstallPrompt();
+  }
 }
 
 async function loadAgents() {
@@ -719,14 +826,11 @@ function renderInboxRows() {
     ].filter(Boolean).join(" ").toLowerCase().includes(query);
   });
   if (!escalations.length) {
+    const pendingOnly = state.status === "pending";
     list.innerHTML = `
       <div class="empty-state">
-        <strong>No escalations yet.</strong>
-        <p>Create an API key, copy the Quickstart snippet, and send a real escalation from your local machine.</p>
-        <div class="developer-empty-actions">
-          <button type="button" data-developer-view="quickstart">Run your first real escalation</button>
-          <button type="button" id="developer-empty-test-escalation">Create UI test escalation</button>
-        </div>
+        <strong>${pendingOnly ? "No pending escalations." : "No escalations match this view."}</strong>
+        <p>${pendingOnly ? "Everything is working fine. New agent requests that need review will appear here." : "Try changing the status filter or search query."}</p>
       </div>
     `;
     return;
@@ -1235,8 +1339,27 @@ document.addEventListener("click", async (event) => {
     return;
   }
 
+  if (event.target.closest("#developer-generate-ai-prompt")) {
+    $("#developer-ai-prompt-output").textContent = generateAiInstallPrompt();
+    track("ai_install_prompt_generated");
+    toast("AI install prompt generated");
+    return;
+  }
+
+  if (event.target.closest("#developer-copy-ai-prompt")) {
+    await navigator.clipboard.writeText($("#developer-ai-prompt-output").textContent);
+    track("ai_install_prompt_copied");
+    toast("AI prompt copied");
+    return;
+  }
+
   if (event.target.closest("[data-back-inbox]")) {
     showInboxList();
+    return;
+  }
+
+  if (event.target.closest("[data-back-audit]")) {
+    setView("audit");
     return;
   }
 
@@ -1253,6 +1376,12 @@ document.addEventListener("click", async (event) => {
   const escalationButton = event.target.closest("[data-escalation-id]");
   if (escalationButton) {
     await loadDetail(escalationButton.dataset.escalationId);
+    return;
+  }
+
+  const auditRow = event.target.closest("[data-audit-id]");
+  if (auditRow) {
+    showAuditDetail(auditRow.dataset.auditId);
     return;
   }
 

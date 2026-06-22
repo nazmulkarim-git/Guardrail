@@ -74,7 +74,6 @@
         </div>
 
         <section id="developer-view-inbox" class="admin-view">
-          <div id="developer-onboarding-panel" class="developer-onboarding-panel"></div>
           <div class="developer-page-head">
             <h1>Inbox</h1>
             <button id="developer-test-escalation" class="developer-primary-button" type="button">Create test escalation</button>
@@ -102,13 +101,13 @@
 
         <section id="developer-view-quickstart" class="admin-view" hidden>
           <div class="developer-page-head">
-            <h1>Run your first real escalation</h1>
-            <button id="developer-generate-real-snippet" class="developer-primary-button" type="button">Send real escalation</button>
+            <h1>Quickstart</h1>
+            <button id="developer-generate-real-snippet" class="developer-primary-button" type="button">Generate example</button>
           </div>
           <div class="quickstart-layout">
             <aside class="quickstart-checklist" id="developer-quickstart-checklist"></aside>
             <article class="quickstart-main">
-              <p class="admin-meta">Copy one of these examples into your app. This creates a real pending escalation in Forsig, then your code polls until you approve, reject, edit, or take over from Inbox.</p>
+              <p class="admin-meta">Use these examples as a guide for creating escalations from your app. Pick a runtime, copy the pattern, then approve or reject the escalation from Inbox.</p>
               <div class="quickstart-tabs" role="tablist" aria-label="Quickstart language">
                 <button class="active" type="button" data-quickstart-tab="node">Node</button>
                 <button type="button" data-quickstart-tab="python">Python</button>
@@ -128,6 +127,20 @@
               </div>
             </article>
           </div>
+          <article class="quickstart-main ai-install-card">
+            <div class="developer-page-head compact">
+              <div>
+                <h2>Generate a Codex / Cursor / Claude install prompt</h2>
+                <p class="admin-meta">Describe which risky actions need approval. Forsig will draft a precise prompt you can paste into your coding assistant so it can refactor your codebase around Forsig checkpoints.</p>
+              </div>
+              <button id="developer-generate-ai-prompt" type="button">Generate prompt</button>
+            </div>
+            <textarea id="developer-ai-prompt-input" placeholder="Example: In my Next.js support app, require approval before issuing refunds over $250, sending outbound discount emails, or running production migrations. Use minimal context and email reviewers."></textarea>
+            <pre class="quickstart-code ai-prompt-output"><code id="developer-ai-prompt-output"></code></pre>
+            <div class="developer-detail-actions">
+              <button id="developer-copy-ai-prompt" type="button">Copy AI prompt</button>
+            </div>
+          </article>
         </section>
 
         <section id="developer-view-escalation" class="admin-view developer-escalation-page" hidden>
@@ -184,6 +197,12 @@
             </div>
             <div id="developer-audit-list" class="audit-table"></div>
           </div>
+        </section>
+
+        <section id="developer-view-audit-detail" class="admin-view developer-audit-detail-page" hidden>
+          <article id="developer-audit-detail" class="developer-detail-page">
+            <p class="empty-state">Select an audit event to review.</p>
+          </article>
         </section>
 
         <section id="developer-view-settings" class="admin-view" hidden>
