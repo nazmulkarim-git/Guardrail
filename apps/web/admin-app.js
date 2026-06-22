@@ -4,6 +4,7 @@ const state = {
   escalations: [],
   detail: null,
   inboxSearch: "",
+  auditRange: "all",
   auditEvents: []
 };
 
@@ -56,6 +57,20 @@ function prettyJson(value) {
   return JSON.stringify(value, null, 2);
 }
 
+function rangeCutoff(range) {
+  const now = Date.now();
+  const day = 24 * 60 * 60 * 1000;
+  const ranges = {
+    "24h": day,
+    "7d": 7 * day,
+    "30d": 30 * day,
+    "3m": 90 * day,
+    "6m": 180 * day,
+    "1y": 365 * day
+  };
+  return ranges[range] ? new Date(now - ranges[range]) : null;
+}
+
 function showLogin() {
   $("#admin-sidebar").hidden = true;
   $("#admin-login").hidden = false;
@@ -101,6 +116,16 @@ async function loadWorkspace() {
       form.elements.name.value = data.workspace.name || "";
       form.elements.ownerEmail.value = data.workspace.owner_email || "";
     }
+    const list = $("#workspace-list");
+    if (list) {
+      list.innerHTML = data.workspaces?.length ? data.workspaces.map((workspace) => `
+        <article>
+          <strong>${escapeHtml(workspace.name || workspace.id)}</strong>
+          <span>${escapeHtml(workspace.owner_email || "No owner")} / ${escapeHtml(workspace.id)}</span>
+          <small>${workspace.developer_count || 0} developers / ${workspace.agent_count || 0} agents / ${workspace.active_key_count || 0} active keys / ${workspace.escalation_count || 0} escalations / ${workspace.pending_count || 0} pending</small>
+        </article>
+      `).join("") : "<p class='empty-state'>No workspaces yet.</p>";
+    }
   } catch (error) {
     $("#workspace-form .mini-status").textContent = error.message;
   }
@@ -112,11 +137,11 @@ async function loadKeys() {
   try {
     const data = await api("/api/admin/api-key");
     list.innerHTML = data.keys.length ? data.keys.map((key) => {
-      const masked = `${String(key.prefix || key.id || "fsk").slice(0, 4)}_****************`;
+      const masked = `${String(key.prefix || key.id || "fsk").slice(0, 8)}...`;
       return `
         <article>
           <strong>${escapeHtml(key.name)}</strong>
-          <span>${escapeHtml(masked)} / created ${formatDate(key.created_at)}</span>
+          <span>${escapeHtml(masked)} / ${escapeHtml(key.workspace_name || key.workspace_id || "Workspace")} / created ${formatDate(key.created_at)}</span>
           <small>${key.last_used_at ? `Last used ${formatDate(key.last_used_at)}` : "Never used"}</small>
         </article>
       `;
@@ -170,7 +195,8 @@ async function loadAdminAudit() {
   list.innerHTML = "<p class='empty-state'>Loading audit trail...</p>";
   try {
     const data = await api("/api/admin/audit");
-    state.auditEvents = data.events || [];
+    const cutoff = rangeCutoff(state.auditRange);
+    state.auditEvents = (data.events || []).filter((event) => !cutoff || new Date(event.created_at) >= cutoff);
     list.innerHTML = state.auditEvents.length ? `
       <div class="resend-table-row resend-table-head">
         <span>Event</span><span>Workspace</span><span>Target</span><span>Actor</span><span>Time</span>
@@ -245,7 +271,7 @@ function renderAdminInboxRows() {
       <button type="button" data-escalation-id="${escapeHtml(item.id)}" class="inbox-table-row ${item.id === state.selectedId ? "active" : ""}">
         <span>
           <b>${escapeHtml(item.task?.title || item.id)}</b>
-          <small>${escapeHtml(item.workflow || item.step || "Approval request")}</small>
+          <small>${escapeHtml(item.workspace?.name || "Workspace")}${item.developerEmail ? ` / ${escapeHtml(item.developerEmail)}` : ""}</small>
         </span>
         <span><em class="key-state key-state-${escapeHtml(item.status)}">${escapeHtml(item.status)}</em></span>
         <span><em class="key-state key-state-${item.testMode ? "held" : "active"}">${item.testMode ? "Test" : "Real"}</em></span>
@@ -416,6 +442,11 @@ $("#admin-inbox-search").addEventListener("input", (event) => {
 });
 
 $("#admin-audit-refresh").addEventListener("click", () => loadAdminAudit().catch((error) => toast(error.message)));
+
+$("#admin-audit-range").addEventListener("change", (event) => {
+  state.auditRange = event.target.value;
+  loadAdminAudit().catch((error) => toast(error.message));
+});
 
 document.addEventListener("click", async (event) => {
   const escalationButton = event.target.closest("[data-escalation-id]");

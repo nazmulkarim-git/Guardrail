@@ -122,6 +122,7 @@
               <button type="submit">Save workspace</button>
               <p class="mini-status" role="status"></p>
             </form>
+            <div id="workspace-list" class="api-key-list"></div>
           </div>
         </section>
 
@@ -144,6 +145,17 @@
           <div class="developer-page-head">
             <h1>Audit trails</h1>
             <button id="admin-audit-refresh" class="developer-primary-button" type="button">Refresh</button>
+          </div>
+          <div class="key-table-toolbar audit-toolbar">
+            <select id="admin-audit-range">
+              <option value="all">All time</option>
+              <option value="24h">Last 24 hours</option>
+              <option value="7d">Last 7 days</option>
+              <option value="30d">Last 30 days</option>
+              <option value="3m">Last 3 months</option>
+              <option value="6m">Last 6 months</option>
+              <option value="1y">Last 1 year</option>
+            </select>
           </div>
           <div id="admin-audit-list" class="audit-table"></div>
         </section>

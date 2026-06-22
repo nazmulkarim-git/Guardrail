@@ -38,7 +38,20 @@ export default async function handler(req, res) {
       limit 1
     `;
 
-    json(res, 200, { ok: true, workspace: rows[0] || null, defaults: toJson({ workspaceId }) });
+    const workspaces = await db`
+      select
+        w.*,
+        (select count(*)::int from developer_users where workspace_id = w.id) as developer_count,
+        (select count(*)::int from agents where workspace_id = w.id and archived_at is null) as agent_count,
+        (select count(*)::int from api_keys where workspace_id = w.id and revoked_at is null and held_at is null) as active_key_count,
+        (select count(*)::int from escalations where workspace_id = w.id) as escalation_count,
+        (select count(*)::int from escalations where workspace_id = w.id and status = 'pending') as pending_count
+      from workspaces w
+      order by w.created_at desc nulls last, w.updated_at desc nulls last
+      limit 250
+    `;
+
+    json(res, 200, { ok: true, workspace: rows[0] || null, workspaces, defaults: toJson({ workspaceId }) });
   } catch (error) {
     const publicError = publicApiError(error);
     console.error("Admin workspace failed", { code: error.code, message: error.message, detail: error.detail });

@@ -123,7 +123,7 @@ export default async function handler(req, res) {
           ${toJson(sample.context)},
           ${toJson(["approve", "reject", "edit", "add_context", "take_over", "needs_more_info"])},
           ${toJson(["dashboard"])},
-          'manual',
+          'manual_test',
           now(),
           now()
         )
@@ -146,7 +146,7 @@ export default async function handler(req, res) {
           'system',
           'developer_portal',
           'escalation.demo_created',
-          ${toJson({ source: "developer_portal", riskType: sample.riskType })},
+          ${toJson({ source: "developer_portal", testMode: "manual_test", riskType: sample.riskType })},
           now()
         )
       `;

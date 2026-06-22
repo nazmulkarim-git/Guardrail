@@ -75,6 +75,7 @@
         <section id="developer-view-inbox" class="admin-view">
           <div class="developer-page-head">
             <h1>Inbox</h1>
+            <button id="developer-test-escalation" class="developer-primary-button" type="button">Create test escalation</button>
           </div>
           <div class="admin-toolbar">
             <input id="developer-inbox-search" type="search" placeholder="Search requests..." />
@@ -134,7 +135,16 @@
             <h1>Audit trails</h1>
           </div>
           <div class="resend-panel">
-            <div class="resend-panel-head">
+            <div class="key-table-toolbar audit-toolbar">
+              <select id="developer-audit-range">
+                <option value="all">All time</option>
+                <option value="24h">Last 24 hours</option>
+                <option value="7d">Last 7 days</option>
+                <option value="30d">Last 30 days</option>
+                <option value="3m">Last 3 months</option>
+                <option value="6m">Last 6 months</option>
+                <option value="1y">Last 1 year</option>
+              </select>
               <button id="developer-audit-refresh" type="button">Refresh</button>
             </div>
             <div id="developer-audit-list" class="audit-table"></div>

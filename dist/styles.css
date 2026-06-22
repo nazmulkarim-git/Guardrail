@@ -6201,6 +6201,89 @@ body[data-page="app"] h2 {
   }
 }
 
+/* Final row/button/typing polish */
+body[data-page="developer"] .inbox-table-row,
+body[data-page="app"] .inbox-table-row,
+body[data-page="developer"] .resend-table-row,
+body[data-page="app"] .resend-table-row {
+  min-height: 46px !important;
+  padding: 0 14px !important;
+}
+
+body[data-page="developer"] .inbox-table-head,
+body[data-page="app"] .inbox-table-head,
+body[data-page="developer"] .resend-table-head,
+body[data-page="app"] .resend-table-head {
+  min-height: 38px !important;
+}
+
+body[data-page="developer"] .inbox-table-row b,
+body[data-page="app"] .inbox-table-row b,
+body[data-page="developer"] .resend-table-row b,
+body[data-page="app"] .resend-table-row b {
+  font-size: 17px !important;
+}
+
+body[data-page="developer"] .resend-table-row code,
+body[data-page="app"] .resend-table-row code,
+body[data-page="developer"] .developer-detail-grid code,
+body[data-page="app"] .developer-detail-grid code {
+  display: inline-flex;
+  width: auto;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 8px;
+  padding: 5px 8px;
+  background: #18191d;
+}
+
+body[data-page="developer"] .admin-panel h2,
+body[data-page="app"] .admin-panel h2 {
+  font-size: 28px !important;
+  line-height: 1.1;
+}
+
+body[data-page="developer"] .settings-grid .admin-panel,
+body[data-page="app"] .settings-grid .admin-panel {
+  align-content: start;
+  min-height: 0;
+  padding: 22px;
+}
+
+body[data-page="developer"] .settings-grid .admin-form-grid,
+body[data-page="app"] .settings-grid .admin-form-grid {
+  grid-template-columns: 1fr;
+}
+
+body[data-page="developer"] .settings-grid .admin-form-grid input,
+body[data-page="app"] .settings-grid .admin-form-grid input,
+body[data-page="developer"] .settings-grid .admin-form-grid button,
+body[data-page="app"] .settings-grid .admin-form-grid button {
+  width: 100%;
+  min-height: 44px;
+  border-radius: 12px;
+}
+
+.audit-toolbar {
+  grid-template-columns: minmax(180px, 260px) max-content !important;
+  justify-content: end;
+}
+
+.docs-back-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  padding: 0 13px;
+  color: #f4f4f5;
+  background: rgba(255, 255, 255, 0.04);
+  font-weight: 800;
+  text-decoration: none;
+}
+
 /* Final console polish: compact list rows, no fake sidebar boxes, clean detail pages */
 body[data-page="developer"] .admin-sidebar nav button::before,
 body[data-page="developer"] .admin-sidebar nav a::before,

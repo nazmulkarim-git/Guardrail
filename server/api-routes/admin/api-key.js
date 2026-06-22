@@ -9,10 +9,10 @@ export default async function handler(req, res) {
 
     if (req.method === "GET") {
       const keys = await db`
-        select id, name, prefix, last_used_at, created_at, revoked_at
-        from api_keys
-        where workspace_id = ${workspaceId}
-        order by created_at desc
+        select k.id, k.workspace_id, k.name, k.prefix, k.last_used_at, k.created_at, k.revoked_at, k.held_at, w.name as workspace_name
+        from api_keys k
+        left join workspaces w on w.id = k.workspace_id
+        order by k.created_at desc
       `;
       json(res, 200, { ok: true, keys });
       return;

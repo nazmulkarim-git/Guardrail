@@ -21,9 +21,20 @@
         <span>Forsig</span>
       </a>
       <article class="legal-card">
+        <p><a class="docs-back-link" href="/developer">Back to developer console</a></p>
         <p class="eyebrow">Docs</p>
         <h1>Human approval in one API call.</h1>
-        <p>Create an agent, create an API key, call Forsig when your AI agent reaches a risky action, and wait for a human decision.</p>
+        <p>Create an agent, create an API key, call Forsig when your AI agent reaches a risky action, and wait for a human decision. The normal loop is: your app creates an escalation, Forsig pauses the workflow, a human decides, and your app resumes with the returned instruction.</p>
+
+        <h2>Real workflow checklist</h2>
+        <ol>
+          <li>Create an agent in the developer console.</li>
+          <li>Create an API key and copy it once.</li>
+          <li>Call <code>/api/v1/escalations</code> from your app when an action needs review.</li>
+          <li>Review the escalation in Inbox.</li>
+          <li>Send a decision and have your app fetch or wait for the result.</li>
+          <li>Verify the full trail in Audit trails.</li>
+        </ol>
 
         <h2>Install</h2>
         <pre><code>npm install @forsig/sdk</code></pre>
@@ -45,13 +56,32 @@ const decision = await forsig.escalate({
     customerImpact: true
   },
   context: { refundAmount: 500, customerTier: "VIP" },
-  review: { notify: ["dashboard", "email"], testMode: "manual" },
-  callbackUrl: "https://your-app.com/forsig/webhook",
   waitForDecision: true
 });</code></pre>
 
+        <h2>Raw API request</h2>
+        <pre><code>curl -X POST https://www.forsig.com/api/v1/escalations \
+  -H "authorization: Bearer $FORSIG_API_KEY" \
+  -H "content-type: application/json" \
+  -d '{
+    "agent": { "id": "refund-agent", "name": "Refund Agent", "environment": "production" },
+    "risk": { "type": "refund_over_limit", "level": "high" },
+    "task": {
+      "title": "Approve refund for customer #123",
+      "proposedAction": "Issue a $500 refund",
+      "customerImpact": true
+    },
+    "context": { "refundAmount": 500, "customerTier": "VIP" },
+    "review": { "notify": ["dashboard"] }
+  }'</code></pre>
+
         <h2>Test modes</h2>
-        <p>Use <code>auto_approve</code>, <code>auto_reject</code>, or <code>auto_timeout</code> while testing agent control flow. Production workflows should use <code>manual</code>.</p>
+        <p>Use the developer console button to create UI test escalations. Use <code>auto_approve</code>, <code>auto_reject</code>, or <code>auto_timeout</code> only when testing agent control flow automatically. For real manual review, omit <code>testMode</code>.</p>
+
+        <h2>Fetch a decision</h2>
+        <pre><code>const result = await fetch(`${baseUrl}/api/v1/escalations/${escalation.id}`, {
+  headers: { authorization: `Bearer ${process.env.FORSIG_API_KEY}` }
+}).then((res) => res.json());</code></pre>
 
         <h2>Decision webhooks</h2>
         <p>When <code>callbackUrl</code> is set, Forsig posts the resolved decision with <code>x-forsig-event</code> and <code>x-forsig-signature</code> headers.</p>

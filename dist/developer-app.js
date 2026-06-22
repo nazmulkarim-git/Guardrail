@@ -14,6 +14,7 @@ const state = {
   keySearch: "",
   inboxSearch: "",
   includeTests: localStorage.getItem("forsig_include_tests") !== "false",
+  auditRange: "all",
   auditEvents: []
 };
 
@@ -206,8 +207,22 @@ function keyStatus(key) {
 }
 
 function maskedKey(key) {
-  const prefix = String(key.prefix || key.id || "fsk").slice(0, 4);
-  return `${prefix}_****************`;
+  const prefix = String(key.prefix || key.id || "fsk").slice(0, 8);
+  return `${prefix}...`;
+}
+
+function rangeCutoff(range) {
+  const now = Date.now();
+  const day = 24 * 60 * 60 * 1000;
+  const ranges = {
+    "24h": day,
+    "7d": 7 * day,
+    "30d": 30 * day,
+    "3m": 90 * day,
+    "6m": 180 * day,
+    "1y": 365 * day
+  };
+  return ranges[range] ? new Date(now - ranges[range]) : null;
 }
 
 function renderKeys() {
@@ -312,7 +327,12 @@ async function loadAudit() {
   list.innerHTML = "<p class='empty-state'>Loading audit trail...</p>";
   try {
     const data = await api("/api/developer/audit");
-    state.auditEvents = (data.events || []).filter((event) => state.includeTests || event.metadata_json?.testMode !== "manual_test");
+    const cutoff = rangeCutoff(state.auditRange);
+    state.auditEvents = (data.events || []).filter((event) => {
+      const isTest = event.metadata_json?.testMode === "manual_test";
+      const inRange = !cutoff || new Date(event.created_at) >= cutoff;
+      return (state.includeTests || !isTest) && inRange;
+    });
     list.innerHTML = state.auditEvents.length ? `
       <div class="resend-table-row resend-table-head">
         <span>Event</span><span>Target</span><span>Actor</span><span>Time</span>
@@ -808,6 +828,30 @@ $("#developer-key-filter").addEventListener("change", (event) => {
 });
 
 $("#developer-audit-refresh").addEventListener("click", () => loadAudit().catch((error) => toast(error.message)));
+
+$("#developer-audit-range").addEventListener("change", (event) => {
+  state.auditRange = event.target.value;
+  loadAudit().catch((error) => toast(error.message));
+});
+
+$("#developer-test-escalation").addEventListener("click", async () => {
+  const button = $("#developer-test-escalation");
+  button.disabled = true;
+  button.textContent = "Creating...";
+  try {
+    const data = await api("/api/developer/test-escalation", { method: "POST", body: "{}" });
+    toast("Test escalation created");
+    state.status = "all";
+    $("#developer-status-filter").value = "all";
+    await loadEscalations();
+    await loadDetail(data.escalationId);
+  } catch (error) {
+    toast(error.message);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Create test escalation";
+  }
+});
 
 function openModal(selector) {
   const modal = $(selector);
