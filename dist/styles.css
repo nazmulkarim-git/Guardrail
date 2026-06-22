@@ -6102,6 +6102,200 @@ th {
   }
 }
 
+/* Final winning console overrides */
+body[data-page="developer"] .admin-sidebar nav button::before,
+body[data-page="developer"] .admin-sidebar nav a::before,
+body[data-page="app"] .admin-sidebar nav button::before,
+body[data-page="app"] .admin-sidebar nav a::before,
+body[data-page="developer"] .developer-sidebar-footer button::before,
+body[data-page="developer"] .developer-sidebar-footer a::before {
+  content: none !important;
+}
+
+body[data-page="developer"] .admin-sidebar nav a,
+body[data-page="app"] .admin-sidebar nav a {
+  display: flex !important;
+  align-items: center;
+  min-height: 40px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 14px;
+  color: var(--developer-muted);
+  background: transparent;
+  font-size: 15px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+body[data-page="developer"] .inbox-table-row,
+body[data-page="app"] .inbox-table-row,
+body[data-page="developer"] .resend-table-row,
+body[data-page="app"] .resend-table-row {
+  min-height: 54px !important;
+  padding: 0 16px !important;
+  font-size: 15px !important;
+}
+
+body[data-page="developer"] .inbox-table-row,
+body[data-page="app"] .inbox-table-row {
+  grid-template-columns: minmax(260px, 2fr) minmax(96px, 0.65fr) minmax(84px, 0.55fr) minmax(140px, 0.9fr) minmax(90px, 0.55fr) minmax(140px, 0.75fr) !important;
+}
+
+body[data-page="developer"] .inbox-table-row b,
+body[data-page="app"] .inbox-table-row b,
+body[data-page="developer"] .resend-table-row b,
+body[data-page="app"] .resend-table-row b {
+  font-size: 16px !important;
+  line-height: 1.2;
+}
+
+body[data-page="developer"] .inbox-table-row small,
+body[data-page="app"] .inbox-table-row small,
+body[data-page="developer"] .resend-table-row small,
+body[data-page="app"] .resend-table-row small {
+  font-size: 13px !important;
+}
+
+body[data-page="developer"] .key-state,
+body[data-page="app"] .key-state {
+  min-height: 26px !important;
+  padding: 0 9px !important;
+  font-size: 13px !important;
+}
+
+body[data-page="developer"] .developer-detail-page,
+body[data-page="app"] .developer-detail-page,
+body[data-page="developer"] .escalation-detail,
+body[data-page="app"] .escalation-detail {
+  grid-column: 1 / -1 !important;
+}
+
+body[data-page="developer"] .admin-toolbar,
+body[data-page="app"] .admin-toolbar {
+  align-items: center;
+}
+
+body[data-page="developer"] .developer-checkline {
+  justify-self: end;
+}
+
+body[data-page="developer"] code,
+body[data-page="app"] code,
+body[data-page="developer"] pre,
+body[data-page="app"] pre,
+body[data-page="developer"] h1,
+body[data-page="app"] h1,
+body[data-page="developer"] h2,
+body[data-page="app"] h2 {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1100px) {
+  body[data-page="developer"] .inbox-table-row,
+  body[data-page="app"] .inbox-table-row,
+  body[data-page="developer"] .resend-table-row,
+  body[data-page="app"] .resend-table-row {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+    padding: 14px !important;
+  }
+}
+
+/* Final console polish: compact list rows, no fake sidebar boxes, clean detail pages */
+body[data-page="developer"] .admin-sidebar nav button::before,
+body[data-page="developer"] .admin-sidebar nav a::before,
+body[data-page="app"] .admin-sidebar nav button::before,
+body[data-page="app"] .admin-sidebar nav a::before,
+body[data-page="developer"] .developer-sidebar-footer button::before,
+body[data-page="developer"] .developer-sidebar-footer a::before {
+  content: none !important;
+}
+
+body[data-page="developer"] .admin-sidebar nav a,
+body[data-page="app"] .admin-sidebar nav a {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 14px;
+  color: var(--developer-muted);
+  background: transparent;
+  font-size: 15px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+body[data-page="developer"] .inbox-table-row,
+body[data-page="app"] .inbox-table-row,
+body[data-page="developer"] .resend-table-row,
+body[data-page="app"] .resend-table-row {
+  min-height: 54px !important;
+  padding: 0 16px !important;
+  font-size: 15px;
+}
+
+body[data-page="developer"] .inbox-table-row,
+body[data-page="app"] .inbox-table-row {
+  grid-template-columns: minmax(260px, 2fr) minmax(96px, 0.65fr) minmax(84px, 0.55fr) minmax(140px, 0.9fr) minmax(90px, 0.55fr) minmax(140px, 0.75fr) !important;
+}
+
+body[data-page="developer"] .inbox-table-head,
+body[data-page="app"] .inbox-table-head,
+body[data-page="developer"] .resend-table-head,
+body[data-page="app"] .resend-table-head {
+  min-height: 40px !important;
+}
+
+body[data-page="developer"] .inbox-table-row b,
+body[data-page="app"] .inbox-table-row b,
+body[data-page="developer"] .resend-table-row b,
+body[data-page="app"] .resend-table-row b {
+  font-size: 16px !important;
+  line-height: 1.2;
+}
+
+body[data-page="developer"] .inbox-table-row small,
+body[data-page="app"] .inbox-table-row small,
+body[data-page="developer"] .resend-table-row small,
+body[data-page="app"] .resend-table-row small {
+  font-size: 13px !important;
+}
+
+body[data-page="developer"] .developer-detail-page,
+body[data-page="app"] .developer-detail-page,
+body[data-page="developer"] .escalation-detail,
+body[data-page="app"] .escalation-detail {
+  grid-column: 1 / -1;
+}
+
+body[data-page="developer"] .admin-toolbar,
+body[data-page="app"] .admin-toolbar {
+  align-items: center;
+}
+
+body[data-page="developer"] .developer-checkline {
+  justify-self: end;
+}
+
+body[data-page="developer"] code,
+body[data-page="app"] code,
+body[data-page="developer"] pre,
+body[data-page="app"] pre {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1100px) {
+  body[data-page="developer"] .inbox-table-row,
+  body[data-page="app"] .inbox-table-row,
+  body[data-page="developer"] .resend-table-row,
+  body[data-page="app"] .resend-table-row {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+    padding: 14px !important;
+  }
+}
+
 /* Developer console: Resend-inspired product UI */
 body[data-page="developer"].admin-app {
   --developer-bg: #000;
@@ -6188,6 +6382,7 @@ body[data-page="developer"] .admin-sidebar nav {
 }
 
 body[data-page="developer"] .admin-sidebar nav button,
+body[data-page="developer"] .admin-sidebar nav a,
 .developer-sidebar-footer button,
 .developer-sidebar-footer a {
   display: flex;
@@ -6207,18 +6402,8 @@ body[data-page="developer"] .admin-sidebar nav button,
   cursor: pointer;
 }
 
-body[data-page="developer"] .admin-sidebar nav button::before,
-.developer-sidebar-footer button::before,
-.developer-sidebar-footer a::before {
-  content: "";
-  width: 16px;
-  height: 16px;
-  border: 1.6px solid currentColor;
-  border-radius: 4px;
-  opacity: 0.9;
-}
-
 body[data-page="developer"] .admin-sidebar nav button:hover,
+body[data-page="developer"] .admin-sidebar nav a:hover,
 .developer-sidebar-footer button:hover,
 .developer-sidebar-footer a:hover {
   color: #fff;
@@ -6323,7 +6508,7 @@ body[data-page="developer"] .admin-toolbar {
 body[data-page="developer"] .admin-toolbar,
 .key-table-toolbar {
   display: grid;
-  grid-template-columns: minmax(320px, 1fr) minmax(180px, 320px);
+  grid-template-columns: minmax(320px, 1fr) minmax(180px, 260px) max-content;
   gap: 12px;
   margin-bottom: 20px;
   padding: 0;
@@ -6381,10 +6566,10 @@ body[data-page="developer"] .resend-table-row {
   align-items: center;
   gap: 16px;
   width: 100%;
-  min-height: 70px;
+  min-height: 54px;
   border: 0;
   border-bottom: 1px solid var(--developer-soft-line);
-  padding: 0 18px;
+  padding: 0 16px;
   color: var(--developer-muted);
   background: transparent;
   font: inherit;
@@ -6392,7 +6577,7 @@ body[data-page="developer"] .resend-table-row {
 }
 
 .inbox-table-row {
-  grid-template-columns: minmax(240px, 2fr) minmax(100px, 0.65fr) minmax(140px, 0.9fr) minmax(90px, 0.55fr) minmax(140px, 0.75fr);
+  grid-template-columns: minmax(260px, 2fr) minmax(96px, 0.65fr) minmax(84px, 0.55fr) minmax(140px, 0.9fr) minmax(90px, 0.55fr) minmax(140px, 0.75fr);
 }
 
 body[data-page="developer"] .resend-table-row {
@@ -6434,7 +6619,7 @@ body[data-page="developer"] .resend-table-head {
 body[data-page="developer"] .resend-table-row b {
   display: block;
   color: var(--developer-text);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 750;
 }
 
@@ -6443,13 +6628,13 @@ body[data-page="developer"] .resend-table-row small {
   display: block;
   margin-top: 5px;
   color: var(--developer-dim);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .key-state {
   display: inline-flex;
   align-items: center;
-  min-height: 30px;
+  min-height: 26px;
   border-radius: 9px;
   padding: 0 10px;
   color: #28d987;
@@ -6740,6 +6925,7 @@ body[data-page="developer"] .developer-detail-page {
   display: grid;
   gap: 22px;
   width: min(1380px, 100%);
+  grid-column: 1 / -1;
   border: 0;
   padding: 0;
   background: transparent;
@@ -6835,6 +7021,41 @@ body[data-page="developer"] .agent-table-row {
   grid-template-columns: minmax(240px, 1.6fr) minmax(140px, 0.8fr) minmax(120px, 0.7fr) minmax(100px, 0.6fr) minmax(110px, 0.7fr);
 }
 
+.developer-checkline {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 42px;
+  color: var(--developer-muted);
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.developer-checkline input {
+  width: 16px;
+  height: 16px;
+  accent-color: #fff;
+}
+
+.developer-checkline-panel {
+  justify-content: flex-start;
+  min-height: 48px;
+  border: 1px solid var(--developer-line);
+  border-radius: 14px;
+  padding: 0 14px;
+  background: #050505;
+}
+
+body[data-page="developer"] .product-review-header {
+  grid-template-columns: 48px minmax(0, 1fr) max-content;
+}
+
+body[data-page="developer"] .product-review-header h2,
+body[data-page="developer"] .developer-detail-hero h2 {
+  overflow-wrap: anywhere;
+}
+
 body[data-page="developer"] button.resend-table-row {
   border-left: 0;
   border-right: 0;
@@ -6879,6 +7100,200 @@ body[data-page="developer"] #api-key-create-modal-close {
   body[data-page="developer"] .developer-detail-grid,
   body[data-page="developer"] .agent-table-row {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Admin console alignment with developer console */
+body[data-page="app"].admin-app {
+  --developer-bg: #000;
+  --developer-panel: #030303;
+  --developer-raised: #17181b;
+  --developer-line: #24252a;
+  --developer-soft-line: #191a1f;
+  --developer-text: #f4f4f5;
+  --developer-muted: #a1a1aa;
+  --developer-dim: #71717a;
+  color: var(--developer-text);
+  background: var(--developer-bg);
+  font-family: Inter, "Instrument Sans", system-ui, sans-serif;
+}
+
+body[data-page="app"] .admin-shell {
+  display: grid;
+  grid-template-columns: 312px minmax(0, 1fr);
+  min-height: 100vh;
+  background: var(--developer-bg);
+}
+
+body[data-page="app"] .admin-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  padding: 30px 18px 14px;
+  border-right: 1px solid var(--developer-line);
+  background: var(--developer-bg);
+}
+
+body[data-page="app"] .admin-sidebar .zip-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 48px;
+  color: var(--developer-text);
+  text-decoration: none;
+}
+
+body[data-page="app"] .admin-sidebar nav {
+  display: grid;
+  gap: 8px;
+}
+
+body[data-page="app"] .admin-sidebar nav button,
+body[data-page="app"] .admin-sidebar nav a,
+body[data-page="app"] #admin-logout {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 14px;
+  color: var(--developer-muted);
+  background: transparent;
+  font-size: 15px;
+  font-weight: 650;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+body[data-page="app"] .admin-sidebar nav button:hover,
+body[data-page="app"] .admin-sidebar nav a:hover,
+body[data-page="app"] #admin-logout:hover {
+  color: #fff;
+  background: #111216;
+}
+
+body[data-page="app"] .admin-sidebar nav button.active {
+  color: #fff;
+  background: #1b1c21;
+}
+
+body[data-page="app"] #admin-logout {
+  margin-top: 36px;
+  border-top: 1px solid var(--developer-soft-line);
+  border-radius: 0;
+  padding-top: 12px;
+}
+
+body[data-page="app"] .admin-main {
+  width: 100%;
+  padding: 0 0 72px;
+  background: var(--developer-bg);
+}
+
+body[data-page="app"] .admin-view,
+body[data-page="app"] .developer-page-head,
+body[data-page="app"] .admin-toolbar,
+body[data-page="app"] .developer-console-stats {
+  width: min(1380px, calc(100% - 112px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body[data-page="app"] .developer-console-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 34px;
+}
+
+body[data-page="app"] .developer-console-stats article,
+body[data-page="app"] .admin-panel,
+body[data-page="app"] .escalation-detail,
+body[data-page="app"] .audit-table,
+body[data-page="app"] .escalation-list {
+  border: 1px solid var(--developer-line);
+  border-radius: 16px;
+  background: #050505;
+  box-shadow: none;
+}
+
+body[data-page="app"] .developer-console-stats article {
+  min-height: 82px;
+  padding: 16px;
+}
+
+body[data-page="app"] .developer-console-stats span {
+  color: var(--developer-dim);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+body[data-page="app"] .developer-console-stats strong {
+  display: block;
+  margin-top: 8px;
+  color: #fff;
+  font-size: 28px;
+}
+
+body[data-page="app"] .admin-toolbar {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(180px, 260px);
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+body[data-page="app"] .admin-toolbar input,
+body[data-page="app"] .admin-toolbar select,
+body[data-page="app"] .admin-form-grid input,
+body[data-page="app"] .admin-form-grid select,
+body[data-page="app"] .admin-form-grid textarea {
+  min-height: 42px;
+  border: 1px solid #2a2b31;
+  border-radius: 13px;
+  padding: 0 14px;
+  color: var(--developer-text);
+  background: #17181c;
+  font-size: 15px;
+}
+
+body[data-page="app"] .admin-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+body[data-page="app"] .admin-audit-row {
+  grid-template-columns: minmax(220px, 1.2fr) minmax(160px, 0.8fr) minmax(220px, 1fr) minmax(160px, 0.8fr) minmax(160px, 0.7fr);
+}
+
+body[data-page="app"] .api-key-list article,
+body[data-page="app"] .new-api-key {
+  border: 1px solid var(--developer-soft-line);
+  border-radius: 14px;
+  padding: 16px;
+  background: #050505;
+}
+
+@media (max-width: 1100px) {
+  body[data-page="app"] .admin-shell,
+  body[data-page="app"] .developer-console-stats,
+  body[data-page="app"] .admin-toolbar,
+  body[data-page="app"] .admin-audit-row {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="app"] .admin-sidebar {
+    position: static;
+    height: auto;
+  }
+
+  body[data-page="app"] .admin-view,
+  body[data-page="app"] .developer-page-head,
+  body[data-page="app"] .admin-toolbar,
+  body[data-page="app"] .developer-console-stats {
+    width: min(100% - 28px, 1380px);
   }
 }
 
@@ -10007,5 +10422,104 @@ body[data-page="developer"] .admin-form-grid {
   .admin-stats,
   .decision-actions {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Final winning console overrides */
+body[data-page="developer"] .admin-sidebar nav button::before,
+body[data-page="developer"] .admin-sidebar nav a::before,
+body[data-page="app"] .admin-sidebar nav button::before,
+body[data-page="app"] .admin-sidebar nav a::before,
+body[data-page="developer"] .developer-sidebar-footer button::before,
+body[data-page="developer"] .developer-sidebar-footer a::before {
+  content: none !important;
+}
+
+body[data-page="developer"] .admin-sidebar nav a,
+body[data-page="app"] .admin-sidebar nav a {
+  display: flex !important;
+  align-items: center;
+  min-height: 40px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 14px;
+  color: var(--developer-muted);
+  background: transparent;
+  font-size: 15px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+body[data-page="developer"] .inbox-table-row,
+body[data-page="app"] .inbox-table-row,
+body[data-page="developer"] .resend-table-row,
+body[data-page="app"] .resend-table-row {
+  min-height: 54px !important;
+  padding: 0 16px !important;
+  font-size: 15px !important;
+}
+
+body[data-page="developer"] .inbox-table-row,
+body[data-page="app"] .inbox-table-row {
+  grid-template-columns: minmax(260px, 2fr) minmax(96px, 0.65fr) minmax(84px, 0.55fr) minmax(140px, 0.9fr) minmax(90px, 0.55fr) minmax(140px, 0.75fr) !important;
+}
+
+body[data-page="developer"] .inbox-table-row b,
+body[data-page="app"] .inbox-table-row b,
+body[data-page="developer"] .resend-table-row b,
+body[data-page="app"] .resend-table-row b {
+  font-size: 16px !important;
+  line-height: 1.2;
+}
+
+body[data-page="developer"] .inbox-table-row small,
+body[data-page="app"] .inbox-table-row small,
+body[data-page="developer"] .resend-table-row small,
+body[data-page="app"] .resend-table-row small {
+  font-size: 13px !important;
+}
+
+body[data-page="developer"] .key-state,
+body[data-page="app"] .key-state {
+  min-height: 26px !important;
+  padding: 0 9px !important;
+  font-size: 13px !important;
+}
+
+body[data-page="developer"] .developer-detail-page,
+body[data-page="app"] .developer-detail-page,
+body[data-page="developer"] .escalation-detail,
+body[data-page="app"] .escalation-detail {
+  grid-column: 1 / -1 !important;
+}
+
+body[data-page="developer"] .admin-toolbar,
+body[data-page="app"] .admin-toolbar {
+  align-items: center;
+}
+
+body[data-page="developer"] .developer-checkline {
+  justify-self: end;
+}
+
+body[data-page="developer"] code,
+body[data-page="app"] code,
+body[data-page="developer"] pre,
+body[data-page="app"] pre,
+body[data-page="developer"] h1,
+body[data-page="app"] h1,
+body[data-page="developer"] h2,
+body[data-page="app"] h2 {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1100px) {
+  body[data-page="developer"] .inbox-table-row,
+  body[data-page="app"] .inbox-table-row,
+  body[data-page="developer"] .resend-table-row,
+  body[data-page="app"] .resend-table-row {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+    padding: 14px !important;
   }
 }

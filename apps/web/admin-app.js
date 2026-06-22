@@ -2,7 +2,9 @@ const state = {
   selectedId: new URLSearchParams(location.search).get("esc"),
   status: "pending",
   escalations: [],
-  detail: null
+  detail: null,
+  inboxSearch: "",
+  auditEvents: []
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -77,6 +79,7 @@ function setView(view) {
   if (view === "onboarding") loadWorkspace();
   if (view === "developers") loadDevelopers();
   if (view === "waitlist") loadWaitlist();
+  if (view === "audit") loadAdminAudit();
 }
 
 async function checkSession() {
@@ -108,13 +111,16 @@ async function loadKeys() {
   list.innerHTML = "<p class='empty-state'>Loading keys...</p>";
   try {
     const data = await api("/api/admin/api-key");
-    list.innerHTML = data.keys.length ? data.keys.map((key) => `
-      <article>
-        <strong>${escapeHtml(key.name)}</strong>
-        <span>${escapeHtml(key.prefix || key.id)} · created ${formatDate(key.created_at)}</span>
-        <small>${key.last_used_at ? `Last used ${formatDate(key.last_used_at)}` : "Never used"}</small>
-      </article>
-    `).join("") : "<p class='empty-state'>No API keys yet.</p>";
+    list.innerHTML = data.keys.length ? data.keys.map((key) => {
+      const masked = `${String(key.prefix || key.id || "fsk").slice(0, 4)}_****************`;
+      return `
+        <article>
+          <strong>${escapeHtml(key.name)}</strong>
+          <span>${escapeHtml(masked)} / created ${formatDate(key.created_at)}</span>
+          <small>${key.last_used_at ? `Last used ${formatDate(key.last_used_at)}` : "Never used"}</small>
+        </article>
+      `;
+    }).join("") : "<p class='empty-state'>No API keys yet.</p>";
   } catch (error) {
     list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
   }
@@ -128,9 +134,9 @@ async function loadDevelopers() {
     list.innerHTML = data.developers.length ? data.developers.map((developer) => `
       <article>
         <strong>${escapeHtml(developer.name || developer.email)}</strong>
-        <span>${escapeHtml(developer.email)} · ${escapeHtml(developer.workspace_name || developer.workspace_id)}</span>
-        <small>${developer.escalation_count || 0} escalations · ${developer.agent_count || 0} agents · ${developer.active_key_count || 0} active keys · ${developer.last_login_at ? `last login ${formatDate(developer.last_login_at)}` : "not logged in yet"}</small>
-        <small>${developer.password_set_at ? "Password set" : "Awaiting first login"}${developer.must_reset_password ? " · temporary password active" : ""}</small>
+        <span>${escapeHtml(developer.email)} / ${escapeHtml(developer.workspace_name || developer.workspace_id)}</span>
+        <small>${developer.escalation_count || 0} escalations / ${developer.agent_count || 0} agents / ${developer.active_key_count || 0} active keys / ${developer.last_login_at ? `last login ${formatDate(developer.last_login_at)}` : "not logged in yet"}</small>
+        <small>${developer.password_set_at ? "Password set" : "Awaiting first login"}${developer.must_reset_password ? " / temporary password active" : ""}</small>
         ${(developer.agents || []).length ? `<div class="mini-list">${developer.agents.map((agent) => `<span>${escapeHtml(agent.name)} / ${escapeHtml(agent.environment)} / ${agent.escalationCount || 0} escalations</span>`).join("")}</div>` : ""}
       </article>
     `).join("") : "<p class='empty-state'>No developers have beta access yet.</p>";
@@ -147,13 +153,38 @@ async function loadWaitlist() {
     list.innerHTML = data.leads.length ? data.leads.map((lead) => `
       <article>
         <strong>${escapeHtml(lead.name || lead.email)}</strong>
-        <span>${escapeHtml(lead.email)}${lead.company ? ` · ${escapeHtml(lead.company)}` : ""}${lead.role ? ` · ${escapeHtml(lead.role)}` : ""}</span>
+        <span>${escapeHtml(lead.email)}${lead.company ? ` / ${escapeHtml(lead.company)}` : ""}${lead.role ? ` / ${escapeHtml(lead.role)}` : ""}</span>
         <small>${escapeHtml(lead.use_case || "No use case yet.")}</small>
-        <small>${escapeHtml(lead.framework_interest || "Framework unknown")} · ${escapeHtml(lead.external_actions || "Actions unknown")} · ${escapeHtml(lead.founder_call_interest || "Call interest unknown")}</small>
-        <small>Source: ${escapeHtml(lead.source_section || lead.source || "unknown")} · ${formatDate(lead.created_at)}</small>
+        <small>${escapeHtml(lead.framework_interest || "Framework unknown")} / ${escapeHtml(lead.external_actions || "Actions unknown")} / ${escapeHtml(lead.founder_call_interest || "Call interest unknown")}</small>
+        <small>Source: ${escapeHtml(lead.source_section || lead.source || "unknown")} / ${formatDate(lead.created_at)}</small>
         ${lead.has_beta_access ? "<em>Beta access granted</em>" : `<button type="button" data-invite-lead="${escapeHtml(lead.id)}">Send beta access</button>`}
       </article>
     `).join("") : "<p class='empty-state'>No waitlist leads yet.</p>";
+  } catch (error) {
+    list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
+  }
+}
+
+async function loadAdminAudit() {
+  const list = $("#admin-audit-list");
+  list.innerHTML = "<p class='empty-state'>Loading audit trail...</p>";
+  try {
+    const data = await api("/api/admin/audit");
+    state.auditEvents = data.events || [];
+    list.innerHTML = state.auditEvents.length ? `
+      <div class="resend-table-row resend-table-head">
+        <span>Event</span><span>Workspace</span><span>Target</span><span>Actor</span><span>Time</span>
+      </div>
+      ${state.auditEvents.map((event) => `
+        <div class="resend-table-row admin-audit-row">
+          <span><b>${escapeHtml(event.event_type)}</b><small>${escapeHtml(JSON.stringify(event.metadata_json || {}))}</small></span>
+          <span>${escapeHtml(event.workspace_name || event.workspace_id || "Workspace")}</span>
+          <span>${escapeHtml(event.task_title || event.escalation_id || "Workspace")}</span>
+          <span>${escapeHtml(event.actor_type)} / ${escapeHtml(event.actor_id || "-")}</span>
+          <span>${formatDate(event.created_at)}</span>
+        </div>
+      `).join("")}
+    ` : "<p class='empty-state'>No audit events yet.</p>";
   } catch (error) {
     list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
   }
@@ -166,7 +197,7 @@ async function loadEscalations() {
   $("#stat-approved").textContent = data.counts?.approved ?? 0;
   $("#stat-rejected").textContent = data.counts?.rejected ?? 0;
   $("#stat-edited").textContent = data.counts?.edited ?? 0;
-  renderList();
+  renderAdminInboxRows();
   if (!state.selectedId && state.escalations[0]) {
     await loadDetail(state.escalations[0].id);
   }
@@ -182,10 +213,48 @@ function renderList() {
     <button type="button" data-escalation-id="${escapeHtml(item.id)}" class="${item.id === state.selectedId ? "active" : ""}">
       <span>${escapeHtml(item.risk?.level || "review")}</span>
       <strong>${escapeHtml(item.task?.title || item.id)}</strong>
-      <small>${escapeHtml(item.agent?.name || item.agent?.id || "Agent")} · ${escapeHtml(item.risk?.type || "risk")}</small>
+      <small>${escapeHtml(item.agent?.name || item.agent?.id || "Agent")} / ${escapeHtml(item.risk?.type || "risk")}</small>
       <em>${escapeHtml(item.status)}</em>
     </button>
   `).join("");
+}
+
+function renderAdminInboxRows() {
+  const list = $("#escalation-list");
+  const query = state.inboxSearch.trim().toLowerCase();
+  const escalations = state.escalations.filter((item) => {
+    if (!query) return true;
+    return [
+      item.task?.title,
+      item.status,
+      item.agent?.name,
+      item.agent?.id,
+      item.risk?.level,
+      item.risk?.type
+    ].filter(Boolean).join(" ").toLowerCase().includes(query);
+  });
+  if (!escalations.length) {
+    list.innerHTML = "<p class='empty-state'>No escalations yet.</p>";
+    return;
+  }
+  list.innerHTML = `
+    <div class="inbox-table-row inbox-table-head">
+      <span>Request</span><span>Status</span><span>Mode</span><span>Agent</span><span>Risk</span><span>Created</span>
+    </div>
+    ${escalations.map((item) => `
+      <button type="button" data-escalation-id="${escapeHtml(item.id)}" class="inbox-table-row ${item.id === state.selectedId ? "active" : ""}">
+        <span>
+          <b>${escapeHtml(item.task?.title || item.id)}</b>
+          <small>${escapeHtml(item.workflow || item.step || "Approval request")}</small>
+        </span>
+        <span><em class="key-state key-state-${escapeHtml(item.status)}">${escapeHtml(item.status)}</em></span>
+        <span><em class="key-state key-state-${item.testMode ? "held" : "active"}">${item.testMode ? "Test" : "Real"}</em></span>
+        <span>${escapeHtml(item.agent?.name || item.agent?.id || "Agent")}</span>
+        <span>${escapeHtml(item.risk?.level || "review")}</span>
+        <span>${formatDate(item.createdAt)}</span>
+      </button>
+    `).join("")}
+  `;
 }
 
 async function loadDetail(id) {
@@ -193,7 +262,7 @@ async function loadDetail(id) {
   const data = await api(`/api/admin/escalations/${encodeURIComponent(id)}`);
   state.detail = data;
   history.replaceState(null, "", `/app?esc=${encodeURIComponent(id)}`);
-  renderList();
+  renderAdminInboxRows();
   renderDetail();
 }
 
@@ -279,7 +348,7 @@ function renderDetail() {
           ${(state.detail.auditEvents || []).map((event) => `
             <article>
               <strong>${escapeHtml(event.event_type)}</strong>
-              <span>${formatDate(event.created_at)} · ${escapeHtml(event.actor_type)}</span>
+              <span>${formatDate(event.created_at)} / ${escapeHtml(event.actor_type)}</span>
               <small>${escapeHtml(JSON.stringify(event.metadata_json || {}))}</small>
             </article>
           `).join("") || "<p class='empty-state'>No audit events yet.</p>"}
@@ -340,6 +409,13 @@ $("#admin-status-filter").addEventListener("change", async (event) => {
   state.selectedId = null;
   await loadEscalations();
 });
+
+$("#admin-inbox-search").addEventListener("input", (event) => {
+  state.inboxSearch = event.target.value;
+  renderAdminInboxRows();
+});
+
+$("#admin-audit-refresh").addEventListener("click", () => loadAdminAudit().catch((error) => toast(error.message)));
 
 document.addEventListener("click", async (event) => {
   const escalationButton = event.target.closest("[data-escalation-id]");

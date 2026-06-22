@@ -13,6 +13,7 @@ const state = {
   keyStatus: "all",
   keySearch: "",
   inboxSearch: "",
+  includeTests: localStorage.getItem("forsig_include_tests") !== "false",
   auditEvents: []
 };
 
@@ -142,9 +143,9 @@ function setView(view) {
     loadAgents();
   }
   if (view === "audit") loadAudit();
+  if (view === "profile") loadProfile();
   if (view === "settings") {
     loadWorkspace();
-    loadProfile();
   }
 }
 
@@ -205,8 +206,8 @@ function keyStatus(key) {
 }
 
 function maskedKey(key) {
-  const prefix = key.prefix || key.id || "forsig";
-  return `${prefix}...`;
+  const prefix = String(key.prefix || key.id || "fsk").slice(0, 4);
+  return `${prefix}_****************`;
 }
 
 function renderKeys() {
@@ -215,7 +216,7 @@ function renderKeys() {
   const keys = state.keys.filter((key) => {
     const status = keyStatus(key);
     const matchesStatus = state.keyStatus === "all" || state.keyStatus === status;
-    const matchesQuery = !query || `${key.name} ${key.prefix}`.toLowerCase().includes(query);
+    const matchesQuery = !query || `${key.name} ${key.prefix || ""}`.toLowerCase().includes(query);
     return matchesStatus && matchesQuery;
   });
   if (!keys.length) {
@@ -311,7 +312,7 @@ async function loadAudit() {
   list.innerHTML = "<p class='empty-state'>Loading audit trail...</p>";
   try {
     const data = await api("/api/developer/audit");
-    state.auditEvents = data.events || [];
+    state.auditEvents = (data.events || []).filter((event) => state.includeTests || event.metadata_json?.testMode !== "manual_test");
     list.innerHTML = state.auditEvents.length ? `
       <div class="resend-table-row resend-table-head">
         <span>Event</span><span>Target</span><span>Actor</span><span>Time</span>
@@ -449,6 +450,7 @@ function renderInboxRows() {
   const list = $("#developer-escalation-list");
   const query = state.inboxSearch.trim().toLowerCase();
   const escalations = state.escalations.filter((item) => {
+    if (!state.includeTests && item.testMode) return false;
     if (!query) return true;
     return [
       item.task?.title,
@@ -465,7 +467,7 @@ function renderInboxRows() {
   }
   list.innerHTML = `
     <div class="inbox-table-row inbox-table-head">
-      <span>Request</span><span>Status</span><span>Agent</span><span>Risk</span><span>Created</span>
+      <span>Request</span><span>Status</span><span>Mode</span><span>Agent</span><span>Risk</span><span>Created</span>
     </div>
     ${escalations.map((item) => `
       <button type="button" data-escalation-id="${escapeHtml(item.id)}" class="inbox-table-row ${item.id === state.selectedId ? "active" : ""}">
@@ -474,6 +476,7 @@ function renderInboxRows() {
           <small>${escapeHtml(item.workflow || item.step || "Approval request")}</small>
         </span>
         <span><em class="key-state key-state-${escapeHtml(item.status)}">${escapeHtml(item.status)}</em></span>
+        <span><em class="key-state key-state-${item.testMode ? "held" : "active"}">${item.testMode ? "Test" : "Real"}</em></span>
         <span>${escapeHtml(item.agent?.name || item.agent?.id || "Agent")}</span>
         <span>${escapeHtml(item.risk?.level || "review")}</span>
         <span>${formatDate(item.createdAt)}</span>
@@ -516,7 +519,7 @@ function renderDetail() {
           <h2>${escapeHtml(item.task?.title)}</h2>
           <p>${escapeHtml(item.task?.description || "The agent is waiting for human judgment before it continues.")}</p>
         </div>
-        <span>${escapeHtml(item.status)}</span>
+        <span>${item.testMode ? "test escalation" : escapeHtml(item.status)}</span>
       </div>
 
       <section class="product-review-grid">
@@ -714,6 +717,20 @@ $("#developer-inbox-search").addEventListener("input", (event) => {
   state.inboxSearch = event.target.value;
   renderInboxRows();
 });
+
+function setIncludeTests(value) {
+  state.includeTests = value;
+  localStorage.setItem("forsig_include_tests", value ? "true" : "false");
+  $("#developer-include-tests").checked = value;
+  $("#developer-settings-include-tests").checked = value;
+  renderInboxRows();
+  if (!$("#developer-view-audit").hidden) loadAudit();
+}
+
+$("#developer-include-tests").checked = state.includeTests;
+$("#developer-settings-include-tests").checked = state.includeTests;
+$("#developer-include-tests").addEventListener("change", (event) => setIncludeTests(event.target.checked));
+$("#developer-settings-include-tests").addEventListener("change", (event) => setIncludeTests(event.target.checked));
 
 document.querySelectorAll("[data-developer-view]").forEach((button) => {
   button.addEventListener("click", () => setView(button.dataset.developerView));

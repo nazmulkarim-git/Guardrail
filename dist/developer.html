@@ -13,7 +13,7 @@
   <body data-page="developer" class="zip-design admin-app">
     <main class="admin-shell">
       <aside id="developer-sidebar" class="admin-sidebar">
-        <a class="zip-brand" href="/" aria-label="Forsig home">
+        <a class="zip-brand" href="/developer" aria-label="Forsig developer home">
           <span class="developer-avatar">F</span>
           <span class="developer-brand-text">
             <strong id="developer-workspace-name">Forsig</strong>
@@ -25,11 +25,11 @@
           <button type="button" data-developer-view="agents"><span>Agents</span></button>
           <button type="button" data-developer-view="keys"><span>API Keys</span></button>
           <button type="button" data-developer-view="audit"><span>Audit trails</span></button>
+          <a href="/docs"><span>Docs</span></a>
           <button type="button" data-developer-view="settings"><span>Settings</span></button>
         </nav>
         <div class="developer-sidebar-footer">
-          <button type="button" data-developer-view="settings">My profile</button>
-          <a href="/">Homepage</a>
+          <button type="button" data-developer-view="profile">My profile</button>
           <button id="developer-logout" type="button">Log out</button>
         </div>
       </aside>
@@ -68,7 +68,6 @@
         <div class="developer-topline">
           <span id="developer-workspace-label" class="admin-meta"></span>
           <div>
-            <a href="/docs">Docs</a>
             <a class="developer-help-pill" href="/contact">Need help? <span>H</span></a>
           </div>
         </div>
@@ -87,6 +86,10 @@
               <option value="edited">Edited</option>
               <option value="taken_over">Taken over</option>
             </select>
+            <label class="developer-checkline">
+              <input id="developer-include-tests" type="checkbox" checked />
+              <span>Show test cases</span>
+            </label>
           </div>
 
           <div class="admin-grid developer-inbox-grid">
@@ -144,20 +147,36 @@
           </div>
           <div class="settings-grid">
             <div class="admin-panel">
-              <h2>Profile</h2>
+              <h2>Workspace</h2>
+              <form id="developer-workspace-form" class="admin-form-grid">
+                <input name="name" type="text" required placeholder="Workspace name" />
+                <button type="submit">Save workspace</button>
+                <p class="mini-status" role="status"></p>
+              </form>
+            </div>
+            <div class="admin-panel">
+              <h2>Log preferences</h2>
+              <label class="developer-checkline developer-checkline-panel">
+                <input id="developer-settings-include-tests" type="checkbox" checked />
+                <span>Include test cases in Inbox and Audit trails</span>
+              </label>
+              <p class="admin-meta">Turn this off when you want to see only real production-like escalations.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="developer-view-profile" class="admin-view" hidden>
+          <div class="developer-page-head">
+            <h1>My profile</h1>
+          </div>
+          <div class="settings-grid">
+            <div class="admin-panel">
+              <h2>Account</h2>
               <form id="developer-profile-form" class="admin-form-grid">
                 <input name="name" type="text" placeholder="Your name" autocomplete="name" />
                 <input name="email" type="email" placeholder="Email" autocomplete="email" disabled />
                 <input name="company" type="text" placeholder="Company" autocomplete="organization" />
                 <button type="submit">Save profile</button>
-                <p class="mini-status" role="status"></p>
-              </form>
-            </div>
-            <div class="admin-panel">
-              <h2>Workspace</h2>
-              <form id="developer-workspace-form" class="admin-form-grid">
-                <input name="name" type="text" required placeholder="Workspace name" />
-                <button type="submit">Save workspace</button>
                 <p class="mini-status" role="status"></p>
               </form>
             </div>

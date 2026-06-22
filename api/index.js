@@ -30,6 +30,7 @@ const routes = [
   { method: "POST", pattern: /^admin\/api-key$/, file: "admin/api-key.js" },
   { method: "GET", pattern: /^admin\/developers$/, file: "admin/developers.js" },
   { method: "POST", pattern: /^admin\/developers$/, file: "admin/developers.js" },
+  { method: "GET", pattern: /^admin\/audit$/, file: "admin/audit.js" },
   { method: "GET", pattern: /^admin\/escalations$/, file: "admin/escalations.js" },
   { method: "GET", pattern: /^admin\/escalations\/([^/]+)$/, file: "admin/escalations/[id].js", params: ["id"] },
   { method: "POST", pattern: /^admin\/escalations\/([^/]+)\/decision$/, file: "admin/escalations/[id]/decision.js", params: ["id"] },
