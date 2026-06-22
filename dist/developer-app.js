@@ -4,7 +4,8 @@ const state = {
   escalations: [],
   detail: null,
   developer: null,
-  setupRequired: false
+  setupRequired: false,
+  authMode: "signup"
 };
 
 const $ = (selector) => document.querySelector(selector);
@@ -61,12 +62,58 @@ function showLogin() {
   $("#developer-login").hidden = false;
   $("#developer-app").hidden = true;
   $("#developer-reset-password-form").hidden = true;
+  $("#developer-login-form").hidden = false;
+  setAuthMode("signup");
 }
 
 function showApp() {
   $("#developer-sidebar").hidden = false;
   $("#developer-login").hidden = true;
   $("#developer-app").hidden = false;
+}
+
+function passwordStrengthError(password) {
+  if (!password || password.length < 10) return "Password must be at least 10 characters.";
+  if (!/[A-Z]/.test(password)) return "Password must include at least one uppercase letter.";
+  if (!/[a-z]/.test(password)) return "Password must include at least one lowercase letter.";
+  if (!/[0-9]/.test(password)) return "Password must include at least one number.";
+  if (!/[^A-Za-z0-9]/.test(password)) return "Password must include at least one special character.";
+  return "";
+}
+
+function showPasswordReset(copy = "Use at least 10 characters with uppercase, lowercase, number, and special character.") {
+  $("#developer-login-form").hidden = true;
+  $("#developer-reset-password-form").hidden = false;
+  $(".auth-mode-tabs").hidden = true;
+  $("#developer-login-title").textContent = "Create password";
+  $("#developer-login-copy").textContent = "Your beta access is verified. Create a password before opening the workspace.";
+  $("#developer-reset-copy").textContent = copy;
+  $("#developer-reset-password-form").elements.password.focus();
+}
+
+function setAuthMode(mode) {
+  state.authMode = mode;
+  const form = $("#developer-login-form");
+  const isSignup = mode === "signup";
+  document.querySelectorAll("[data-auth-mode]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.authMode === mode);
+  });
+  $(".auth-mode-tabs").hidden = false;
+  $("#developer-login-title").textContent = isSignup ? "Developer signup" : "Developer sign in";
+  $("#developer-login-copy").textContent = isSignup
+    ? "Use the email and access code your admin sent you. You will create a password next."
+    : "Use your email and password. Temporary passwords from forgot password also work here.";
+  form.hidden = false;
+  $("#developer-reset-password-form").hidden = true;
+  form.elements.accessCode.hidden = !isSignup;
+  form.elements.accessCode.required = isSignup;
+  form.elements.password.hidden = isSignup;
+  form.elements.password.required = !isSignup;
+  form.elements.password.autocomplete = "current-password";
+  form.elements.password.placeholder = "Password";
+  $("#developer-login-submit").textContent = isSignup ? "Continue" : "Sign in";
+  $("#developer-forgot-password").hidden = isSignup;
+  form.querySelector(".mini-status").textContent = "";
 }
 
 function setView(view) {
@@ -87,8 +134,8 @@ async function checkSession() {
     state.developer = session.developer;
     if (session.developer.mustResetPassword) {
       showLogin();
-      $("#developer-login-form").hidden = true;
-      $("#developer-reset-password-form").hidden = false;
+      state.developer = session.developer;
+      showPasswordReset("You are using a temporary or first-time password. Create a new password before continuing.");
       return;
     }
     showApp();
@@ -317,49 +364,34 @@ async function submitDecision(form) {
   await loadDetail(state.selectedId);
 }
 
+document.querySelectorAll("[data-auth-mode]").forEach((button) => {
+  button.addEventListener("click", () => setAuthMode(button.dataset.authMode));
+});
+
 $("#developer-login-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
   const status = form.querySelector(".mini-status");
   status.textContent = "Checking...";
   try {
-    const payload = {
-      email: form.elements.email.value,
-      accessCode: form.elements.accessCode.value,
-      password: form.elements.password.value,
-      confirmPassword: form.elements.confirmPassword.value
-    };
-    if (state.setupRequired && !payload.password) {
-      status.textContent = "Create a password to finish setup.";
-      form.elements.confirmPassword.hidden = false;
-      form.elements.password.focus();
-      return;
-    }
+    const email = form.elements.email.value.trim();
+    const payload = state.authMode === "signup"
+      ? { email, accessCode: form.elements.accessCode.value.trim() }
+      : { email, password: form.elements.password.value };
     const data = await api("/api/developer/login", {
       method: "POST",
       body: JSON.stringify(payload)
     });
-    if (data.setupRequired) {
+    if (data.setupRequired || data.mustResetPassword || data.developer?.mustResetPassword) {
       state.setupRequired = true;
-      status.textContent = data.message || "Create a password to finish opening your beta workspace.";
-      $("#developer-login-copy").textContent = "Create your password. Next time you will log in with email and password.";
-      form.elements.confirmPassword.hidden = false;
-      form.elements.accessCode.required = true;
-      form.elements.password.required = true;
-      form.elements.confirmPassword.required = true;
-      form.elements.password.placeholder = "Create password";
-      form.elements.password.autocomplete = "new-password";
-      form.elements.password.focus();
+      state.developer = data.developer || state.developer;
+      status.textContent = "";
+      showPasswordReset(data.message || "Create a new password before opening your beta workspace.");
       return;
     }
     state.developer = data.developer;
     status.textContent = "";
     state.setupRequired = false;
-    if (data.mustResetPassword || data.developer?.mustResetPassword) {
-      $("#developer-login-form").hidden = true;
-      $("#developer-reset-password-form").hidden = false;
-      return;
-    }
     $("#developer-login-form").hidden = false;
     $("#developer-reset-password-form").hidden = true;
     showApp();
@@ -397,14 +429,27 @@ $("#developer-reset-password-form").addEventListener("submit", async (event) => 
   const status = form.querySelector(".mini-status");
   status.textContent = "Saving password...";
   try {
+    const password = form.elements.password.value;
+    const confirmPassword = form.elements.confirmPassword.value;
+    const strengthError = passwordStrengthError(password);
+    if (strengthError) {
+      status.textContent = strengthError;
+      return;
+    }
+    if (password !== confirmPassword) {
+      status.textContent = "Passwords do not match.";
+      return;
+    }
     await api("/api/developer/password", {
       method: "POST",
       body: JSON.stringify({
-        password: form.elements.password.value,
-        confirmPassword: form.elements.confirmPassword.value
+        password,
+        confirmPassword
       })
     });
     status.textContent = "";
+    state.setupRequired = false;
+    if (state.developer) state.developer.mustResetPassword = false;
     toast("Password updated");
     $("#developer-login-form").hidden = false;
     $("#developer-reset-password-form").hidden = true;

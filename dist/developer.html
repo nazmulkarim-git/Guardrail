@@ -35,19 +35,23 @@
 
       <section id="developer-login" class="admin-login-card" hidden>
         <span class="zip-section-label">Private Beta</span>
-        <h1>Developer login</h1>
-        <p id="developer-login-copy">First time here? Use your email and access code. After that, log in with email and password.</p>
+        <h1 id="developer-login-title">Developer access</h1>
+        <p id="developer-login-copy">Sign up the first time with the email and access code from your admin. After that, sign in with email and password.</p>
+        <div class="auth-mode-tabs" role="tablist" aria-label="Developer access mode">
+          <button class="active" type="button" data-auth-mode="signup">Sign up</button>
+          <button type="button" data-auth-mode="signin">Sign in</button>
+        </div>
         <form id="developer-login-form">
           <input name="email" type="email" required placeholder="Developer email" autocomplete="email" />
-          <input name="accessCode" type="password" placeholder="Access code" autocomplete="one-time-code" />
-          <input name="password" type="password" placeholder="Password" autocomplete="current-password" />
-          <input name="confirmPassword" type="password" placeholder="Confirm password" autocomplete="new-password" hidden />
-          <button type="submit">Open workspace</button>
+          <input name="accessCode" type="password" required placeholder="Admin access code" autocomplete="one-time-code" />
+          <input name="password" type="password" placeholder="Password" autocomplete="current-password" hidden />
+          <button id="developer-login-submit" type="submit">Continue</button>
           <button id="developer-forgot-password" type="button">Forgot password</button>
           <p class="mini-status" role="status"></p>
         </form>
         <form id="developer-reset-password-form" hidden>
-          <p>Create a new password before continuing.</p>
+          <h2>Create a new password</h2>
+          <p id="developer-reset-copy">Use at least 10 characters with uppercase, lowercase, number, and special character.</p>
           <input name="password" type="password" required placeholder="New password" autocomplete="new-password" />
           <input name="confirmPassword" type="password" required placeholder="Confirm new password" autocomplete="new-password" />
           <button type="submit">Save password</button>

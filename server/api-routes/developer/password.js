@@ -9,6 +9,15 @@ import {
   requireDeveloper
 } from "../_forsig-core.js";
 
+function validateStrongPassword(password) {
+  if (!password || password.length < 10) return "Password must be at least 10 characters.";
+  if (!/[A-Z]/.test(password)) return "Password must include at least one uppercase letter.";
+  if (!/[a-z]/.test(password)) return "Password must include at least one lowercase letter.";
+  if (!/[0-9]/.test(password)) return "Password must include at least one number.";
+  if (!/[^A-Za-z0-9]/.test(password)) return "Password must include at least one special character.";
+  return "";
+}
+
 export default async function handler(req, res) {
   const session = requireDeveloper(req, res);
   if (!session) return;
@@ -22,8 +31,9 @@ export default async function handler(req, res) {
     const body = readBody(req);
     const password = normalizeString(body.password);
     const confirmPassword = normalizeString(body.confirmPassword) || normalizeString(body.confirm_password);
-    if (!password || password.length < 10) {
-      apiError(res, 400, "password_too_short", "Password must be at least 10 characters.");
+    const passwordError = validateStrongPassword(password);
+    if (passwordError) {
+      apiError(res, 400, "weak_password", passwordError);
       return;
     }
     if (password !== confirmPassword) {

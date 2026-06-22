@@ -12,6 +12,15 @@ import {
   verifyPassword
 } from "../_forsig-core.js";
 
+function validateStrongPassword(password) {
+  if (!password || password.length < 10) return "Password must be at least 10 characters.";
+  if (!/[A-Z]/.test(password)) return "Password must include at least one uppercase letter.";
+  if (!/[a-z]/.test(password)) return "Password must include at least one lowercase letter.";
+  if (!/[0-9]/.test(password)) return "Password must include at least one number.";
+  if (!/[^A-Za-z0-9]/.test(password)) return "Password must include at least one special character.";
+  return "";
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("allow", "POST");
@@ -57,21 +66,41 @@ export default async function handler(req, res) {
         apiError(res, 401, "invalid_developer_login", "Invalid developer email or access code.");
         return;
       }
+      if (developer.password_hash) {
+        apiError(res, 400, "password_already_set", "This developer already signed up. Use Sign in with email and password.");
+        return;
+      }
       if (!password && !developer.password_hash) {
+        await db`
+          update developer_users
+          set access_code_used_at = coalesce(access_code_used_at, now()),
+              must_reset_password = true,
+              last_login_at = now(),
+              updated_at = now()
+          where id = ${developer.id}
+        `;
+        res.setHeader("set-cookie", createDeveloperSessionCookie(developer));
         json(res, 200, {
           ok: true,
+          mustResetPassword: true,
           setupRequired: true,
-          message: "Create a password to finish opening your beta workspace."
+          message: "Create a password to finish opening your beta workspace.",
+          developer: {
+            id: developer.id,
+            email: developer.email,
+            name: developer.name,
+            company: developer.company,
+            workspaceId: developer.workspace_id,
+            workspaceName: developer.workspace_name,
+            mustResetPassword: true
+          }
         });
         return;
       }
       if (password) {
-        if (developer.password_hash) {
-          apiError(res, 400, "password_already_set", "This developer already has a password. Log in with email and password.");
-          return;
-        }
-        if (password.length < 10) {
-          apiError(res, 400, "password_too_short", "Password must be at least 10 characters.");
+        const passwordError = validateStrongPassword(password);
+        if (passwordError) {
+          apiError(res, 400, "weak_password", passwordError);
           return;
         }
         if (password !== confirmPassword) {
