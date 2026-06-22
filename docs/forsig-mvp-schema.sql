@@ -5,6 +5,8 @@ create table if not exists workspaces (
   id text primary key,
   name text not null,
   owner_email text,
+  default_reviewer_emails jsonb not null default '[]'::jsonb,
+  email_notifications_enabled boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

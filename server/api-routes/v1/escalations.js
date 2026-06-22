@@ -69,12 +69,25 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function uniqueEmails(values) {
+  return [...new Set((values || []).map(normalizeString).filter(Boolean))];
+}
+
+function notificationRecipients(parsed) {
+  return uniqueEmails([
+    ...(parsed.reviewerEmails || []),
+    process.env.FORSIG_REVIEWER_EMAIL,
+    process.env.WAITLIST_OWNER_EMAIL
+  ]);
+}
+
 async function sendEscalationNotification(req, escalation, parsed) {
-  const reviewerEmail = parsed.reviewerEmails?.[0] || process.env.FORSIG_REVIEWER_EMAIL || process.env.WAITLIST_OWNER_EMAIL;
-  if (!reviewerEmail) return { sent: false, reason: "No reviewer email configured" };
+  if (parsed.emailNotificationsDisabled) return { sent: false, reason: "Email notifications disabled", recipients: [] };
+  const reviewerEmails = notificationRecipients(parsed);
+  if (!reviewerEmails.length) return { sent: false, reason: "No reviewer email configured" };
   const reviewUrl = dashboardUrl(req, escalation.id);
-  return sendEmail({
-    to: reviewerEmail,
+  const result = await sendEmail({
+    to: reviewerEmails,
     subject: `Forsig: ${parsed.agent.name || parsed.agent.id} needs approval`,
     html: `
       <div style="margin:0;background:#07080c;color:#f7f8ff;font-family:Inter,Arial,sans-serif;padding:32px">
@@ -90,6 +103,7 @@ async function sendEscalationNotification(req, escalation, parsed) {
       </div>
     `
   });
+  return { ...result, recipients: reviewerEmails };
 }
 
 export function validateEscalationPayload(body) {
@@ -237,6 +251,40 @@ export default async function handler(req, res) {
       `.catch(() => []);
       const agentEmails = agentRows[0]?.default_reviewer_emails;
       if (Array.isArray(agentEmails)) parsed.reviewerEmails = agentEmails.map(normalizeString).filter(Boolean);
+    }
+
+    if (!parsed.reviewerEmails.length) {
+      const workspaceRows = await db`
+        select default_reviewer_emails, email_notifications_enabled
+        from workspaces
+        where id = ${auth.workspaceId}
+        limit 1
+      `.catch(() => []);
+      if (workspaceRows[0]?.email_notifications_enabled === false) {
+        parsed.emailNotificationsDisabled = true;
+      } else {
+        const workspaceEmails = workspaceRows[0]?.default_reviewer_emails;
+        if (Array.isArray(workspaceEmails)) parsed.reviewerEmails = workspaceEmails.map(normalizeString).filter(Boolean);
+      }
+    }
+
+    if (!parsed.reviewerEmails.length && !parsed.emailNotificationsDisabled) {
+      const fallbackRows = await db`
+        select owner_email as email
+        from workspaces
+        where id = ${auth.workspaceId}
+          and owner_email is not null
+        union
+        select email
+        from developer_users
+        where workspace_id = ${auth.workspaceId}
+          and status = 'active'
+        order by email
+      `.catch(() => []);
+      parsed.reviewerEmails = uniqueEmails(fallbackRows.map((row) => row.email));
+    }
+
+    if (parsed.reviewerEmails.length) {
       if (!parsed.assignedReviewerEmail && parsed.reviewerEmails[0]) {
         parsed.assignedReviewerEmail = parsed.reviewerEmails[0];
         rows[0].assigned_reviewer_email = parsed.assignedReviewerEmail;
@@ -327,7 +375,7 @@ export default async function handler(req, res) {
         ${auth.workspaceId},
         ${id},
         'email',
-        ${parsed.reviewerEmails?.[0] || process.env.FORSIG_REVIEWER_EMAIL || process.env.WAITLIST_OWNER_EMAIL || 'unconfigured'},
+        ${(notification.recipients || notificationRecipients(parsed)).join(", ") || 'unconfigured'},
         ${notification.sent ? 'sent' : 'failed'},
         ${notification.sent ? null : notification.reason || notification.error || notification.body || 'Email not sent'},
         ${createdAt},

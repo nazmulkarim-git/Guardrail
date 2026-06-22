@@ -1,0 +1,8 @@
+{
+  "name": "create-forsig-demo",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "create-forsig-demo": "index.mjs"
+  }
+}

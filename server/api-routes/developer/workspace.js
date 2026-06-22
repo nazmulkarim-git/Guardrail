@@ -1,4 +1,15 @@
-import { apiError, getSql, json, normalizeString, publicApiError, readBody, requireDeveloper } from "../_forsig-core.js";
+import { apiError, getSql, json, normalizeString, publicApiError, readBody, requireDeveloper, toJson } from "../_forsig-core.js";
+
+function parseEmails(value) {
+  if (Array.isArray(value)) return value.map(normalizeString).filter(Boolean);
+  if (typeof value === "string") {
+    return value
+      .split(/[,\n]/)
+      .map(normalizeString)
+      .filter(Boolean);
+  }
+  return [];
+}
 
 export default async function handler(req, res) {
   const session = requireDeveloper(req, res);
@@ -14,9 +25,17 @@ export default async function handler(req, res) {
         apiError(res, 400, "workspace_name_required", "Workspace name is required.");
         return;
       }
+      const hasReviewerEmails = body.defaultReviewerEmails !== undefined || body.default_reviewer_emails !== undefined;
+      const reviewerEmails = parseEmails(body.defaultReviewerEmails || body.default_reviewer_emails);
+      const hasEmailNotificationsEnabled = body.emailNotificationsEnabled !== undefined || body.email_notifications_enabled !== undefined;
+      const emailNotificationsEnabled = body.emailNotificationsEnabled ?? body.email_notifications_enabled;
       await db`
         update workspaces
-        set name = ${name}, updated_at = now()
+        set
+          name = ${name},
+          default_reviewer_emails = case when ${hasReviewerEmails}::boolean then ${toJson(reviewerEmails)} else default_reviewer_emails end,
+          email_notifications_enabled = case when ${hasEmailNotificationsEnabled}::boolean then ${emailNotificationsEnabled === false ? false : true} else email_notifications_enabled end,
+          updated_at = now()
         where id = ${session.workspaceId}
       `;
     } else if (req.method !== "GET") {

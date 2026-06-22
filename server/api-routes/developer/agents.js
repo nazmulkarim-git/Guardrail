@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     const db = getSql();
 
     if (req.method === "GET") {
-      const rows = await db`
+      let rows = await db`
         select
           a.*,
           (select count(*)::int from escalations e where e.workspace_id = a.workspace_id and e.external_agent_id = a.slug) as escalation_count,
@@ -37,6 +37,46 @@ export default async function handler(req, res) {
         where a.workspace_id = ${session.workspaceId}
         order by a.archived_at nulls first, a.created_at desc
       `;
+      if (!rows.length) {
+        const id = newId("agent");
+        await db`
+          insert into agents (
+            id,
+            workspace_id,
+            name,
+            slug,
+            description,
+            environment,
+            default_reviewer_emails,
+            created_at,
+            updated_at
+          )
+          values (
+            ${id},
+            ${session.workspaceId},
+            'Refund Agent',
+            'refund-agent',
+            'Starter agent for testing a real refund approval workflow.',
+            'development',
+            ${toJson([])},
+            now(),
+            now()
+          )
+        `;
+        await db`
+          insert into audit_events (id, workspace_id, escalation_id, actor_type, actor_id, event_type, metadata_json, created_at)
+          values (${newId("audit")}, ${session.workspaceId}, null, 'system', 'starter_agent', 'agent.created', ${toJson({ agentId: id, slug: "refund-agent", starter: true })}, now())
+        `;
+        rows = await db`
+          select
+            a.*,
+            0::int as escalation_count,
+            0::int as pending_count
+          from agents a
+          where a.id = ${id}
+          limit 1
+        `;
+      }
       json(res, 200, { ok: true, agents: rows });
       return;
     }

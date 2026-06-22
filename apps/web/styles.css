@@ -11231,3 +11231,222 @@ body[data-page="app"] h2 {
     padding: 14px !important;
   }
 }
+/* Launch-readiness developer onboarding, quickstart, and docs polish. */
+body[data-page="developer"] .developer-onboarding-panel,
+body[data-page="developer"] .quickstart-checklist {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  align-items: stretch;
+  margin: 0 0 22px;
+}
+
+body[data-page="developer"] .developer-onboarding-panel > div,
+body[data-page="developer"] .quickstart-checklist > div {
+  grid-column: span 1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+body[data-page="developer"] .developer-onboarding-panel > div strong,
+body[data-page="developer"] .quickstart-checklist > div strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 18px;
+}
+
+body[data-page="developer"] .developer-onboarding-panel button,
+body[data-page="developer"] .quickstart-checklist button {
+  min-height: 68px;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #111318;
+  color: #f7f8fb;
+  text-align: left;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+body[data-page="developer"] .developer-onboarding-panel button span,
+body[data-page="developer"] .quickstart-checklist button span {
+  display: block;
+  width: max-content;
+  margin-bottom: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: rgba(0, 255, 194, 0.12);
+  color: #00ffc2;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+body[data-page="developer"] .developer-onboarding-panel button.done,
+body[data-page="developer"] .quickstart-checklist button.done {
+  border-color: rgba(0, 255, 194, 0.35);
+}
+
+body[data-page="developer"] .quickstart-layout {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+body[data-page="developer"] .quickstart-main,
+body[data-page="developer"] .quickstart-side,
+body[data-page="developer"] .api-key-next-step {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.035);
+  padding: 18px;
+}
+
+body[data-page="developer"] .quickstart-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+body[data-page="developer"] .quickstart-tabs button {
+  min-height: 36px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #0a0b0e;
+  color: #b8bfcc;
+  font-weight: 800;
+}
+
+body[data-page="developer"] .quickstart-tabs button.active {
+  background: #f5f6f8;
+  color: #050505;
+}
+
+body[data-page="developer"] .quickstart-code,
+body[data-page="developer"] .api-key-next-step pre {
+  max-height: 520px;
+  overflow: auto;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  background: #07080a;
+  padding: 16px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+body[data-page="developer"] .minimal-warning {
+  margin-top: 14px;
+  color: #c9ced8;
+  font-size: 14px;
+}
+
+body[data-page="developer"] .developer-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+body[data-page="developer"] .api-key-next-step {
+  margin-top: 14px;
+}
+
+body[data-page="docs"] .docs-card {
+  max-width: 980px;
+}
+
+body[data-page="docs"] .docs-search {
+  display: grid;
+  gap: 8px;
+  margin: 26px 0;
+}
+
+body[data-page="docs"] .docs-search span {
+  color: #8f98a8;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+body[data-page="docs"] .docs-search input {
+  width: 100%;
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.05);
+  color: #f7f8fb;
+  padding: 0 14px;
+  font: inherit;
+}
+
+body[data-page="docs"] .docs-warning {
+  border: 1px solid rgba(255, 189, 90, 0.35);
+  border-radius: 12px;
+  background: rgba(255, 189, 90, 0.08);
+  padding: 14px;
+  color: #ffdca8;
+}
+
+body[data-page="docs"] .docs-card section {
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 980px) {
+  body[data-page="developer"] .developer-onboarding-panel,
+  body[data-page="developer"] .quickstart-checklist,
+  body[data-page="developer"] .quickstart-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+body[data-page="landing"] .hero-demo-reel {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin: 16px 0;
+}
+
+body[data-page="landing"] .hero-demo-reel span {
+  position: relative;
+  min-height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.045);
+  color: #dce3ef;
+  font-size: 12px;
+  font-weight: 850;
+  text-align: center;
+  animation: heroReelPulse 4.8s infinite;
+}
+
+body[data-page="landing"] .hero-demo-reel span:nth-child(2) { animation-delay: 1.2s; }
+body[data-page="landing"] .hero-demo-reel span:nth-child(3) { animation-delay: 2.4s; }
+body[data-page="landing"] .hero-demo-reel span:nth-child(4) { animation-delay: 3.6s; }
+
+@keyframes heroReelPulse {
+  0%, 20%, 100% {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.045);
+    color: #dce3ef;
+  }
+  8%, 14% {
+    border-color: rgba(0, 255, 194, 0.55);
+    background: rgba(0, 255, 194, 0.13);
+    color: #ffffff;
+  }
+}
+
+@media (max-width: 720px) {
+  body[data-page="landing"] .hero-demo-reel {
+    grid-template-columns: 1fr 1fr;
+  }
+}

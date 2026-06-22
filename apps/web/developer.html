@@ -22,6 +22,7 @@
         </a>
         <nav>
           <button type="button" data-developer-view="inbox" class="active"><span>Inbox</span></button>
+          <button type="button" data-developer-view="quickstart"><span>Quickstart</span></button>
           <button type="button" data-developer-view="agents"><span>Agents</span></button>
           <button type="button" data-developer-view="keys"><span>API Keys</span></button>
           <button type="button" data-developer-view="audit"><span>Audit trails</span></button>
@@ -73,6 +74,7 @@
         </div>
 
         <section id="developer-view-inbox" class="admin-view">
+          <div id="developer-onboarding-panel" class="developer-onboarding-panel"></div>
           <div class="developer-page-head">
             <h1>Inbox</h1>
             <button id="developer-test-escalation" class="developer-primary-button" type="button">Create test escalation</button>
@@ -95,6 +97,36 @@
 
           <div class="admin-grid developer-inbox-grid">
             <div id="developer-escalation-list" class="escalation-list"></div>
+          </div>
+        </section>
+
+        <section id="developer-view-quickstart" class="admin-view" hidden>
+          <div class="developer-page-head">
+            <h1>Run your first real escalation</h1>
+            <button id="developer-generate-real-snippet" class="developer-primary-button" type="button">Send real escalation</button>
+          </div>
+          <div class="quickstart-layout">
+            <aside class="quickstart-checklist" id="developer-quickstart-checklist"></aside>
+            <article class="quickstart-main">
+              <p class="admin-meta">Copy one of these examples into your app. This creates a real pending escalation in Forsig, then your code polls until you approve, reject, edit, or take over from Inbox.</p>
+              <div class="quickstart-tabs" role="tablist" aria-label="Quickstart language">
+                <button class="active" type="button" data-quickstart-tab="node">Node</button>
+                <button type="button" data-quickstart-tab="python">Python</button>
+                <button type="button" data-quickstart-tab="curl">cURL</button>
+                <button type="button" data-quickstart-tab="langgraph">LangGraph</button>
+                <button type="button" data-quickstart-tab="vercel">Vercel AI SDK</button>
+                <button type="button" data-quickstart-tab="n8n">n8n</button>
+              </div>
+              <div class="minimal-warning">
+                <strong>No secrets in review context.</strong>
+                <span>Send only what a reviewer needs. Avoid API keys, passwords, payment details, full customer records, and unnecessary personal data.</span>
+              </div>
+              <pre class="quickstart-code"><code id="developer-quickstart-code"></code></pre>
+              <div class="developer-detail-actions">
+                <button id="developer-copy-quickstart" type="button">Copy snippet</button>
+                <a class="developer-back-button" href="/docs">Open docs</a>
+              </div>
+            </article>
           </div>
         </section>
 
@@ -175,6 +207,18 @@
               </label>
               <p class="admin-meta">Turn this off when you want to see only real production-like escalations.</p>
             </div>
+            <div class="admin-panel">
+              <h2>Email notifications</h2>
+              <form id="developer-notification-form" class="admin-form-grid">
+                <label class="developer-checkline developer-checkline-panel">
+                  <input name="emailNotificationsEnabled" type="checkbox" checked />
+                  <span>Email reviewers when a real escalation is created</span>
+                </label>
+                <textarea name="defaultReviewerEmails" placeholder="Reviewer emails, comma separated"></textarea>
+                <button type="submit">Save notifications</button>
+                <p class="mini-status" role="status"></p>
+              </form>
+            </div>
           </div>
         </section>
 
@@ -237,6 +281,12 @@
           <p>This is the only time Forsig will show the full API key.</p>
           <code id="api-key-modal-value"></code>
           <button id="api-key-modal-copy" type="button">Copy API key</button>
+          <div class="api-key-next-step">
+            <h3>Next: run a real escalation</h3>
+            <p>Set this key as an environment variable, then open Quickstart for copy-paste code.</p>
+            <pre><code id="api-key-modal-env"></code></pre>
+            <button type="button" data-developer-view="quickstart">Open Quickstart</button>
+          </div>
         </div>
       </div>
     </main>

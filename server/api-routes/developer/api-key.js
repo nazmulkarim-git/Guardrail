@@ -1,4 +1,4 @@
-import { apiError, generateApiKey, getSql, hashApiKey, json, newId, normalizeString, publicApiError, readBody, requireDeveloper } from "../_forsig-core.js";
+import { apiError, generateApiKey, getSql, hashApiKey, json, newId, normalizeString, publicApiError, readBody, requireDeveloper, toJson } from "../_forsig-core.js";
 
 export default async function handler(req, res) {
   const session = requireDeveloper(req, res);
@@ -33,6 +33,10 @@ export default async function handler(req, res) {
     await db`
       insert into api_keys (id, workspace_id, name, hashed_key, prefix, created_at)
       values (${id}, ${session.workspaceId}, ${name}, ${hashApiKey(key)}, ${prefix}, now())
+    `;
+    await db`
+      insert into audit_events (id, workspace_id, escalation_id, actor_type, actor_id, event_type, metadata_json, created_at)
+      values (${newId("audit")}, ${session.workspaceId}, null, 'user', ${session.id}, 'api_key.created', ${toJson({ keyId: id, prefix, name })}, now())
     `;
 
     json(res, 201, {

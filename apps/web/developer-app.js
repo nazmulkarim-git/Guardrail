@@ -15,6 +15,9 @@ const state = {
   inboxSearch: "",
   includeTests: localStorage.getItem("forsig_include_tests") !== "false",
   auditRange: "all",
+  quickstartTab: "node",
+  workspace: null,
+  lastApiKey: "",
   auditEvents: []
 };
 
@@ -31,6 +34,19 @@ function toast(message) {
   el.textContent = message;
   el.classList.add("visible");
   setTimeout(() => el.classList.remove("visible"), 1600);
+}
+
+function track(event, properties = {}) {
+  window.forsigEvents = window.forsigEvents || [];
+  window.forsigEvents.push({
+    event,
+    properties: {
+      page: "developer",
+      path: location.pathname,
+      ...properties
+    },
+    at: new Date().toISOString()
+  });
 }
 
 async function api(path, options = {}) {
@@ -143,6 +159,9 @@ function setView(view) {
     showAgentList();
     loadAgents();
   }
+  if (view === "quickstart") {
+    renderQuickstart();
+  }
   if (view === "audit") loadAudit();
   if (view === "profile") loadProfile();
   if (view === "settings") {
@@ -164,7 +183,7 @@ async function checkSession() {
     $("#developer-workspace-label").textContent = "";
     $("#developer-workspace-name").textContent = session.developer.workspaceName || "Forsig";
     $("#developer-user-email").textContent = session.developer.email || "Developer console";
-    await Promise.all([loadWorkspace(), loadEscalations()]);
+    await Promise.all([loadWorkspace(), loadEscalations(), loadAgents(), loadKeys()]);
     if (state.selectedId) await loadDetail(state.selectedId);
   } else {
     showLogin();
@@ -174,6 +193,7 @@ async function checkSession() {
 async function loadWorkspace() {
   try {
     const data = await api("/api/developer/workspace");
+    state.workspace = data.workspace || null;
     const form = $("#developer-workspace-form");
     if (data.workspace && form) {
       form.elements.name.value = data.workspace.name || "";
@@ -182,6 +202,15 @@ async function loadWorkspace() {
       $("#developer-workspace-name").textContent = data.workspace.name || "Forsig";
       if (state.developer?.email) $("#developer-user-email").textContent = state.developer.email;
     }
+    const notificationForm = $("#developer-notification-form");
+    if (data.workspace && notificationForm) {
+      notificationForm.elements.emailNotificationsEnabled.checked = data.workspace.email_notifications_enabled !== false;
+      notificationForm.elements.defaultReviewerEmails.value = Array.isArray(data.workspace.default_reviewer_emails)
+        ? data.workspace.default_reviewer_emails.join(", ")
+        : "";
+    }
+    renderOnboarding();
+    renderQuickstart();
   } catch (error) {
     $("#developer-workspace-form .mini-status").textContent = error.message;
   }
@@ -194,6 +223,8 @@ async function loadKeys() {
     const data = await api("/api/developer/api-key");
     state.keys = data.keys || [];
     renderKeys();
+    renderOnboarding();
+    renderQuickstart();
     if (state.selectedKeyId) showKeyDetail(state.selectedKeyId);
   } catch (error) {
     list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
@@ -235,7 +266,16 @@ function renderKeys() {
     return matchesStatus && matchesQuery;
   });
   if (!keys.length) {
-    list.innerHTML = "<p class='empty-state'>No API keys match this view.</p>";
+    list.innerHTML = `
+      <div class="empty-state">
+        <strong>No API keys yet.</strong>
+        <p>Create a key, copy it once, then run the Quickstart script to send your first real escalation.</p>
+        <div class="developer-empty-actions">
+          <button type="button" onclick="document.querySelector('#developer-create-api-key').click()">Create API key</button>
+          <button type="button" data-developer-view="quickstart">Open Quickstart</button>
+        </div>
+      </div>
+    `;
     return;
   }
   list.innerHTML = `
@@ -346,6 +386,7 @@ async function loadAudit() {
         </div>
       `).join("")}
     ` : "<p class='empty-state'>No audit events yet.</p>";
+    renderOnboarding();
   } catch (error) {
     list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
   }
@@ -368,6 +409,188 @@ function agentSnippet(agent) {
 });`;
 }
 
+function activeApiKey() {
+  return state.keys.find((key) => keyStatus(key) === "active") || state.keys[0] || null;
+}
+
+function starterAgent() {
+  return state.agents.find((agent) => !agent.archived_at) || state.agents[0] || { slug: "refund-agent", name: "Refund Agent", environment: "development" };
+}
+
+function checklistItems() {
+  const hasAgent = state.agents.some((agent) => !agent.archived_at);
+  const hasKey = state.keys.some((key) => keyStatus(key) === "active");
+  const hasEscalation = state.escalations.some((item) => !item.testMode);
+  const hasDecision = state.escalations.some((item) => !item.testMode && item.status !== "pending");
+  return [
+    { label: "Starter agent ready", done: hasAgent, view: "agents" },
+    { label: "API key created", done: hasKey, view: "keys" },
+    { label: "First real escalation received", done: hasEscalation, view: "quickstart" },
+    { label: "First decision sent", done: hasDecision, view: "inbox" }
+  ];
+}
+
+function renderChecklist(container) {
+  if (!container) return;
+  const items = checklistItems();
+  const complete = items.filter((item) => item.done).length;
+  container.innerHTML = `
+    <div>
+      <span class="zip-section-label">First-run checklist</span>
+      <strong>${complete}/4 complete</strong>
+    </div>
+    ${items.map((item) => `
+      <button type="button" data-checklist-view="${item.view}" class="${item.done ? "done" : ""}">
+        <span>${item.done ? "Done" : "Next"}</span>
+        ${escapeHtml(item.label)}
+      </button>
+    `).join("")}
+  `;
+}
+
+function renderOnboarding() {
+  renderChecklist($("#developer-onboarding-panel"));
+  renderChecklist($("#developer-quickstart-checklist"));
+}
+
+function quickstartSnippets() {
+  const agent = starterAgent();
+  const agentId = agent.slug || agent.id || "refund-agent";
+  const agentName = agent.name || "Refund Agent";
+  const baseUrl = location.origin || "https://www.forsig.com";
+  const envKey = state.lastApiKey || "paste_your_full_forsig_api_key_here";
+  const payload = {
+    agent: { id: agentId, name: agentName, environment: agent.environment || "development" },
+    workflow: "refund-review-flow",
+    step: "refund-over-limit",
+    risk: { type: "refund_over_limit", level: "high", reason: "Refund amount is above the automatic approval limit." },
+    task: {
+      title: "Approve refund for customer #123",
+      description: "The agent wants to issue a $500 refund to a VIP customer.",
+      proposedAction: "Issue a $500 refund",
+      customerImpact: true
+    },
+    context: { customerId: "cus_123", customerTier: "VIP", refundAmount: 500 },
+    review: { notify: ["dashboard", "email"] },
+    timeoutSeconds: 900
+  };
+  const jsonPayload = JSON.stringify(payload, null, 2);
+  return {
+    node: `const BASE_URL = "${baseUrl}";
+const FORSIG_API_KEY = process.env.FORSIG_API_KEY || "${envKey}";
+
+async function forsig(path, options = {}) {
+  const response = await fetch(\`\${BASE_URL}\${path}\`, {
+    ...options,
+    headers: {
+      "content-type": "application/json",
+      authorization: \`Bearer \${FORSIG_API_KEY}\`,
+      ...(options.headers || {})
+    }
+  });
+  const data = await response.json();
+  if (!response.ok || data.ok === false) throw new Error(data.error?.message || "Forsig request failed");
+  return data;
+}
+
+const created = await forsig("/api/v1/escalations", {
+  method: "POST",
+  body: JSON.stringify(${jsonPayload})
+});
+
+console.log("Review in Forsig:", created.dashboardUrl || created.dashboard_url);
+
+while (true) {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  const result = await forsig(\`/api/v1/escalations/\${created.id}\`);
+  if (result.escalation.status !== "pending") {
+    console.log("Decision:", result.escalation.decision || result.escalation);
+    break;
+  }
+}`,
+    python: `import os, time, requests
+
+BASE_URL = "${baseUrl}"
+FORSIG_API_KEY = os.environ.get("FORSIG_API_KEY", "${envKey}")
+
+payload = ${JSON.stringify(payload, null, 2).replace(/\btrue\b/g, "True").replace(/\bfalse\b/g, "False").replace(/\bnull\b/g, "None")}
+
+headers = {
+    "authorization": f"Bearer {FORSIG_API_KEY}",
+    "content-type": "application/json",
+}
+
+created = requests.post(f"{BASE_URL}/api/v1/escalations", json=payload, headers=headers).json()
+print("Review in Forsig:", created.get("dashboardUrl") or created.get("dashboard_url"))
+
+while True:
+    time.sleep(3)
+    result = requests.get(f"{BASE_URL}/api/v1/escalations/{created['id']}", headers=headers).json()
+    if result["escalation"]["status"] != "pending":
+        print("Decision:", result["escalation"].get("decision") or result["escalation"])
+        break`,
+    curl: `curl -X POST ${baseUrl}/api/v1/escalations \\
+  -H "authorization: Bearer ${envKey}" \\
+  -H "content-type: application/json" \\
+  -d '${JSON.stringify(payload)}'`,
+    langgraph: `// LangGraph pattern: call Forsig before a risky tool node.
+async function refundApprovalNode(state) {
+  const decision = await forsig.escalate({
+    agent: { id: "${agentId}", name: "${agentName}" },
+    risk: { type: "refund_over_limit", level: "high" },
+    task: {
+      title: "Approve refund for customer #123",
+      proposedAction: "Issue a $500 refund"
+    },
+    context: { refundAmount: 500, customerTier: "VIP" },
+    waitForDecision: true
+  });
+
+  if (decision.status === "approved") return { ...state, approved: true };
+  if (decision.status === "edited") return { ...state, instruction: decision.instruction };
+  return { ...state, stopped: true };
+}`,
+    vercel: `// Vercel AI SDK / server action pattern.
+export async function approveRiskyRefund() {
+  "use server";
+
+  const decision = await forsig.escalate({
+    agent: { id: "${agentId}", name: "${agentName}" },
+    risk: { type: "refund_over_limit", level: "high" },
+    task: {
+      title: "Approve refund for customer #123",
+      proposedAction: "Issue a $500 refund"
+    },
+    context: { refundAmount: 500, customerTier: "VIP" },
+    waitForDecision: true
+  });
+
+  return decision.status === "approved" ? issueRefund() : decision;
+}`,
+    n8n: `// n8n HTTP Request node
+POST ${baseUrl}/api/v1/escalations
+Headers:
+  authorization: Bearer ${envKey}
+  content-type: application/json
+Body:
+${jsonPayload}
+
+// Then pause your workflow and poll:
+GET ${baseUrl}/api/v1/escalations/{{$json.id}}`
+  };
+}
+
+function renderQuickstart() {
+  const code = $("#developer-quickstart-code");
+  if (!code) return;
+  renderOnboarding();
+  const snippets = quickstartSnippets();
+  code.textContent = snippets[state.quickstartTab] || snippets.node;
+  document.querySelectorAll("[data-quickstart-tab]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.quickstartTab === state.quickstartTab);
+  });
+}
+
 async function loadAgents() {
   const list = $("#developer-agent-list");
   list.innerHTML = "<p class='empty-state'>Loading agents...</p>";
@@ -375,6 +598,8 @@ async function loadAgents() {
     const data = await api("/api/developer/agents");
     state.agents = data.agents || [];
     renderAgents();
+    renderOnboarding();
+    renderQuickstart();
     if (state.selectedAgentId) showAgentDetail(state.selectedAgentId);
   } catch (error) {
     list.innerHTML = `<p class='empty-state'>${escapeHtml(error.message)}</p>`;
@@ -384,7 +609,15 @@ async function loadAgents() {
 function renderAgents() {
   const list = $("#developer-agent-list");
   if (!state.agents.length) {
-    list.innerHTML = "<p class='empty-state'>No agents yet. Create one to start sending escalations.</p>";
+    list.innerHTML = `
+      <div class="empty-state">
+        <strong>No agents yet.</strong>
+        <p>Create an agent for the workflow that needs approval. Forsig will use it to group escalations and reviewer defaults.</p>
+        <div class="developer-empty-actions">
+          <button type="button" onclick="document.querySelector('#developer-create-agent').click()">Create agent</button>
+        </div>
+      </div>
+    `;
     return;
   }
   list.innerHTML = `
@@ -453,6 +686,8 @@ async function loadEscalations() {
   const data = await api(`/api/developer/escalations?status=${encodeURIComponent(state.status)}`);
   state.escalations = data.escalations || [];
   renderInboxRows();
+  renderOnboarding();
+  renderQuickstart();
 }
 
 function showInboxList() {
@@ -484,7 +719,16 @@ function renderInboxRows() {
     ].filter(Boolean).join(" ").toLowerCase().includes(query);
   });
   if (!escalations.length) {
-    list.innerHTML = "<p class='empty-state'>No escalations yet. Create an agent and API key, then send an escalation from your app.</p>";
+    list.innerHTML = `
+      <div class="empty-state">
+        <strong>No escalations yet.</strong>
+        <p>Create an API key, copy the Quickstart snippet, and send a real escalation from your local machine.</p>
+        <div class="developer-empty-actions">
+          <button type="button" data-developer-view="quickstart">Run your first real escalation</button>
+          <button type="button" id="developer-empty-test-escalation">Create UI test escalation</button>
+        </div>
+      </div>
+    `;
     return;
   }
   list.innerHTML = `
@@ -628,6 +872,7 @@ async function submitDecision(form) {
     body: JSON.stringify(payload)
   });
   toast("Decision sent");
+  track("decision_sent", { escalationId: state.selectedId, status: payload.status });
   statusEl.textContent = "Decision sent.";
   await loadEscalations();
   await loadDetail(state.selectedId);
@@ -663,7 +908,7 @@ $("#developer-login-form").addEventListener("submit", async (event) => {
     state.setupRequired = false;
     $("#developer-login-form").hidden = false;
     showApp();
-    await Promise.all([loadWorkspace(), loadEscalations()]);
+    await Promise.all([loadWorkspace(), loadEscalations(), loadAgents(), loadKeys()]);
   } catch (error) {
     status.textContent = error.message;
   }
@@ -721,7 +966,7 @@ $("#developer-reset-password-form").addEventListener("submit", async (event) => 
     toast("Password updated");
     $("#developer-login-form").hidden = false;
     showApp();
-    await Promise.all([loadWorkspace(), loadEscalations()]);
+    await Promise.all([loadWorkspace(), loadEscalations(), loadAgents(), loadKeys()]);
   } catch (error) {
     status.textContent = error.message;
   }
@@ -779,6 +1024,29 @@ $("#developer-workspace-form").addEventListener("submit", async (event) => {
   }
 });
 
+$("#developer-notification-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const status = form.querySelector(".mini-status");
+  status.textContent = "Saving...";
+  const workspaceName = $("#developer-workspace-form")?.elements.name.value || state.workspace?.name || "Workspace";
+  try {
+    await api("/api/developer/workspace", {
+      method: "POST",
+      body: JSON.stringify({
+        name: workspaceName,
+        emailNotificationsEnabled: form.elements.emailNotificationsEnabled.checked,
+        defaultReviewerEmails: form.elements.defaultReviewerEmails.value
+      })
+    });
+    status.textContent = "Notification settings saved.";
+    toast("Notification settings saved");
+    await loadWorkspace();
+  } catch (error) {
+    status.textContent = error.message;
+  }
+});
+
 $("#developer-profile-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
@@ -813,6 +1081,8 @@ $("#developer-api-key-form").addEventListener("submit", async (event) => {
       body: JSON.stringify({ name: form.elements.name.value })
     });
     closeModal("#api-key-create-modal");
+    state.lastApiKey = data.apiKey.key;
+    track("api_key_created", { keyId: data.apiKey.id, prefix: data.apiKey.prefix });
     showApiKeyModal(data.apiKey.key);
     status.textContent = "API key created.";
     form.reset();
@@ -846,6 +1116,7 @@ $("#developer-test-escalation").addEventListener("click", async () => {
   try {
     const data = await api("/api/developer/test-escalation", { method: "POST", body: "{}" });
     toast("Test escalation created");
+    track("escalation_created", { escalationId: data.escalationId, mode: "test" });
     state.status = "all";
     $("#developer-status-filter").value = "all";
     await loadEscalations();
@@ -877,13 +1148,16 @@ function showApiKeyModal(key) {
   const modal = $("#api-key-modal");
   $("#api-key-modal-value").textContent = key;
   $("#api-key-modal-copy").dataset.copyKey = key;
+  $("#api-key-modal-env").textContent = `FORSIG_API_KEY=${key}`;
   modal.hidden = false;
+  renderQuickstart();
 }
 
 function closeApiKeyModal() {
   const modal = $("#api-key-modal");
   $("#api-key-modal-value").textContent = "";
   $("#api-key-modal-copy").dataset.copyKey = "";
+  $("#api-key-modal-env").textContent = "";
   modal.hidden = true;
 }
 
@@ -907,6 +1181,7 @@ $("#developer-agent-form").addEventListener("submit", async (event) => {
     });
     status.textContent = "Agent created.";
     toast("Agent created");
+    track("agent_created", { name: form.elements.name.value, environment: form.elements.environment.value });
     form.reset();
     closeModal("#agent-create-modal");
     await loadAgents();
@@ -916,6 +1191,50 @@ $("#developer-agent-form").addEventListener("submit", async (event) => {
 });
 
 document.addEventListener("click", async (event) => {
+  const viewButton = event.target.closest("[data-developer-view]");
+  if (viewButton && !event.target.closest(".developer-sidebar")) {
+    setView(viewButton.dataset.developerView);
+    return;
+  }
+
+  if (event.target.closest("#developer-empty-test-escalation")) {
+    $("#developer-test-escalation")?.click();
+    return;
+  }
+
+  const checklistButton = event.target.closest("[data-checklist-view]");
+  if (checklistButton) {
+    setView(checklistButton.dataset.checklistView);
+    return;
+  }
+
+  const quickstartTab = event.target.closest("[data-quickstart-tab]");
+  if (quickstartTab) {
+    state.quickstartTab = quickstartTab.dataset.quickstartTab;
+    renderQuickstart();
+    track("quickstart_tab_selected", { tab: state.quickstartTab });
+    return;
+  }
+
+  if (event.target.closest("#developer-copy-quickstart")) {
+    await navigator.clipboard.writeText($("#developer-quickstart-code").textContent);
+    toast("Quickstart code copied");
+    track("quickstart_code_copied", { tab: state.quickstartTab });
+    return;
+  }
+
+  if (event.target.closest("#developer-generate-real-snippet")) {
+    setView("quickstart");
+    state.quickstartTab = "node";
+    renderQuickstart();
+    track("send_real_escalation_snippet_generated", {
+      hasApiKey: Boolean(activeApiKey()),
+      hasAgent: Boolean(starterAgent())
+    });
+    toast("Copy the quickstart code and run it locally");
+    return;
+  }
+
   if (event.target.closest("[data-back-inbox]")) {
     showInboxList();
     return;

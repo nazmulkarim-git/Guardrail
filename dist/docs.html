@@ -4,12 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Forsig Docs</title>
-    <meta name="description" content="Quickstart documentation for Forsig human approval infrastructure." />
+    <meta name="description" content="Example-first documentation for Forsig human approval infrastructure." />
     <meta name="robots" content="index,follow" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body data-page="docs" class="zip-design legal-zip">
-    <main class="legal-page">
+    <main class="legal-page docs-page">
       <a class="zip-brand" href="/" aria-label="Forsig home">
         <svg viewBox="0 0 40 40" aria-hidden="true">
           <path d="M4 20h12M24 20h12" />
@@ -20,35 +20,39 @@
         </svg>
         <span>Forsig</span>
       </a>
-      <article class="legal-card">
+      <article class="legal-card docs-card">
         <p><a class="docs-back-link" href="/developer">Back to developer console</a></p>
         <p class="eyebrow">Docs</p>
-        <h1>Human approval in one API call.</h1>
-        <p>Create an agent, create an API key, call Forsig when your AI agent reaches a risky action, and wait for a human decision. The normal loop is: your app creates an escalation, Forsig pauses the workflow, a human decides, and your app resumes with the returned instruction.</p>
+        <h1>Run a real approval in minutes.</h1>
+        <p>Forsig pauses a risky AI-agent action, asks a human for a decision, and returns a structured result your code can branch on.</p>
 
-        <h2>Real workflow checklist</h2>
-        <ol>
-          <li>Create an agent in the developer console.</li>
-          <li>Create an API key and copy it once.</li>
-          <li>Call <code>/api/v1/escalations</code> from your app when an action needs review.</li>
-          <li>Review the escalation in Inbox.</li>
-          <li>Send a decision and have your app fetch or wait for the result.</li>
-          <li>Verify the full trail in Audit trails.</li>
-        </ol>
+        <label class="docs-search">
+          <span>Search docs</span>
+          <input id="docs-search-input" type="search" placeholder="Search quickstart, webhook, Python, n8n..." />
+        </label>
 
-        <h2>Install</h2>
-        <pre><code>npm install @forsig/sdk</code></pre>
+        <section data-doc-section>
+          <h2>Quickstart</h2>
+          <ol>
+            <li>Create or use the starter agent in <a href="/developer">Developer</a>.</li>
+            <li>Create an API key. Forsig shows the full key once.</li>
+            <li>Set <code>FORSIG_API_KEY</code> locally.</li>
+            <li>Run one of the examples below and approve the Inbox escalation.</li>
+          </ol>
+          <pre><code>export FORSIG_API_KEY=fsk_test_xxx
+export FORSIG_BASE_URL=https://www.forsig.com
+npx create-forsig-demo</code></pre>
+        </section>
 
-        <h2>Escalate</h2>
-        <pre><code>import { Forsig } from "@forsig/sdk";
+        <section data-doc-section>
+          <h2>Plain Node</h2>
+          <pre><code>const baseUrl = process.env.FORSIG_BASE_URL || "https://www.forsig.com";
+const apiKey = process.env.FORSIG_API_KEY;
 
-const forsig = new Forsig({
-  apiKey: process.env.FORSIG_API_KEY,
-  baseUrl: "https://www.forsig.com"
-});
-
-const decision = await forsig.escalate({
+const payload = {
   agent: { id: "refund-agent", name: "Refund Agent", environment: "production" },
+  workflow: "refund-review-flow",
+  step: "refund-over-limit",
   risk: { type: "refund_over_limit", level: "high" },
   task: {
     title: "Approve refund for customer #123",
@@ -56,39 +60,120 @@ const decision = await forsig.escalate({
     customerImpact: true
   },
   context: { refundAmount: 500, customerTier: "VIP" },
-  waitForDecision: true
-});</code></pre>
+  review: { notify: ["dashboard", "email"] }
+};
 
-        <h2>Raw API request</h2>
-        <pre><code>curl -X POST https://www.forsig.com/api/v1/escalations \
+const created = await fetch(`${baseUrl}/api/v1/escalations`, {
+  method: "POST",
+  headers: {
+    "authorization": `Bearer ${apiKey}`,
+    "content-type": "application/json"
+  },
+  body: JSON.stringify(payload)
+}).then((res) => res.json());
+
+console.log("Open in Forsig:", created.dashboardUrl || created.dashboard_url);</code></pre>
+          <p class="docs-warning">No secrets: send the smallest review context possible. Do not include API keys, passwords, full payment details, or unnecessary personal data.</p>
+        </section>
+
+        <section data-doc-section>
+          <h2>Python</h2>
+          <pre><code>import os, requests, time
+
+base_url = os.getenv("FORSIG_BASE_URL", "https://www.forsig.com")
+headers = {
+    "authorization": f"Bearer {os.environ['FORSIG_API_KEY']}",
+    "content-type": "application/json",
+}
+
+payload = {
+    "agent": {"id": "refund-agent", "name": "Refund Agent", "environment": "production"},
+    "risk": {"type": "refund_over_limit", "level": "high"},
+    "task": {"title": "Approve refund for customer #123", "proposedAction": "Issue a $500 refund"},
+    "context": {"refundAmount": 500, "customerTier": "VIP"},
+    "review": {"notify": ["dashboard", "email"]},
+}
+
+created = requests.post(f"{base_url}/api/v1/escalations", json=payload, headers=headers).json()
+while True:
+    time.sleep(3)
+    result = requests.get(f"{base_url}/api/v1/escalations/{created['id']}", headers=headers).json()
+    if result["escalation"]["status"] != "pending":
+        print(result["escalation"]["decision"])
+        break</code></pre>
+        </section>
+
+        <section data-doc-section>
+          <h2>curl</h2>
+          <pre><code>curl -X POST https://www.forsig.com/api/v1/escalations \
   -H "authorization: Bearer $FORSIG_API_KEY" \
   -H "content-type: application/json" \
   -d '{
     "agent": { "id": "refund-agent", "name": "Refund Agent", "environment": "production" },
     "risk": { "type": "refund_over_limit", "level": "high" },
-    "task": {
-      "title": "Approve refund for customer #123",
-      "proposedAction": "Issue a $500 refund",
-      "customerImpact": true
-    },
+    "task": { "title": "Approve refund for customer #123", "proposedAction": "Issue a $500 refund" },
     "context": { "refundAmount": 500, "customerTier": "VIP" },
-    "review": { "notify": ["dashboard"] }
+    "review": { "notify": ["dashboard", "email"] }
   }'</code></pre>
+        </section>
 
-        <h2>Test modes</h2>
-        <p>Use the developer console button to create UI test escalations. Use <code>auto_approve</code>, <code>auto_reject</code>, or <code>auto_timeout</code> only when testing agent control flow automatically. For real manual review, omit <code>testMode</code>.</p>
+        <section data-doc-section>
+          <h2>Framework examples</h2>
+          <h3>LangGraph</h3>
+          <pre><code>async function refundApprovalNode(state) {
+  const decision = await forsig.escalate({
+    agent: { id: "refund-agent", name: "Refund Agent" },
+    risk: { type: "refund_over_limit", level: "high" },
+    task: { title: "Approve refund", proposedAction: "Issue refund" },
+    context: { refundAmount: state.refundAmount },
+    waitForDecision: true
+  });
+  return decision.status === "approved" ? { ...state, approved: true } : { ...state, stopped: true };
+}</code></pre>
+          <h3>Vercel AI SDK</h3>
+          <pre><code>export async function approveBeforeToolCall(toolInput) {
+  "use server";
+  const decision = await forsig.escalate({
+    agent: { id: "support-agent", name: "Support Agent" },
+    risk: { type: "external_action", level: "high" },
+    task: { title: "Approve outbound action", proposedAction: toolInput.action },
+    context: { ticketId: toolInput.ticketId },
+    waitForDecision: true
+  });
+  if (decision.status !== "approved") return decision;
+  return runTool(toolInput);
+}</code></pre>
+          <h3>n8n</h3>
+          <p>Use an HTTP Request node to create the escalation, then pause the workflow and poll <code>/api/v1/escalations/:id</code> until the status is no longer <code>pending</code>.</p>
+        </section>
 
-        <h2>Fetch a decision</h2>
-        <pre><code>const result = await fetch(`${baseUrl}/api/v1/escalations/${escalation.id}`, {
-  headers: { authorization: `Bearer ${process.env.FORSIG_API_KEY}` }
-}).then((res) => res.json());</code></pre>
+        <section data-doc-section>
+          <h2>Webhook signing</h2>
+          <p>When <code>callbackUrl</code> is set, Forsig posts the resolved decision with <code>x-forsig-event</code> and <code>x-forsig-signature</code>. Verify the raw request body before trusting the decision.</p>
+          <pre><code>import { createHmac, timingSafeEqual } from "node:crypto";
 
-        <h2>Decision webhooks</h2>
-        <p>When <code>callbackUrl</code> is set, Forsig posts the resolved decision with <code>x-forsig-event</code> and <code>x-forsig-signature</code> headers.</p>
+function verifyForsigWebhook(rawBody, signature, secret) {
+  const expected = createHmac("sha256", secret).update(rawBody).digest("hex");
+  const a = Buffer.from(signature || "");
+  const b = Buffer.from(expected);
+  return a.length === b.length && timingSafeEqual(a, b);
+}</code></pre>
+        </section>
 
-        <h2>Private beta safety</h2>
-        <p>Send only the minimum context needed for review. Avoid secrets, credentials, unnecessary PII, and regulated data.</p>
+        <section data-doc-section>
+          <h2>Sandbox mode</h2>
+          <p>Use the hosted Developer Quickstart when you want to test without touching your own agent. Forsig auto-creates a starter agent, generates code with your API key, and lets you approve the first real escalation from Inbox.</p>
+        </section>
       </article>
     </main>
+    <script>
+      const input = document.getElementById("docs-search-input");
+      input?.addEventListener("input", () => {
+        const query = input.value.trim().toLowerCase();
+        document.querySelectorAll("[data-doc-section]").forEach((section) => {
+          section.hidden = query && !section.textContent.toLowerCase().includes(query);
+        });
+      });
+    </script>
   </body>
 </html>
