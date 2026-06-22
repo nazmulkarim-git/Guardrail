@@ -1051,6 +1051,13 @@ function initContactForm() {
     event.preventDefault();
     status.textContent = "Sending...";
     const data = Object.fromEntries(new FormData(form).entries());
+    data.name = String(data.name || "").trim();
+    data.email = String(data.email || "").trim();
+    data.message = String(data.message || "").trim();
+    if (!data.name || !data.email || !data.message) {
+      status.textContent = "Name, email, and message are required.";
+      return;
+    }
     try {
       const response = await fetch("/api/contact", {
         method: "POST",

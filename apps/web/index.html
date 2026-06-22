@@ -108,10 +108,10 @@
 
       <section id="sdk" class="zip-section codebase-section">
         <div class="zip-container codebase-layout">
-          <div>
+          <div class="codebase-copy">
             <span class="zip-section-label">SDK</span>
-            <h2>A checkpoint inside your agent codebase</h2>
-            <p>Forsig is called where the workflow is about to do something irreversible. The agent pauses until a structured decision comes back.</p>
+            <h2>One checkpoint for risky agent actions</h2>
+            <p>Add Forsig where your workflow is about to send, spend, update, or deploy. Keep your existing agent stack and branch on the returned decision.</p>
             <div class="sdk-tabs" role="tablist" aria-label="SDK language">
               <button class="active" type="button" data-sdk-tab="ts">TypeScript</button>
               <button type="button" data-sdk-tab="py">Python <span>planned for beta</span></button>
@@ -121,20 +121,17 @@
             <div class="mac-window">
               <div class="mac-titlebar">
                 <span></span><span></span><span></span>
-                <b>~/agent-workflows/refund-ops</b>
+                <b>~/agent-workflows/refund-ops/src/agents/refund.ts</b>
               </div>
-              <div class="mac-code-body">
-                <aside class="codebase-sidebar" aria-label="Codebase files">
-                  <strong>FORSIG-BETA</strong>
-                  <span class="active">src/agents/refund.ts</span>
-                  <span>src/tools/stripe.ts</span>
-                  <span>src/workflows/review.ts</span>
-                  <span>.env.local</span>
-                </aside>
-                <main class="codebase-editor">
-                  <div class="editor-tab"><b id="sdk-code-title">agent.ts</b><button data-copy-target="sdk-code">Copy</button></div>
-                  <pre><code id="sdk-code"></code></pre>
-                </main>
+              <div class="provider-tabs" aria-label="Risk examples">
+                <span class="active">Refunds</span>
+                <span>Deployments</span>
+                <span>Emails</span>
+                <span>Tool spend</span>
+              </div>
+              <div class="codebase-editor">
+                <div class="editor-tab"><b id="sdk-code-title">agent.ts</b><button data-copy-target="sdk-code">Copy</button></div>
+                <pre><code id="sdk-code"></code></pre>
               </div>
               <div class="mac-terminal">
                 <span>forsig: intercepted refund_over_limit</span>
@@ -152,45 +149,54 @@
             <h2>A live checkpoint layer between agents and real-world actions</h2>
             <p>Forsig sits at the decision boundary: risky action in, human decision out, audit trail attached.</p>
           </div>
-          <div class="architecture-live" aria-label="Dynamic Forsig architecture">
+          <div class="architecture-live architecture-flow" aria-label="Dynamic Forsig architecture">
             <div class="architecture-grid"></div>
-            <div class="arch-node arch-agent">
-              <small>AI agent</small>
-              <strong>Refund workflow</strong>
-              <span>Confidence 61% / amount $500</span>
-            </div>
-            <div class="arch-node arch-risk">
-              <small>Threshold hit</small>
-              <strong>refund_over_limit</strong>
-              <span>Policy requires review</span>
-            </div>
-            <div class="arch-core">
-              <div class="arch-core-ring"></div>
-              <b>Forsig</b>
-              <span>Human approval checkpoint</span>
-            </div>
-            <div class="arch-node arch-human">
-              <small>Reviewer</small>
-              <strong>Approve / edit / reject</strong>
-              <span>Context, risk, proposed action</span>
-            </div>
-            <div class="arch-node arch-resume">
-              <small>Agent resumes</small>
-              <strong>Structured decision</strong>
-              <span>{ status: "approved" }</span>
-            </div>
-            <div class="arch-path path-one"></div>
-            <div class="arch-path path-two"></div>
-            <div class="arch-path path-three"></div>
-            <div class="arch-path path-four"></div>
-            <div class="arch-packet packet-one"></div>
-            <div class="arch-packet packet-two"></div>
-            <div class="arch-packet packet-three"></div>
-            <div class="arch-packet packet-four"></div>
-            <div class="arch-telemetry">
-              <span><b>Audit</b> proposal logged</span>
-              <span><b>Timeout</b> fail closed</span>
-              <span><b>Webhook</b> signed decision</span>
+            <svg class="arch-lines" viewBox="0 0 1120 520" aria-hidden="true">
+              <path class="flow-line line-a" d="M220 170 C330 170 360 248 470 248" />
+              <path class="flow-line line-b" d="M650 248 C760 248 790 168 900 168" />
+              <path class="flow-line line-c" d="M650 286 C760 286 796 354 918 354" />
+              <path class="flow-line line-d" d="M900 388 C754 444 358 438 220 316" />
+              <circle class="flow-dot dot-a" r="6" />
+              <circle class="flow-dot dot-b" r="6" />
+              <circle class="flow-dot dot-c" r="6" />
+              <circle class="flow-dot dot-d" r="6" />
+            </svg>
+            <article class="flow-card flow-agent">
+              <small>01 / Agent workflow</small>
+              <h3>Agent proposes a real action</h3>
+              <div class="flow-console">
+                <span>tool: stripe.refund</span>
+                <span>amount: $500</span>
+                <span>confidence: 61%</span>
+              </div>
+            </article>
+            <article class="flow-card flow-forsig">
+              <small>02 / Forsig checkpoint</small>
+              <h3>Pause before the action runs</h3>
+              <div class="checkpoint-core">
+                <b>Forsig</b>
+                <span>risk policy matched</span>
+              </div>
+              <p>Timeouts fail closed. Minimal context is sent for review.</p>
+            </article>
+            <article class="flow-card flow-reviewer">
+              <small>03 / Human review</small>
+              <h3>Reviewer decides with context</h3>
+              <div class="decision-row">
+                <span>Approve</span>
+                <span>Edit</span>
+                <span>Reject</span>
+              </div>
+            </article>
+            <article class="flow-card flow-resume">
+              <small>04 / Structured response</small>
+              <h3>Agent resumes or stops</h3>
+              <pre>{ "status": "approved" }</pre>
+            </article>
+            <div class="flow-audit-strip">
+              <span><b>Audit trail</b> proposal, reviewer, decision, timestamp</span>
+              <span><b>Webhook</b> signed decision delivered back to the workflow</span>
+              <span><b>Fail closed</b> no response means no risky action</span>
             </div>
           </div>
         </div>
@@ -400,14 +406,14 @@
             <p>Share what you are building, where human review is needed, and what would make Forsig useful.</p>
           </div>
           <form id="contact-form" class="zip-contact-form">
-            <input name="name" type="text" required placeholder="Name" autocomplete="name" />
-            <input name="email" type="email" required placeholder="Email" autocomplete="email" />
+            <input name="name" type="text" required aria-required="true" placeholder="Name *" autocomplete="name" />
+            <input name="email" type="email" required aria-required="true" placeholder="Email *" autocomplete="email" />
             <input name="company" type="text" placeholder="Company" autocomplete="organization" />
             <select name="role">
               <option value="">Role</option>
               <option>Founder</option><option>CEO</option><option>CTO</option><option>CFO</option><option>Developer</option><option>Product Manager</option>
             </select>
-            <textarea name="message" required placeholder="Tell me about your agent workflow..."></textarea>
+            <textarea name="message" required aria-required="true" placeholder="Tell me about your agent workflow... *"></textarea>
             <button type="submit">Send Message</button>
             <p id="contact-status" class="mini-status" role="status"></p>
           </form>
