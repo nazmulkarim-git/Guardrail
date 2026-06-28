@@ -11819,6 +11819,182 @@ body[data-page="docs"] button.docs-back-link {
   cursor: pointer;
 }
 
+/* Conversion and first-run launch polish */
+body[data-page="landing"] .hero-mini-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(100%, 560px);
+  margin-top: 16px;
+}
+
+body[data-page="landing"] .hero-mini-form input {
+  flex: 1;
+  min-width: 0;
+  min-height: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 14px;
+  padding: 0 15px;
+  color: var(--zip-text);
+  background: rgba(255, 255, 255, 0.06);
+  font: inherit;
+}
+
+body[data-page="landing"] .hero-mini-form a {
+  min-height: 50px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 14px;
+  padding: 0 18px;
+  color: #04110d;
+  background: var(--zip-primary);
+  font-weight: 900;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+body[data-page="landing"] .proof-strip-section {
+  padding-top: 18px;
+  padding-bottom: 46px;
+}
+
+body[data-page="landing"] .proof-strip,
+body[data-page="landing"] .pricing-roadmap,
+body[data-page="developer"] .quickstart-aha-panel {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+body[data-page="landing"] .proof-strip article,
+body[data-page="landing"] .pricing-roadmap article,
+body[data-page="developer"] .quickstart-aha-panel article {
+  border: 1px solid rgba(0, 255, 194, 0.16);
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+body[data-page="landing"] .proof-strip b,
+body[data-page="landing"] .proof-strip span,
+body[data-page="landing"] .pricing-roadmap b,
+body[data-page="landing"] .pricing-roadmap span,
+body[data-page="developer"] .quickstart-aha-panel b,
+body[data-page="developer"] .quickstart-aha-panel small,
+body[data-page="developer"] .quickstart-aha-panel span {
+  display: block;
+}
+
+body[data-page="landing"] .proof-strip b {
+  color: #fff;
+  font-size: 20px;
+  line-height: 1.1;
+}
+
+body[data-page="landing"] .proof-strip span,
+body[data-page="landing"] .pricing-roadmap span,
+body[data-page="developer"] .quickstart-aha-panel small {
+  margin-top: 8px;
+  color: var(--zip-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+body[data-page="landing"] .early-objection-section {
+  padding-top: 48px;
+  padding-bottom: 52px;
+}
+
+body[data-page="landing"] .pricing-roadmap {
+  max-width: 920px;
+  margin: 18px auto 0;
+}
+
+body[data-page="landing"] .pricing-roadmap b {
+  color: var(--zip-text);
+  font-size: 16px;
+}
+
+body[data-page="developer"] .quickstart-aha-panel {
+  width: min(1120px, calc(100% - 112px));
+  margin: 0 auto 18px;
+}
+
+body[data-page="developer"] .quickstart-aha-panel span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 10px;
+  border-radius: 999px;
+  color: #04110d;
+  background: #00ffc2;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+body[data-page="developer"] .quickstart-ai-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-top: 18px !important;
+}
+
+body[data-page="developer"] .quickstart-ai-card h2 {
+  margin: 0 0 8px;
+  font-size: 24px;
+  letter-spacing: -0.025em;
+}
+
+body[data-page="developer"] .quickstart-ai-card button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 16px;
+  color: #04110d;
+  background: #00ffc2;
+  font: inherit;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+body[data-page="developer"] .product-result-box pre {
+  margin-top: 12px;
+  max-height: 260px;
+  overflow: auto;
+  border: 1px solid var(--developer-line, rgba(255, 255, 255, 0.12));
+  border-radius: 12px;
+  padding: 14px;
+  background: #07080a;
+}
+
+@media (max-width: 980px) {
+  body[data-page="landing"] .proof-strip,
+  body[data-page="landing"] .pricing-roadmap,
+  body[data-page="developer"] .quickstart-aha-panel {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="developer"] .quickstart-aha-panel {
+    width: min(100% - 28px, 1120px);
+  }
+
+  body[data-page="developer"] .quickstart-ai-card {
+    display: grid;
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-page="landing"] .hero-mini-form {
+    display: grid;
+  }
+
+  body[data-page="landing"] .hero-mini-form a {
+    width: 100%;
+  }
+}
+
 @media (max-width: 980px) {
   body[data-page="developer"] .quickstart-checklist {
     grid-template-columns: 1fr !important;

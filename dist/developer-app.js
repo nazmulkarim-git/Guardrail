@@ -196,9 +196,32 @@ async function checkSession() {
     $("#developer-workspace-name").textContent = session.developer.workspaceName || "Forsig";
     $("#developer-user-email").textContent = session.developer.email || "Developer console";
     await Promise.all([loadWorkspace(), loadEscalations(), loadAgents(), loadKeys()]);
+    await ensureLaunchDefaults();
     if (state.selectedId) await loadDetail(state.selectedId);
+    else setView("quickstart");
   } else {
     showLogin();
+  }
+}
+
+async function ensureLaunchDefaults() {
+  const reviewerEmails = Array.isArray(state.workspace?.default_reviewer_emails)
+    ? state.workspace.default_reviewer_emails
+    : [];
+  if (state.developer?.email && !reviewerEmails.length) {
+    try {
+      await api("/api/developer/workspace", {
+        method: "POST",
+        body: JSON.stringify({
+          name: state.workspace?.name || state.developer.workspaceName || "Workspace",
+          emailNotificationsEnabled: true,
+          defaultReviewerEmails: state.developer.email
+        })
+      });
+      await loadWorkspace();
+    } catch {
+      // Keep onboarding non-blocking if the workspace endpoint is unavailable.
+    }
   }
 }
 
@@ -482,10 +505,10 @@ function checklistItems() {
   const hasEscalation = state.escalations.some((item) => !item.testMode);
   const hasDecision = state.escalations.some((item) => !item.testMode && item.status !== "pending");
   return [
-    { label: "Starter agent ready", done: hasAgent, view: "agents" },
-    { label: "API key created", done: hasKey, view: "keys" },
-    { label: "First real escalation received", done: hasEscalation, view: "quickstart" },
-    { label: "First decision sent", done: hasDecision, view: "inbox" }
+    { label: hasAgent ? "Starter agent ready" : "Create a starter agent", done: hasAgent, view: "agents" },
+    { label: hasKey ? "API key ready" : "Create an API key", done: hasKey, view: "keys" },
+    { label: hasEscalation ? "Real escalation received" : "Run the quickstart script", done: hasEscalation, view: "quickstart" },
+    { label: hasDecision ? "Decision sent to agent" : "Approve and inspect JSON", done: hasDecision, view: "inbox" }
   ];
 }
 
@@ -495,7 +518,7 @@ function renderChecklist(container) {
   const complete = items.filter((item) => item.done).length;
   container.innerHTML = `
     <div>
-      <span class="zip-section-label">First-run checklist</span>
+      <span class="zip-section-label">First 5 minutes</span>
       <strong>${complete}/4 complete</strong>
     </div>
     ${items.map((item) => `
@@ -530,7 +553,7 @@ function quickstartSnippets() {
     },
     context: { customerId: "cus_123", customerTier: "VIP", refundAmount: 500 },
     mode: "shadow",
-    review: { notify: ["dashboard", "email"] },
+    review: { notify: ["dashboard", "email"], reviewers: Array.isArray(state.workspace?.default_reviewer_emails) ? state.workspace.default_reviewer_emails : [] },
     timeoutSeconds: 900
   };
   const jsonPayload = JSON.stringify(payload, null, 2);
@@ -967,6 +990,15 @@ function renderDetail() {
         <div class="product-result-box">
           <strong>${escapeHtml(item.decision?.status || item.status)}</strong>
           <p>${escapeHtml(item.decision?.instruction || "Decision recorded.")}</p>
+          <pre><code>${escapeHtml(JSON.stringify({
+            status: item.decision?.status || item.status,
+            instruction: item.decision?.instruction || null,
+            addedContext: item.decision?.addedContext || null,
+            comment: item.decision?.comment || null,
+            reviewer: item.decision?.reviewer || null,
+            auditUrl: `/developer?esc=${item.id}`,
+            createdAt: item.decision?.createdAt || item.resolvedAt || item.updatedAt
+          }, null, 2))}</code></pre>
         </div>
       `}
       </section>
@@ -1037,6 +1069,8 @@ $("#developer-login-form").addEventListener("submit", async (event) => {
     $("#developer-login-form").hidden = false;
     showApp();
     await Promise.all([loadWorkspace(), loadEscalations(), loadAgents(), loadKeys()]);
+    await ensureLaunchDefaults();
+    setView("quickstart");
   } catch (error) {
     status.textContent = error.message;
   }
@@ -1095,6 +1129,8 @@ $("#developer-reset-password-form").addEventListener("submit", async (event) => 
     $("#developer-login-form").hidden = false;
     showApp();
     await Promise.all([loadWorkspace(), loadEscalations(), loadAgents(), loadKeys()]);
+    await ensureLaunchDefaults();
+    setView("quickstart");
   } catch (error) {
     status.textContent = error.message;
   }

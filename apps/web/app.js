@@ -146,6 +146,27 @@ function initCopyButtons() {
   });
 }
 
+function initHeroEmailShortcut() {
+  const heroEmail = document.querySelector("[data-hero-email]");
+  const waitlistEmail = document.querySelector('#waitlist-form input[name="email"]');
+  const heroCta = document.querySelector("[data-hero-email-submit]");
+  if (!heroEmail || !waitlistEmail || !heroCta) return;
+  const sync = () => {
+    if (heroEmail.value.trim()) waitlistEmail.value = heroEmail.value.trim();
+  };
+  heroEmail.addEventListener("input", sync);
+  heroEmail.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      sync();
+      document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      waitlistEmail.focus();
+      track("hero_inline_email_entered");
+    }
+  });
+  heroCta.addEventListener("click", sync);
+}
+
 function initHeroSwap() {
   const code = document.getElementById("hero-code");
   if (!code) return;
@@ -362,11 +383,11 @@ function initHeroApprovalCard() {
   const responses = {
     approved: {
       label: "Approved",
-      payload: { status: "approved", instruction: "Proceed only after backup verification." }
+      payload: { status: "approved", instruction: "Proceed after backup and rollback verification." }
     },
     rejected: {
       label: "Rejected",
-      payload: { status: "rejected", instruction: "Do not run the destructive database command." }
+      payload: { status: "rejected", instruction: "Do not run the billing migration without rollback proof." }
     },
     edited: {
       label: "Edited",
@@ -1155,6 +1176,7 @@ track(`${document.body.dataset.page}_viewed`);
 initPostHog();
 revealOnScroll();
 initCopyButtons();
+initHeroEmailShortcut();
 initHeroSwap();
 initConsoleMotion();
 initImpactCalculator();

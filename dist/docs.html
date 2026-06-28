@@ -41,7 +41,16 @@
           </ol>
           <pre><code>export FORSIG_API_KEY=fsk_test_xxx
 export FORSIG_BASE_URL=https://www.forsig.com
-npx create-forsig-demo</code></pre>
+node examples/refund-agent-node/index.mjs</code></pre>
+          <p class="docs-warning">CLI scaffolding is planned. Until <code>npx create-forsig-demo</code> is published, use the Developer Quickstart or the included example code.</p>
+        </section>
+
+        <section data-doc-section>
+          <h2>Environment pattern</h2>
+          <p>Use separate agents and API keys for development, staging, and production. Start with <code>mode: "shadow"</code> in development, review the shadow simulations, then create a production agent and switch only the final execution boundary to <code>active</code>.</p>
+          <pre><code>development agent -> shadow mode -> inspect logs
+staging agent     -> active mode on non-critical workflow
+production agent  -> active mode with reviewer email routing</code></pre>
         </section>
 
         <section data-doc-section>

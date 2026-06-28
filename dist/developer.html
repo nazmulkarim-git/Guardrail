@@ -21,9 +21,9 @@
           </span>
         </a>
         <nav>
-          <button type="button" data-developer-view="inbox" class="active"><span>Inbox</span></button>
-          <button type="button" data-developer-view="quickstart"><span>Quickstart</span></button>
-          <button type="button" data-developer-view="integration"><span>Integration prompt</span></button>
+          <button type="button" data-developer-view="quickstart" class="active"><span>Start here</span></button>
+          <button type="button" data-developer-view="inbox"><span>Inbox</span></button>
+          <button type="button" data-developer-view="integration"><span>Install with AI</span></button>
           <button type="button" data-developer-view="shadow"><span>Shadow simulations</span></button>
           <button type="button" data-developer-view="agents"><span>Agents</span></button>
           <button type="button" data-developer-view="keys"><span>API Keys</span></button>
@@ -75,7 +75,7 @@
           </div>
         </div>
 
-        <section id="developer-view-inbox" class="admin-view">
+        <section id="developer-view-inbox" class="admin-view" hidden>
           <div class="developer-page-head">
             <h1>Inbox</h1>
             <button id="developer-test-escalation" class="developer-primary-button" type="button">Create test escalation</button>
@@ -101,10 +101,31 @@
           </div>
         </section>
 
-        <section id="developer-view-quickstart" class="admin-view" hidden>
+        <section id="developer-view-quickstart" class="admin-view">
           <div class="developer-page-head">
-            <h1>Quickstart</h1>
+            <div>
+              <h1>Run your first checkpoint</h1>
+              <p class="admin-meta">Create a key, run a tiny script, approve the escalation, and watch the agent receive a structured decision.</p>
+            </div>
             <button id="developer-generate-real-snippet" class="developer-primary-button" type="button">Generate example</button>
+          </div>
+          <div id="developer-quickstart-checklist" class="quickstart-checklist"></div>
+          <div class="quickstart-aha-panel">
+            <article>
+              <span>1</span>
+              <b>Create or use an active API key</b>
+              <small>Forsig only shows the full key once. Store it as <code>FORSIG_API_KEY</code>.</small>
+            </article>
+            <article>
+              <span>2</span>
+              <b>Run the copy-paste script</b>
+              <small>Start in shadow mode, then switch to active approval when the checkpoint looks right.</small>
+            </article>
+            <article>
+              <span>3</span>
+              <b>Approve in Inbox</b>
+              <small>Your local agent receives JSON: approved, rejected, edited, taken_over, or timeout.</small>
+            </article>
           </div>
           <div class="quickstart-layout">
             <article class="quickstart-main">
@@ -128,6 +149,14 @@
               </div>
             </article>
           </div>
+          <article class="quickstart-main quickstart-ai-card">
+            <div>
+              <span class="zip-section-label">Fastest real integration</span>
+              <h2>Let Codex, Cursor, or Claude add Forsig to your codebase.</h2>
+              <p class="admin-meta">Describe the risky actions. Forsig generates a precise coding-assistant prompt with search hints, tests, shadow-mode rollout, reviewer email routing, and fail-closed decision handling.</p>
+            </div>
+            <button type="button" data-developer-view="integration">Open AI installer</button>
+          </article>
         </section>
 
         <section id="developer-view-integration" class="admin-view" hidden>
@@ -212,7 +241,10 @@
 
         <section id="developer-view-agents" class="admin-view" hidden>
           <div class="developer-page-head">
-            <h1>Agents</h1>
+            <div>
+              <h1>Agents</h1>
+              <p class="admin-meta">Agents group escalations, default reviewers, environment, and audit history. Use development or staging first, then create a production agent when the checkpoint is trusted.</p>
+            </div>
             <button id="developer-create-agent" class="developer-primary-button" type="button">+ Create agent</button>
           </div>
           <div id="developer-agent-list" class="resend-table"></div>
@@ -295,6 +327,7 @@
                   <span>Email reviewers when a real escalation is created</span>
                 </label>
                 <textarea name="defaultReviewerEmails" placeholder="Reviewer emails, comma separated"></textarea>
+                <p class="admin-meta">Default reviewers are used by quickstart snippets, AI installer prompts, and new escalations unless an agent overrides them.</p>
                 <button type="submit">Save notifications</button>
                 <p class="mini-status" role="status"></p>
               </form>
