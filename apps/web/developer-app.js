@@ -12,6 +12,8 @@ const state = {
   agents: [],
   selectedAgentId: null,
   selectedKeyId: null,
+  agentSearch: "",
+  agentFilter: "all",
   keyStatus: "all",
   keySearch: "",
   inboxSearch: "",
@@ -28,6 +30,13 @@ const state = {
 
 const $ = (selector) => document.querySelector(selector);
 
+function applyTheme(theme = localStorage.getItem("forsig_developer_theme") || "dark") {
+  document.body.dataset.theme = theme;
+  localStorage.setItem("forsig_developer_theme", theme);
+  const button = $("#developer-theme-toggle");
+  if (button) button.innerHTML = `${theme === "light" ? "Dark" : "Light"} <span>T</span>`;
+}
+
 function toast(message) {
   let el = $("#forsig-toast");
   if (!el) {
@@ -39,6 +48,16 @@ function toast(message) {
   el.textContent = message;
   el.classList.add("visible");
   setTimeout(() => el.classList.remove("visible"), 1600);
+}
+
+function loadingRows(label = "Loading") {
+  return `
+    <div class="skeleton-list" aria-label="${escapeHtml(label)}">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  `;
 }
 
 function track(event, properties = {}) {
@@ -257,7 +276,7 @@ async function loadWorkspace() {
 
 async function loadKeys() {
   const list = $("#developer-api-key-list");
-  list.innerHTML = "<p class='empty-state'>Loading keys...</p>";
+  list.innerHTML = loadingRows("Loading API keys");
   try {
     const data = await api("/api/developer/api-key");
     state.keys = data.keys || [];
@@ -403,7 +422,7 @@ async function loadProfile() {
 
 async function loadAudit() {
   const list = $("#developer-audit-list");
-  list.innerHTML = "<p class='empty-state'>Loading audit trail...</p>";
+  list.innerHTML = loadingRows("Loading audit trail");
   try {
     const data = await api("/api/developer/audit");
     const cutoff = rangeCutoff(state.auditRange);
@@ -434,6 +453,42 @@ function auditActorLabel(event) {
   if (event.actor_type === "agent") return event.actor_id || "Agent";
   if (event.actor_type === "system") return "System";
   return event.actor_id || event.actor_type || "-";
+}
+
+function csvEscape(value) {
+  const text = String(value ?? "");
+  return /[",\n\r]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
+}
+
+function exportAuditCsv() {
+  const events = state.auditEvents || [];
+  if (!events.length) {
+    toast("No audit events to export");
+    return;
+  }
+  const rows = [
+    ["Event", "Target", "Actor", "Actor type", "Time", "Metadata"],
+    ...events.map((event) => [
+      event.event_type,
+      event.task_title || event.escalation_id || "Workspace",
+      auditActorLabel(event),
+      event.actor_type || "",
+      event.created_at || "",
+      JSON.stringify(event.metadata_json || {})
+    ])
+  ];
+  const csv = rows.map((row) => row.map(csvEscape).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `forsig-audit-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  track("audit_exported", { count: events.length });
+  toast("Audit CSV downloaded");
 }
 
 function showAuditDetail(id) {
@@ -472,6 +527,46 @@ function showAuditDetail(id) {
       <pre><code>${escapeHtml(JSON.stringify(event, null, 2))}</code></pre>
     </section>
   `;
+}
+
+const commandItems = [
+  { id: "quickstart", label: "Open Quickstart", hint: "Copy Node, Python, curl, and framework examples.", run: () => setView("quickstart") },
+  { id: "inbox", label: "Open Inbox", hint: "Review pending approvals.", run: () => setView("inbox") },
+  { id: "create-key", label: "Create API key", hint: "Generate a key and see it once.", run: () => { setView("keys"); openModal("#api-key-create-modal"); } },
+  { id: "create-agent", label: "Create agent", hint: "Group escalations by workflow.", run: () => { setView("agents"); openModal("#agent-create-modal"); } },
+  { id: "integration", label: "AI integration prompt", hint: "Draft a Codex, Claude, or Cursor install prompt.", run: () => setView("integration") },
+  { id: "shadow", label: "Shadow simulations", hint: "Inspect non-blocking approval simulations.", run: () => setView("shadow") },
+  { id: "audit", label: "Audit trails", hint: "Filter and export decision history.", run: () => setView("audit") },
+  { id: "export-audit", label: "Export audit CSV", hint: "Download visible audit events.", run: exportAuditCsv },
+  { id: "settings", label: "Settings", hint: "Workspace, reviewers, notifications, invites.", run: () => setView("settings") },
+  { id: "docs", label: "Docs", hint: "Open implementation docs.", run: () => { location.href = "/docs"; } }
+];
+
+function renderCommandPalette() {
+  const results = $("#developer-command-results");
+  if (!results) return;
+  const query = ($("#developer-command-search")?.value || "").trim().toLowerCase();
+  const matches = commandItems.filter((item) => !query || `${item.label} ${item.hint}`.toLowerCase().includes(query));
+  results.innerHTML = matches.length ? matches.map((item) => `
+    <button type="button" data-command-id="${item.id}">
+      <strong>${escapeHtml(item.label)}</strong>
+      <span>${escapeHtml(item.hint)}</span>
+    </button>
+  `).join("") : "<p class='empty-state'>No commands found.</p>";
+}
+
+function openCommandPalette() {
+  const palette = $("#developer-command-palette");
+  if (!palette) return;
+  palette.hidden = false;
+  $("#developer-command-search").value = "";
+  renderCommandPalette();
+  requestAnimationFrame(() => $("#developer-command-search").focus());
+}
+
+function closeCommandPalette() {
+  const palette = $("#developer-command-palette");
+  if (palette) palette.hidden = true;
 }
 
 function agentSnippet(agent) {
@@ -721,7 +816,7 @@ function renderQuickstart() {
 async function loadShadowSimulations() {
   const list = $("#developer-shadow-list");
   if (!list) return;
-  list.innerHTML = "<p class='empty-state'>Loading shadow simulations...</p>";
+  list.innerHTML = loadingRows("Loading shadow simulations");
   try {
     const data = await api("/api/developer/escalations?status=shadow_logged");
     state.shadowSimulations = data.escalations || [];
@@ -747,7 +842,7 @@ async function loadShadowSimulations() {
 
 async function loadAgents() {
   const list = $("#developer-agent-list");
-  list.innerHTML = "<p class='empty-state'>Loading agents...</p>";
+  list.innerHTML = loadingRows("Loading agents");
   try {
     const data = await api("/api/developer/agents");
     state.agents = data.agents || [];
@@ -762,6 +857,15 @@ async function loadAgents() {
 
 function renderAgents() {
   const list = $("#developer-agent-list");
+  const query = state.agentSearch.trim().toLowerCase();
+  const agents = state.agents.filter((agent) => {
+    const status = agent.archived_at ? "archived" : "active";
+    const environment = String(agent.environment || "").toLowerCase();
+    const matchesFilter = state.agentFilter === "all" || state.agentFilter === status || state.agentFilter === environment;
+    const haystack = `${agent.name || ""} ${agent.slug || ""} ${agent.environment || ""} ${agent.description || ""}`.toLowerCase();
+    const matchesQuery = !query || haystack.includes(query);
+    return matchesFilter && matchesQuery;
+  });
   if (!state.agents.length) {
     list.innerHTML = `
       <div class="empty-state">
@@ -774,11 +878,15 @@ function renderAgents() {
     `;
     return;
   }
+  if (!agents.length) {
+    list.innerHTML = "<p class='empty-state'>No agents match this search or filter.</p>";
+    return;
+  }
   list.innerHTML = `
     <div class="resend-table-row agent-table-row resend-table-head">
       <span>Agent</span><span>Environment</span><span>Escalations</span><span>Pending</span><span>Status</span>
     </div>
-    ${state.agents.map((agent) => `
+    ${agents.map((agent) => `
       <button type="button" class="resend-table-row agent-table-row selectable-row" data-agent-id="${escapeHtml(agent.id)}">
         <span><b>${escapeHtml(agent.name)}</b><small>${escapeHtml(agent.slug)}</small></span>
         <span>${escapeHtml(agent.environment)}</span>
@@ -1283,7 +1391,19 @@ $("#developer-key-filter").addEventListener("change", (event) => {
   renderKeys();
 });
 
+$("#developer-agent-search").addEventListener("input", (event) => {
+  state.agentSearch = event.target.value;
+  renderAgents();
+});
+
+$("#developer-agent-filter").addEventListener("change", (event) => {
+  state.agentFilter = event.target.value;
+  renderAgents();
+});
+
 $("#developer-audit-refresh").addEventListener("click", () => loadAudit().catch((error) => toast(error.message)));
+
+$("#developer-audit-export").addEventListener("click", exportAuditCsv);
 
 $("#developer-audit-range").addEventListener("change", (event) => {
   state.auditRange = event.target.value;
@@ -1371,7 +1491,54 @@ $("#developer-agent-form").addEventListener("submit", async (event) => {
   }
 });
 
+$("#developer-invite-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const email = form.elements.email.value.trim();
+  const role = form.elements.role.value;
+  const status = form.querySelector(".mini-status");
+  if (!email) {
+    status.textContent = "Enter an email to prepare an invite.";
+    return;
+  }
+  status.textContent = `Invite prepared for ${email} as ${role}.`;
+  track("team_invite_prepared", { role });
+  toast("Invite prepared");
+  form.elements.email.value = "";
+});
+
+$("#developer-copy-referral").addEventListener("click", async () => {
+  const email = state.developer?.email || "developer";
+  const referralUrl = `${location.origin}/?ref=${encodeURIComponent(email)}`;
+  await navigator.clipboard.writeText(referralUrl);
+  track("referral_link_copied");
+  toast("Referral link copied");
+});
+
+$("#developer-theme-toggle").addEventListener("click", () => {
+  const nextTheme = document.body.dataset.theme === "light" ? "dark" : "light";
+  applyTheme(nextTheme);
+  track("theme_toggled", { theme: nextTheme });
+});
+
+$("#developer-command-open").addEventListener("click", openCommandPalette);
+$("#developer-command-search").addEventListener("input", renderCommandPalette);
+
 document.addEventListener("click", async (event) => {
+  const commandButton = event.target.closest("[data-command-id]");
+  if (commandButton) {
+    const command = commandItems.find((item) => item.id === commandButton.dataset.commandId);
+    closeCommandPalette();
+    command?.run();
+    track("command_palette_selected", { commandId: commandButton.dataset.commandId });
+    return;
+  }
+
+  if (event.target.id === "developer-command-palette") {
+    closeCommandPalette();
+    return;
+  }
+
   const viewButton = event.target.closest("[data-developer-view]");
   if (viewButton && !event.target.closest(".developer-sidebar")) {
     setView(viewButton.dataset.developerView);
@@ -1505,7 +1672,10 @@ document.addEventListener("click", async (event) => {
   if (copy) {
     await navigator.clipboard.writeText(copy.dataset.copyKey);
     copy.textContent = "Copied";
+    toast("Copied");
+    track("clipboard_copied");
     setTimeout(() => (copy.textContent = "Copy"), 1200);
+    return;
   }
 
   const hold = event.target.closest("[data-hold-key]");
@@ -1574,6 +1744,33 @@ document.addEventListener("click", async (event) => {
   }
 });
 
+document.addEventListener("keydown", (event) => {
+  const active = document.activeElement;
+  const isTyping = active && ["INPUT", "TEXTAREA", "SELECT"].includes(active.tagName);
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+    event.preventDefault();
+    openCommandPalette();
+    return;
+  }
+  if (event.key === "Escape") {
+    closeCommandPalette();
+    return;
+  }
+  if (isTyping) return;
+  if (event.key === "?") {
+    event.preventDefault();
+    openCommandPalette();
+    return;
+  }
+  if (event.key.toLowerCase() === "c" && !$("#developer-view-keys").hidden) {
+    openModal("#api-key-create-modal");
+    return;
+  }
+  if (event.key.toLowerCase() === "a" && !$("#developer-view-agents").hidden) {
+    openModal("#agent-create-modal");
+  }
+});
+
 document.addEventListener("submit", async (event) => {
   if (event.target.id === "developer-decision-form") {
     event.preventDefault();
@@ -1582,6 +1779,8 @@ document.addEventListener("submit", async (event) => {
     });
   }
 });
+
+applyTheme();
 
 checkSession().catch((error) => {
   showLogin();

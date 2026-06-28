@@ -12012,3 +12012,305 @@ body[data-page="developer"] .product-result-box pre {
     padding: 14px !important;
   }
 }
+
+/* Audit launch polish */
+body[data-page="landing"] .zip-button-text {
+  border-color: transparent;
+  background: transparent;
+  color: var(--zip-text);
+  box-shadow: none;
+}
+
+body[data-page="landing"] .zip-button-text:hover {
+  color: var(--zip-primary);
+  background: rgba(0, 255, 194, 0.06);
+}
+
+body[data-page="landing"] .trust-strip-section {
+  padding-top: 0;
+  padding-bottom: 36px;
+}
+
+body[data-page="landing"] .trust-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+body[data-page="landing"] .trust-strip span {
+  min-height: 104px;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+body[data-page="landing"] .trust-strip b {
+  color: var(--zip-text);
+  font-size: 15px;
+}
+
+body[data-page="landing"] .trust-strip small {
+  color: var(--zip-muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+body[data-page="developer"] .developer-primary-button,
+body[data-page="developer"] .developer-help-pill,
+body[data-page="developer"] .row-actions button,
+body[data-page="developer"] .developer-detail-actions button,
+body[data-page="developer"] .admin-toolbar button,
+body[data-page="developer"] .key-table-toolbar button,
+body[data-page="developer"] .ai-prompt-actions button,
+body[data-page="developer"] .quickstart-ai-card button,
+body[data-page="developer"] .developer-empty-actions button {
+  transition: border-color 140ms ease, background 140ms ease, color 140ms ease, transform 140ms ease, box-shadow 140ms ease;
+}
+
+body[data-page="developer"] .developer-primary-button:hover,
+body[data-page="developer"] .developer-help-pill:hover,
+body[data-page="developer"] .row-actions button:hover,
+body[data-page="developer"] .developer-detail-actions button:hover,
+body[data-page="developer"] .admin-toolbar button:hover,
+body[data-page="developer"] .key-table-toolbar button:hover,
+body[data-page="developer"] .ai-prompt-actions button:hover,
+body[data-page="developer"] .quickstart-ai-card button:hover,
+body[data-page="developer"] .developer-empty-actions button:hover {
+  transform: translateY(-1px);
+}
+
+body[data-page="developer"] [data-revoke-key],
+body[data-page="developer"] [data-archive-agent][data-archive-value="true"] {
+  border-color: rgba(255, 91, 91, 0.3) !important;
+  color: #ffb0b0 !important;
+  background: rgba(255, 91, 91, 0.09) !important;
+}
+
+body[data-page="developer"] .resend-table,
+body[data-page="developer"] .audit-table {
+  overflow: auto;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+}
+
+body[data-page="developer"] .resend-table-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  min-height: 48px !important;
+  background: #1a1c21 !important;
+  color: #aeb7c6;
+}
+
+body[data-page="developer"] .resend-table-row,
+body[data-page="developer"] .inbox-table-row,
+body[data-page="developer"] #developer-escalation-list .inbox-table-row {
+  min-height: 58px !important;
+  padding: 10px 18px !important;
+  font-size: 14px !important;
+  line-height: 1.25 !important;
+}
+
+body[data-page="developer"] .resend-table-row b,
+body[data-page="developer"] .inbox-table-row b,
+body[data-page="developer"] #developer-escalation-list .inbox-table-row b {
+  font-size: 15px !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-page="developer"] .resend-table-row small,
+body[data-page="developer"] .inbox-table-row small,
+body[data-page="developer"] #developer-escalation-list .inbox-table-row small {
+  margin-top: 4px !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+}
+
+body[data-page="developer"] button.resend-table-row:hover,
+body[data-page="developer"] button.inbox-table-row:hover {
+  background: rgba(255, 255, 255, 0.045) !important;
+}
+
+body[data-page="developer"] .api-key-modal > div,
+body[data-page="developer"] .agent-create-modal > div {
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.42);
+}
+
+body[data-page="developer"] .skeleton-list {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--developer-line, rgba(255, 255, 255, 0.12));
+  border-radius: 16px;
+  background: var(--developer-line, rgba(255, 255, 255, 0.12));
+}
+
+body[data-page="developer"] .skeleton-list span {
+  min-height: 58px;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.04)),
+    #101217;
+  background-size: 220% 100%;
+  animation: skeleton-sweep 1.2s ease-in-out infinite;
+}
+
+@keyframes skeleton-sweep {
+  from { background-position: 120% 0; }
+  to { background-position: -120% 0; }
+}
+
+body[data-page="developer"] .command-palette {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: start center;
+  padding-top: 12vh;
+  background: rgba(0, 0, 0, 0.56);
+  backdrop-filter: blur(12px);
+}
+
+body[data-page="developer"] .command-palette[hidden] {
+  display: none;
+}
+
+body[data-page="developer"] .command-palette > div {
+  width: min(640px, calc(100vw - 28px));
+  overflow: hidden;
+  border: 1px solid var(--developer-line, rgba(255, 255, 255, 0.12));
+  border-radius: 18px;
+  background: #08090c;
+  box-shadow: 0 32px 120px rgba(0, 0, 0, 0.55);
+}
+
+body[data-page="developer"] .command-palette label {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  border-bottom: 1px solid var(--developer-line, rgba(255, 255, 255, 0.12));
+}
+
+body[data-page="developer"] .command-palette label span {
+  color: #f5f7fb;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+body[data-page="developer"] .command-palette input {
+  min-height: 46px;
+  border: 1px solid var(--developer-line, rgba(255, 255, 255, 0.12));
+  border-radius: 12px;
+  padding: 0 13px;
+  color: #f5f7fb;
+  background: #13151a;
+  font: inherit;
+}
+
+body[data-page="developer"] #developer-command-results {
+  display: grid;
+  max-height: 420px;
+  overflow: auto;
+  padding: 8px;
+}
+
+body[data-page="developer"] #developer-command-results button {
+  display: grid;
+  gap: 4px;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px;
+  color: #f5f7fb;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+body[data-page="developer"] #developer-command-results button:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+body[data-page="developer"] #developer-command-results span {
+  color: #9ca6b8;
+  font-size: 13px;
+}
+
+body[data-page="developer"][data-theme="light"] {
+  --developer-bg: #f7f8fb;
+  --developer-panel: #ffffff;
+  --developer-line: #dfe3ea;
+  --developer-text: #101318;
+  --developer-muted: #5f6a7a;
+  --console-text: #101318;
+  --console-muted: #5f6a7a;
+  background: #f7f8fb !important;
+  color: #101318 !important;
+}
+
+body[data-page="developer"][data-theme="light"] .developer-shell,
+body[data-page="developer"][data-theme="light"] .developer-sidebar,
+body[data-page="developer"][data-theme="light"] .developer-main {
+  background: #f7f8fb !important;
+  color: #101318 !important;
+}
+
+body[data-page="developer"][data-theme="light"] .developer-sidebar {
+  border-color: #dfe3ea;
+}
+
+body[data-page="developer"][data-theme="light"] .developer-nav button,
+body[data-page="developer"][data-theme="light"] .developer-account-card,
+body[data-page="developer"][data-theme="light"] .admin-panel,
+body[data-page="developer"][data-theme="light"] .resend-table,
+body[data-page="developer"][data-theme="light"] .audit-table,
+body[data-page="developer"][data-theme="light"] .developer-detail-page,
+body[data-page="developer"][data-theme="light"] .quickstart-code-card,
+body[data-page="developer"][data-theme="light"] .ai-prompt-card {
+  border-color: #dfe3ea !important;
+  background: #ffffff !important;
+  color: #101318 !important;
+}
+
+body[data-page="developer"][data-theme="light"] .developer-nav button.active,
+body[data-page="developer"][data-theme="light"] .resend-table-head {
+  background: #eceff4 !important;
+  color: #101318 !important;
+}
+
+body[data-page="developer"][data-theme="light"] input,
+body[data-page="developer"][data-theme="light"] select,
+body[data-page="developer"][data-theme="light"] textarea {
+  border-color: #d8dde6 !important;
+  background: #ffffff !important;
+  color: #101318 !important;
+}
+
+body[data-page="developer"][data-theme="light"] .command-palette > div {
+  background: #ffffff;
+}
+
+body[data-page="developer"][data-theme="light"] .command-palette input {
+  color: #101318;
+  background: #f3f5f8;
+}
+
+body[data-page="developer"][data-theme="light"] #developer-command-results button,
+body[data-page="developer"][data-theme="light"] .command-palette label span {
+  color: #101318;
+}
+
+@media (max-width: 980px) {
+  body[data-page="landing"] .trust-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  body[data-page="landing"] .trust-strip {
+    grid-template-columns: 1fr;
+  }
+}

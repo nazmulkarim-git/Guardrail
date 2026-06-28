@@ -71,6 +71,8 @@
         <div class="developer-topline">
           <span id="developer-workspace-label" class="admin-meta"></span>
           <div>
+            <button id="developer-command-open" class="developer-help-pill" type="button">Command <span>K</span></button>
+            <button id="developer-theme-toggle" class="developer-help-pill" type="button">Theme <span>T</span></button>
             <a class="developer-help-pill" href="/contact">Need help? <span>H</span></a>
           </div>
         </div>
@@ -247,6 +249,17 @@
             </div>
             <button id="developer-create-agent" class="developer-primary-button" type="button">+ Create agent</button>
           </div>
+          <div class="key-table-toolbar">
+            <input id="developer-agent-search" type="search" placeholder="Search agents..." />
+            <select id="developer-agent-filter">
+              <option value="all">All statuses</option>
+              <option value="active">Active</option>
+              <option value="archived">Archived</option>
+              <option value="production">Production</option>
+              <option value="development">Development</option>
+              <option value="staging">Staging</option>
+            </select>
+          </div>
           <div id="developer-agent-list" class="resend-table"></div>
           <article id="developer-agent-detail" class="developer-detail-page" hidden></article>
         </section>
@@ -287,6 +300,7 @@
                 <option value="1y">Last 1 year</option>
               </select>
               <button id="developer-audit-refresh" type="button">Refresh</button>
+              <button id="developer-audit-export" type="button">Export CSV</button>
             </div>
             <div id="developer-audit-list" class="audit-table"></div>
           </div>
@@ -331,6 +345,26 @@
                 <button type="submit">Save notifications</button>
                 <p class="mini-status" role="status"></p>
               </form>
+            </div>
+            <div class="admin-panel">
+              <h2>Team invites</h2>
+              <form id="developer-invite-form" class="admin-form-grid">
+                <input name="email" type="email" placeholder="teammate@company.com" />
+                <select name="role">
+                  <option value="reviewer">Reviewer</option>
+                  <option value="developer">Developer</option>
+                  <option value="admin">Admin</option>
+                  <option value="viewer">Viewer</option>
+                </select>
+                <button type="submit">Prepare invite</button>
+                <p class="mini-status" role="status"></p>
+              </form>
+              <p class="admin-meta">Invite UI is ready for beta. Backend role enforcement should map Owner, Admin, Reviewer, Developer, and Viewer before team launch.</p>
+            </div>
+            <div class="admin-panel">
+              <h2>Usage and referral</h2>
+              <p class="admin-meta">Free beta includes one workspace, one starter workflow, and limited monthly approvals. Invite another builder to extend beta limits after referral tracking is enabled.</p>
+              <button id="developer-copy-referral" class="developer-primary-button" type="button">Copy referral link</button>
             </div>
           </div>
         </section>
@@ -400,6 +434,16 @@
             <pre><code id="api-key-modal-env"></code></pre>
             <button type="button" data-developer-view="quickstart">Open Quickstart</button>
           </div>
+        </div>
+      </div>
+
+      <div id="developer-command-palette" class="command-palette" hidden role="dialog" aria-modal="true" aria-labelledby="developer-command-title">
+        <div>
+          <label>
+            <span id="developer-command-title">Command palette</span>
+            <input id="developer-command-search" type="search" placeholder="Jump to Inbox, create API key, export audit..." />
+          </label>
+          <div id="developer-command-results"></div>
         </div>
       </div>
     </main>
