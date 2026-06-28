@@ -362,15 +362,15 @@ function initHeroApprovalCard() {
   const responses = {
     approved: {
       label: "Approved",
-      payload: { status: "approved", instruction: "Proceed with the $500 refund." }
+      payload: { status: "approved", instruction: "Proceed only after backup verification." }
     },
     rejected: {
       label: "Rejected",
-      payload: { status: "rejected", instruction: "Do not issue the refund. Ask for proof first." }
+      payload: { status: "rejected", instruction: "Do not run the destructive database command." }
     },
     edited: {
       label: "Edited",
-      payload: { status: "edited", instruction: "Offer store credit instead of a cash refund." }
+      payload: { status: "edited", instruction: "Run a read-only dry run and attach the migration plan." }
     },
     taken_over: {
       label: "Taken over",
