@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Forsig - Human-grade safety for AI agents</title>
-    <meta name="description" content="Pause high-risk AI agent actions until a human approves, edits, or rejects them. Built for refunds, emails, deployments, and tool spend." />
+    <title>Forsig - Human sign-off for risky AI agent actions</title>
+    <meta name="description" content="Never let autonomous AI agents touch money, production, customers, or paid tools without human sign-off." />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="https://www.forsig.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.forsig.com/" />
-    <meta property="og:title" content="Forsig - Human-grade safety for AI agents" />
-    <meta property="og:description" content="Automatically pause high-risk actions until a human approves or edits them." />
+    <meta property="og:title" content="Forsig - Human sign-off for risky AI agent actions" />
+    <meta property="og:description" content="Intercept refunds, payouts, emails, migrations, and paid tool calls until a human approves or edits them." />
     <meta property="og:site_name" content="Forsig" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Forsig - Human-grade safety for AI agents" />
+    <meta name="twitter:title" content="Forsig - Human sign-off for risky AI agent actions" />
     <meta name="twitter:description" content="Human approval checkpoints for autonomous AI agents." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -38,19 +38,19 @@
         <a href="/docs">Docs</a>
         <a href="#pricing">Pricing</a>
       </nav>
-      <a class="zip-button zip-button-primary" data-track="nav_get_sdk_access_clicked" href="#waitlist">Get Early Access</a>
+      <a class="zip-button zip-button-primary" data-track="nav_get_sdk_access_clicked" href="#waitlist">Request Invitation</a>
     </header>
 
     <main>
       <section class="minimal-hero forsig-minimal-hero">
         <div class="minimal-hero-copy">
           <div class="zip-beta-badge"><span></span>Private beta</div>
-          <h1>Human-grade safety for AI agents.</h1>
-          <p class="v2-lede">Automatically pause high-risk actions - refunds, emails, migrations - until you approve or edit them.</p>
+          <h1>Never let your AI agent touch money without human sign-off.</h1>
+          <p class="v2-lede">Forsig intercepts high-risk calls - refunds, payouts, migrations, emails, and tool spend - then waits for your approval so your agent cannot drain a balance or spam customers.</p>
           <div class="zip-hero-actions">
-            <a class="zip-button zip-button-primary" data-track="hero_get_sdk_access_clicked" href="#waitlist">Get Early Access</a>
+            <a class="zip-button zip-button-primary" data-track="hero_get_sdk_access_clicked" href="#waitlist">Request Invitation</a>
           </div>
-          <p class="minimal-hero-note">Built for developers shipping agents that can touch money, customers, production, or paid tools.</p>
+          <p class="minimal-hero-note">Limited founder-guided beta for developers shipping agents that touch money, customers, production, or paid tools.</p>
         </div>
 
         <article class="minimal-product forsig-product-preview" aria-label="Forsig approval preview">
@@ -74,8 +74,8 @@
 
       <section id="how-it-works" class="minimal-section">
         <div class="minimal-heading">
-          <span class="zip-section-label">How it works</span>
-          <h2>Your agent proposes. Forsig pauses. You decide.</h2>
+          <span class="zip-section-label">The Forsig safety loop</span>
+          <h2>Your agent proposes. Forsig halts execution. You decide.</h2>
         </div>
         <div class="minimal-steps">
           <article>
@@ -98,8 +98,8 @@
 
       <section id="demo" class="minimal-section forsig-demo-section">
         <div class="minimal-heading">
-          <span class="zip-section-label">Product</span>
-          <h2>The approval flow, end to end.</h2>
+          <span class="zip-section-label">See Forsig in action</span>
+          <h2>Watch your agent get supervised in real time.</h2>
           <p>Notification is not control. Forsig sits between your agent and the real world, then records the decision.</p>
         </div>
         <div class="macbook-demo" aria-label="Forsig live demo inside a MacBook">
@@ -159,43 +159,28 @@
         </div>
       </section>
 
-      <section id="sdk" class="minimal-section minimal-dev forsig-code-section">
-        <div class="minimal-heading">
-          <span class="zip-section-label">SDK</span>
-          <h2>One checkpoint before the action runs.</h2>
-          <p>Keep the marketing page light. The full examples live in docs.</p>
-        </div>
-        <div class="v2-code forsig-short-code">
-          <div class="code-titlebar"><span></span><span></span><span></span><b>agent.ts</b></div>
-          <pre><code>const decision = await forsig.escalations.create({
-  action: "stripe.refund",
-  risk: "refund_over_limit",
-  context: { amount: 500, customer: "VIP" }
-});</code></pre>
-        </div>
-      </section>
-
       <section class="minimal-section forsig-value-section">
         <div class="minimal-heading">
-          <span class="zip-section-label">Why Forsig</span>
+          <span class="zip-section-label">Why developers trust Forsig</span>
           <h2>A safety brake for real-world agent actions.</h2>
         </div>
         <div class="minimal-steps">
           <article>
-            <span>Prevent mistakes</span>
-            <p>LLMs misfire. A wrong refund, customer email, or database change costs real money.</p>
+            <span>Prevent expensive mistakes</span>
+            <p>Wrong refunds, DB writes, and customer emails cost real money. Forsig stops the action before it executes.</p>
           </article>
           <article>
-            <span>Auditable decisions</span>
+            <span>Keep an audit trail</span>
             <p>Record the proposal, context, reviewer, decision, timestamp, and returned instruction.</p>
           </article>
           <article>
-            <span>Minimal data</span>
-            <p>Send only what a reviewer needs - never keys, secrets, or full customer records.</p>
+            <span>Minimize sensitive data</span>
+            <p>Reviewers see only necessary context - never keys, secrets, or full customer records.</p>
           </article>
         </div>
         <div class="minimal-list forsig-action-list" aria-label="Supported actions">
           <span>Refunds</span>
+          <span>Payouts</span>
           <span>Outbound emails</span>
           <span>Deployments</span>
           <span>Tool spend</span>
@@ -203,36 +188,22 @@
         </div>
       </section>
 
-      <section id="pricing" class="minimal-section">
-        <div class="minimal-final forsig-pricing-card">
-          <div>
-            <span class="zip-section-label">Private beta</span>
-            <h2>Free while Forsig is in beta.</h2>
-            <p>One workflow, one key, shadow mode, signed responses, audit trail, and founder-led setup. No compliance certification is claimed yet.</p>
-          </div>
-          <div class="forsig-beta-includes">
-            <span>Developer: limited approvals</span>
-            <span>Team: reviewers and routing, planned</span>
-            <span>Enterprise: SSO, RBAC, retention, planned</span>
-          </div>
-        </div>
-      </section>
-
-      <section id="waitlist" class="minimal-final forsig-final-cta">
+      <section id="waitlist" class="minimal-final forsig-final-cta forsig-mid-cta">
         <div>
-          <span class="zip-section-label">Early access</span>
-          <h2>Bring one risky agent workflow.</h2>
-          <p>I will prioritize developers who already have an agent that can send, spend, update, deploy, or call external tools.</p>
+          <span class="zip-section-label">Founder-led onboarding</span>
+          <h2>Apply with one risky agent workflow.</h2>
+          <p>Accepted beta users get hands-on setup for their first checkpoint. Start with your work email and the action Forsig should supervise.</p>
+          <small>17 of 50 guided beta seats remaining.</small>
         </div>
         <form id="waitlist-form" class="minimal-form launch-waitlist-form" data-lead-form>
           <input name="email" type="email" required autocomplete="email" placeholder="Work email" />
+          <textarea name="useCase" placeholder="What risky action should Forsig review?"></textarea>
           <input name="planInterest" type="hidden" value="developer-beta" />
-          <button type="submit">Get Early Access</button>
+          <button type="submit">Request invitation</button>
           <p id="form-status" class="mini-status" role="status"></p>
         </form>
         <form id="waitlist-followup-form" class="waitlist-followup" hidden>
           <input name="leadId" type="hidden" />
-          <textarea name="useCase" placeholder="Optional: what action should Forsig review?"></textarea>
           <label class="framework-picker">
             <span>Frameworks</span>
             <select name="frameworkInterest" multiple>
@@ -250,6 +221,56 @@
           <button type="submit">Send context</button>
           <p class="mini-status" role="status"></p>
         </form>
+      </section>
+
+      <section id="sdk" class="minimal-section minimal-dev forsig-code-section">
+        <div class="minimal-heading">
+          <span class="zip-section-label">SDK</span>
+          <h2>Add a safety checkpoint with three lines of code.</h2>
+          <p>Define the action, risk type, and context. Forsig returns a signed decision object.</p>
+        </div>
+        <div class="v2-code forsig-short-code">
+          <div class="code-titlebar"><span></span><span></span><span></span><b id="minimal-code-title">agent.ts</b></div>
+          <div class="minimal-code-tabs" role="tablist" aria-label="SDK language">
+            <button class="active" type="button" data-minimal-code="ts">TypeScript</button>
+            <button type="button" data-minimal-code="py">Python</button>
+          </div>
+          <pre><code id="minimal-code">const decision = await forsig.escalations.create({
+  action: "stripe.refund",
+  risk: "refund_over_limit",
+  context: { amount: 500, customer: "VIP" }
+});</code></pre>
+          <a href="/docs">View full docs</a>
+        </div>
+      </section>
+
+      <section class="minimal-section forsig-comparison-section">
+        <div class="minimal-heading">
+          <span class="zip-section-label">Control, not alerts</span>
+          <h2>Notification tools tell people. Forsig controls execution.</h2>
+        </div>
+        <div class="forsig-compare-table" aria-label="Notification tools versus Forsig">
+          <div><b>Notification tools</b><b>Forsig</b></div>
+          <div><span>Send an alert</span><span>Pause the workflow</span></div>
+          <div><span>Human-readable messages</span><span>Structured decision API</span></div>
+          <div><span>Hard to prove later</span><span>Auditable decision trail</span></div>
+          <div><span>Context may sprawl</span><span>Minimal review payload</span></div>
+        </div>
+      </section>
+
+      <section id="pricing" class="minimal-section">
+        <div class="minimal-final forsig-pricing-card">
+          <div>
+            <span class="zip-section-label">Built for trust</span>
+            <h2>Minimal data today. Compliance roadmap next.</h2>
+            <p>One workflow, one key, shadow mode, signed responses, audit trail, and founder-led setup. Forsig is pursuing SOC 2 and GDPR-ready controls as the beta matures.</p>
+          </div>
+          <div class="forsig-beta-includes">
+            <span>Developer: limited approvals</span>
+            <span>Team: reviewers and routing, planned</span>
+            <span>Enterprise: SSO, RBAC, retention, planned</span>
+          </div>
+        </div>
       </section>
 
       <footer class="minimal-footer zip-footer">

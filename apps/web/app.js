@@ -663,6 +663,46 @@ if decision.status == "approved":
   show();
 }
 
+function initMinimalCodeTabs() {
+  const code = document.getElementById("minimal-code");
+  const title = document.getElementById("minimal-code-title");
+  if (!code || !title) return;
+  const snippets = {
+    ts: {
+      title: "agent.ts",
+      code: `const decision = await forsig.escalations.create({
+  action: "stripe.refund",
+  risk: "refund_over_limit",
+  context: { amount: 500, customer: "VIP" }
+});`
+    },
+    py: {
+      title: "agent.py",
+      code: `decision = forsig.escalations.create(
+    action="stripe.refund",
+    risk="refund_over_limit",
+    context={"amount": 500, "customer": "VIP"},
+)`
+    }
+  };
+  function show(language) {
+    const snippet = snippets[language] || snippets.ts;
+    title.textContent = snippet.title;
+    code.style.opacity = "0";
+    setTimeout(() => {
+      code.textContent = snippet.code;
+      code.style.opacity = "1";
+    }, 120);
+    document.querySelectorAll("[data-minimal-code]").forEach((button) => {
+      button.classList.toggle("active", button.dataset.minimalCode === language);
+    });
+    track("minimal_code_tab_changed", { language });
+  }
+  document.querySelectorAll("[data-minimal-code]").forEach((button) => {
+    button.addEventListener("click", () => show(button.dataset.minimalCode));
+  });
+}
+
 function initDashboard() {
   const pause = document.getElementById("pause-toggle");
   const status = document.getElementById("agent-status");
@@ -1185,6 +1225,7 @@ initWaitlistFollowup();
 initPricingIntent();
 initHeroApprovalCard();
 initSdkTabs();
+initMinimalCodeTabs();
 initDashboard();
 initZipDemo();
 initFaqTracking();
