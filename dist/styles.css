@@ -12532,6 +12532,185 @@ body[data-page="landing"].forsig-minimal .minimal-footer nav a {
   text-decoration: none;
 }
 
+/* Developer light mode completion */
+body[data-page="developer"] .developer-topline {
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+body[data-page="developer"] .developer-topline > div {
+  max-width: 100%;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+body[data-page="developer"] .developer-help-pill {
+  flex: 0 0 auto;
+  color: var(--developer-text);
+  white-space: nowrap;
+}
+
+body[data-page="developer"][data-theme="light"] {
+  --developer-bg: #f6f7fb;
+  --developer-panel: #ffffff;
+  --developer-line: #dfe3eb;
+  --developer-soft-line: #edf0f5;
+  --developer-text: #111827;
+  --developer-muted: #4b5565;
+  --developer-dim: #748095;
+}
+
+body[data-page="developer"][data-theme="light"],
+body[data-page="developer"][data-theme="light"] .admin-shell,
+body[data-page="developer"][data-theme="light"] .admin-main {
+  background: #f6f7fb !important;
+  color: #111827 !important;
+}
+
+body[data-page="developer"][data-theme="light"] .admin-sidebar {
+  border-color: #dfe3eb !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+}
+
+body[data-page="developer"][data-theme="light"] .admin-sidebar .zip-brand,
+body[data-page="developer"][data-theme="light"] .developer-brand-text strong,
+body[data-page="developer"][data-theme="light"] .developer-page-head h1,
+body[data-page="developer"][data-theme="light"] .admin-sidebar nav button,
+body[data-page="developer"][data-theme="light"] .admin-sidebar nav a,
+body[data-page="developer"][data-theme="light"] .developer-sidebar-footer button,
+body[data-page="developer"][data-theme="light"] .developer-sidebar-footer a {
+  color: #111827 !important;
+}
+
+body[data-page="developer"][data-theme="light"] .developer-brand-text small,
+body[data-page="developer"][data-theme="light"] .admin-meta,
+body[data-page="developer"][data-theme="light"] .admin-sidebar small {
+  color: #647084 !important;
+}
+
+body[data-page="developer"][data-theme="light"] .admin-sidebar nav button:hover,
+body[data-page="developer"][data-theme="light"] .admin-sidebar nav a:hover,
+body[data-page="developer"][data-theme="light"] .developer-sidebar-footer button:hover,
+body[data-page="developer"][data-theme="light"] .developer-sidebar-footer a:hover,
+body[data-page="developer"][data-theme="light"] .admin-sidebar nav button.active {
+  background: #eef1f6 !important;
+  color: #111827 !important;
+}
+
+body[data-page="developer"][data-theme="light"] .developer-sidebar-footer,
+body[data-page="developer"][data-theme="light"] #developer-logout {
+  border-color: #dfe3eb !important;
+}
+
+body[data-page="developer"][data-theme="light"] .developer-topline {
+  border-color: #dfe3eb !important;
+  background: #f6f7fb !important;
+}
+
+body[data-page="developer"][data-theme="light"] .developer-help-pill {
+  border-color: #d8dde8 !important;
+  color: #111827 !important;
+  background: #ffffff !important;
+}
+
+body[data-page="developer"][data-theme="light"] .developer-help-pill span {
+  color: #4b5565 !important;
+  background: #eef1f6 !important;
+}
+
+body[data-page="developer"][data-theme="light"] .resend-table,
+body[data-page="developer"][data-theme="light"] .escalation-list,
+body[data-page="developer"][data-theme="light"] .audit-table,
+body[data-page="developer"][data-theme="light"] .admin-panel,
+body[data-page="developer"][data-theme="light"] .developer-detail-page,
+body[data-page="developer"][data-theme="light"] .quickstart-code-card,
+body[data-page="developer"][data-theme="light"] .ai-prompt-card,
+body[data-page="developer"][data-theme="light"] .minimal-warning,
+body[data-page="developer"][data-theme="light"] .quickstart-checklist button,
+body[data-page="developer"][data-theme="light"] .quickstart-aha-panel article {
+  border-color: #dfe3eb !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: 0 18px 50px rgba(20, 26, 38, 0.06) !important;
+}
+
+body[data-page="developer"][data-theme="light"] .resend-table-row,
+body[data-page="developer"][data-theme="light"] .inbox-table-row,
+body[data-page="developer"][data-theme="light"] .audit-row {
+  border-color: #edf0f5 !important;
+  color: #4b5565 !important;
+  background: #ffffff !important;
+}
+
+body[data-page="developer"][data-theme="light"] .resend-table-head,
+body[data-page="developer"][data-theme="light"] .inbox-table-head {
+  background: #eef1f6 !important;
+  color: #526074 !important;
+}
+
+body[data-page="developer"][data-theme="light"] .resend-table-row b,
+body[data-page="developer"][data-theme="light"] .inbox-table-row b,
+body[data-page="developer"][data-theme="light"] .audit-row b,
+body[data-page="developer"][data-theme="light"] .resend-table-row span,
+body[data-page="developer"][data-theme="light"] .inbox-table-row span {
+  color: #111827 !important;
+}
+
+body[data-page="developer"][data-theme="light"] .resend-table-row small,
+body[data-page="developer"][data-theme="light"] .inbox-table-row small,
+body[data-page="developer"][data-theme="light"] .audit-row small {
+  color: #748095 !important;
+}
+
+body[data-page="developer"][data-theme="light"] button.resend-table-row:hover,
+body[data-page="developer"][data-theme="light"] button.inbox-table-row:hover,
+body[data-page="developer"][data-theme="light"] .audit-table button.resend-table-row:hover {
+  background: #f8fafc !important;
+}
+
+body[data-page="developer"][data-theme="light"] .admin-toolbar button,
+body[data-page="developer"][data-theme="light"] .developer-primary-button,
+body[data-page="developer"][data-theme="light"] .developer-detail-actions button,
+body[data-page="developer"][data-theme="light"] .row-actions button {
+  border-color: #d8dde8 !important;
+  color: #111827 !important;
+  background: #ffffff !important;
+}
+
+body[data-page="developer"][data-theme="light"] .admin-toolbar button:disabled {
+  color: #9aa3b2 !important;
+  background: #eef1f6 !important;
+}
+
+body[data-page="developer"][data-theme="light"] pre,
+body[data-page="developer"][data-theme="light"] code,
+body[data-page="developer"][data-theme="light"] .quickstart-code-card pre,
+body[data-page="developer"][data-theme="light"] .product-result-box pre {
+  border-color: #dfe3eb !important;
+  color: #111827 !important;
+  background: #f8fafc !important;
+}
+
+@media (max-width: 760px) {
+  body[data-page="developer"] .developer-topline {
+    min-height: auto;
+    padding: 14px;
+  }
+
+  body[data-page="developer"] .developer-topline > div {
+    width: 100%;
+  }
+
+  body[data-page="developer"] .developer-help-pill {
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   body[data-page="landing"].forsig-minimal .minimal-steps article,
   body[data-page="landing"].forsig-minimal .zip-button {
