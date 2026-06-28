@@ -131,20 +131,60 @@
         </section>
 
         <section id="developer-view-integration" class="admin-view" hidden>
-          <article class="quickstart-main ai-install-card">
+          <article class="quickstart-main ai-install-card ai-integration-workbench">
             <div class="developer-page-head compact">
               <div>
-                <h1>Forsig Integration Prompt</h1>
-                <p class="admin-meta">Describe which risky actions need approval. Forsig will draft a precise prompt you can paste into your coding assistant so it can refactor your codebase around Forsig checkpoints.</p>
+                <span class="zip-section-label">AI installer</span>
+                <h1>Let your coding assistant install Forsig.</h1>
+                <p class="admin-meta">Describe the risky actions you want controlled. Forsig drafts a production-ready prompt for Codex, Cursor, or Claude Code that finds the right execution points, adds checkpoints, tests decisions, and starts safely in shadow mode.</p>
               </div>
               <button id="developer-generate-ai-prompt" type="button">Generate prompt</button>
+            </div>
+            <div class="ai-prompt-flow" aria-label="AI integration flow">
+              <article><span>1</span><strong>Choose risk</strong><small>Refunds, emails, deployments, spend, or custom tool calls.</small></article>
+              <article><span>2</span><strong>Pick rollout</strong><small>Start in shadow mode, then switch to active approval.</small></article>
+              <article><span>3</span><strong>Paste prompt</strong><small>Your coding assistant adds Forsig with tests and a small diff.</small></article>
             </div>
             <div class="quickstart-tabs" role="tablist" aria-label="Coding assistant target">
               <button class="active" type="button" data-prompt-tool="codex">Codex</button>
               <button type="button" data-prompt-tool="cursor">Cursor</button>
               <button type="button" data-prompt-tool="claude">Claude Code</button>
             </div>
-            <textarea id="developer-ai-prompt-input" placeholder="Example: In my Next.js support app, require approval before issuing refunds over $250, sending outbound discount emails, or running production migrations. Use minimal context and email reviewers."></textarea>
+            <div class="ai-prompt-builder">
+              <label>
+                <span>Stack or framework</span>
+                <select id="developer-ai-framework">
+                  <option value="Node / TypeScript agent">Node / TypeScript</option>
+                  <option value="Python agent">Python</option>
+                  <option value="LangGraph">LangGraph</option>
+                  <option value="Vercel AI SDK">Vercel AI SDK</option>
+                  <option value="n8n workflow">n8n</option>
+                  <option value="Custom agent framework">Custom agent</option>
+                </select>
+              </label>
+              <label>
+                <span>Rollout mode</span>
+                <select id="developer-ai-mode">
+                  <option value="shadow">Shadow first, do not block yet</option>
+                  <option value="active">Active approval, block until reviewed</option>
+                </select>
+              </label>
+              <label>
+                <span>Reviewer emails</span>
+                <input id="developer-ai-reviewers" type="text" placeholder="security@company.com, ops@company.com" />
+              </label>
+            </div>
+            <div class="ai-risk-picker" aria-label="Risk templates">
+              <label><input type="checkbox" value="refunds over $250" checked /> Refunds</label>
+              <label><input type="checkbox" value="outbound customer emails" checked /> Emails</label>
+              <label><input type="checkbox" value="production deployments and database migrations" checked /> Deployments</label>
+              <label><input type="checkbox" value="paid external tool calls and budget changes" checked /> Tool spend</label>
+            </div>
+            <textarea id="developer-ai-prompt-input" placeholder="Add anything specific about your app, thresholds, reviewer routing, or agent framework. Example: Refunds over $500 USD require approval, discount emails over 20% require approval, and production migrations should notify devops."></textarea>
+            <div class="ai-prompt-actions">
+              <button id="developer-copy-ai-install" type="button">Copy install command</button>
+              <button id="developer-open-quickstart-from-prompt" type="button">Open quickstart</button>
+            </div>
             <pre class="quickstart-code ai-prompt-output"><code id="developer-ai-prompt-output"></code></pre>
             <div class="developer-detail-actions">
               <button id="developer-copy-ai-prompt" type="button">Copy AI prompt</button>

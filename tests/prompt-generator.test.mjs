@@ -30,3 +30,24 @@ test("generated prompt supports target tool variants", () => {
   assert.match(generateIntegrationPrompt({ goal: "refund above 500 USD", targetTool: "claude" }), /Inspect first/);
   assert.match(generateIntegrationPrompt({ goal: "refund above 500 USD", targetTool: "codex" }), /Implement the requested change/);
 });
+
+test("generated prompt includes framework install and reviewer routing", () => {
+  const prompt = generateIntegrationPrompt({
+    goal: "production deployment approval",
+    framework: "Python agent",
+    mode: "active",
+    reviewerEmails: "ops@example.com",
+    targetTool: "codex"
+  });
+  assert.match(prompt, /pip install forsig-sdk/);
+  assert.match(prompt, /Default mode: active/);
+  assert.match(prompt, /Default reviewer emails: ops@example\.com/);
+  assert.match(prompt, /Python: prefer a tiny Forsig helper or decorator/);
+});
+
+test("generated prompt supports paid tool spend policies", () => {
+  const prompt = generateIntegrationPrompt({ goal: "paid external tool calls over budget", framework: "Node / TypeScript agent" });
+  assert.match(prompt, /paid external tool calls/i);
+  assert.match(prompt, /tool_spend_limit/);
+  assert.match(prompt, /npm install @forsig\/sdk/);
+});

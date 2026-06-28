@@ -11658,6 +11658,125 @@ body[data-page="developer"] .ai-prompt-output {
   max-height: 360px !important;
 }
 
+body[data-page="developer"] .ai-integration-workbench {
+  display: grid;
+  gap: 18px;
+  max-width: 1180px;
+}
+
+body[data-page="developer"] .ai-prompt-flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+body[data-page="developer"] .ai-prompt-flow article {
+  min-height: 112px;
+  border: 1px solid var(--console-line);
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+body[data-page="developer"] .ai-prompt-flow span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 12px;
+  border-radius: 999px;
+  color: #04110d;
+  background: #00ffc2;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+body[data-page="developer"] .ai-prompt-flow strong,
+body[data-page="developer"] .ai-prompt-flow small {
+  display: block;
+}
+
+body[data-page="developer"] .ai-prompt-flow strong {
+  color: var(--console-text);
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+body[data-page="developer"] .ai-prompt-flow small {
+  margin-top: 6px;
+  color: var(--console-muted);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+body[data-page="developer"] .ai-prompt-builder {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+body[data-page="developer"] .ai-prompt-builder label {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+body[data-page="developer"] .ai-prompt-builder label span {
+  color: var(--console-muted);
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+body[data-page="developer"] .ai-prompt-builder select,
+body[data-page="developer"] .ai-prompt-builder input {
+  min-height: 44px;
+  border: 1px solid var(--console-line);
+  border-radius: 12px;
+  padding: 0 12px;
+  color: var(--console-text);
+  background: rgba(255, 255, 255, 0.055);
+  font: inherit;
+}
+
+body[data-page="developer"] .ai-risk-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+body[data-page="developer"] .ai-risk-picker label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  border: 1px solid var(--console-line);
+  border-radius: 999px;
+  padding: 0 13px;
+  color: var(--console-text);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+body[data-page="developer"] .ai-prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+body[data-page="developer"] .ai-prompt-actions button {
+  min-height: 42px;
+  border: 1px solid var(--console-line);
+  border-radius: 12px;
+  padding: 0 14px;
+  color: var(--console-text);
+  background: rgba(255, 255, 255, 0.06);
+  font: inherit;
+  font-weight: 850;
+}
+
 body[data-page="developer"] .audit-table .audit-table-row {
   grid-template-columns: minmax(260px, 1.3fr) minmax(220px, 1fr) minmax(260px, 1.1fr) minmax(170px, 0.8fr) !important;
   min-height: 58px;
@@ -11703,6 +11822,11 @@ body[data-page="docs"] button.docs-back-link {
 @media (max-width: 980px) {
   body[data-page="developer"] .quickstart-checklist {
     grid-template-columns: 1fr !important;
+  }
+
+  body[data-page="developer"] .ai-prompt-flow,
+  body[data-page="developer"] .ai-prompt-builder {
+    grid-template-columns: 1fr;
   }
 
   body[data-page="developer"] .audit-table .audit-table-row,

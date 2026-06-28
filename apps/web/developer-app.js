@@ -220,6 +220,10 @@ async function loadWorkspace() {
       notificationForm.elements.defaultReviewerEmails.value = Array.isArray(data.workspace.default_reviewer_emails)
         ? data.workspace.default_reviewer_emails.join(", ")
         : "";
+      const promptReviewers = $("#developer-ai-reviewers");
+      if (promptReviewers && !promptReviewers.value.trim()) {
+        promptReviewers.value = notificationForm.elements.defaultReviewerEmails.value;
+      }
     }
     renderOnboarding();
     renderQuickstart();
@@ -645,17 +649,35 @@ function renderIntegrationPrompt() {
 }
 
 function generateAiInstallPrompt() {
-  const request = $("#developer-ai-prompt-input")?.value.trim()
-    || "Add Forsig approval checkpoints before refunds over $250, production deployments, outbound customer emails, and paid external tool calls.";
+  const selectedRisks = Array.from(document.querySelectorAll(".ai-risk-picker input:checked"))
+    .map((input) => input.value);
+  const customRequest = $("#developer-ai-prompt-input")?.value.trim();
+  const request = [
+    selectedRisks.length ? `Require Forsig approval before ${selectedRisks.join(", ")}.` : "",
+    customRequest || ""
+  ].filter(Boolean).join(" ");
   const agent = starterAgent();
   const agentId = agent.slug || agent.id || "refund-agent";
   const baseUrl = location.origin || "https://www.forsig.com";
+  const framework = $("#developer-ai-framework")?.value || "Node / TypeScript agent";
+  const mode = $("#developer-ai-mode")?.value || "shadow";
+  const reviewerEmails = $("#developer-ai-reviewers")?.value.trim()
+    || (Array.isArray(state.workspace?.default_reviewer_emails) ? state.workspace.default_reviewer_emails.join(", ") : "");
   return generateIntegrationPrompt({
     goal: request,
     targetTool: state.promptTargetTool,
     agentId,
-    baseUrl
+    baseUrl,
+    framework,
+    mode,
+    reviewerEmails,
+    sdkPackage: framework.toLowerCase().includes("python") ? "forsig-sdk" : "@forsig/sdk"
   });
+}
+
+function aiInstallCommand() {
+  const framework = $("#developer-ai-framework")?.value || "";
+  return framework.toLowerCase().includes("python") ? "pip install forsig-sdk" : "npm install @forsig/sdk";
 }
 
 function renderQuickstart() {
@@ -1108,6 +1130,23 @@ $("#developer-settings-include-tests").checked = state.includeTests;
 $("#developer-include-tests").addEventListener("change", (event) => setIncludeTests(event.target.checked));
 $("#developer-settings-include-tests").addEventListener("change", (event) => setIncludeTests(event.target.checked));
 
+["#developer-ai-framework", "#developer-ai-mode", "#developer-ai-reviewers", "#developer-ai-prompt-input"].forEach((selector) => {
+  const element = $(selector);
+  if (!element) return;
+  element.addEventListener("input", () => {
+    if (!$("#developer-view-integration").hidden) renderIntegrationPrompt();
+  });
+  element.addEventListener("change", () => {
+    if (!$("#developer-view-integration").hidden) renderIntegrationPrompt();
+  });
+});
+
+document.querySelectorAll(".ai-risk-picker input").forEach((input) => {
+  input.addEventListener("change", () => {
+    if (!$("#developer-view-integration").hidden) renderIntegrationPrompt();
+  });
+});
+
 document.querySelectorAll("[data-developer-view]").forEach((button) => {
   button.addEventListener("click", () => setView(button.dataset.developerView));
 });
@@ -1360,6 +1399,19 @@ document.addEventListener("click", async (event) => {
     await navigator.clipboard.writeText($("#developer-ai-prompt-output").textContent);
     track("ai_install_prompt_copied");
     toast("AI prompt copied");
+    return;
+  }
+
+  if (event.target.closest("#developer-copy-ai-install")) {
+    await navigator.clipboard.writeText(aiInstallCommand());
+    track("ai_install_command_copied", { command: aiInstallCommand() });
+    toast("Install command copied");
+    return;
+  }
+
+  if (event.target.closest("#developer-open-quickstart-from-prompt")) {
+    setView("quickstart");
+    track("ai_install_opened_quickstart");
     return;
   }
 

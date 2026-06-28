@@ -2,6 +2,7 @@ const SEARCH_HINTS = {
   refund: ["refund", "createRefund", "issueRefund", "refundAmount", "reimbursement", "credit", "stripe.refunds.create", "paymentIntent refund logic", "charge refund logic", "cancel-and-refund flows", "payment-provider refund calls"],
   email: ["sendEmail", "email.send", "resend.emails.send", "sendgrid", "mailgun", "gmail", "smtp", "customer message", "outbound message"],
   deploy: ["exec", "spawn", "shell", "rm -rf", "migration", "deploy", "terraform apply", "kubectl", "delete", "truncate", "drop"],
+  spend: ["paid tool", "tool purchase", "external API spend", "credits", "budget", "usage limit", "cost cap", "invoice", "billing"],
   generic: ["tool call", "external action", "production update", "customer-impacting action", "payment", "database write", "API call"]
 };
 
@@ -10,6 +11,7 @@ function inferAction(goal) {
   if (/refund|reimburse|credit/.test(text)) return "refund";
   if (/email|message|outbound|send/.test(text)) return "email";
   if (/deploy|deployment|migration|shell|delete|truncate|drop|terraform|kubectl/.test(text)) return "deploy";
+  if (/spend|budget|paid tool|external tool|purchase|billing|cost|credit/.test(text)) return "spend";
   return "generic";
 }
 
@@ -24,6 +26,7 @@ export function parsePolicyGoal(goal = "") {
   const riskType = action === "refund" && threshold ? "refund_over_threshold"
     : action === "email" ? "external_email"
     : action === "deploy" ? "production_change"
+    : action === "spend" ? "tool_spend_limit"
     : "risky_external_action";
   return {
     original,
@@ -46,6 +49,9 @@ function preciseGoal(policy) {
   }
   if (policy.action === "deploy") {
     return "Add a Forsig approval checkpoint before production deployments, destructive shell commands, database migrations, or production data changes. Insert the checkpoint immediately before the final irreversible execution boundary.";
+  }
+  if (policy.action === "spend") {
+    return "Add a Forsig approval checkpoint before paid external tool calls, usage purchases, budget changes, or agent actions that spend money. Insert the checkpoint immediately before the final spend or external tool execution call.";
   }
   return `Add Forsig approval checkpoints for this risky action policy: ${policy.original}. Insert each checkpoint as close as possible to the final irreversible execution boundary, not during planning, drafting, or intermediate reasoning.`;
 }
@@ -71,13 +77,39 @@ function toolIntro(targetTool) {
   return "Implement the requested change, add tests, preserve existing behavior, and provide a final summary with files changed and how to verify.";
 }
 
+function frameworkGuide(framework = "plain") {
+  const normalized = String(framework || "plain").toLowerCase();
+  if (normalized.includes("langgraph")) {
+    return "LangGraph: insert Forsig in the risky tool node before returning state. Branch graph state on approved/rejected/edited/taken_over.";
+  }
+  if (normalized.includes("vercel")) {
+    return "Vercel AI SDK: wrap risky server actions/tool executions. Keep streaming/model calls unchanged; gate only the final external action.";
+  }
+  if (normalized.includes("n8n")) {
+    return "n8n: add an HTTP Request node to create the escalation, pause/poll for decision, then branch with IF/Switch nodes.";
+  }
+  if (normalized.includes("python")) {
+    return "Python: prefer a tiny Forsig helper or decorator such as @forsig.intercept(...) around the final risky function.";
+  }
+  if (normalized.includes("node") || normalized.includes("typescript") || normalized.includes("next")) {
+    return "Node/TypeScript: prefer a small forsig.intercept(...) helper around the final tool/API call.";
+  }
+  return "Framework-neutral: add one small Forsig client/helper and keep the checkpoint at the final external action boundary.";
+}
+
+function installGuide(framework = "plain") {
+  const normalized = String(framework || "plain").toLowerCase();
+  if (normalized.includes("python")) return "pip install forsig-sdk";
+  return "npm install @forsig/sdk";
+}
+
 function examplePayload(policy, agentId, baseUrl) {
   const threshold = policy.threshold ?? 500;
   const currency = policy.currency ?? "USD";
   const actionLabel = policy.action === "refund" ? `refund above ${threshold} ${currency}` : policy.original;
   return {
     agent: { id: agentId, name: "Test Agent", environment: "production" },
-    mode: "shadow",
+    mode: policy.mode || "shadow",
     risk: {
       type: policy.riskType,
       level: "high",
@@ -97,10 +129,21 @@ function examplePayload(policy, agentId, baseUrl) {
   };
 }
 
-export function generateIntegrationPrompt({ goal = "", targetTool = "codex", agentId = "test-agent", baseUrl = "https://www.forsig.com" } = {}) {
+export function generateIntegrationPrompt({
+  goal = "",
+  targetTool = "codex",
+  agentId = "test-agent",
+  baseUrl = "https://www.forsig.com",
+  framework = "plain Node or Python agent",
+  mode = "shadow",
+  reviewerEmails = "",
+  sdkPackage = "@forsig/sdk"
+} = {}) {
   const policy = parsePolicyGoal(goal);
+  policy.mode = mode || "shadow";
   const hints = SEARCH_HINTS[policy.action] || SEARCH_HINTS.generic;
   const payload = examplePayload(policy, agentId, baseUrl);
+  const reviewers = String(reviewerEmails || "").trim();
   return `You are editing my existing codebase. Integrate Forsig human approval checkpoints with the smallest safe change set.
 
 Tool style:
@@ -109,6 +152,12 @@ ${toolIntro(targetTool)}
 Goal:
 ${preciseGoal(policy)}
 
+Target stack:
+- Framework/runtime: ${framework}
+- Install command: ${installGuide(framework)}
+- SDK package name to prefer when available: ${sdkPackage}
+- Integration pattern: ${frameworkGuide(framework)}
+
 Assumptions:
 ${assumptions(policy).map((line) => `- ${line}`).join("\n")}
 
@@ -116,12 +165,14 @@ Forsig details:
 - Base URL: ${baseUrl}
 - API key env var: FORSIG_API_KEY
 - Runtime mode env var: FORSIG_MODE
-- Default mode: shadow
+- Default mode: ${policy.mode}
 - Supported modes:
   - shadow: log that approval would have been required, but do not block execution
   - active: wait for human approval before executing the risky action
 - Default agent id/slug: ${agentId}
+- Default reviewer emails: ${reviewers || "use workspace defaults from Forsig settings"}
 - Use minimal review context only. Never send secrets, passwords, API keys, full payment details, raw payment method data, or unnecessary personal data to Forsig.
+- Real escalations should notify reviewers by email and dashboard. Test/shadow escalations may stay dashboard-only unless configured otherwise.
 
 Decision handling:
 - shadow_logged: continue execution, because this is a simulated checkpoint
@@ -135,13 +186,20 @@ Implementation instructions:
 1. Search the codebase for risky execution paths. Look for: ${hints.join(", ")}.
 2. Identify the final execution boundary where the action is actually sent, committed, deployed, or run.
 3. Insert the Forsig checkpoint as close as possible to the final irreversible execution boundary, not during planning, drafting, or intermediate reasoning.
-4. Add a small Forsig client/helper if one does not exist.
+4. Add a small Forsig client/helper if one does not exist. Prefer ${sdkPackage} if it is already available; otherwise add a minimal fetch/requests helper with the same behavior.
 5. In shadow mode, log that approval would have been required but do not block execution.
 6. In active mode, wait for approval and fail closed on rejection, timeout, or no decision.
 7. Keep payloads small and reviewer-safe. Redact secrets and avoid unnecessary personal data.
 8. Do not refactor unrelated code. Do not change unrelated business logic, auth, database schema, payment provider config, or deployment config unless required.
 9. Preserve existing behavior for non-risky actions.
-10. Update README/env docs with FORSIG_API_KEY, FORSIG_MODE, and the local test command only where relevant.
+10. Add reviewer notification routing where the app already has email/team config. Use ${reviewers || "Forsig workspace default reviewers"} for first pass.
+11. Update README/env docs with FORSIG_API_KEY, FORSIG_MODE, reviewer settings, and the local test command only where relevant.
+
+Suggested helper API:
+- createEscalation(payload): creates a Forsig escalation
+- waitForDecision(id): polls or waits for the reviewer decision
+- requireApproval({ risk, task, context, mode }): returns a structured decision
+- handleDecision(decision): approved continues, shadow_logged continues, rejected/taken_over/timeout stops, edited only continues when safely mapped
 
 Tests to add or update:
 - below-threshold action does not require approval
@@ -168,6 +226,7 @@ After implementing, show me:
 - how currency/minor units are handled, if relevant
 - how to run tests
 - how to run a real escalation/shadow test
+- how reviewer email notifications are configured
 - assumptions or missing env vars
 - uncertain risky action locations
 - any skipped files or TODOs`;
