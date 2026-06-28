@@ -534,7 +534,7 @@ const commandItems = [
   { id: "inbox", label: "Open Inbox", hint: "Review pending approvals.", run: () => setView("inbox") },
   { id: "create-key", label: "Create API key", hint: "Generate a key and see it once.", run: () => { setView("keys"); openModal("#api-key-create-modal"); } },
   { id: "create-agent", label: "Create agent", hint: "Group escalations by workflow.", run: () => { setView("agents"); openModal("#agent-create-modal"); } },
-  { id: "integration", label: "AI integration prompt", hint: "Draft a Codex, Claude, or Cursor install prompt.", run: () => setView("integration") },
+  { id: "integration", label: "AI Installer", hint: "Draft a Codex, Claude, or Cursor install prompt.", run: () => setView("integration") },
   { id: "shadow", label: "Shadow simulations", hint: "Inspect non-blocking approval simulations.", run: () => setView("shadow") },
   { id: "audit", label: "Audit trails", hint: "Filter and export decision history.", run: () => setView("audit") },
   { id: "export-audit", label: "Export audit CSV", hint: "Download visible audit events.", run: exportAuditCsv },
@@ -1246,7 +1246,19 @@ $("#developer-reset-password-form").addEventListener("submit", async (event) => 
 
 $("#developer-logout").addEventListener("click", async () => {
   await api("/api/developer/logout", { method: "POST", body: "{}" }).catch(() => null);
+  state.selectedId = null;
+  state.detail = null;
+  state.developer = null;
+  state.keys = [];
+  state.agents = [];
+  state.escalations = [];
+  state.auditEvents = [];
+  history.replaceState(null, "", "/developer");
+  document.querySelectorAll(".admin-view").forEach((section) => {
+    section.hidden = true;
+  });
   showLogin();
+  toast("Signed out");
 });
 
 $("#developer-status-filter").addEventListener("change", async (event) => {
@@ -1363,11 +1375,17 @@ $("#developer-api-key-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
   const status = form.querySelector(".mini-status");
+  const name = form.elements.name.value.trim();
+  if (name.length < 3) {
+    status.textContent = "Use a descriptive key name with at least 3 characters.";
+    form.elements.name.focus();
+    return;
+  }
   status.textContent = "Creating key...";
   try {
     const data = await api("/api/developer/api-key", {
       method: "POST",
-      body: JSON.stringify({ name: form.elements.name.value })
+      body: JSON.stringify({ name })
     });
     closeModal("#api-key-create-modal");
     state.lastApiKey = data.apiKey.key;
@@ -1468,13 +1486,25 @@ $("#developer-agent-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
   const status = form.querySelector(".mini-status");
+  const name = form.elements.name.value.trim();
+  const slug = form.elements.slug.value.trim();
+  if (name.length < 3) {
+    status.textContent = "Agent name must be at least 3 characters.";
+    form.elements.name.focus();
+    return;
+  }
+  if (slug && !/^[a-z0-9-]{3,64}$/.test(slug)) {
+    status.textContent = "Slug can use lowercase letters, numbers, and dashes only.";
+    form.elements.slug.focus();
+    return;
+  }
   status.textContent = "Creating agent...";
   try {
     await api("/api/developer/agents", {
       method: "POST",
       body: JSON.stringify({
-        name: form.elements.name.value,
-        slug: form.elements.slug.value,
+        name,
+        slug,
         environment: form.elements.environment.value,
         defaultReviewerEmails: form.elements.defaultReviewerEmails.value,
         description: form.elements.description.value
@@ -1482,7 +1512,7 @@ $("#developer-agent-form").addEventListener("submit", async (event) => {
     });
     status.textContent = "Agent created.";
     toast("Agent created");
-    track("agent_created", { name: form.elements.name.value, environment: form.elements.environment.value });
+    track("agent_created", { name, environment: form.elements.environment.value });
     form.reset();
     closeModal("#agent-create-modal");
     await loadAgents();

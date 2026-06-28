@@ -3,569 +3,267 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Forsig - Stop risky AI agent actions before they execute</title>
-    <meta name="description" content="Human approval checkpoints for AI agents. Intercept risky refunds, emails, deployments, database updates, and tool spend before they execute." />
+    <title>Forsig - Human-grade safety for AI agents</title>
+    <meta name="description" content="Pause high-risk AI agent actions until a human approves, edits, or rejects them. Built for refunds, emails, deployments, and tool spend." />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="https://www.forsig.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.forsig.com/" />
-    <meta property="og:title" content="Forsig - Stop risky AI agent actions before they execute" />
-    <meta property="og:description" content="Run a human approval checkpoint before autonomous agents refund, email, deploy, update data, or spend money." />
+    <meta property="og:title" content="Forsig - Human-grade safety for AI agents" />
+    <meta property="og:description" content="Automatically pause high-risk actions until a human approves or edits them." />
     <meta property="og:site_name" content="Forsig" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Forsig - Stop risky AI agent actions before they execute" />
+    <meta name="twitter:title" content="Forsig - Human-grade safety for AI agents" />
     <meta name="twitter:description" content="Human approval checkpoints for autonomous AI agents." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
-  <body data-page="landing" class="zip-design launch-page">
-    <header class="zip-nav">
-      <nav class="zip-container zip-nav-inner">
-        <a class="zip-brand" href="/" aria-label="Forsig home">
-          <svg viewBox="0 0 40 40" aria-hidden="true">
-            <path d="M4 20h12M24 20h12" />
-            <circle cx="20" cy="20" r="6" />
-            <path d="M20 8v6M20 26v6" />
-            <circle cx="4" cy="20" r="2" />
-            <circle cx="36" cy="20" r="2" />
-          </svg>
-          <span>Forsig</span>
-        </a>
-        <div class="zip-nav-links">
-          <a href="#how-it-works">How it works</a>
-          <a href="#demo">Demo</a>
-          <a href="#sdk">SDK</a>
-          <a href="#pricing">Pricing</a>
-          <a href="#security">Security</a>
-          <a href="/docs">Docs</a>
-          <a href="#contact">Contact</a>
-        </div>
-        <a class="zip-button zip-button-primary" data-track="nav_get_sdk_access_clicked" href="#waitlist">Run a Test Checkpoint</a>
+  <body data-page="landing" class="zip-design minimal-site forsig-minimal">
+    <div class="v2-bg" aria-hidden="true"></div>
+    <header class="minimal-nav forsig-minimal-nav">
+      <a class="zip-brand" href="/" aria-label="Forsig home">
+        <svg viewBox="0 0 40 40" aria-hidden="true">
+          <path d="M4 20h12M24 20h12" />
+          <circle cx="20" cy="20" r="6" />
+          <path d="M20 8v6M20 26v6" />
+          <circle cx="4" cy="20" r="2" />
+          <circle cx="36" cy="20" r="2" />
+        </svg>
+        <span>Forsig</span>
+      </a>
+      <nav>
+        <a href="#how-it-works">How it works</a>
+        <a href="/docs">Docs</a>
+        <a href="#pricing">Pricing</a>
       </nav>
+      <a class="zip-button zip-button-primary" data-track="nav_get_sdk_access_clicked" href="#waitlist">Get Early Access</a>
     </header>
 
     <main>
-      <section class="zip-hero launch-hero">
-        <div class="zip-hero-bg"></div>
-        <div class="zip-grid"></div>
-        <div class="zip-container launch-hero-grid">
-          <div class="launch-hero-copy">
-            <div class="zip-beta-badge"><span></span>Private beta</div>
-            <h1>Pause risky AI-agent actions; let humans decide.</h1>
-            <p class="zip-hero-copy">Intercept refunds, emails, deployments, and tool spend, route them to reviewers, then resume safely with a signed JSON response.</p>
-            <div class="zip-hero-actions">
-              <a class="zip-button zip-button-primary" data-track="hero_get_sdk_access_clicked" href="#waitlist">Start Free</a>
-              <a class="zip-button zip-button-secondary zip-button-text" data-track="hero_try_live_demo_clicked" href="#demo">Watch demo</a>
-            </div>
-            <div class="hero-mini-form" aria-label="Join Forsig beta">
-              <input data-hero-email type="email" autocomplete="email" placeholder="Work email" aria-label="Work email" />
-              <a data-hero-email-submit href="#waitlist" data-track="hero_inline_signup_clicked">Get beta access</a>
-            </div>
-            <div class="hero-proof-grid" aria-label="What Forsig does">
-              <article>
-                <strong>Block rogue execution</strong>
-                <span>Stop agents before they send, spend, update, delete, or deploy.</span>
-              </article>
-              <article>
-                <strong>Fail closed by default</strong>
-                <span>No reviewer, timeout, or unclear state means no risky action.</span>
-              </article>
-              <article>
-                <strong>Resume with structure</strong>
-                <span>Your agent receives a machine-readable decision it can branch on.</span>
-              </article>
-            </div>
-            <div class="stack-strip" aria-label="Built for your existing agent stack">
-              <span>Built for your existing agent stack</span>
-              <div class="stack-marquee">
-                <div class="stack-marquee-track">
-                  <b><i class="logo-langgraph"><svg viewBox="0 0 32 32"><circle cx="7" cy="16" r="4"/><circle cx="16" cy="8" r="4"/><circle cx="25" cy="16" r="4"/><circle cx="16" cy="24" r="4"/><path d="M10 14l4-4M19 10l4 4M23 18l-4 4M14 22l-4-4"/></svg></i>LangGraph</b>
-                  <b><i class="logo-crewai"><svg viewBox="0 0 32 32"><path d="M24 11a9 9 0 1 0 0 10"/><path d="M18 10l6 6-6 6"/></svg></i>CrewAI</b>
-                  <b><i class="logo-vercel"><svg viewBox="0 0 32 32"><path d="M16 7l11 19H5z"/></svg></i>Vercel AI SDK</b>
-                  <b><i class="logo-openai"><svg viewBox="0 0 32 32"><path d="M16 5c4 0 7 3 7 7 3 1 5 4 4 8-1 4-5 6-9 5-2 3-7 3-10 0s-3-8 0-11c-1-4 2-8 6-9h2z"/><path d="M11 15l5-3 5 3v6l-5 3-5-3z"/></svg></i>OpenAI Agents</b>
-                  <b><i class="logo-n8n"><svg viewBox="0 0 32 32"><circle cx="7" cy="16" r="4"/><circle cx="16" cy="16" r="4"/><circle cx="25" cy="16" r="4"/><path d="M11 16h1M20 16h1"/></svg></i>n8n</b>
-                  <b><i class="logo-zapier"><svg viewBox="0 0 32 32"><path d="M16 5v22M5 16h22M8 8l16 16M24 8L8 24"/></svg></i>Zapier</b>
-                  <b><i class="logo-custom"><svg viewBox="0 0 32 32"><path d="M12 9l-6 7 6 7M20 9l6 7-6 7M18 7l-4 18"/></svg></i>Custom agents</b>
-                  <b><i class="logo-langgraph"><svg viewBox="0 0 32 32"><circle cx="7" cy="16" r="4"/><circle cx="16" cy="8" r="4"/><circle cx="25" cy="16" r="4"/><circle cx="16" cy="24" r="4"/><path d="M10 14l4-4M19 10l4 4M23 18l-4 4M14 22l-4-4"/></svg></i>LangGraph</b>
-                  <b><i class="logo-crewai"><svg viewBox="0 0 32 32"><path d="M24 11a9 9 0 1 0 0 10"/><path d="M18 10l6 6-6 6"/></svg></i>CrewAI</b>
-                  <b><i class="logo-vercel"><svg viewBox="0 0 32 32"><path d="M16 7l11 19H5z"/></svg></i>Vercel AI SDK</b>
-                  <b><i class="logo-openai"><svg viewBox="0 0 32 32"><path d="M16 5c4 0 7 3 7 7 3 1 5 4 4 8-1 4-5 6-9 5-2 3-7 3-10 0s-3-8 0-11c-1-4 2-8 6-9h2z"/><path d="M11 15l5-3 5 3v6l-5 3-5-3z"/></svg></i>OpenAI Agents</b>
-                  <b><i class="logo-n8n"><svg viewBox="0 0 32 32"><circle cx="7" cy="16" r="4"/><circle cx="16" cy="16" r="4"/><circle cx="25" cy="16" r="4"/><path d="M11 16h1M20 16h1"/></svg></i>n8n</b>
-                  <b><i class="logo-zapier"><svg viewBox="0 0 32 32"><path d="M16 5v22M5 16h22M8 8l16 16M24 8L8 24"/></svg></i>Zapier</b>
-                  <b><i class="logo-custom"><svg viewBox="0 0 32 32"><path d="M12 9l-6 7 6 7M20 9l6 7-6 7M18 7l-4 18"/></svg></i>Custom agents</b>
-                </div>
-              </div>
-            </div>
+      <section class="minimal-hero forsig-minimal-hero">
+        <div class="minimal-hero-copy">
+          <div class="zip-beta-badge"><span></span>Private beta</div>
+          <h1>Human-grade safety for AI agents.</h1>
+          <p class="v2-lede">Automatically pause high-risk actions - refunds, emails, migrations - until you approve or edit them.</p>
+          <div class="zip-hero-actions">
+            <a class="zip-button zip-button-primary" data-track="hero_get_sdk_access_clicked" href="#waitlist">Get Early Access</a>
           </div>
+          <p class="minimal-hero-note">Built for developers shipping agents that can touch money, customers, production, or paid tools.</p>
+        </div>
 
-          <article class="hero-approval-card disaster-card" aria-label="Interactive agent safety demo">
-            <div class="hero-approval-top">
-              <span>Agent safety event</span>
-              <b id="hero-approval-status">Blocked pending review</b>
-            </div>
-            <h2>Deployment agent wants to run a risky billing migration.</h2>
-            <p>The agent has low confidence and no rollback proof. Forsig blocks execution until a human reviewer decides.</p>
-            <div class="hero-risk-meta">
-              <span>Agent <b>deploy-agent</b></span>
-              <span>Risk <b>production_migration</b></span>
-            </div>
-            <div class="hero-demo-reel" aria-label="Animated approval flow preview">
-              <span>Agent proposes</span>
-              <span>Forsig blocks</span>
-              <span>Human rejects</span>
-              <span>Agent stops</span>
-            </div>
-            <div class="hero-approval-actions">
-              <button type="button" data-hero-decision="approved">Approve</button>
-              <button type="button" data-hero-decision="rejected">Reject</button>
-              <button type="button" data-hero-decision="edited">Edit</button>
-              <button type="button" data-hero-decision="taken_over">Take Over</button>
-            </div>
-            <pre class="returned-json"><code id="hero-returned-json">{
-  "status": "blocked",
-  "action": "ALTER billing_subscriptions",
-  "instruction": "Waiting for human review"
-}</code></pre>
+        <article class="minimal-product forsig-product-preview" aria-label="Forsig approval preview">
+          <div class="minimal-product-top">
+            <span>Forsig checkpoint</span>
+            <strong>Pending</strong>
+          </div>
+          <div class="minimal-product-body">
+            <small>Risk matched</small>
+            <h2>Approve refund for customer #123</h2>
+            <p>The agent wants to issue a $500 refund. Forsig pauses the workflow and sends only the context needed for review.</p>
+          </div>
+          <div class="minimal-product-actions">
+            <span>Approve</span>
+            <span>Edit</span>
+            <span>Reject</span>
+          </div>
+          <code>{ "status": "approved", "signed": true }</code>
+        </article>
+      </section>
+
+      <section id="how-it-works" class="minimal-section">
+        <div class="minimal-heading">
+          <span class="zip-section-label">How it works</span>
+          <h2>Your agent proposes. Forsig pauses. You decide.</h2>
+        </div>
+        <div class="minimal-steps">
+          <article>
+            <span>01</span>
+            <h3>Agent proposes an external action</h3>
+            <p>Refund, email, deployment, database change, paid tool call, or any action where mistakes matter.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Forsig creates a checkpoint</h3>
+            <p>The workflow waits while a reviewer sees the proposed action, risk reason, and minimal context.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>The agent receives a decision</h3>
+            <p>Approve, edit, or reject. Forsig returns a structured response your workflow can trust.</p>
           </article>
         </div>
       </section>
 
-      <section class="zip-section compact-section proof-strip-section">
-        <div class="zip-container proof-strip">
-          <article><b>4 workflows tested</b><span>Refunds, outbound email, deployment review, and external tool spend.</span></article>
-          <article><b>First 10 teams</b><span>Founder-led onboarding for builders shipping real agent actions.</span></article>
-          <article><b>Under 5 minutes</b><span>Create a key, run a checkpoint, approve, and see the JSON response.</span></article>
+      <section id="demo" class="minimal-section forsig-demo-section">
+        <div class="minimal-heading">
+          <span class="zip-section-label">Product</span>
+          <h2>The approval flow, end to end.</h2>
+          <p>Notification is not control. Forsig sits between your agent and the real world, then records the decision.</p>
         </div>
-      </section>
-
-      <section class="zip-section compact-section trust-strip-section">
-        <div class="zip-container trust-strip" aria-label="Security and trust highlights">
-          <span><b>Audit trail</b><small>Proposal, context, reviewer, decision, timestamp.</small></span>
-          <span><b>Signed webhooks</b><small>Verify decision callbacks before trusting them.</small></span>
-          <span><b>Scoped API keys</b><small>Separate development, staging, and production access.</small></span>
-          <span><b>SOC 2 roadmap</b><small>Private beta today, compliance work planned for team launch.</small></span>
-        </div>
-      </section>
-
-      <section class="zip-section compact-section pain-section">
-        <div class="zip-container pain-layout">
-          <div>
-            <span class="zip-section-label">Why you need this</span>
-            <h2>Your Agents Will Hallucinate. Do Not Let Them Execute.</h2>
-            <p>An LLM hallucinating a fact is a bug. An LLM hallucinating a $5,000 refund, a production migration, or a customer email is a crisis. Forsig gives your agents autonomy with a brake pedal.</p>
-          </div>
-          <div class="pain-grid" aria-label="Agent failure examples">
-            <article><b>$5,000 refund</b><span>Support agent invents a refund policy and tries to issue money.</span></article>
-            <article><b>VIP customer email</b><span>Sales agent sends a fake discount promise to an enterprise lead.</span></article>
-            <article><b>Database update</b><span>Ops agent runs a destructive command in production.</span></article>
-          </div>
-        </div>
-      </section>
-
-      <section id="sdk" class="zip-section codebase-section">
-        <div class="zip-container codebase-layout">
-          <div class="codebase-copy">
-            <span class="zip-section-label">SDK</span>
-            <h2>Agent-Native Human-in-the-Loop.</h2>
-            <p>Forsig returns a structured decision your workflow can branch on. It is not a chat ping, a fragile Slack bot, or a human-readable message your agent has to guess how to interpret.</p>
-            <div class="sdk-tabs" role="tablist" aria-label="SDK language">
-              <button class="active" type="button" data-sdk-tab="ts">TypeScript</button>
-              <button type="button" data-sdk-tab="py">Python</button>
-            </div>
-          </div>
-          <div class="mac-code-stage" aria-label="Mac code editor showing Forsig SDK">
-            <div class="mac-window">
-              <div class="mac-titlebar">
+        <div class="macbook-demo" aria-label="Forsig live demo inside a MacBook">
+          <div class="macbook-lid">
+            <div class="macbook-screen">
+              <div class="mac-titlebar demo-titlebar">
                 <span></span><span></span><span></span>
-                <b>~/agent-workflows/refund-ops/src/agents/refund.ts</b>
+                <b>Forsig developer beta</b>
               </div>
-              <div class="provider-tabs" aria-label="Risk examples">
-                <button class="active" type="button" data-sdk-scenario="refunds">Refunds</button>
-                <button type="button" data-sdk-scenario="deployments">Deployments</button>
-                <button type="button" data-sdk-scenario="emails">Emails</button>
-                <button type="button" data-sdk-scenario="spend">Tool spend</button>
-              </div>
-              <div class="codebase-editor">
-                <div class="editor-tab"><b id="sdk-code-title">agent.ts</b><button data-copy-target="sdk-code">Copy</button></div>
-                <pre><code id="sdk-code"></code></pre>
-              </div>
-              <div class="mac-terminal">
-                <span>forsig: intercepted refund_over_limit</span>
-                <span>waiting for human decision...</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="zip-section compact-section early-objection-section">
-        <div class="zip-container objection-layout">
-          <div>
-            <span class="zip-section-label">Why not Slack?</span>
-            <h2>A Slack approval message is not a control plane.</h2>
-            <p>Your agent needs a durable pause, timeout behavior, audit trail, and machine-readable decision. Slack can notify people. Forsig controls whether the action executes.</p>
-          </div>
-          <div class="comparison-table" aria-label="Slack approval versus Forsig approval">
-            <div><b>Slack bot</b><b>Forsig checkpoint</b></div>
-            <div><span>Message can be missed</span><span>Action waits or fails closed</span></div>
-            <div><span>Human-readable text</span><span>Structured JSON response</span></div>
-            <div><span>Hard to audit</span><span>Proposal, context, reviewer, decision</span></div>
-            <div><span>Workflow state is fragile</span><span>Durable pending escalation</span></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="how-it-works" class="zip-section compact-section architecture-section">
-        <div class="zip-container">
-          <div class="zip-section-head">
-            <span>Visual architecture</span>
-            <h2>A live checkpoint layer between agents and real-world actions</h2>
-            <p>Your agent does not execute the risky action directly. It calls Forsig with the proposed action, risk reason, and minimal context. A human decides. Your agent receives a structured decision and either continues, modifies the action, stops, or hands control to a human.</p>
-          </div>
-          <div class="architecture-live architecture-flow" aria-label="Dynamic Forsig architecture">
-            <div class="architecture-grid"></div>
-            <svg class="arch-lines" viewBox="0 0 1120 520" aria-hidden="true">
-              <path class="flow-line line-a" d="M220 170 C330 170 360 248 470 248" />
-              <path class="flow-line line-b" d="M650 248 C760 248 790 168 900 168" />
-              <path class="flow-line line-c" d="M650 286 C760 286 796 354 918 354" />
-              <path class="flow-line line-d" d="M900 388 C754 444 358 438 220 316" />
-              <circle class="flow-dot dot-a" r="6" />
-              <circle class="flow-dot dot-b" r="6" />
-              <circle class="flow-dot dot-c" r="6" />
-              <circle class="flow-dot dot-d" r="6" />
-            </svg>
-            <article class="flow-card flow-agent">
-              <small>01 / Agent workflow</small>
-              <h3>Agent proposes a real action</h3>
-              <div class="flow-console">
-                <span>tool: stripe.refund</span>
-                <span>amount: $500</span>
-                <span>confidence: 61%</span>
-              </div>
-            </article>
-            <article class="flow-card flow-forsig">
-              <small>02 / Forsig checkpoint</small>
-              <h3>Pause before the action runs</h3>
-              <div class="checkpoint-core">
-                <b>Forsig</b>
-                <span>risk policy matched</span>
-              </div>
-              <p>Timeouts fail closed. Minimal context is sent for review.</p>
-            </article>
-            <article class="flow-card flow-reviewer">
-              <small>03 / Human review</small>
-              <h3>Reviewer decides with context</h3>
-              <div class="decision-row">
-                <span>Approve</span>
-                <span>Edit</span>
-                <span>Reject</span>
-              </div>
-            </article>
-            <article class="flow-card flow-resume">
-              <small>04 / Structured response</small>
-              <h3>Agent resumes or stops</h3>
-              <pre>{ "status": "approved" }</pre>
-            </article>
-            <div class="flow-audit-strip">
-              <span><b>Audit trail</b> proposal, reviewer, decision, timestamp</span>
-              <span><b>Webhook</b> signed decision delivered back to the workflow</span>
-              <span><b>Fail closed</b> no response means no risky action</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="zip-section compact-section usecase-section-launch">
-        <div class="zip-container">
-          <div class="zip-section-head">
-            <span>Real-world actions</span>
-            <h2>Built for agents that can affect the real world</h2>
-            <p>Use Forsig when a hallucination, bad tool call, or missing context can create real damage.</p>
-          </div>
-          <div class="launch-usecase-grid">
-            <article><h3>Refund approval</h3><p>Pause before issuing refunds above policy limits.</p></article>
-            <article><h3>Outbound email review</h3><p>Review AI-written customer emails before they leave your system.</p></article>
-            <article><h3>Production updates</h3><p>Require approval before customer, billing, or database changes.</p></article>
-            <article><h3>DevOps actions</h3><p>Review deployments, migrations, or destructive commands.</p></article>
-            <article><h3>Tool spending</h3><p>Approve agent actions that spend money or consume paid credits.</p></article>
-            <article><h3>Custom workflows</h3><p>Call Forsig from LangGraph, n8n, Vercel AI SDK, or any agent.</p></article>
-          </div>
-        </div>
-      </section>
-
-      <section id="demo" class="zip-demo launch-demo">
-        <div class="zip-demo-bg"></div>
-        <div class="zip-grid zip-demo-grid-bg"></div>
-        <div class="zip-container">
-          <div class="zip-section-head">
-            <span>Live demo</span>
-            <h2>Try a real approval flow</h2>
-            <p>Agent proposes a risky action, Forsig creates an escalation, a human decides, and the agent receives the structured response it branches on.</p>
-          </div>
-          <div class="demo-steps" aria-label="Demo steps">
-            <span>1. Agent proposes action</span>
-            <span>2. Forsig creates escalation</span>
-            <span>3. Human decides</span>
-            <span>4. Agent resumes or stops</span>
-          </div>
-          <div class="macbook-demo" aria-label="Forsig live demo inside a MacBook">
-            <div class="macbook-lid">
-              <div class="macbook-screen">
-                <div class="mac-titlebar demo-titlebar">
-                  <span></span><span></span><span></span>
-                  <b>Forsig developer beta</b>
-                </div>
-                <div class="mac-demo-app">
-                  <aside class="demo-sidebar">
-                    <b>Forsig</b>
-                    <span class="active">Escalations</span>
-                    <span>Agents</span>
-                    <span>Workspaces</span>
-                    <span>Audit log</span>
-                  </aside>
-                  <main>
-                    <div class="scenario-tabs" role="tablist" aria-label="Demo scenarios">
-                      <button class="active" type="button" data-scenario-tab="refund">Refund approval</button>
-                      <button type="button" data-scenario-tab="migration">Production migration</button>
-                      <button type="button" data-scenario-tab="sales">Outbound sales email</button>
-                      <button type="button" data-scenario-tab="spend">Tool spending limit</button>
+              <div class="mac-demo-app">
+                <aside class="demo-sidebar">
+                  <b>Forsig</b>
+                  <span class="active">Escalations</span>
+                  <span>Agents</span>
+                  <span>Audit log</span>
+                </aside>
+                <main>
+                  <div class="scenario-tabs" role="tablist" aria-label="Demo scenarios">
+                    <button class="active" type="button" data-scenario-tab="refund">Refund</button>
+                    <button type="button" data-scenario-tab="migration">Deployment</button>
+                    <button type="button" data-scenario-tab="sales">Email</button>
+                    <button type="button" data-scenario-tab="spend">Tool spend</button>
+                  </div>
+                  <div class="zip-review-page" data-zip-demo>
+                    <div class="zip-review-header">
+                      <div class="zip-risk-icon">!</div>
+                      <div><h3 id="zip-demo-title">Review refund for customer #123</h3><p id="zip-demo-summary">The agent wants to issue a $500 refund to a VIP customer.</p></div>
+                      <span id="zip-demo-status">Pending</span>
                     </div>
-                    <div class="zip-review-page" data-zip-demo>
-                      <div class="zip-review-header">
-                        <div class="zip-risk-icon">!</div>
-                        <div><h3 id="zip-demo-title">Review refund for customer #123</h3><p id="zip-demo-summary">The agent wants to issue a $500 refund to a VIP customer.</p></div>
-                        <span id="zip-demo-status">Pending</span>
+                    <div class="zip-review-body">
+                      <div class="zip-demo-cards">
+                        <article><span>Agent</span><b id="zip-demo-agent">Refund Agent</b><p id="zip-demo-workflow">refund-review-flow / step: approval</p></article>
+                        <article class="zip-danger-card"><span>Risk</span><b id="zip-demo-risk-level">High</b><p id="zip-demo-risk-reason">Refund exceeds policy limit</p></article>
                       </div>
-                      <div class="zip-review-body">
-                        <div class="zip-demo-cards">
-                          <article><span>Agent</span><b id="zip-demo-agent">Refund Agent</b><p id="zip-demo-workflow">refund-review-flow / step: approval</p></article>
-                          <article class="zip-danger-card"><span>Risk</span><b id="zip-demo-risk-level">High</b><p id="zip-demo-risk-reason">Refund exceeds policy limit</p></article>
-                        </div>
-                        <article class="zip-json-box"><span>Proposed action</span><pre><code id="zip-demo-action-json"></code></pre></article>
-                        <article class="zip-context-box"><span>Context</span><div id="zip-demo-context"></div></article>
-                        <div id="zip-demo-result" class="zip-demo-result" hidden></div>
-                        <div id="zip-demo-editor" class="zip-demo-editor" hidden>
-                          <label id="zip-demo-editor-label" for="zip-demo-editor-input">Instruction returned to the agent</label>
-                          <textarea id="zip-demo-editor-input"></textarea>
-                          <button id="zip-demo-editor-submit" type="button">Send Decision</button>
-                        </div>
-                        <div id="zip-demo-actions" class="zip-demo-actions">
-                          <p>Your decision</p>
-                          <button data-zip-decision="approved">Approve</button>
-                          <button data-zip-decision="rejected">Reject</button>
-                          <button data-zip-decision="edited">Edit</button>
-                          <button data-zip-decision="taken_over">Take Over</button>
-                        </div>
+                      <article class="zip-json-box"><span>Proposed action</span><pre><code id="zip-demo-action-json"></code></pre></article>
+                      <article class="zip-context-box"><span>Context</span><div id="zip-demo-context"></div></article>
+                      <div id="zip-demo-result" class="zip-demo-result" hidden></div>
+                      <div id="zip-demo-editor" class="zip-demo-editor" hidden>
+                        <label id="zip-demo-editor-label" for="zip-demo-editor-input">Instruction returned to the agent</label>
+                        <textarea id="zip-demo-editor-input"></textarea>
+                        <button id="zip-demo-editor-submit" type="button">Send Decision</button>
+                      </div>
+                      <div id="zip-demo-actions" class="zip-demo-actions">
+                        <p>Your decision</p>
+                        <button data-zip-decision="approved">Approve</button>
+                        <button data-zip-decision="rejected">Reject</button>
+                        <button data-zip-decision="edited">Edit</button>
+                        <button data-zip-decision="taken_over">Take Over</button>
                       </div>
                     </div>
-                  </main>
-                </div>
+                  </div>
+                </main>
               </div>
             </div>
-            <div class="macbook-base"></div>
           </div>
+          <div class="macbook-base"></div>
         </div>
       </section>
 
-      <section class="zip-section compact-section">
-        <div class="zip-container objection-layout">
+      <section id="sdk" class="minimal-section minimal-dev forsig-code-section">
+        <div class="minimal-heading">
+          <span class="zip-section-label">SDK</span>
+          <h2>One checkpoint before the action runs.</h2>
+          <p>Keep the marketing page light. The full examples live in docs.</p>
+        </div>
+        <div class="v2-code forsig-short-code">
+          <div class="code-titlebar"><span></span><span></span><span></span><b>agent.ts</b></div>
+          <pre><code>const decision = await forsig.escalations.create({
+  action: "stripe.refund",
+  risk: "refund_over_limit",
+  context: { amount: 500, customer: "VIP" }
+});</code></pre>
+        </div>
+      </section>
+
+      <section class="minimal-section forsig-value-section">
+        <div class="minimal-heading">
+          <span class="zip-section-label">Why Forsig</span>
+          <h2>A safety brake for real-world agent actions.</h2>
+        </div>
+        <div class="minimal-steps">
+          <article>
+            <span>Prevent mistakes</span>
+            <p>LLMs misfire. A wrong refund, customer email, or database change costs real money.</p>
+          </article>
+          <article>
+            <span>Auditable decisions</span>
+            <p>Record the proposal, context, reviewer, decision, timestamp, and returned instruction.</p>
+          </article>
+          <article>
+            <span>Minimal data</span>
+            <p>Send only what a reviewer needs - never keys, secrets, or full customer records.</p>
+          </article>
+        </div>
+        <div class="minimal-list forsig-action-list" aria-label="Supported actions">
+          <span>Refunds</span>
+          <span>Outbound emails</span>
+          <span>Deployments</span>
+          <span>Tool spend</span>
+          <span>Custom workflows</span>
+        </div>
+      </section>
+
+      <section id="pricing" class="minimal-section">
+        <div class="minimal-final forsig-pricing-card">
           <div>
-            <span class="zip-section-label">Why Forsig</span>
-            <h2>Your Slack approval bot will fail when the agent needs a state machine.</h2>
-            <p>Slack is good for notifications. Forsig is built for agent control: durable pauses, signed decisions, fail-closed timeouts, and a response your workflow can branch on.</p>
+            <span class="zip-section-label">Private beta</span>
+            <h2>Free while Forsig is in beta.</h2>
+            <p>One workflow, one key, shadow mode, signed responses, audit trail, and founder-led setup. No compliance certification is claimed yet.</p>
           </div>
-          <div class="comparison-table" aria-label="Slack approval versus Forsig approval">
-            <div><b>Slack approval</b><b>Forsig approval</b></div>
-            <div><span>Human-readable chat</span><span>Machine-readable decision</span></div>
-            <div><span>Easy to miss</span><span>Timeout and fail-closed behavior</span></div>
-            <div><span>Stateless messages</span><span>Durable pending escalation</span></div>
-            <div><span>Hard to audit</span><span>Proposal, reviewer, decision, timestamp</span></div>
-            <div><span>Weak workflow control</span><span>Signed webhook handoff</span></div>
+          <div class="forsig-beta-includes">
+            <span>Developer: limited approvals</span>
+            <span>Team: reviewers and routing, planned</span>
+            <span>Enterprise: SSO, RBAC, retention, planned</span>
           </div>
         </div>
       </section>
 
-      <section class="zip-section compact-section">
-        <div class="zip-container decision-layout">
-          <div class="zip-section-head">
-            <span>Decision model</span>
-            <h2>The exact states your agent branches on</h2>
-            <p>Approve and reject are only the start. Forsig gives reviewers practical options that map directly to workflow behavior.</p>
-          </div>
-          <div class="decision-status-grid">
-            <article><b>Approved</b><span>Human accepted the action.</span><small>Agent continues.</small></article>
-            <article><b>Rejected</b><span>Human blocked the action.</span><small>Agent stops.</small></article>
-            <article><b>Edited</b><span>Reviewer changed the instruction.</span><small>Agent continues with the modified plan.</small></article>
-            <article><b>Takeover</b><span>Human owns the task now.</span><small>Agent stops or hands off.</small></article>
-            <article><b>Needs more info</b><span>Reviewer asks the agent to gather context.</span><small>Agent escalates again later.</small></article>
-            <article><b>Timeout</b><span>No decision before expiry.</span><small>Fail closed by default.</small></article>
-          </div>
+      <section id="waitlist" class="minimal-final forsig-final-cta">
+        <div>
+          <span class="zip-section-label">Early access</span>
+          <h2>Bring one risky agent workflow.</h2>
+          <p>I will prioritize developers who already have an agent that can send, spend, update, deploy, or call external tools.</p>
         </div>
-      </section>
-
-      <section class="zip-section compact-section data-section">
-        <div class="zip-container data-layout">
-          <div>
-            <span class="zip-section-label">Minimal context</span>
-            <h2>Send only what a reviewer needs</h2>
-            <p>Forsig is designed for small, decision-focused payloads. Avoid secrets, API keys, passwords, full payment details, and unnecessary personal data.</p>
-          </div>
-          <pre><code>{
-  "agent": "refund-agent",
-  "action": "stripe.refund",
-  "amount": 500,
-  "risk": "refund_over_limit",
-  "reason": "Refund exceeds policy threshold",
-  "customer_tier": "VIP"
-}</code></pre>
-        </div>
-      </section>
-
-      <section id="security" class="zip-section compact-section">
-        <div class="zip-container">
-          <div class="zip-section-head">
-            <span>Security model</span>
-            <h2>Built for safe agent handoff</h2>
-            <p>Forsig is built around explicit human decisions, scoped access, minimal context sharing, and fail-closed behavior. No compliance certifications are claimed yet.</p>
-          </div>
-          <div class="security-list security-motion">
-            <div class="security-motion-track">
-              <span><b>Fail closed</b><small>If no reviewer responds, return timeout or rejected.</small></span>
-              <span><b>Minimal context</b><small>Send only fields needed for review.</small></span>
-              <span><b>Signed webhooks</b><small>Verify decisions before trusting them.</small></span>
-              <span><b>Scoped API keys</b><small>Separate keys by workflow, agent, or environment.</small></span>
-              <span><b>Audit trail</b><small>Record proposal, reviewer, decision, edited instruction, and time.</small></span>
-              <span><b>Explicit approval</b><small>No silent continuation for sensitive actions.</small></span>
-              <span><b>Fail closed</b><small>If no reviewer responds, return timeout or rejected.</small></span>
-              <span><b>Minimal context</b><small>Send only fields needed for review.</small></span>
-              <span><b>Signed webhooks</b><small>Verify returned decisions before trusting them.</small></span>
-              <span><b>Scoped API keys</b><small>Separate keys by workflow, agent, or environment.</small></span>
-              <span><b>Audit trail</b><small>Record proposal, reviewer, decision, edited instruction, and time.</small></span>
-              <span><b>Explicit approval</b><small>No silent continuation for sensitive actions.</small></span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="pricing" class="zip-section compact-section">
-        <div class="zip-container">
-          <div class="zip-section-head">
-            <span>Beta pricing</span>
-            <h2>Free during private beta</h2>
-            <p>Join the beta list now. Pricing will be shaped around real developer usage and feedback.</p>
-          </div>
-          <div class="beta-pricing-card">
-            <div>
-              <h3>Developer Beta</h3>
-              <p>For teams testing one real agent workflow before trusting it in production.</p>
-            </div>
-            <strong>$0 <span>during private beta</span></strong>
-            <ul>
-              <li>1 workspace for one concrete agent workflow</li>
-              <li>Agent dashboard, escalation API, and scoped API keys</li>
-              <li>Approval, reject, edit, and takeover decisions</li>
-              <li>Signed webhook handoff and audit history</li>
-              <li>Shadow mode before you block production actions</li>
-              <li>Founder setup support for the first workflow</li>
-              <li>Feedback-based roadmap access</li>
-            </ul>
-            <p class="beta-pricing-note">Best for non-critical beta workflows first. No compliance certifications claimed yet.</p>
-            <a class="zip-button zip-button-primary" href="#waitlist" data-plan-interest="developer-beta">Start Free</a>
-          </div>
-          <div class="pricing-roadmap" aria-label="Future pricing roadmap">
-            <article><b>Developer</b><span>1 workspace, starter workflows, limited monthly approvals, community support.</span></article>
-            <article><b>Team</b><span>Multiple workflows, reviewers, email/Slack routing, audit export, longer retention.</span></article>
-            <article><b>Enterprise</b><span>SSO, RBAC, compliance roadmap, custom retention, private deployment options.</span></article>
-          </div>
-        </div>
-      </section>
-
-      <section class="zip-section compact-section founder-note-section">
-        <div class="zip-container founder-note-card">
-          <span class="zip-section-label">Founder note</span>
-          <h2>I will help you wire the first checkpoint.</h2>
-          <p>I am Nazmul, the founder of Forsig. I am looking for developers and teams building real AI agents that can take external actions. If you have one workflow where human review is needed before execution, I will personally help you set it up during private beta.</p>
-          <a class="zip-button zip-button-primary" href="#contact">Request founder setup</a>
-        </div>
-      </section>
-
-      <section id="waitlist" class="zip-waitlist">
-        <div class="zip-grid"></div>
-        <div class="zip-container waitlist-card">
-          <h2>Run your first approval checkpoint in 5 minutes.</h2>
-          <p>Join with your email. I will prioritize builders with one real agent action ready to test.</p>
-          <form id="waitlist-form" class="zip-waitlist-form launch-waitlist-form" data-lead-form>
-            <input name="email" type="email" required autocomplete="email" placeholder="Email address" />
-            <input name="planInterest" type="hidden" value="free" />
-            <button type="submit">Run a Test Checkpoint</button>
-            <p id="form-status" class="mini-status" role="status"></p>
-          </form>
-          <form id="waitlist-followup-form" class="waitlist-followup" hidden>
-            <input name="leadId" type="hidden" />
-            <textarea name="useCase" placeholder="What risky action needs approval?"></textarea>
-            <label class="framework-picker">
-              <span>Frameworks</span>
-              <select name="frameworkInterest" multiple>
-                <option>LangGraph</option>
-                <option>CrewAI</option>
-                <option>OpenAI Agents SDK</option>
-                <option>Vercel AI SDK</option>
-                <option>n8n</option>
-                <option>Zapier</option>
-                <option>Custom agent</option>
-                <option>Other</option>
-              </select>
-            </label>
-            <input name="frameworkOther" type="text" placeholder="Other framework name" hidden />
-            <input name="externalActions" type="text" placeholder="Internal, customer-facing, or production?" />
-            <input name="timeline" type="text" placeholder="When do you want to test?" />
-            <button type="submit">Send workflow context</button>
-            <p class="mini-status" role="status"></p>
-          </form>
-          <small>No spam. Private beta access for developers shipping real agent workflows.</small>
-        </div>
-      </section>
-
-      <section id="contact" class="zip-section">
-        <div class="zip-container zip-contact-layout">
-          <div>
-            <span class="zip-section-label">Contact</span>
-            <h2>Have one risky agent workflow? I will help you add approval.</h2>
-            <p>Share the action your agent performs, where review should happen, and what framework you use.</p>
-          </div>
-          <form id="contact-form" class="zip-contact-form">
-            <input name="name" type="text" required aria-required="true" placeholder="Name *" autocomplete="name" />
-            <input name="email" type="email" required aria-required="true" placeholder="Email *" autocomplete="email" />
-            <input name="company" type="text" placeholder="Company" autocomplete="organization" />
-            <select name="role">
-              <option value="">Role</option>
-              <option>Founder</option><option>CEO</option><option>CTO</option><option>CFO</option><option>Developer</option><option>Product Manager</option>
+        <form id="waitlist-form" class="minimal-form launch-waitlist-form" data-lead-form>
+          <input name="email" type="email" required autocomplete="email" placeholder="Work email" />
+          <input name="planInterest" type="hidden" value="developer-beta" />
+          <button type="submit">Get Early Access</button>
+          <p id="form-status" class="mini-status" role="status"></p>
+        </form>
+        <form id="waitlist-followup-form" class="waitlist-followup" hidden>
+          <input name="leadId" type="hidden" />
+          <textarea name="useCase" placeholder="Optional: what action should Forsig review?"></textarea>
+          <label class="framework-picker">
+            <span>Frameworks</span>
+            <select name="frameworkInterest" multiple>
+              <option>LangGraph</option>
+              <option>CrewAI</option>
+              <option>OpenAI Agents SDK</option>
+              <option>Vercel AI SDK</option>
+              <option>n8n</option>
+              <option>Zapier</option>
+              <option>Custom agent</option>
+              <option>Other</option>
             </select>
-            <textarea name="message" required aria-required="true" placeholder="Tell me about your agent workflow... *"></textarea>
-            <button type="submit">Request founder setup</button>
-            <p id="contact-status" class="mini-status" role="status"></p>
-          </form>
-        </div>
+          </label>
+          <input name="frameworkOther" type="text" placeholder="Other framework name" hidden />
+          <button type="submit">Send context</button>
+          <p class="mini-status" role="status"></p>
+        </form>
       </section>
 
-      <footer class="zip-footer">
-        <div class="zip-container">
-          <div>
-            <a class="zip-brand" href="/"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h12M24 20h12" /><circle cx="20" cy="20" r="6" /><path d="M20 8v6M20 26v6" /><circle cx="4" cy="20" r="2" /><circle cx="36" cy="20" r="2" /></svg><span>Forsig</span></a>
-            <p>Pause risky agent actions, let a human review, resume safely, and save an audit trail.</p>
-          </div>
-          <nav>
-            <a href="#how-it-works">How it works</a>
-            <a href="#demo">Demo</a>
-            <a href="#sdk">SDK</a>
-            <a href="#pricing">Pricing</a>
-            <a href="/privacy">Privacy</a>
-            <a href="/terms">Terms</a>
-            <a href="/security">Security</a>
-          </nav>
+      <footer class="minimal-footer zip-footer">
+        <div>
+          <a class="zip-brand" href="/"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M4 20h12M24 20h12" /><circle cx="20" cy="20" r="6" /><path d="M20 8v6M20 26v6" /><circle cx="4" cy="20" r="2" /><circle cx="36" cy="20" r="2" /></svg><span>Forsig</span></a>
+          <p>Human approval checkpoints for agents that touch the real world.</p>
         </div>
+        <nav>
+          <a href="/docs">Docs</a>
+          <a href="/security">Security</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+          <a href="/contact">Contact</a>
+        </nav>
       </footer>
     </main>
     <script src="/app.js" type="module"></script>

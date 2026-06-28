@@ -12314,3 +12314,263 @@ body[data-page="developer"][data-theme="light"] .command-palette label span {
     grid-template-columns: 1fr;
   }
 }
+
+/* Forsig minimal landing reset */
+body[data-page="landing"].forsig-minimal {
+  min-height: 100vh;
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+body[data-page="landing"].forsig-minimal .forsig-minimal-nav {
+  position: sticky;
+  top: 14px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border: 1px solid rgba(243, 239, 228, 0.1);
+  padding: 8px 10px 8px 16px;
+  backdrop-filter: blur(18px);
+}
+
+body[data-page="landing"].forsig-minimal .forsig-minimal-nav nav {
+  display: flex;
+  gap: 22px;
+}
+
+body[data-page="landing"].forsig-minimal .forsig-minimal-nav a {
+  color: rgba(243, 239, 228, 0.72);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+body[data-page="landing"].forsig-minimal .forsig-minimal-nav .zip-button {
+  min-height: 38px;
+  color: #10110f;
+}
+
+body[data-page="landing"].forsig-minimal .zip-brand {
+  color: var(--ink);
+}
+
+body[data-page="landing"].forsig-minimal .forsig-minimal-hero {
+  min-height: auto;
+}
+
+body[data-page="landing"].forsig-minimal .zip-beta-badge {
+  width: fit-content;
+  margin-bottom: 18px;
+}
+
+body[data-page="landing"].forsig-minimal .zip-hero-actions {
+  margin-top: 28px;
+}
+
+body[data-page="landing"].forsig-minimal .zip-hero-actions .zip-button {
+  min-height: 52px;
+  padding: 0 22px;
+}
+
+body[data-page="landing"].forsig-minimal .minimal-hero-note {
+  max-width: 520px;
+  margin: 18px 0 0;
+  color: rgba(243, 239, 228, 0.48);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+body[data-page="landing"].forsig-minimal .forsig-product-preview {
+  transform: translateY(10px);
+}
+
+body[data-page="landing"].forsig-minimal .minimal-heading p {
+  max-width: 680px;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+body[data-page="landing"].forsig-minimal .minimal-steps {
+  gap: 14px;
+}
+
+body[data-page="landing"].forsig-minimal .minimal-steps article {
+  min-height: 190px;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+
+body[data-page="landing"].forsig-minimal .minimal-steps article:hover {
+  transform: translateY(-2px);
+  border-color: rgba(214, 245, 138, 0.24);
+  background: rgba(243, 239, 228, 0.055);
+}
+
+body[data-page="landing"].forsig-minimal .minimal-steps h3 {
+  margin: 12px 0 8px;
+  font-size: 22px;
+  line-height: 1.15;
+}
+
+body[data-page="landing"].forsig-minimal .forsig-demo-section .macbook-demo {
+  width: min(1120px, 100%);
+  margin: 28px auto 0;
+}
+
+body[data-page="landing"].forsig-minimal .forsig-code-section .forsig-short-code {
+  max-width: 760px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+body[data-page="landing"].forsig-minimal .forsig-short-code pre {
+  margin: 0;
+  padding: 22px;
+  overflow: auto;
+}
+
+body[data-page="landing"].forsig-minimal .forsig-short-code code {
+  color: #f5f7fb;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+body[data-page="landing"].forsig-minimal .forsig-value-section .minimal-list {
+  margin-top: 18px;
+}
+
+body[data-page="landing"].forsig-minimal .forsig-action-list span,
+body[data-page="landing"].forsig-minimal .forsig-beta-includes span {
+  border-color: rgba(214, 245, 138, 0.14);
+  background: rgba(214, 245, 138, 0.055);
+}
+
+body[data-page="landing"].forsig-minimal .forsig-pricing-card {
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
+}
+
+body[data-page="landing"].forsig-minimal .forsig-beta-includes {
+  display: grid;
+  gap: 10px;
+}
+
+body[data-page="landing"].forsig-minimal .forsig-final-cta {
+  align-items: start;
+}
+
+body[data-page="landing"].forsig-minimal .forsig-final-cta .minimal-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  border: 1px solid var(--line);
+  padding: 10px;
+}
+
+body[data-page="landing"].forsig-minimal .forsig-final-cta .minimal-form input {
+  min-height: 48px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 14px;
+  color: var(--ink);
+  background: rgba(0, 0, 0, 0.14);
+  font: inherit;
+}
+
+body[data-page="landing"].forsig-minimal .forsig-final-cta .minimal-form button {
+  min-height: 48px;
+  border: 0;
+  border-radius: 12px;
+  padding: 0 18px;
+  color: #10110f;
+  background: var(--gold);
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+body[data-page="landing"].forsig-minimal .forsig-final-cta .minimal-form .mini-status {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+body[data-page="landing"].forsig-minimal .waitlist-followup {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 14px;
+}
+
+body[data-page="landing"].forsig-minimal .minimal-footer {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 48px 0 62px;
+  border-top: 1px solid var(--line);
+  background: transparent;
+}
+
+body[data-page="landing"].forsig-minimal .minimal-footer p {
+  max-width: 360px;
+  color: var(--muted);
+}
+
+body[data-page="landing"].forsig-minimal .minimal-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+body[data-page="landing"].forsig-minimal .minimal-footer nav a {
+  color: rgba(243, 239, 228, 0.62);
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-page="landing"].forsig-minimal .minimal-steps article,
+  body[data-page="landing"].forsig-minimal .zip-button {
+    transition: none;
+  }
+}
+
+@media (max-width: 980px) {
+  body[data-page="landing"].forsig-minimal .forsig-pricing-card,
+  body[data-page="landing"].forsig-minimal .forsig-final-cta {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="landing"].forsig-minimal .forsig-minimal-nav nav {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  body[data-page="landing"].forsig-minimal .forsig-minimal-nav {
+    top: 0;
+    width: 100%;
+    margin-top: 0;
+    border-radius: 0;
+  }
+
+  body[data-page="landing"].forsig-minimal .forsig-minimal-nav .zip-button {
+    display: none;
+  }
+
+  body[data-page="landing"].forsig-minimal .forsig-final-cta .minimal-form {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="landing"].forsig-minimal .minimal-footer {
+    display: grid;
+  }
+
+  body[data-page="landing"].forsig-minimal .minimal-footer nav {
+    justify-content: start;
+  }
+}

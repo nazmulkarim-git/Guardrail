@@ -23,11 +23,11 @@
         <nav>
           <button type="button" data-developer-view="quickstart" class="active"><span>Start here</span></button>
           <button type="button" data-developer-view="inbox"><span>Inbox</span></button>
-          <button type="button" data-developer-view="integration"><span>Install with AI</span></button>
-          <button type="button" data-developer-view="shadow"><span>Shadow simulations</span></button>
-          <button type="button" data-developer-view="agents"><span>Agents</span></button>
-          <button type="button" data-developer-view="keys"><span>API Keys</span></button>
-          <button type="button" data-developer-view="audit"><span>Audit trails</span></button>
+          <button type="button" data-developer-view="integration" title="Generate a Codex, Claude, or Cursor prompt that adds Forsig checkpoints to your codebase."><span>AI Installer</span></button>
+          <button type="button" data-developer-view="shadow" title="See non-blocking simulations before you turn on active approval."><span>Shadow simulations</span></button>
+          <button type="button" data-developer-view="agents" title="Group escalations by workflow, environment, and reviewer defaults."><span>Agents</span></button>
+          <button type="button" data-developer-view="keys" title="Create, hold, and revoke API keys. Full keys are only shown once."><span>API Keys</span></button>
+          <button type="button" data-developer-view="audit" title="Review and export decisions, test runs, and workspace events."><span>Audit trails</span></button>
           <a href="/docs"><span>Docs</span></a>
           <button type="button" data-developer-view="settings"><span>Settings</span></button>
         </nav>
@@ -393,8 +393,8 @@
           <button id="agent-create-modal-close" type="button" aria-label="Close">x</button>
           <h2 id="agent-create-modal-title">Create agent</h2>
           <form id="developer-agent-form" class="admin-form-grid">
-            <input name="name" type="text" required placeholder="Agent name, e.g. Refund Agent" />
-            <input name="slug" type="text" placeholder="Agent slug, e.g. refund-agent" />
+            <input name="name" type="text" required minlength="3" maxlength="80" placeholder="Agent name, e.g. Refund Agent" />
+            <input name="slug" type="text" pattern="[a-z0-9-]{3,64}" placeholder="Agent slug, e.g. refund-agent" />
             <select name="environment">
               <option value="development">Development</option>
               <option value="staging">Staging</option>
@@ -413,7 +413,7 @@
           <button id="api-key-create-modal-close" type="button" aria-label="Close">x</button>
           <h2 id="api-key-create-modal-title">Create API key</h2>
           <form id="developer-api-key-form" class="admin-form-grid">
-            <input name="name" type="text" placeholder="Key name" />
+            <input name="name" type="text" required minlength="3" maxlength="80" placeholder="Key name" />
             <button type="submit">Create API key</button>
             <p class="mini-status" role="status"></p>
           </form>
