@@ -1642,6 +1642,244 @@ body[data-page="app"] code {
   }
 }
 
+/* Landing readability correction
+   Tightens the public page type scale and layout rhythm after launch review.
+   Goal: more content visible per viewport, less side gutter on large screens, and clean anchor jumps under the sticky nav. */
+body[data-page="landing"].lp-conversion {
+  scroll-behavior: smooth;
+  scroll-padding-top: 112px;
+}
+
+body[data-page="landing"].lp-conversion .conversion-nav,
+body[data-page="landing"].lp-conversion .conversion-hero,
+body[data-page="landing"].lp-conversion .conversion-signup,
+body[data-page="landing"].lp-conversion .conversion-section,
+body[data-page="landing"].lp-conversion .conversion-footer {
+  width: min(100% - 40px, 1500px);
+}
+
+body[data-page="landing"].lp-conversion .conversion-nav {
+  top: 14px;
+  min-height: 64px;
+  padding: 10px 12px 10px 18px;
+}
+
+body[data-page="landing"].lp-conversion .conversion-button {
+  min-height: 46px;
+  border-radius: 12px;
+  padding-inline: 18px;
+}
+
+body[data-page="landing"].lp-conversion .conversion-hero {
+  grid-template-columns: minmax(0, 0.9fr) minmax(380px, 0.72fr);
+  gap: clamp(28px, 4vw, 64px);
+  min-height: auto;
+  padding: clamp(58px, 7vw, 92px) 0 clamp(34px, 5vw, 58px);
+}
+
+body[data-page="landing"].lp-conversion .conversion-hero-copy {
+  max-width: 780px;
+}
+
+body[data-page="landing"].lp-conversion .conversion-pill,
+body[data-page="landing"].lp-conversion .conversion-kicker {
+  font-size: 12px;
+}
+
+body[data-page="landing"].lp-conversion .conversion-hero h1 {
+  max-width: 820px;
+  margin-top: 20px;
+  font-size: clamp(44px, 5.2vw, 78px);
+  line-height: 0.95;
+}
+
+body[data-page="landing"].lp-conversion .conversion-hero p {
+  max-width: 680px;
+  margin-top: 20px;
+  font-size: clamp(17px, 1.25vw, 22px);
+  line-height: 1.48;
+}
+
+body[data-page="landing"].lp-conversion .conversion-actions {
+  margin-top: 26px;
+}
+
+body[data-page="landing"].lp-conversion .conversion-hero-card {
+  max-width: 560px;
+  justify-self: end;
+  padding: 24px;
+}
+
+body[data-page="landing"].lp-conversion .workflow-card {
+  padding: 18px;
+}
+
+body[data-page="landing"].lp-conversion .workflow-card b {
+  font-size: clamp(20px, 1.8vw, 25px);
+}
+
+body[data-page="landing"].lp-conversion .workflow-card small {
+  font-size: 14px;
+}
+
+body[data-page="landing"].lp-conversion .conversion-section,
+body[data-page="landing"].lp-conversion .conversion-video-section {
+  padding-top: clamp(56px, 6vw, 82px);
+  scroll-margin-top: 112px;
+}
+
+body[data-page="landing"].lp-conversion #waitlist,
+body[data-page="landing"].lp-conversion #product,
+body[data-page="landing"].lp-conversion #developers,
+body[data-page="landing"].lp-conversion #security {
+  scroll-margin-top: 112px;
+}
+
+body[data-page="landing"].lp-conversion .conversion-signup {
+  margin-top: 12px;
+  padding: clamp(24px, 3vw, 36px);
+}
+
+body[data-page="landing"].lp-conversion .conversion-signup h2,
+body[data-page="landing"].lp-conversion .conversion-section-head h2 {
+  max-width: 940px;
+  font-size: clamp(28px, 3vw, 44px);
+  line-height: 1.04;
+}
+
+body[data-page="landing"].lp-conversion .conversion-signup p,
+body[data-page="landing"].lp-conversion .conversion-section-head p {
+  max-width: 800px;
+  font-size: clamp(15px, 1.1vw, 18px);
+  line-height: 1.6;
+}
+
+body[data-page="landing"].lp-conversion .value-grid,
+body[data-page="landing"].lp-conversion .mechanism-grid,
+body[data-page="landing"].lp-conversion .beta-proof-grid,
+body[data-page="landing"].lp-conversion .usecase-grid,
+body[data-page="landing"].lp-conversion .security-grid,
+body[data-page="landing"].lp-conversion .testimonial-grid {
+  gap: 16px;
+  margin-top: 24px;
+}
+
+body[data-page="landing"].lp-conversion .value-card,
+body[data-page="landing"].lp-conversion .usecase-card,
+body[data-page="landing"].lp-conversion .mechanism-grid article,
+body[data-page="landing"].lp-conversion .beta-proof-grid article,
+body[data-page="landing"].lp-conversion .security-grid article,
+body[data-page="landing"].lp-conversion .testimonial-grid article {
+  padding: clamp(18px, 2vw, 24px);
+}
+
+body[data-page="landing"].lp-conversion .value-card h3,
+body[data-page="landing"].lp-conversion .usecase-card h3,
+body[data-page="landing"].lp-conversion .security-grid h3,
+body[data-page="landing"].lp-conversion .mechanism-grid h3,
+body[data-page="landing"].lp-conversion .beta-proof-grid b {
+  font-size: clamp(19px, 1.45vw, 24px);
+  line-height: 1.14;
+}
+
+body[data-page="landing"].lp-conversion .value-card p,
+body[data-page="landing"].lp-conversion .usecase-card p,
+body[data-page="landing"].lp-conversion .security-grid li,
+body[data-page="landing"].lp-conversion .mechanism-grid p,
+body[data-page="landing"].lp-conversion .beta-proof-grid span,
+body[data-page="landing"].lp-conversion .faq-list p {
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+body[data-page="landing"].lp-conversion .product-video-card,
+body[data-page="landing"].lp-conversion .developer-code-card {
+  margin-top: 24px;
+}
+
+body[data-page="landing"].lp-conversion .faq-list {
+  margin-top: 22px;
+}
+
+body[data-page="landing"].lp-conversion .faq-list summary {
+  padding: 18px 22px;
+  font-size: 16px;
+}
+
+body[data-page="landing"].lp-conversion .faq-list p {
+  padding: 0 22px 18px;
+}
+
+body[data-page="landing"].lp-conversion .conversion-footer {
+  margin-top: 76px;
+}
+
+@media (min-width: 1600px) {
+  body[data-page="landing"].lp-conversion .conversion-nav,
+  body[data-page="landing"].lp-conversion .conversion-hero,
+  body[data-page="landing"].lp-conversion .conversion-signup,
+  body[data-page="landing"].lp-conversion .conversion-section,
+  body[data-page="landing"].lp-conversion .conversion-footer {
+    width: min(100% - 56px, 1560px);
+  }
+}
+
+@media (max-width: 1080px) {
+  body[data-page="landing"].lp-conversion .conversion-hero {
+    grid-template-columns: 1fr;
+    padding-top: 50px;
+  }
+
+  body[data-page="landing"].lp-conversion .conversion-hero-card {
+    max-width: none;
+    justify-self: stretch;
+  }
+
+  body[data-page="landing"].lp-conversion .conversion-hero h1 {
+    font-size: clamp(42px, 8vw, 64px);
+  }
+}
+
+@media (max-width: 720px) {
+  body[data-page="landing"].lp-conversion {
+    scroll-padding-top: 84px;
+  }
+
+  body[data-page="landing"].lp-conversion .conversion-nav,
+  body[data-page="landing"].lp-conversion .conversion-hero,
+  body[data-page="landing"].lp-conversion .conversion-signup,
+  body[data-page="landing"].lp-conversion .conversion-section,
+  body[data-page="landing"].lp-conversion .conversion-footer {
+    width: min(100% - 24px, 640px);
+  }
+
+  body[data-page="landing"].lp-conversion .conversion-nav {
+    min-height: 56px;
+  }
+
+  body[data-page="landing"].lp-conversion .conversion-hero {
+    padding-top: 36px;
+  }
+
+  body[data-page="landing"].lp-conversion .conversion-hero h1 {
+    font-size: clamp(36px, 11vw, 48px);
+    line-height: 0.98;
+  }
+
+  body[data-page="landing"].lp-conversion .conversion-hero p {
+    font-size: 16px;
+  }
+
+  body[data-page="landing"].lp-conversion .conversion-section {
+    padding-top: 52px;
+  }
+
+  body[data-page="landing"].lp-conversion .conversion-signup h2,
+  body[data-page="landing"].lp-conversion .conversion-section-head h2 {
+    font-size: clamp(25px, 8vw, 34px);
+  }
+}
+
 @media (max-width: 620px) {
   .minimal-demo {
     width: min(100% - 24px, 1080px);
