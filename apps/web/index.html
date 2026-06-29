@@ -60,27 +60,39 @@
           </div>
         </div>
 
-        <div class="lp-orbit" aria-label="Human approval loop animation">
-          <div class="lp-orbit-node lp-orbit-agent">
-            <small>Agent</small>
-            <b>Proposes refund</b>
-            <span>$500 customer action</span>
+        <div class="lp-orbit lp-flow-visual" aria-label="Forsig approval flow">
+          <div class="lp-flow-row">
+            <article class="lp-flow-step">
+              <small>1. AI agent</small>
+              <b>Proposes risky action</b>
+              <span>Issue $500 refund</span>
+            </article>
+            <div class="lp-flow-arrow" aria-hidden="true"></div>
+            <article class="lp-flow-step lp-flow-checkpoint">
+              <small>2. Forsig</small>
+              <b>Pauses the workflow</b>
+              <span>Creates human review</span>
+            </article>
+            <div class="lp-flow-arrow" aria-hidden="true"></div>
+            <article class="lp-flow-step">
+              <small>3. Reviewer</small>
+              <b>Approve, edit, reject</b>
+              <span>Decision is signed</span>
+            </article>
           </div>
-          <div class="lp-orbit-core">
-            <div class="lp-core-glow"></div>
-            <div class="lp-core-token">Human review</div>
+          <div class="lp-flow-return">
+            <span>4. Agent receives structured response</span>
+            <code>{ "status": "approved", "instruction": "Proceed" }</code>
           </div>
-          <div class="lp-orbit-node lp-orbit-human">
-            <small>Reviewer</small>
-            <b>Approves or edits</b>
-            <span>Signed JSON returned</span>
-          </div>
-          <div class="lp-orbit-console">
-            <div><i></i><i></i><i></i><strong>Forsig checkpoint</strong></div>
+          <div class="lp-flow-console">
+            <div><i></i><i></i><i></i><strong>Forsig checkpoint payload</strong></div>
             <pre><code>{
-  "status": "pending_review",
+  "action": "stripe.refund",
   "risk": "refund_over_limit",
-  "action": "stripe.refund"
+  "context": {
+    "amount": 500,
+    "customer": "VIP customer #123"
+  }
 }</code></pre>
           </div>
         </div>

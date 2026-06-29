@@ -14803,6 +14803,127 @@ body[data-page="landing"].lp-page .lp-orbit {
     rgba(255, 255, 255, 0.035);
 }
 
+body[data-page="landing"].lp-page .lp-flow-visual {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 18px;
+  padding: 28px;
+}
+
+body[data-page="landing"].lp-page .lp-flow-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr) 42px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+
+body[data-page="landing"].lp-page .lp-flow-step {
+  min-height: 138px;
+  border: 1px solid var(--lp-line);
+  border-radius: 22px;
+  padding: 18px;
+  background: rgba(8, 10, 16, 0.82);
+  box-shadow: inset 0 1px rgba(255,255,255,0.08);
+}
+
+body[data-page="landing"].lp-page .lp-flow-checkpoint {
+  border-color: rgba(0, 255, 194, 0.42);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(0,255,194,0.16), transparent 10rem),
+    rgba(8, 10, 16, 0.88);
+}
+
+body[data-page="landing"].lp-page .lp-flow-step small,
+body[data-page="landing"].lp-page .lp-flow-return span {
+  display: block;
+  color: var(--lp-accent);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body[data-page="landing"].lp-page .lp-flow-step b {
+  display: block;
+  margin-top: 12px;
+  color: var(--lp-text);
+  font-size: clamp(18px, 1.35vw, 24px);
+  line-height: 1.12;
+}
+
+body[data-page="landing"].lp-page .lp-flow-step span {
+  display: block;
+  margin-top: 10px;
+  color: var(--lp-muted);
+  line-height: 1.4;
+}
+
+body[data-page="landing"].lp-page .lp-flow-arrow {
+  position: relative;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(0,255,194,0.1), var(--lp-accent));
+}
+
+body[data-page="landing"].lp-page .lp-flow-arrow::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid var(--lp-accent);
+  border-right: 2px solid var(--lp-accent);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+body[data-page="landing"].lp-page .lp-flow-return {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  border: 1px solid rgba(0,255,194,0.24);
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: rgba(0,255,194,0.07);
+}
+
+body[data-page="landing"].lp-page .lp-flow-return code {
+  overflow: hidden;
+  color: #d8fff4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body[data-page="landing"].lp-page .lp-flow-console {
+  align-self: end;
+  overflow: hidden;
+  border: 1px solid var(--lp-line);
+  border-radius: 22px;
+  background: rgba(8, 10, 16, 0.9);
+}
+
+body[data-page="landing"].lp-page .lp-flow-console div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--lp-line);
+  padding: 12px 14px;
+}
+
+body[data-page="landing"].lp-page .lp-flow-console i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff6262;
+}
+
+body[data-page="landing"].lp-page .lp-flow-console i:nth-child(2) { background: #ffd166; }
+body[data-page="landing"].lp-page .lp-flow-console i:nth-child(3) { background: var(--lp-accent); }
+
+body[data-page="landing"].lp-page .lp-flow-console pre {
+  padding: 16px;
+}
+
 body[data-page="landing"].lp-page .lp-orbit-node {
   position: absolute;
   width: 210px;
@@ -15378,6 +15499,34 @@ body[data-page="landing"].lp-page .lp-footer::before {
 
   body[data-page="landing"].lp-page .lp-orbit {
     min-height: 540px;
+  }
+
+  body[data-page="landing"].lp-page .lp-flow-visual {
+    min-height: auto;
+    padding: 18px;
+  }
+
+  body[data-page="landing"].lp-page .lp-flow-row,
+  body[data-page="landing"].lp-page .lp-flow-return {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="landing"].lp-page .lp-flow-arrow {
+    width: 2px;
+    height: 26px;
+    margin: auto;
+    background: linear-gradient(180deg, rgba(0,255,194,0.1), var(--lp-accent));
+  }
+
+  body[data-page="landing"].lp-page .lp-flow-arrow::after {
+    top: auto;
+    right: 50%;
+    bottom: -2px;
+    transform: translateX(50%) rotate(135deg);
+  }
+
+  body[data-page="landing"].lp-page .lp-flow-return code {
+    white-space: normal;
   }
 
   body[data-page="landing"].lp-page .lp-orbit-node {
