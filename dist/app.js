@@ -1,6 +1,9 @@
 const analyticsConfig = {
   posthogKey: "",
   posthogHost: "https://app.posthog.com",
+  hotjarId: "",
+  hotjarVersion: 6,
+  hotjarLoaded: false,
   loaded: false
 };
 
@@ -92,8 +95,11 @@ async function loadRuntimeConfig() {
     const config = await response.json();
     analyticsConfig.posthogKey = config.posthogKey || "";
     analyticsConfig.posthogHost = config.posthogHost || "https://app.posthog.com";
+    analyticsConfig.hotjarId = config.hotjarId || "";
+    analyticsConfig.hotjarVersion = Number(config.hotjarVersion || 6);
   } catch {
     analyticsConfig.posthogKey = "";
+    analyticsConfig.hotjarId = "";
   }
 }
 
@@ -114,6 +120,26 @@ async function initPostHog() {
     track(`${document.body.dataset.page}_viewed`);
   };
   document.head.appendChild(script);
+}
+
+async function initHotjar() {
+  if (!analyticsConfig.posthogKey && !analyticsConfig.hotjarId) await loadRuntimeConfig();
+  if (!analyticsConfig.hotjarId || analyticsConfig.hotjarLoaded) return;
+  const hotjarId = Number(analyticsConfig.hotjarId);
+  if (!Number.isFinite(hotjarId)) return;
+  analyticsConfig.hotjarLoaded = true;
+  const hotjarVersion = analyticsConfig.hotjarVersion || 6;
+  window.hj =
+    window.hj ||
+    function () {
+      (window.hj.q = window.hj.q || []).push(arguments);
+    };
+  window._hjSettings = { hjid: hotjarId, hjsv: hotjarVersion };
+  const script = document.createElement("script");
+  script.async = true;
+  script.src = `https://static.hotjar.com/c/hotjar-${hotjarId}.js?sv=${hotjarVersion}`;
+  document.head.appendChild(script);
+  track("hotjar_loaded");
 }
 
 function revealOnScroll() {
@@ -341,31 +367,36 @@ function initWaitlist() {
 }
 
 function initLandingV2Interactions() {
-  const modal = document.querySelector(".lp-demo-modal");
-  const openDemo = document.querySelector("[data-open-demo]");
-  const closeDemo = document.querySelector("[data-close-demo]");
-  openDemo?.addEventListener("click", () => {
-    if (!modal) return;
-    modal.hidden = false;
-    closeDemo?.focus();
-    track("landing_demo_modal_opened");
+  const modal = document.querySelector(".lp-demo-modal, .conversion-modal");
+  const openButtons = document.querySelectorAll("[data-open-demo]");
+  const closeDemo = modal?.querySelector("[data-close-demo]");
+  const modalVideo = modal?.querySelector("video");
+  openButtons.forEach((openDemo) => {
+    openDemo.addEventListener("click", () => {
+      if (!modal) return;
+      modal.hidden = false;
+      closeDemo?.focus();
+      track("landing_demo_modal_opened");
+    });
   });
-  closeDemo?.addEventListener("click", () => {
+  const closeModal = () => {
     if (!modal) return;
     modal.hidden = true;
-    openDemo?.focus();
+    modalVideo?.pause?.();
+    openButtons[0]?.focus();
     track("landing_demo_modal_closed");
+  };
+  closeDemo?.addEventListener("click", () => {
+    closeModal();
   });
   modal?.addEventListener("click", (event) => {
     if (event.target === modal) {
-      modal.hidden = true;
-      openDemo?.focus();
+      closeModal();
     }
   });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && modal && !modal.hidden) {
-      modal.hidden = true;
-      openDemo?.focus();
+      closeModal();
     }
   });
 
@@ -378,6 +409,15 @@ function initLandingV2Interactions() {
       track("waitlist_referral_link_copied");
       setTimeout(() => (button.textContent = "Copy referral link"), 1400);
     });
+  });
+
+  const totalSeats = 50;
+  const seatsLeft = Math.max(0, Number(localStorage.getItem("forsig_beta_seats_left") || 33));
+  document.querySelectorAll("[data-seats-left]").forEach((el) => {
+    el.textContent = String(seatsLeft);
+  });
+  document.querySelectorAll("[data-seat-progress]").forEach((el) => {
+    el.style.width = `${Math.min(100, Math.max(0, ((totalSeats - seatsLeft) / totalSeats) * 100))}%`;
   });
 }
 
@@ -1443,6 +1483,7 @@ document.querySelectorAll("[data-track]").forEach((el) => {
 
 track(`${document.body.dataset.page}_viewed`);
 initPostHog();
+initHotjar();
 revealOnScroll();
 initCopyButtons();
 initHeroEmailShortcut();

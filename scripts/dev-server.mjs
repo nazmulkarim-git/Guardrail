@@ -161,7 +161,9 @@ async function runApiHandler(req, res, modulePath, query = {}) {
 function handleConfig(_req, res) {
   send(res, 200, JSON.stringify({
     posthogKey: process.env.NEXT_PUBLIC_POSTHOG_KEY || "",
-    posthogHost: process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://app.posthog.com"
+    posthogHost: process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://app.posthog.com",
+    hotjarId: process.env.NEXT_PUBLIC_HOTJAR_ID || "",
+    hotjarVersion: process.env.NEXT_PUBLIC_HOTJAR_VERSION || "6"
   }));
 }
 

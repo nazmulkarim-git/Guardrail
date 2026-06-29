@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" role="img" aria-label="Forsig demo video poster">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop stop-color="#111827"/>
+      <stop offset=".55" stop-color="#1f2a44"/>
+      <stop offset="1" stop-color="#312e81"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <rect x="120" y="120" width="1040" height="480" rx="36" fill="#070b13" stroke="#34415f" stroke-width="3"/>
+  <circle cx="172" cy="168" r="12" fill="#ff6b6b"/>
+  <circle cx="212" cy="168" r="12" fill="#ffd166"/>
+  <circle cx="252" cy="168" r="12" fill="#19f5c0"/>
+  <text x="160" y="284" fill="#19f5c0" font-family="Arial, sans-serif" font-size="26" font-weight="700">FORSIG CHECKPOINT</text>
+  <text x="160" y="372" fill="#f6f8ff" font-family="Arial, sans-serif" font-size="72" font-weight="800">Approve risky AI action</text>
+  <text x="160" y="438" fill="#b8c3d8" font-family="Arial, sans-serif" font-size="34">Two-minute product demo</text>
+  <circle cx="1000" cy="360" r="84" fill="#4f46e5"/>
+  <path d="M980 320v80l70-40-70-40Z" fill="#fff"/>
+</svg>

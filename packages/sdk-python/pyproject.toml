@@ -1,5 +1,46 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "forsig"
 version = "0.1.0"
-description = "Forsig SDK helpers for AI agent approval and escalation metadata."
+description = "Official Python SDK for creating and resolving Forsig human-approval escalations."
+readme = "README.md"
 requires-python = ">=3.9"
+license = { text = "UNLICENSED" }
+authors = [
+  { name = "Forsig", email = "hello@forsig.com" }
+]
+keywords = [
+  "forsig",
+  "ai-agents",
+  "human-in-the-loop",
+  "approval",
+  "escalation",
+  "agent-safety"
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Libraries :: Python Modules"
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://www.forsig.com"
+Documentation = "https://www.forsig.com/developer"
+Support = "https://www.forsig.com/contact"
+
+[tool.setuptools]
+packages = ["forsig"]
+
+[tool.setuptools.package-data]
+forsig = ["py.typed"]

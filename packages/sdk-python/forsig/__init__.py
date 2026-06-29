@@ -6,6 +6,8 @@ from typing import Any, Callable, Dict, Mapping, Optional
 from urllib import request as urllib_request
 from urllib.error import HTTPError
 
+__version__ = "0.1.0"
+
 
 def new_forsig_session(prefix: str = "sess") -> str:
     return f"{prefix}_{uuid.uuid4().hex}"
