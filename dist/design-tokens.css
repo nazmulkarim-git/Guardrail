@@ -1,0 +1,43 @@
+/* Forsig design tokens
+   Static equivalent of design-tokens.ts for this repo. Values use a 4px/8px spacing rhythm
+   and are shared by landing, developer console, and admin surfaces. */
+:root {
+  --fs-color-primary: #4f46e5;
+  --fs-color-primary-strong: #4338ca;
+  --fs-color-success: #19f5c0;
+  --fs-color-warning: #f8c35b;
+  --fs-color-danger: #ff5f7a;
+  --fs-color-bg-dark: #0b1020;
+  --fs-color-bg-light: #f7f8fb;
+  --fs-color-surface-dark: #111827;
+  --fs-color-surface-light: #ffffff;
+  --fs-color-border-dark: rgba(184, 199, 226, 0.18);
+  --fs-color-border-light: #dce3ef;
+  --fs-text-dark: #f8fbff;
+  --fs-text-light: #101828;
+  --fs-muted-dark: #aebbd2;
+  --fs-muted-light: #5b667a;
+  --fs-space-1: 4px;
+  --fs-space-2: 8px;
+  --fs-space-3: 12px;
+  --fs-space-4: 16px;
+  --fs-space-5: 20px;
+  --fs-space-6: 24px;
+  --fs-space-8: 32px;
+  --fs-space-10: 40px;
+  --fs-space-12: 48px;
+  --fs-space-16: 64px;
+  --fs-font-h1: clamp(40px, 5vw, 72px);
+  --fs-font-h2: clamp(30px, 3.2vw, 44px);
+  --fs-font-h3: 24px;
+  --fs-font-body: 16px;
+  --fs-font-small: 14px;
+  --fs-radius-sm: 4px;
+  --fs-radius-md: 8px;
+  --fs-radius-lg: 12px;
+  --fs-radius-xl: 20px;
+  --fs-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --fs-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --fs-focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.35);
+  --fs-transition: 160ms ease-out;
+}

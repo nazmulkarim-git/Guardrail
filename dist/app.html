@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/design-tokens.css" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body data-page="app" class="zip-design admin-app">
@@ -21,13 +22,15 @@
           </span>
         </a>
         <nav>
-          <button type="button" data-admin-view="inbox" class="active">Inbox</button>
-          <button type="button" data-admin-view="waitlist">Waitlist</button>
-          <button type="button" data-admin-view="developers">Developers</button>
-          <button type="button" data-admin-view="audit">Audit trails</button>
-          <button type="button" data-admin-view="onboarding">Workspace</button>
-          <button type="button" data-admin-view="keys">API Keys</button>
-          <a href="/docs">Docs</a>
+          <span class="sidebar-group-label">Operate</span>
+          <button type="button" data-admin-view="inbox" data-nav-icon="Q" class="active">Inbox</button>
+          <button type="button" data-admin-view="waitlist" data-nav-icon="W">Waitlist</button>
+          <button type="button" data-admin-view="developers" data-nav-icon="D">Developers</button>
+          <button type="button" data-admin-view="audit" data-nav-icon="T">Audit trails</button>
+          <span class="sidebar-group-label">Workspace</span>
+          <button type="button" data-admin-view="onboarding" data-nav-icon="S">Workspace</button>
+          <button type="button" data-admin-view="keys" data-nav-icon="K">API Keys</button>
+          <a href="/docs" data-nav-icon="D">Docs</a>
         </nav>
         <button id="admin-logout" type="button">Logout</button>
       </aside>

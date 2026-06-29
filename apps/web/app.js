@@ -368,6 +368,7 @@ function initWaitlist() {
 
 function initLandingV2Interactions() {
   const modal = document.querySelector(".lp-demo-modal, .conversion-modal");
+  const nav = document.querySelector(".conversion-nav");
   const openButtons = document.querySelectorAll("[data-open-demo]");
   const closeDemo = modal?.querySelector("[data-close-demo]");
   const modalVideo = modal?.querySelector("video");
@@ -419,6 +420,11 @@ function initLandingV2Interactions() {
   document.querySelectorAll("[data-seat-progress]").forEach((el) => {
     el.style.width = `${Math.min(100, Math.max(0, ((totalSeats - seatsLeft) / totalSeats) * 100))}%`;
   });
+  if (nav) {
+    const updateNav = () => nav.classList.toggle("is-scrolled", window.scrollY > 8);
+    updateNav();
+    window.addEventListener("scroll", updateNav, { passive: true });
+  }
 }
 
 function initWaitlistFollowup() {

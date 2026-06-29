@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/design-tokens.css" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body data-page="developer" class="zip-design admin-app">
@@ -21,15 +22,18 @@
           </span>
         </a>
         <nav>
-          <button type="button" data-developer-view="quickstart" class="active"><span>Start here</span></button>
-          <button type="button" data-developer-view="inbox"><span>Inbox</span></button>
-          <button type="button" data-developer-view="integration" title="Generate a Codex, Claude, or Cursor prompt that adds Forsig checkpoints to your codebase."><span>AI Installer</span></button>
-          <button type="button" data-developer-view="shadow" title="See non-blocking simulations before you turn on active approval."><span>Shadow simulations</span></button>
-          <button type="button" data-developer-view="agents" title="Group escalations by workflow, environment, and reviewer defaults."><span>Agents</span></button>
-          <button type="button" data-developer-view="keys" title="Create, hold, and revoke API keys. Full keys are only shown once."><span>API Keys</span></button>
-          <button type="button" data-developer-view="audit" title="Review and export decisions, test runs, and workspace events."><span>Audit trails</span></button>
-          <a href="/docs"><span>Docs</span></a>
-          <button type="button" data-developer-view="settings"><span>Settings</span></button>
+          <span class="sidebar-group-label">Setup</span>
+          <button type="button" data-developer-view="quickstart" data-nav-icon="S" class="active"><span>Start here</span><small>Shift S</small></button>
+          <button type="button" data-developer-view="integration" data-nav-icon="I" title="Generate a Codex, Claude, or Cursor prompt that adds Forsig checkpoints to your codebase."><span>AI Installer</span><small>Shift A</small></button>
+          <button type="button" data-developer-view="shadow" data-nav-icon="M" title="See non-blocking simulations before you turn on active approval."><span>Shadow simulations</span></button>
+          <span class="sidebar-group-label">Operate</span>
+          <button type="button" data-developer-view="inbox" data-nav-icon="Q"><span>Inbox</span><small>Shift I</small></button>
+          <button type="button" data-developer-view="agents" data-nav-icon="G" title="Group escalations by workflow, environment, and reviewer defaults."><span>Agents</span></button>
+          <button type="button" data-developer-view="keys" data-nav-icon="K" title="Create, hold, and revoke API keys. Full keys are only shown once."><span>API Keys</span><small>C</small></button>
+          <button type="button" data-developer-view="audit" data-nav-icon="T" title="Review and export decisions, test runs, and workspace events."><span>Audit trails</span></button>
+          <span class="sidebar-group-label">Workspace</span>
+          <a href="/docs" data-nav-icon="D"><span>Docs</span></a>
+          <button type="button" data-developer-view="settings" data-nav-icon="P"><span>Settings</span></button>
         </nav>
         <div class="developer-sidebar-footer">
           <button type="button" data-developer-view="profile">My profile</button>
@@ -72,6 +76,7 @@
           <span id="developer-workspace-label" class="admin-meta"></span>
           <div>
             <button id="developer-command-open" class="developer-help-pill" type="button">Command <span>K</span></button>
+            <a class="developer-help-pill" href="/docs">Docs <span>D</span></a>
             <button id="developer-theme-toggle" class="developer-help-pill" type="button">Theme <span>T</span></button>
             <a class="developer-help-pill" href="/contact">Need help? <span>H</span></a>
           </div>
@@ -79,7 +84,10 @@
 
         <section id="developer-view-inbox" class="admin-view" hidden>
           <div class="developer-page-head">
-            <h1>Inbox</h1>
+            <div>
+              <h1>Inbox</h1>
+              <p class="admin-meta">Operational queue for active, test, and shadow approval requests. Open a row to inspect context and send a signed decision.</p>
+            </div>
             <button id="developer-test-escalation" class="developer-primary-button" type="button">Create test escalation</button>
           </div>
           <div class="admin-toolbar">
@@ -266,7 +274,10 @@
 
         <section id="developer-view-keys" class="admin-view" hidden>
           <div class="developer-page-head">
-            <h1>API keys</h1>
+            <div>
+              <h1>API keys</h1>
+              <p class="admin-meta">Create keys for server-side integrations. Full keys are shown once, then only a prefix is visible.</p>
+            </div>
             <button id="developer-create-api-key" class="developer-primary-button" type="button">+ Create API key</button>
           </div>
           <div class="resend-panel">
@@ -286,7 +297,10 @@
 
         <section id="developer-view-audit" class="admin-view" hidden>
           <div class="developer-page-head">
-            <h1>Audit trails</h1>
+            <div>
+              <h1>Audit trails</h1>
+              <p class="admin-meta">Review every key, agent, escalation, shadow simulation, and decision event in one exportable timeline.</p>
+            </div>
           </div>
           <div class="resend-panel">
             <div class="key-table-toolbar audit-toolbar">
@@ -392,6 +406,7 @@
         <div>
           <button id="agent-create-modal-close" type="button" aria-label="Close">x</button>
           <h2 id="agent-create-modal-title">Create agent</h2>
+          <p class="admin-meta">Agents group escalations by workflow, environment, reviewer defaults, and audit history. Start with development or staging first.</p>
           <form id="developer-agent-form" class="admin-form-grid">
             <input name="name" type="text" required minlength="3" maxlength="80" placeholder="Agent name, e.g. Refund Agent" />
             <input name="slug" type="text" pattern="[a-z0-9-]{3,64}" placeholder="Agent slug, e.g. refund-agent" />
@@ -412,6 +427,7 @@
         <div>
           <button id="api-key-create-modal-close" type="button" aria-label="Close">x</button>
           <h2 id="api-key-create-modal-title">Create API key</h2>
+          <p class="admin-meta">Store this key securely. Forsig will show the full value once, then only the masked prefix.</p>
           <form id="developer-api-key-form" class="admin-form-grid">
             <input name="name" type="text" required minlength="3" maxlength="80" placeholder="Key name" />
             <button type="submit">Create API key</button>

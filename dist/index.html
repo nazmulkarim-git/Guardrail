@@ -18,7 +18,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/design-tokens.css" />
     <link rel="stylesheet" href="/styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Forsig",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Web",
+        "description": "Human approval checkpoints for risky AI agent actions.",
+        "url": "https://www.forsig.com/"
+      }
+    </script>
   </head>
   <body data-page="landing" class="lp-conversion">
     <div class="conversion-bg" aria-hidden="true"></div>
@@ -34,7 +46,17 @@
         </svg>
         <span>Forsig</span>
       </a>
-      <a class="conversion-button conversion-button-primary" href="#waitlist" data-track="nav_join_beta_clicked">Join Beta Now</a>
+      <nav class="conversion-nav-links" aria-label="Landing page sections">
+        <a href="#product">Product</a>
+        <a href="#developers">Developers</a>
+        <a href="#security">Security</a>
+        <a href="#waitlist">Beta</a>
+      </nav>
+      <div class="conversion-nav-actions">
+        <a href="/docs">Docs</a>
+        <a href="/developer">Sign in</a>
+        <a class="conversion-button conversion-button-primary" href="#waitlist" data-track="nav_join_beta_clicked">Join beta</a>
+      </div>
     </header>
 
     <main>
@@ -44,11 +66,12 @@
       <section class="conversion-hero reveal" aria-labelledby="hero-title">
         <div class="conversion-hero-copy">
           <span class="conversion-pill">Private beta now open</span>
-          <h1 id="hero-title">Protect your business from AI mistakes.</h1>
-          <p>Human approval checkpoints pause risky actions so you avoid costly refunds, compliance issues and AI errors.</p>
+          <h1 id="hero-title">Human approval checkpoints for AI agents before they make expensive mistakes.</h1>
+          <p>Forsig lets developers pause risky AI-agent actions, route them to a human reviewer, and return a signed decision your agent can trust.</p>
           <div class="conversion-actions">
-            <a class="conversion-button conversion-button-primary" href="#waitlist" data-track="hero_join_beta_clicked">Join Beta Now</a>
+            <a class="conversion-button conversion-button-primary" href="#waitlist" data-track="hero_join_beta_clicked">Join beta</a>
             <button class="conversion-link-button" type="button" data-open-demo data-track="hero_watch_demo_clicked">Watch demo</button>
+            <a class="conversion-link-button conversion-link-anchor" href="#developers" data-track="hero_quickstart_clicked">View quickstart</a>
           </div>
         </div>
 
@@ -71,6 +94,55 @@
             <small>Audit trail saved</small>
           </div>
         </aside>
+      </section>
+
+      <section id="product" class="conversion-section reveal" aria-labelledby="problem-title">
+        <div class="conversion-section-head">
+          <span class="conversion-kicker">Problem</span>
+          <h2 id="problem-title">AI agents are touching money, customers, and production. Mistakes are expensive.</h2>
+          <p>Forsig gives your agent one explicit pause point before a high-impact action becomes a business incident.</p>
+        </div>
+        <div class="value-grid">
+          <article class="value-card">
+            <span class="value-icon" aria-hidden="true">Refund</span>
+            <h3>Refunds and payouts</h3>
+            <p>Require approval before agents issue money movements above your policy threshold.</p>
+          </article>
+          <article class="value-card">
+            <span class="value-icon" aria-hidden="true">Email</span>
+            <h3>Customer messages</h3>
+            <p>Review outbound emails when an agent may send the wrong offer, claim, or tone.</p>
+          </article>
+          <article class="value-card">
+            <span class="value-icon" aria-hidden="true">Prod</span>
+            <h3>Production changes</h3>
+            <p>Pause deployments, data updates, and migrations before they affect real users.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="conversion-section reveal" aria-labelledby="mechanism-title">
+        <div class="conversion-section-head">
+          <span class="conversion-kicker">How it works</span>
+          <h2 id="mechanism-title">Create a checkpoint, review the risk, return a signed decision.</h2>
+        </div>
+        <div class="mechanism-grid" aria-label="Forsig approval mechanism">
+          <article>
+            <span>1</span>
+            <h3>Agent proposes action</h3>
+            <p>Your workflow sends the proposed action, risk reason, and minimal context.</p>
+          </article>
+          <article>
+            <span>2</span>
+            <h3>Forsig pauses execution</h3>
+            <p>The reviewer sees a structured approval request instead of an untracked chat thread.</p>
+          </article>
+          <article>
+            <span>3</span>
+            <h3>Decision returns to agent</h3>
+            <p>Your agent receives approved, rejected, edited, taken over, or timed out.</p>
+          </article>
+        </div>
       </section>
 
       <section id="waitlist" class="conversion-signup reveal" aria-labelledby="signup-title">
@@ -134,6 +206,44 @@
         </div>
       </section>
 
+      <section id="developers" class="conversion-section developer-section reveal" aria-labelledby="developer-title">
+        <div class="conversion-section-head">
+          <span class="conversion-kicker">Developers</span>
+          <h2 id="developer-title">A small integration point, not a new workflow system.</h2>
+          <p>Start in shadow mode, measure what would need approval, then switch selected checkpoints to active review.</p>
+        </div>
+        <div class="developer-code-card">
+          <div class="code-tabs" role="tablist" aria-label="Quickstart examples">
+            <button class="active" type="button">Node</button>
+            <button type="button">Python</button>
+            <button type="button">cURL</button>
+            <button type="button">LangGraph</button>
+            <button type="button">Vercel AI SDK</button>
+            <button type="button">n8n</button>
+          </div>
+          <pre><code>import { Forsig } from "@forsig/sdk";
+
+const forsig = new Forsig({ apiKey: process.env.FORSIG_API_KEY });
+
+const decision = await forsig.escalate({
+  mode: "shadow",
+  agent: "refund-agent",
+  task: "Approve refund for customer #123",
+  risk: { type: "refund_over_limit", level: "high" },
+  proposedAction: "Issue a $500 refund",
+  waitForDecision: true
+});
+
+if (decision.status === "approved") {
+  await issueRefund();
+}</code></pre>
+          <div class="developer-code-actions">
+            <a class="conversion-button conversion-button-primary" href="/docs">Open docs</a>
+            <a class="conversion-link-button conversion-link-anchor" href="/developer">Developer portal</a>
+          </div>
+        </div>
+      </section>
+
       <section class="conversion-section conversion-video-section reveal" aria-labelledby="video-title">
         <div class="conversion-section-head">
           <span class="conversion-kicker">Product demo</span>
@@ -152,39 +262,13 @@
       <section class="conversion-section reveal" aria-labelledby="proof-title">
         <div class="conversion-section-head">
           <span class="conversion-kicker">Social proof</span>
-          <h2 id="proof-title">Built with teams putting agents into real workflows.</h2>
+          <h2 id="proof-title">Designed with feedback from developers putting agents into real workflows.</h2>
+          <p>Forsig is in private beta. Public logos, metrics, and testimonials will only appear here when they are verified.</p>
         </div>
-        <div class="proof-stat">
-          <b>1,248</b>
-          <span>approval decisions processed in beta simulations</span>
-        </div>
-        <div class="logo-strip" aria-label="Early adopter logos">
-          <span>Northstar AI</span>
-          <span>LedgerOps</span>
-          <span>Runway Labs</span>
-          <span>Atlas Support</span>
-          <span>ForgeOps</span>
-        </div>
-        <!-- Testimonials data: name, company, quote and logo/avatar placeholder. -->
-        <div class="testimonial-grid">
-          <article>
-            <div class="testimonial-logo" aria-hidden="true">N</div>
-            <p>"Forsig gave our agents a clear approval gate before customer refunds. We reduced refund mistakes in the first month."</p>
-            <b>Maya Rahman</b>
-            <span>Head of Support, Northstar AI</span>
-          </article>
-          <article>
-            <div class="testimonial-logo" aria-hidden="true">L</div>
-            <p>"The audit trail made agent reviews simple. We stopped guessing why a workflow changed and who approved it."</p>
-            <b>Jon Lee</b>
-            <span>Operations Lead, LedgerOps</span>
-          </article>
-          <article>
-            <div class="testimonial-logo" aria-hidden="true">R</div>
-            <p>"Structured decisions replaced messy chat approvals. Our agents now continue safely after humans review risk."</p>
-            <b>Sara Patel</b>
-            <span>Founder, Runway Labs</span>
-          </article>
+        <div class="beta-proof-grid">
+          <article><b>Private beta</b><span>Hands-on onboarding for early developer teams.</span></article>
+          <article><b>Shadow-first rollout</b><span>Observe risky actions before blocking production workflows.</span></article>
+          <article><b>Security-first scope</b><span>Review minimal context. Keep secrets and full records out.</span></article>
         </div>
       </section>
 
@@ -217,7 +301,7 @@
         </div>
       </section>
 
-      <section class="conversion-section security-section reveal" aria-labelledby="security-title">
+      <section id="security" class="conversion-section security-section reveal" aria-labelledby="security-title">
         <div class="conversion-section-head">
           <span class="conversion-kicker">Compliance & trust</span>
           <h2 id="security-title">Forsig stores decisions, not secrets.</h2>
@@ -256,7 +340,7 @@
         <div class="faq-list">
           <details>
             <summary>How quickly can I test Forsig?</summary>
-            <p>You can create an API key, run the quickstart script, and approve your first escalation in minutes.</p>
+            <p>You can create an API key, run the quickstart script, and approve your first test escalation in minutes.</p>
           </details>
           <details>
             <summary>Does Forsig block my agent forever?</summary>
@@ -268,7 +352,7 @@
           </details>
           <details>
             <summary>Is this production-ready?</summary>
-            <p>Forsig is in private beta. Start with shadow mode, then enable active approvals for selected workflows.</p>
+            <p>Forsig is in private beta. Start with shadow mode, then enable active approvals for selected low-blast-radius workflows.</p>
           </details>
         </div>
       </section>
@@ -293,6 +377,10 @@
         <p>Human approval checkpoints for AI agents that touch money, customers, production, or paid tools.</p>
       </div>
       <nav aria-label="Footer navigation">
+        <a href="#product">Product</a>
+        <a href="#developers">Developers</a>
+        <a href="#security">Security</a>
+        <a href="#waitlist">Pricing/Beta</a>
         <a href="/developer">Developer portal</a>
         <a href="/docs">Docs</a>
         <a href="/security">Security</a>

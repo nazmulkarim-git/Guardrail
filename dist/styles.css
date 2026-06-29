@@ -362,6 +362,31 @@ body[data-page="landing"].lp-conversion .conversion-nav {
   backdrop-filter: blur(18px);
 }
 
+body[data-page="landing"].lp-conversion .conversion-nav.is-scrolled {
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.36), 0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+body[data-page="landing"].lp-conversion .conversion-nav-links,
+body[data-page="landing"].lp-conversion .conversion-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+body[data-page="landing"].lp-conversion .conversion-nav-links a,
+body[data-page="landing"].lp-conversion .conversion-nav-actions > a:not(.conversion-button) {
+  color: var(--conv-muted);
+  font-size: 14px;
+  font-weight: 850;
+  text-decoration: none;
+  transition: color var(--fs-transition);
+}
+
+body[data-page="landing"].lp-conversion .conversion-nav-links a:hover,
+body[data-page="landing"].lp-conversion .conversion-nav-actions > a:not(.conversion-button):hover {
+  color: var(--conv-text);
+}
+
 body[data-page="landing"].lp-conversion .conversion-brand {
   display: inline-flex;
   align-items: center;
@@ -504,6 +529,13 @@ body[data-page="landing"].lp-conversion .conversion-link-button {
   text-decoration: underline;
   text-underline-offset: 7px;
   cursor: pointer;
+}
+
+body[data-page="landing"].lp-conversion .conversion-link-anchor {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: underline;
+  text-underline-offset: 7px;
 }
 
 body[data-page="landing"].lp-conversion .conversion-hero-card,
@@ -720,13 +752,20 @@ body[data-page="landing"].lp-conversion .conversion-section-head {
 body[data-page="landing"].lp-conversion .value-grid,
 body[data-page="landing"].lp-conversion .testimonial-grid,
 body[data-page="landing"].lp-conversion .usecase-grid,
-body[data-page="landing"].lp-conversion .security-grid {
+body[data-page="landing"].lp-conversion .security-grid,
+body[data-page="landing"].lp-conversion .mechanism-grid,
+body[data-page="landing"].lp-conversion .beta-proof-grid {
   display: grid;
   gap: 18px;
   margin-top: 30px;
 }
 
 body[data-page="landing"].lp-conversion .value-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body[data-page="landing"].lp-conversion .mechanism-grid,
+body[data-page="landing"].lp-conversion .beta-proof-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
@@ -745,9 +784,96 @@ body[data-page="landing"].lp-conversion .security-grid {
 body[data-page="landing"].lp-conversion .value-card,
 body[data-page="landing"].lp-conversion .testimonial-grid article,
 body[data-page="landing"].lp-conversion .usecase-card,
-body[data-page="landing"].lp-conversion .security-grid article {
+body[data-page="landing"].lp-conversion .security-grid article,
+body[data-page="landing"].lp-conversion .mechanism-grid article,
+body[data-page="landing"].lp-conversion .beta-proof-grid article {
   padding: 24px;
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+body[data-page="landing"].lp-conversion .mechanism-grid article,
+body[data-page="landing"].lp-conversion .beta-proof-grid article,
+body[data-page="landing"].lp-conversion .developer-code-card {
+  border: 1px solid var(--conv-line);
+  border-radius: var(--conv-radius);
+  background: linear-gradient(145deg, rgba(27, 37, 61, 0.84), rgba(16, 23, 39, 0.86));
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.18);
+}
+
+body[data-page="landing"].lp-conversion .mechanism-grid span {
+  display: inline-grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: rgba(25, 245, 192, 0.12);
+  color: var(--conv-accent-2);
+  font-weight: 900;
+}
+
+body[data-page="landing"].lp-conversion .mechanism-grid h3,
+body[data-page="landing"].lp-conversion .beta-proof-grid b {
+  display: block;
+  margin-top: 18px;
+  color: var(--conv-text);
+  font-size: 22px;
+  line-height: 1.08;
+}
+
+body[data-page="landing"].lp-conversion .mechanism-grid p,
+body[data-page="landing"].lp-conversion .beta-proof-grid span {
+  display: block;
+  margin-top: 10px;
+  color: var(--conv-muted);
+}
+
+body[data-page="landing"].lp-conversion .developer-code-card {
+  margin-top: 30px;
+  overflow: hidden;
+}
+
+body[data-page="landing"].lp-conversion .code-tabs {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--conv-line);
+}
+
+body[data-page="landing"].lp-conversion .code-tabs button {
+  min-height: 50px;
+  border: 0;
+  border-right: 1px solid var(--conv-line);
+  background: transparent;
+  color: var(--conv-muted);
+  padding: 0 18px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 900;
+  cursor: default;
+}
+
+body[data-page="landing"].lp-conversion .code-tabs button.active {
+  color: var(--conv-text);
+  box-shadow: inset 0 -2px 0 var(--conv-accent-2);
+}
+
+body[data-page="landing"].lp-conversion .developer-code-card pre {
+  margin: 0;
+  max-height: 520px;
+  overflow: auto;
+  padding: 26px;
+  background: rgba(5, 8, 14, 0.74);
+  color: #f4f8ff;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+body[data-page="landing"].lp-conversion .developer-code-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  padding: 20px 24px 24px;
 }
 
 body[data-page="landing"].lp-conversion .value-card:hover,
@@ -1047,7 +1173,9 @@ body[data-page="landing"].lp-conversion .conversion-footer a:hover {
   body[data-page="landing"].lp-conversion .conversion-signup,
   body[data-page="landing"].lp-conversion .value-grid,
   body[data-page="landing"].lp-conversion .testimonial-grid,
-  body[data-page="landing"].lp-conversion .security-grid {
+  body[data-page="landing"].lp-conversion .security-grid,
+  body[data-page="landing"].lp-conversion .mechanism-grid,
+  body[data-page="landing"].lp-conversion .beta-proof-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1080,6 +1208,11 @@ body[data-page="landing"].lp-conversion .conversion-footer a:hover {
     min-height: 42px;
     padding-inline: 14px;
     font-size: 14px;
+  }
+
+  body[data-page="landing"].lp-conversion .conversion-nav-links,
+  body[data-page="landing"].lp-conversion .conversion-nav-actions > a:not(.conversion-button) {
+    display: none;
   }
 
   body[data-page="landing"].lp-conversion .conversion-hero {
@@ -1119,6 +1252,393 @@ body[data-page="landing"].lp-conversion .conversion-footer a:hover {
 
   body[data-page="landing"].lp-conversion .conversion-footer nav {
     justify-content: flex-start;
+  }
+}
+
+/* Forsig dashboard design-system pass
+   Centralized component-like styling for Button, Card, Badge, Input, Sidebar, PageHeader,
+   EmptyState, Modal and DataTable patterns in the static developer console. */
+body[data-page="developer"],
+body[data-page="app"] {
+  --developer-bg: var(--fs-color-bg-dark);
+  --developer-surface: rgba(17, 24, 39, 0.94);
+  --developer-surface-2: rgba(24, 32, 49, 0.92);
+  --developer-border: var(--fs-color-border-dark);
+  --developer-text: var(--fs-text-dark);
+  --developer-muted: var(--fs-muted-dark);
+  --developer-primary: var(--fs-color-primary);
+  --developer-success: var(--fs-color-success);
+  --developer-warning: var(--fs-color-warning);
+  --developer-danger: var(--fs-color-danger);
+  background: radial-gradient(circle at 80% 0%, rgba(79, 70, 229, 0.14), transparent 32%), var(--developer-bg) !important;
+  color: var(--developer-text) !important;
+}
+
+body[data-page="developer"][data-theme="light"],
+body[data-page="app"][data-theme="light"] {
+  --developer-bg: var(--fs-color-bg-light);
+  --developer-surface: var(--fs-color-surface-light);
+  --developer-surface-2: #f0f3f8;
+  --developer-border: var(--fs-color-border-light);
+  --developer-text: var(--fs-text-light);
+  --developer-muted: var(--fs-muted-light);
+  background: var(--developer-bg) !important;
+  color: var(--developer-text) !important;
+}
+
+body[data-page="developer"] .admin-shell,
+body[data-page="app"] .admin-shell {
+  min-height: 100vh;
+  background: transparent !important;
+}
+
+body[data-page="developer"] .admin-sidebar,
+body[data-page="app"] .admin-sidebar {
+  width: 300px;
+  padding: var(--fs-space-6) var(--fs-space-4);
+  border-right: 1px solid var(--developer-border) !important;
+  background: color-mix(in srgb, var(--developer-surface) 90%, transparent) !important;
+}
+
+body[data-page="developer"] .admin-sidebar nav,
+body[data-page="app"] .admin-sidebar nav {
+  gap: var(--fs-space-1) !important;
+}
+
+body[data-page="developer"] .sidebar-group-label,
+body[data-page="app"] .sidebar-group-label {
+  display: block;
+  margin: var(--fs-space-5) var(--fs-space-3) var(--fs-space-2);
+  color: var(--developer-muted);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body[data-page="developer"] .admin-sidebar nav button,
+body[data-page="developer"] .admin-sidebar nav a,
+body[data-page="app"] .admin-sidebar nav button,
+body[data-page="app"] .admin-sidebar nav a {
+  position: relative;
+  display: grid !important;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px !important;
+  width: 100%;
+  border: 1px solid transparent !important;
+  border-radius: var(--fs-radius-lg) !important;
+  background: transparent !important;
+  color: var(--developer-muted) !important;
+  padding: 0 var(--fs-space-3) !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  text-decoration: none;
+  transition: background var(--fs-transition), color var(--fs-transition), border-color var(--fs-transition);
+}
+
+body[data-page="developer"] .admin-sidebar nav button::before,
+body[data-page="developer"] .admin-sidebar nav a::before,
+body[data-page="app"] .admin-sidebar nav button::before,
+body[data-page="app"] .admin-sidebar nav a::before {
+  content: attr(data-nav-icon) !important;
+  display: grid !important;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--developer-text) 8%, transparent);
+  color: var(--developer-muted);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+body[data-page="developer"] .admin-sidebar nav button small,
+body[data-page="app"] .admin-sidebar nav button small {
+  color: var(--developer-muted);
+  font-size: 11px;
+  opacity: 0.72;
+}
+
+body[data-page="developer"] .admin-sidebar nav button.active,
+body[data-page="developer"] .admin-sidebar nav button:hover,
+body[data-page="developer"] .admin-sidebar nav a:hover,
+body[data-page="app"] .admin-sidebar nav button.active,
+body[data-page="app"] .admin-sidebar nav button:hover,
+body[data-page="app"] .admin-sidebar nav a:hover {
+  border-color: color-mix(in srgb, var(--developer-primary) 34%, transparent) !important;
+  background: color-mix(in srgb, var(--developer-primary) 12%, transparent) !important;
+  color: var(--developer-text) !important;
+}
+
+body[data-page="developer"] .admin-main,
+body[data-page="app"] .admin-main {
+  width: min(100%, 1580px);
+  padding: var(--fs-space-8) clamp(24px, 4vw, 64px) var(--fs-space-16) !important;
+}
+
+body[data-page="developer"] .developer-topline,
+body[data-page="app"] .developer-topline {
+  min-height: 58px;
+  border-bottom: 1px solid var(--developer-border);
+  margin-bottom: var(--fs-space-10);
+  padding-bottom: var(--fs-space-4);
+}
+
+body[data-page="developer"] .developer-page-head,
+body[data-page="app"] .developer-page-head {
+  align-items: end !important;
+  gap: var(--fs-space-6) !important;
+  margin-bottom: var(--fs-space-6) !important;
+}
+
+body[data-page="developer"] .developer-page-head h1,
+body[data-page="app"] .developer-page-head h1 {
+  margin: 0;
+  color: var(--developer-text) !important;
+  font-size: clamp(30px, 3vw, 42px) !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+}
+
+body[data-page="developer"] .admin-meta,
+body[data-page="app"] .admin-meta {
+  color: var(--developer-muted) !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+}
+
+body[data-page="developer"] .developer-primary-button,
+body[data-page="developer"] .admin-form-grid button,
+body[data-page="developer"] .developer-detail-actions button,
+body[data-page="app"] .developer-primary-button,
+body[data-page="app"] .admin-form-grid button,
+body[data-page="app"] .developer-detail-actions button {
+  min-height: 44px !important;
+  border: 1px solid color-mix(in srgb, var(--developer-primary) 36%, transparent) !important;
+  border-radius: var(--fs-radius-lg) !important;
+  background: var(--developer-primary) !important;
+  color: #fff !important;
+  padding: 0 var(--fs-space-5) !important;
+  font-weight: 900 !important;
+  transition: transform var(--fs-transition), box-shadow var(--fs-transition);
+}
+
+body[data-page="developer"] .developer-primary-button:hover,
+body[data-page="developer"] .admin-form-grid button:hover,
+body[data-page="developer"] .developer-detail-actions button:hover,
+body[data-page="app"] .developer-primary-button:hover,
+body[data-page="app"] .admin-form-grid button:hover,
+body[data-page="app"] .developer-detail-actions button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(79, 70, 229, 0.26);
+}
+
+body[data-page="developer"] input,
+body[data-page="developer"] textarea,
+body[data-page="developer"] select,
+body[data-page="app"] input,
+body[data-page="app"] textarea,
+body[data-page="app"] select {
+  min-height: 44px !important;
+  border: 1px solid var(--developer-border) !important;
+  border-radius: var(--fs-radius-lg) !important;
+  background: color-mix(in srgb, var(--developer-surface) 90%, transparent) !important;
+  color: var(--developer-text) !important;
+  padding: 0 var(--fs-space-4) !important;
+  font: inherit !important;
+}
+
+body[data-page="developer"] textarea,
+body[data-page="app"] textarea {
+  min-height: 112px !important;
+  padding-block: var(--fs-space-3) !important;
+}
+
+body[data-page="developer"] button:focus-visible,
+body[data-page="developer"] a:focus-visible,
+body[data-page="developer"] input:focus-visible,
+body[data-page="developer"] textarea:focus-visible,
+body[data-page="developer"] select:focus-visible,
+body[data-page="app"] button:focus-visible,
+body[data-page="app"] a:focus-visible,
+body[data-page="app"] input:focus-visible,
+body[data-page="app"] textarea:focus-visible,
+body[data-page="app"] select:focus-visible {
+  outline: none !important;
+  box-shadow: var(--fs-focus-ring) !important;
+}
+
+body[data-page="developer"] .admin-panel,
+body[data-page="developer"] .quickstart-main,
+body[data-page="developer"] .resend-panel,
+body[data-page="developer"] .developer-detail-page,
+body[data-page="developer"] .api-key-modal > div,
+body[data-page="app"] .admin-panel,
+body[data-page="app"] .quickstart-main,
+body[data-page="app"] .resend-panel,
+body[data-page="app"] .developer-detail-page,
+body[data-page="app"] .api-key-modal > div {
+  border: 1px solid var(--developer-border) !important;
+  border-radius: var(--fs-radius-xl) !important;
+  background: var(--developer-surface) !important;
+  box-shadow: var(--fs-shadow-md) !important;
+}
+
+body[data-page="developer"] .empty-state,
+body[data-page="app"] .empty-state {
+  display: grid !important;
+  gap: var(--fs-space-2);
+  min-height: 180px;
+  place-items: center;
+  padding: var(--fs-space-8) !important;
+  border: 1px dashed var(--developer-border);
+  border-radius: var(--fs-radius-xl);
+  color: var(--developer-muted) !important;
+  text-align: center;
+}
+
+body[data-page="developer"] .empty-state strong,
+body[data-page="app"] .empty-state strong {
+  color: var(--developer-text);
+  font-size: 20px;
+}
+
+body[data-page="developer"] .resend-table,
+body[data-page="developer"] .escalation-list,
+body[data-page="developer"] .audit-table,
+body[data-page="app"] .resend-table,
+body[data-page="app"] .escalation-list,
+body[data-page="app"] .audit-table {
+  overflow: hidden !important;
+  border: 1px solid var(--developer-border) !important;
+  border-radius: var(--fs-radius-xl) !important;
+  background: var(--developer-surface) !important;
+}
+
+body[data-page="developer"] .resend-table-row,
+body[data-page="developer"] .inbox-table-row,
+body[data-page="developer"] .audit-table-row,
+body[data-page="app"] .resend-table-row,
+body[data-page="app"] .inbox-table-row,
+body[data-page="app"] .audit-table-row {
+  min-height: 58px !important;
+  border-bottom: 1px solid var(--developer-border) !important;
+  background: transparent !important;
+  color: var(--developer-text) !important;
+  padding: 0 var(--fs-space-5) !important;
+  font-size: 14px !important;
+}
+
+body[data-page="developer"] .resend-table-head,
+body[data-page="developer"] .inbox-table-head,
+body[data-page="app"] .resend-table-head,
+body[data-page="app"] .inbox-table-head {
+  min-height: 46px !important;
+  background: color-mix(in srgb, var(--developer-text) 7%, transparent) !important;
+  color: var(--developer-muted) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body[data-page="developer"] .selectable-row:hover,
+body[data-page="developer"] .selectable-row.active,
+body[data-page="app"] .selectable-row:hover,
+body[data-page="app"] .selectable-row.active {
+  background: color-mix(in srgb, var(--developer-primary) 10%, transparent) !important;
+}
+
+body[data-page="developer"] .key-state,
+body[data-page="app"] .key-state {
+  min-height: 24px !important;
+  border-radius: 999px !important;
+  padding: 0 10px !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+}
+
+body[data-page="developer"] .key-state-active,
+body[data-page="developer"] .key-state-approved,
+body[data-page="app"] .key-state-active,
+body[data-page="app"] .key-state-approved {
+  color: #0a7a5b !important;
+  background: rgba(25, 245, 192, 0.14) !important;
+  border-color: rgba(25, 245, 192, 0.35) !important;
+}
+
+body[data-page="developer"] .key-state-pending,
+body[data-page="developer"] .key-state-held,
+body[data-page="app"] .key-state-pending,
+body[data-page="app"] .key-state-held {
+  color: #b7791f !important;
+  background: rgba(248, 195, 91, 0.15) !important;
+  border-color: rgba(248, 195, 91, 0.36) !important;
+}
+
+body[data-page="developer"] .key-state-revoked,
+body[data-page="developer"] .key-state-rejected,
+body[data-page="app"] .key-state-revoked,
+body[data-page="app"] .key-state-rejected {
+  color: #d64562 !important;
+  background: rgba(255, 95, 122, 0.14) !important;
+  border-color: rgba(255, 95, 122, 0.36) !important;
+}
+
+body[data-page="developer"] .api-key-modal,
+body[data-page="developer"] .command-palette,
+body[data-page="app"] .api-key-modal,
+body[data-page="app"] .command-palette {
+  background: rgba(5, 8, 14, 0.72) !important;
+  backdrop-filter: blur(14px);
+}
+
+body[data-page="developer"][data-theme="light"] .api-key-modal,
+body[data-page="developer"][data-theme="light"] .command-palette,
+body[data-page="app"][data-theme="light"] .api-key-modal,
+body[data-page="app"][data-theme="light"] .command-palette {
+  background: rgba(15, 23, 42, 0.28) !important;
+}
+
+body[data-page="developer"] pre,
+body[data-page="developer"] code,
+body[data-page="app"] pre,
+body[data-page="app"] code {
+  border-radius: var(--fs-radius-lg) !important;
+}
+
+@media (max-width: 980px) {
+  body[data-page="developer"] .admin-shell,
+  body[data-page="app"] .admin-shell {
+    display: block !important;
+  }
+
+  body[data-page="developer"] .admin-sidebar,
+  body[data-page="app"] .admin-sidebar {
+    position: static !important;
+    width: 100% !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--developer-border) !important;
+  }
+
+  body[data-page="developer"] .admin-sidebar nav,
+  body[data-page="app"] .admin-sidebar nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body[data-page="developer"] .sidebar-group-label,
+  body[data-page="app"] .sidebar-group-label {
+    grid-column: 1 / -1;
+  }
+
+  body[data-page="developer"] .developer-page-head,
+  body[data-page="app"] .developer-page-head,
+  body[data-page="developer"] .developer-topline,
+  body[data-page="app"] .developer-topline {
+    align-items: start !important;
   }
 }
 

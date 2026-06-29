@@ -107,6 +107,35 @@ function prettyJson(value) {
   return JSON.stringify(value, null, 2);
 }
 
+function friendlyEventLabel(type = "") {
+  const labels = {
+    "api_key.created": "API key created",
+    "api_key.held": "API key held",
+    "api_key.unheld": "API key unheld",
+    "api_key.revoked": "API key revoked",
+    "agent.created": "Agent created",
+    "agent.archived": "Agent archived",
+    "agent.unarchived": "Agent unarchived",
+    "escalation.created": "Escalation created",
+    "escalation.demo_created": "Test escalation created",
+    "decision.approved": "Decision approved",
+    "decision.rejected": "Decision rejected",
+    "decision.edited": "Decision edited",
+    "decision.taken_over": "Human took over",
+    "decision.context_added": "Context added",
+    "decision.needs_more_info": "More info requested"
+  };
+  return labels[type] || String(type || "Audit event").replaceAll("_", " ").replaceAll(".", " ");
+}
+
+function summarizeMetadata(metadata = {}) {
+  const keys = ["name", "slug", "mode", "riskType", "status", "prefix", "instruction"];
+  const parts = keys
+    .filter((key) => metadata[key])
+    .map((key) => `${key}: ${metadata[key]}`);
+  return parts.slice(0, 3).join(" / ") || "View details for full payload";
+}
+
 function showLogin() {
   $("#developer-sidebar").hidden = true;
   $("#developer-login").hidden = false;
@@ -433,7 +462,7 @@ async function loadAudit() {
       </div>
       ${state.auditEvents.map((event) => `
         <button type="button" class="resend-table-row audit-row audit-table-row selectable-row" data-audit-id="${escapeHtml(event.id)}">
-          <span><b>${escapeHtml(event.event_type)}</b><small>${escapeHtml(JSON.stringify(event.metadata_json || {}))}</small></span>
+          <span><b>${escapeHtml(friendlyEventLabel(event.event_type))}</b><small>${escapeHtml(summarizeMetadata(event.metadata_json || {}))}</small></span>
           <span>${escapeHtml(event.task_title || event.escalation_id || "Workspace")}</span>
           <span>${escapeHtml(auditActorLabel(event))}</span>
           <span>${formatDate(event.created_at)}</span>
@@ -1450,12 +1479,19 @@ $("#developer-test-escalation").addEventListener("click", async () => {
 
 function openModal(selector) {
   const modal = $(selector);
-  if (modal) modal.hidden = false;
+  if (!modal) return;
+  modal.dataset.returnFocus = document.activeElement?.id || "";
+  modal.hidden = false;
+  const firstField = modal.querySelector("input, textarea, select, button");
+  firstField?.focus();
 }
 
 function closeModal(selector) {
   const modal = $(selector);
-  if (modal) modal.hidden = true;
+  if (!modal) return;
+  modal.hidden = true;
+  const returnFocus = modal.dataset.returnFocus && document.getElementById(modal.dataset.returnFocus);
+  returnFocus?.focus();
 }
 
 $("#developer-create-agent").addEventListener("click", () => openModal("#agent-create-modal"));
@@ -1481,6 +1517,14 @@ function closeApiKeyModal() {
 }
 
 $("#api-key-modal-close").addEventListener("click", closeApiKeyModal);
+
+document.querySelectorAll(".api-key-modal, .command-palette").forEach((modal) => {
+  modal.addEventListener("click", (event) => {
+    if (event.target !== modal) return;
+    if (modal.id === "api-key-modal") closeApiKeyModal();
+    else modal.hidden = true;
+  });
+});
 
 $("#developer-agent-form").addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -1711,6 +1755,7 @@ document.addEventListener("click", async (event) => {
   const hold = event.target.closest("[data-hold-key]");
   if (hold) {
     const shouldHold = hold.dataset.holdValue !== "false";
+    if (!window.confirm(`${shouldHold ? "Hold" : "Unhold"} this API key?`)) return;
     hold.disabled = true;
     hold.textContent = shouldHold ? "Holding..." : "Unholding...";
     try {
@@ -1729,6 +1774,7 @@ document.addEventListener("click", async (event) => {
 
   const revoke = event.target.closest("[data-revoke-key]");
   if (revoke) {
+    if (!window.confirm("Revoke this API key? Existing integrations using it will stop working.")) return;
     revoke.disabled = true;
     revoke.textContent = "Revoking...";
     try {
@@ -1775,6 +1821,14 @@ document.addEventListener("click", async (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    const openModalEl = document.querySelector(".api-key-modal:not([hidden]), .command-palette:not([hidden])");
+    if (openModalEl) {
+      if (openModalEl.id === "api-key-modal") closeApiKeyModal();
+      else openModalEl.hidden = true;
+      return;
+    }
+  }
   const active = document.activeElement;
   const isTyping = active && ["INPUT", "TEXTAREA", "SELECT"].includes(active.tagName);
   if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
