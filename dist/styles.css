@@ -14464,6 +14464,18 @@ body[data-page="landing"].forsig-overhaul .final-beta {
   margin-top: 104px;
 }
 
+body[data-page="landing"].forsig-overhaul .overhaul-section.trust-section {
+  display: block !important;
+  grid-template-columns: none !important;
+  gap: 0 !important;
+  padding: 0 !important;
+}
+
+body[data-page="landing"].forsig-overhaul .overhaul-section.trust-section .trust-panel {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 @media (max-width: 1180px) {
   body[data-page="landing"].forsig-overhaul .overhaul-hero,
   body[data-page="landing"].forsig-overhaul .sandbox-shell,
