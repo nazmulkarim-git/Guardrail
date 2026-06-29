@@ -277,6 +277,16 @@ function initWaitlist() {
     entry.form.addEventListener("focusin", () => track("waitlist_form_started", { sourceSection: entry.sourceSection }), { once: true });
     entry.form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      const emailInput = entry.form.querySelector('input[name="email"]');
+      const email = emailInput?.value?.trim() || "";
+      if (emailInput && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        entry.status.textContent = "Enter a valid work email.";
+        emailInput.setAttribute("aria-invalid", "true");
+        emailInput.focus();
+        track("waitlist_signup_failed", { message: "invalid_email", sourceSection: entry.sourceSection });
+        return;
+      }
+      emailInput?.removeAttribute("aria-invalid");
       entry.status.textContent = "Submitting...";
       const data = Object.fromEntries(new FormData(entry.form).entries());
       track("waitlist_signup_submitted", { ...data, sourceSection: entry.sourceSection });
@@ -301,7 +311,17 @@ function initWaitlist() {
           return;
         }
         showToast("You are on the waitlist");
-        entry.status.textContent = "You are on the beta list. A few optional details help me prioritize access.";
+        entry.status.textContent = "You are on the beta list.";
+        const referralBox = entry.form.querySelector(".lp-referral-result");
+        const referralInput = entry.form.querySelector("[data-referral-link]");
+        const referralCode = result.referralCode || result.leadId || btoa(data.email || "forsig").replace(/=+$/g, "").slice(0, 10);
+        const referralUrl = `${location.origin}/?ref=${encodeURIComponent(referralCode)}`;
+        if (referralBox && referralInput) {
+          referralInput.value = referralUrl;
+          referralBox.hidden = false;
+          track("waitlist_referral_link_shown", { sourceSection: entry.sourceSection });
+          return;
+        }
         const followup = document.getElementById("waitlist-followup-form");
         const leadInput = followup?.querySelector('input[name="leadId"]');
         if (followup && leadInput) {
@@ -318,6 +338,47 @@ function initWaitlist() {
       }
     });
   }
+}
+
+function initLandingV2Interactions() {
+  const modal = document.querySelector(".lp-demo-modal");
+  const openDemo = document.querySelector("[data-open-demo]");
+  const closeDemo = document.querySelector("[data-close-demo]");
+  openDemo?.addEventListener("click", () => {
+    if (!modal) return;
+    modal.hidden = false;
+    closeDemo?.focus();
+    track("landing_demo_modal_opened");
+  });
+  closeDemo?.addEventListener("click", () => {
+    if (!modal) return;
+    modal.hidden = true;
+    openDemo?.focus();
+    track("landing_demo_modal_closed");
+  });
+  modal?.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      modal.hidden = true;
+      openDemo?.focus();
+    }
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && modal && !modal.hidden) {
+      modal.hidden = true;
+      openDemo?.focus();
+    }
+  });
+
+  document.querySelectorAll("[data-copy-referral]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const input = button.closest("form")?.querySelector("[data-referral-link]");
+      await copyText(input?.value || "");
+      button.textContent = "Copied";
+      showToast("Referral link copied");
+      track("waitlist_referral_link_copied");
+      setTimeout(() => (button.textContent = "Copy referral link"), 1400);
+    });
+  });
 }
 
 function initWaitlistFollowup() {
@@ -1389,6 +1450,7 @@ initHeroSwap();
 initConsoleMotion();
 initImpactCalculator();
 initWaitlist();
+initLandingV2Interactions();
 initWaitlistFollowup();
 initPricingIntent();
 initHeroApprovalCard();
