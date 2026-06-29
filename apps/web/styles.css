@@ -14277,3 +14277,258 @@ body[data-page="landing"].forsig-minimal .minimal-footer {
     padding: 14px 16px;
   }
 }
+
+/* Landing-page overhaul stability pass */
+body[data-page="landing"].forsig-overhaul {
+  font-family: "Instrument Sans", Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body[data-page="landing"].forsig-overhaul main {
+  display: block;
+  padding-bottom: 24px;
+}
+
+body[data-page="landing"].forsig-overhaul .overhaul-nav,
+body[data-page="landing"].forsig-overhaul .overhaul-hero,
+body[data-page="landing"].forsig-overhaul .proof-ribbon,
+body[data-page="landing"].forsig-overhaul .overhaul-section,
+body[data-page="landing"].forsig-overhaul .final-beta,
+body[data-page="landing"].forsig-overhaul .overhaul-footer {
+  width: min(1180px, calc(100% - 64px));
+  max-width: 1180px;
+}
+
+body[data-page="landing"].forsig-overhaul .overhaul-nav {
+  min-height: 72px;
+  margin-top: 24px;
+  padding: 10px 12px 10px 22px;
+}
+
+body[data-page="landing"].forsig-overhaul .overhaul-nav nav {
+  gap: 28px;
+}
+
+body[data-page="landing"].forsig-overhaul .overhaul-nav-cta {
+  min-width: 154px;
+  border-radius: 18px;
+}
+
+body[data-page="landing"].forsig-overhaul .overhaul-hero {
+  min-height: auto;
+  grid-template-columns: minmax(0, 1fr) minmax(420px, 0.88fr);
+  gap: clamp(36px, 5vw, 72px);
+  padding: 104px 0 82px;
+}
+
+body[data-page="landing"].forsig-overhaul .dynamic-island {
+  top: 18px;
+}
+
+body[data-page="landing"].forsig-overhaul .overhaul-hero h1 {
+  max-width: 660px;
+  font-size: clamp(56px, 6vw, 86px);
+  line-height: 0.96;
+  letter-spacing: -0.045em;
+}
+
+body[data-page="landing"].forsig-overhaul .overhaul-hero-copy p {
+  max-width: 610px;
+  font-size: clamp(18px, 1.2vw, 21px);
+}
+
+body[data-page="landing"].forsig-overhaul .hero-scene {
+  min-height: 540px;
+  border-radius: 28px;
+}
+
+body[data-page="landing"].forsig-overhaul .scene-card {
+  width: 196px;
+}
+
+body[data-page="landing"].forsig-overhaul .agent-card {
+  top: 48px;
+  left: 28px;
+}
+
+body[data-page="landing"].forsig-overhaul .human-card {
+  right: 28px;
+  bottom: 142px;
+}
+
+body[data-page="landing"].forsig-overhaul .hero-console-card {
+  right: 28px;
+  bottom: 28px;
+  left: 28px;
+}
+
+body[data-page="landing"].forsig-overhaul .proof-ribbon {
+  margin-top: 0;
+  padding: 22px 0;
+}
+
+body[data-page="landing"].forsig-overhaul .overhaul-section {
+  margin-top: 104px;
+}
+
+body[data-page="landing"].forsig-overhaul .overhaul-section-head {
+  max-width: 760px;
+  margin-bottom: 28px;
+}
+
+body[data-page="landing"].forsig-overhaul .overhaul-section-head h2,
+body[data-page="landing"].forsig-overhaul .final-beta h2,
+body[data-page="landing"].forsig-overhaul .trust-panel h2 {
+  font-size: clamp(38px, 4.2vw, 62px);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+}
+
+body[data-page="landing"].forsig-overhaul .bento-grid {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px;
+}
+
+body[data-page="landing"].forsig-overhaul .bento-loop {
+  grid-column: span 6;
+  grid-row: span 2;
+}
+
+body[data-page="landing"].forsig-overhaul .bento-card:not(.bento-loop) {
+  grid-column: span 3;
+}
+
+body[data-page="landing"].forsig-overhaul .bento-card {
+  min-height: 168px;
+  padding: 22px;
+}
+
+body[data-page="landing"].forsig-overhaul .bento-card h3 {
+  font-size: clamp(21px, 1.8vw, 30px);
+}
+
+body[data-page="landing"].forsig-overhaul .sandbox-shell {
+  grid-template-columns: minmax(220px, 0.72fr) minmax(0, 1.2fr) minmax(320px, 1fr);
+  align-items: stretch;
+}
+
+body[data-page="landing"].forsig-overhaul .sandbox-review h3 {
+  font-size: clamp(27px, 2.2vw, 38px);
+}
+
+body[data-page="landing"].forsig-overhaul .trust-panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1fr);
+  gap: 34px;
+  align-items: start;
+  overflow: hidden;
+  padding: clamp(28px, 3.4vw, 44px);
+}
+
+body[data-page="landing"].forsig-overhaul .trust-panel > div {
+  min-width: 0;
+}
+
+body[data-page="landing"].forsig-overhaul .trust-panel > div:first-child {
+  max-width: 500px;
+}
+
+body[data-page="landing"].forsig-overhaul .trust-panel p {
+  max-width: 470px;
+  margin: 18px 0 0;
+}
+
+body[data-page="landing"].forsig-overhaul .trust-table {
+  width: 100%;
+  min-width: 0;
+  align-self: start;
+  background: rgba(5, 7, 13, 0.22);
+}
+
+body[data-page="landing"].forsig-overhaul .trust-table div {
+  min-height: 64px;
+  padding: 14px 18px;
+}
+
+body[data-page="landing"].forsig-overhaul .trust-table b,
+body[data-page="landing"].forsig-overhaul .trust-table span {
+  min-width: 0;
+  line-height: 1.28;
+}
+
+body[data-page="landing"].forsig-overhaul .roadmap-chips {
+  margin-top: 4px;
+}
+
+body[data-page="landing"].forsig-overhaul .final-beta {
+  margin-top: 104px;
+}
+
+@media (max-width: 1180px) {
+  body[data-page="landing"].forsig-overhaul .overhaul-hero,
+  body[data-page="landing"].forsig-overhaul .sandbox-shell,
+  body[data-page="landing"].forsig-overhaul .trust-panel,
+  body[data-page="landing"].forsig-overhaul .final-beta {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="landing"].forsig-overhaul .trust-panel > div:first-child,
+  body[data-page="landing"].forsig-overhaul .trust-panel p {
+    max-width: 720px;
+  }
+
+  body[data-page="landing"].forsig-overhaul .bento-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  body[data-page="landing"].forsig-overhaul .bento-loop {
+    grid-column: span 6;
+  }
+
+  body[data-page="landing"].forsig-overhaul .bento-card:not(.bento-loop) {
+    grid-column: span 3;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-page="landing"].forsig-overhaul .overhaul-nav,
+  body[data-page="landing"].forsig-overhaul .overhaul-hero,
+  body[data-page="landing"].forsig-overhaul .proof-ribbon,
+  body[data-page="landing"].forsig-overhaul .overhaul-section,
+  body[data-page="landing"].forsig-overhaul .final-beta,
+  body[data-page="landing"].forsig-overhaul .overhaul-footer {
+    width: min(100% - 32px, 640px);
+  }
+
+  body[data-page="landing"].forsig-overhaul .overhaul-hero {
+    padding-top: 48px;
+  }
+
+  body[data-page="landing"].forsig-overhaul .overhaul-hero h1 {
+    font-size: clamp(44px, 13vw, 62px);
+    line-height: 0.98;
+  }
+
+  body[data-page="landing"].forsig-overhaul .overhaul-section-head h2,
+  body[data-page="landing"].forsig-overhaul .final-beta h2,
+  body[data-page="landing"].forsig-overhaul .trust-panel h2 {
+    font-size: clamp(34px, 10vw, 48px);
+  }
+
+  body[data-page="landing"].forsig-overhaul .bento-grid,
+  body[data-page="landing"].forsig-overhaul .usecase-row,
+  body[data-page="landing"].forsig-overhaul .resource-grid,
+  body[data-page="landing"].forsig-overhaul .trust-table div {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="landing"].forsig-overhaul .bento-loop,
+  body[data-page="landing"].forsig-overhaul .bento-card:not(.bento-loop) {
+    grid-column: span 1;
+  }
+
+  body[data-page="landing"].forsig-overhaul .trust-panel {
+    gap: 22px;
+    padding: 24px;
+  }
+}
