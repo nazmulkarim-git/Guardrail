@@ -3,28 +3,28 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Forsig - Ship AI agents with confidence</title>
-    <meta name="description" content="Forsig inserts a human-in-the-loop checkpoint for high-risk AI agent actions: refunds, emails, deployments, and tool spend." />
+    <title>Forsig - Human approval for high-risk AI actions</title>
+    <meta name="description" content="Pause high-risk AI agent actions until a human approves, edits, or rejects them. Forsig helps teams prevent costly refunds, migrations, emails, and tool spend." />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="https://www.forsig.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.forsig.com/" />
-    <meta property="og:title" content="Forsig - Ship AI agents with confidence" />
-    <meta property="og:description" content="Human approval checkpoints for AI agents that touch money, customers, production, or paid tools." />
+    <meta property="og:title" content="Forsig - Human approval for high-risk AI actions" />
+    <meta property="og:description" content="Ship autonomous agents that ask permission before doing damage." />
     <meta property="og:site_name" content="Forsig" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Forsig - Ship AI agents with confidence" />
-    <meta name="twitter:description" content="Human approval checkpoints for autonomous AI agents." />
+    <meta name="twitter:title" content="Forsig - Human approval for high-risk AI actions" />
+    <meta name="twitter:description" content="Pause risky AI agent actions until a human says yes." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
-  <body data-page="landing" class="zip-design forsig-overhaul">
-    <div class="overhaul-bg" aria-hidden="true"></div>
+  <body data-page="landing" class="lp-page">
+    <div class="lp-bg" aria-hidden="true"></div>
 
-    <header class="overhaul-nav">
-      <a class="overhaul-brand" href="/" aria-label="Forsig home">
+    <header class="lp-nav">
+      <a class="lp-brand" href="/" aria-label="Forsig home">
         <svg viewBox="0 0 40 40" aria-hidden="true">
           <path d="M4 20h12M24 20h12" />
           <circle cx="20" cy="20" r="6" />
@@ -34,130 +34,75 @@
         </svg>
         <span>Forsig</span>
       </a>
-      <nav>
-        <a href="#loop">How it works</a>
-        <a href="#sandbox">Sandbox</a>
-        <a href="#trust">Security</a>
+      <nav aria-label="Primary navigation">
+        <a href="#demo">Demo</a>
+        <a href="#benefits">Benefits</a>
+        <a href="#trust">Trust</a>
         <a href="/docs">Docs</a>
       </nav>
-      <a class="overhaul-nav-cta" href="#waitlist" data-track="nav_get_sdk_access_clicked">Join the beta</a>
+      <a class="lp-button lp-button-primary" href="#waitlist" data-track="nav_get_sdk_access_clicked">Request early access</a>
     </header>
 
     <main>
-      <section class="overhaul-hero">
-        <div class="dynamic-island">
-          <span></span>
-          <b>Beta seats left: 33</b>
-          <a href="#waitlist">Request access</a>
-        </div>
-
-        <div class="overhaul-hero-copy">
-          <span class="overhaul-eyebrow">Human approval for autonomous agents</span>
-          <h1>Ship AI agents with confidence.</h1>
-          <p>Forsig inserts a human-in-the-loop checkpoint for your agent's high-risk actions - refunds, emails, deployments, and tool spend - so you never lose control.</p>
-          <div class="overhaul-actions">
-            <a class="overhaul-button primary" href="#waitlist" data-track="hero_get_sdk_access_clicked">Join the beta</a>
-            <a class="overhaul-button secondary" href="#sandbox" data-track="hero_try_live_demo_clicked">Watch demo</a>
+      <section class="lp-hero">
+        <div class="lp-hero-copy">
+          <div class="lp-beta-pill"><span></span> 33 beta seats left</div>
+          <h1>Pause high-risk AI actions until a human says yes.</h1>
+          <p>Forsig helps teams using autonomous agents prevent costly refunds, migrations, emails, and tool spend by inserting a human checkpoint into their workflows, so you stay in control while your AI keeps working.</p>
+          <div class="lp-actions">
+            <a class="lp-button lp-button-primary" href="#waitlist" data-track="hero_get_sdk_access_clicked">Request early access</a>
+            <a class="lp-button lp-button-secondary" href="#demo" data-track="hero_try_live_demo_clicked">Watch 1-min demo</a>
           </div>
-          <div class="hero-proofline">
-            <span>Shadow mode</span>
+          <div class="lp-proof">
+            <span>SOC 2 in progress</span>
+            <span>Minimal context</span>
             <span>Signed decisions</span>
-            <span>Audit trail</span>
           </div>
         </div>
 
-        <div class="hero-scene" aria-label="AI action checkpoint illustration">
-          <div class="scene-card agent-card">
-            <small>AI agent</small>
-            <b>refund_bot</b>
-            <span>Proposes $500 refund</span>
+        <div class="lp-orbit" aria-label="Human approval loop animation">
+          <div class="lp-orbit-node lp-orbit-agent">
+            <small>Agent</small>
+            <b>Proposes refund</b>
+            <span>$500 customer action</span>
           </div>
-          <div class="checkpoint-gate">
-            <div class="agent-orb"></div>
-            <div class="gate-ring"></div>
-            <div class="approval-chip">approval token</div>
+          <div class="lp-orbit-core">
+            <div class="lp-core-glow"></div>
+            <div class="lp-core-token">Human review</div>
           </div>
-          <div class="scene-card human-card">
-            <small>Human reviewer</small>
-            <b>Approve, edit, or reject</b>
-            <span>Returns signed JSON</span>
+          <div class="lp-orbit-node lp-orbit-human">
+            <small>Reviewer</small>
+            <b>Approves or edits</b>
+            <span>Signed JSON returned</span>
           </div>
-          <article class="hero-console-card">
-            <div><span></span><span></span><span></span><b>Forsig live checkpoint</b></div>
+          <div class="lp-orbit-console">
+            <div><i></i><i></i><i></i><strong>Forsig checkpoint</strong></div>
             <pre><code>{
-  "action": "stripe.refund",
   "status": "pending_review",
-  "reviewer": "ops-lead@company.com"
+  "risk": "refund_over_limit",
+  "action": "stripe.refund"
 }</code></pre>
-          </article>
+          </div>
         </div>
       </section>
 
-      <section class="proof-ribbon" aria-label="Forsig proof points">
-        <div>
-          <span>Framework-ready</span>
-          <b>LangGraph</b>
-          <b>Vercel AI SDK</b>
-          <b>OpenAI Agents</b>
-          <b>n8n</b>
-        </div>
-        <blockquote>"Forsig turns human review from a chat notification into a control plane."</blockquote>
+      <section class="lp-logo-strip" aria-label="Framework integrations">
+        <span>Built for the agent stacks developers already use</span>
+        <b>LangGraph</b>
+        <b>Vercel AI SDK</b>
+        <b>OpenAI Agents</b>
+        <b>n8n</b>
+        <b>Custom agents</b>
       </section>
 
-      <section id="loop" class="overhaul-section">
-        <div class="overhaul-section-head">
-          <span class="overhaul-eyebrow">Safety loop for critical actions</span>
-          <h2>One checkpoint between your agent and the real world.</h2>
-          <p>Your agent proposes an action. Forsig pauses execution. A human decides. Your workflow receives a structured response it can branch on.</p>
+      <section id="demo" class="lp-section lp-demo">
+        <div class="lp-section-head">
+          <span>Show, don't tell</span>
+          <h2>Choose a risky action. See the approval loop.</h2>
+          <p>Forsig pauses the workflow, shows only the review context, and returns a decision your agent can branch on.</p>
         </div>
-
-        <div class="bento-grid">
-          <article class="bento-card bento-loop">
-            <div class="loop-path">
-              <span>Agent proposes</span>
-              <i></i>
-              <span>Forsig pauses</span>
-              <i></i>
-              <span>Human decides</span>
-            </div>
-            <h3>Control the moment before the action runs.</h3>
-            <p>Refunds, customer emails, migrations, and paid tool calls wait for explicit review instead of executing blindly.</p>
-          </article>
-          <article class="bento-card">
-            <span>Prevent expensive mistakes</span>
-            <h3>Stop refunds, payouts, and writes before damage.</h3>
-          </article>
-          <article class="bento-card">
-            <span>Audit & compliance trail</span>
-            <h3>Record proposal, reviewer, decision, time.</h3>
-          </article>
-          <article class="bento-card">
-            <span>Minimal data transfer</span>
-            <h3>Show reviewers only what they need. Nothing more.</h3>
-          </article>
-          <article class="bento-card metric-card">
-            <strong>2m 14s</strong>
-            <span>sample review time</span>
-          </article>
-          <article class="bento-card metric-card">
-            <strong>4 modes</strong>
-            <span>shadow, test, active, fail-closed</span>
-          </article>
-          <article class="bento-card quote-card">
-            <p>Built for teams that need autonomy without losing human control.</p>
-            <a href="/security">Read security notes</a>
-          </article>
-        </div>
-      </section>
-
-      <section id="sandbox" class="overhaul-section sandbox-section">
-        <div class="overhaul-section-head">
-          <span class="overhaul-eyebrow">Live product sandbox</span>
-          <h2>Simulate a risky agent call.</h2>
-          <p>Choose an action and watch Forsig create the checkpoint, show reviewer context, and return the decision object.</p>
-        </div>
-        <div class="sandbox-shell">
-          <aside>
+        <div class="lp-demo-grid">
+          <aside class="lp-demo-controls">
             <label for="sandbox-action">Risky action</label>
             <select id="sandbox-action">
               <option value="refund">Refund customer</option>
@@ -165,15 +110,16 @@
               <option value="email">Send outbound email</option>
               <option value="spend">Purchase paid tool export</option>
             </select>
-            <div class="sandbox-timeline">
+            <div class="sandbox-timeline lp-timeline">
               <span class="active">1. Agent proposes</span>
               <span class="active">2. Forsig pauses</span>
               <span>3. Human decides</span>
               <span>4. Agent resumes</span>
             </div>
           </aside>
-          <article class="sandbox-review">
-            <div class="sandbox-review-head">
+
+          <article class="lp-review-card">
+            <div class="lp-review-top">
               <span id="sandbox-risk">High risk</span>
               <b id="sandbox-status">Pending</b>
             </div>
@@ -184,7 +130,7 @@
               <div><dt>Reason</dt><dd>Above policy limit</dd></div>
               <div><dt>Reviewer</dt><dd>Support lead</dd></div>
             </dl>
-            <div class="sandbox-decisions">
+            <div class="sandbox-decisions lp-decision-buttons">
               <button type="button" data-sandbox-decision="approved">Approve</button>
               <button type="button" data-sandbox-decision="edited">Edit</button>
               <button type="button" data-sandbox-decision="rejected">Reject</button>
@@ -194,8 +140,9 @@
   "instruction": "Waiting for human review"
 }</code></pre>
           </article>
-          <article class="sandbox-code">
-            <div>
+
+          <article class="lp-code-card">
+            <div class="lp-code-tabs">
               <button class="active" type="button" data-minimal-code="ts">TypeScript</button>
               <button type="button" data-minimal-code="py">Python</button>
               <a href="/docs">Full docs</a>
@@ -210,65 +157,82 @@
         </div>
       </section>
 
-      <section class="overhaul-section usecase-section">
-        <div class="overhaul-section-head">
-          <span class="overhaul-eyebrow">Use cases</span>
-          <h2>Made for agents that can affect the outside world.</h2>
+      <section id="benefits" class="lp-section">
+        <div class="lp-section-head">
+          <span>Why teams add Forsig</span>
+          <h2>Control without slowing every agent down.</h2>
         </div>
-        <div class="usecase-row">
-          <article><span>01</span><h3>Refunds & payouts</h3><p>Approve financial actions before money moves.</p></article>
-          <article><span>02</span><h3>DB migrations</h3><p>Require human sign-off for production changes.</p></article>
-          <article><span>03</span><h3>Tool spend</h3><p>Review paid API calls and external purchases.</p></article>
-          <article><span>04</span><h3>Email sending</h3><p>Stop hallucinated offers before customers see them.</p></article>
+        <div class="lp-bento">
+          <article class="lp-bento-large">
+            <span>One checkpoint</span>
+            <h3>Stop the risky action, not the whole workflow.</h3>
+            <p>Use Forsig at the moment your agent touches money, customers, production, or paid tools.</p>
+          </article>
+          <article><span>Prevent mistakes</span><h3>Catch refunds, payouts, and writes before damage.</h3></article>
+          <article><span>Audit trail</span><h3>Record proposal, reviewer, decision, and timestamp.</h3></article>
+          <article><span>Minimal data</span><h3>Show reviewers only what they need to decide.</h3></article>
+          <article><span>Framework-ready</span><h3>Drop into LangGraph, Vercel AI SDK, n8n, or custom agents.</h3></article>
         </div>
       </section>
 
-      <section id="trust" class="overhaul-section trust-section">
-        <div class="trust-panel">
-          <div>
-            <span class="overhaul-eyebrow">Trust & compliance</span>
-            <h2>Designed to share less and prove more.</h2>
-            <p>Forsig stores the action, risk reason, decision, reviewer, and timestamp. Your API keys, passwords, payment secrets, and full customer records should never be sent.</p>
-          </div>
-          <div class="trust-table">
-            <div><b>Forsig stores</b><b>Forsig never needs</b></div>
-            <div><span>Proposed action</span><span>API keys or passwords</span></div>
-            <div><span>Reviewer decision</span><span>Full payment records</span></div>
-            <div><span>Audit timestamp</span><span>Unnecessary customer data</span></div>
-          </div>
-          <div class="roadmap-chips">
+      <section class="lp-section">
+        <div class="lp-section-head">
+          <span>Use cases</span>
+          <h2>For agents that can affect the real world.</h2>
+        </div>
+        <div class="lp-usecases">
+          <article><b>Refunds & payouts</b><p>Approve high-value financial actions before money moves.</p><a href="/docs">Explore use case</a></article>
+          <article><b>Database migrations</b><p>Require sign-off for production schema and data changes.</p><a href="/docs">Explore use case</a></article>
+          <article><b>Tool spend</b><p>Review paid API calls, data exports, and external purchases.</p><a href="/docs">Explore use case</a></article>
+          <article><b>Email sending</b><p>Stop hallucinated offers and risky outbound messages.</p><a href="/docs">Explore use case</a></article>
+        </div>
+      </section>
+
+      <section id="trust" class="lp-section lp-trust">
+        <div class="lp-trust-copy">
+          <span>Trust & compliance</span>
+          <h2>Audit everything. Share less.</h2>
+          <p>Forsig is designed around minimal context and signed review decisions. Your agents can move fast without sending secrets or full customer records into review.</p>
+          <div class="lp-roadmap">
             <span>SOC 2 in progress</span>
             <span>GDPR-ready controls planned</span>
             <span>SSO/RBAC roadmap</span>
           </div>
         </div>
+        <div class="lp-audit-card">
+          <div><b>Forsig stores</b><b>Forsig never needs</b></div>
+          <div><span>Proposed action</span><span>API keys or passwords</span></div>
+          <div><span>Risk reason</span><span>Full payment records</span></div>
+          <div><span>Reviewer decision</span><span>Unnecessary customer data</span></div>
+          <div><span>Timestamped audit trail</span><span>Private agent memory</span></div>
+        </div>
       </section>
 
-      <section class="overhaul-section resources-section">
-        <div class="overhaul-section-head">
-          <span class="overhaul-eyebrow">Resources</span>
-          <h2>Start with examples, then wire it into your stack.</h2>
+      <section class="lp-section lp-resources">
+        <div class="lp-section-head">
+          <span>Build faster</span>
+          <h2>Docs, examples, and a real developer portal.</h2>
         </div>
-        <div class="resource-grid">
+        <div class="lp-resource-grid">
           <a href="/docs"><span>Docs</span><b>Quickstart and API examples</b></a>
-          <a href="/security"><span>Security</span><b>Minimal context and signed responses</b></a>
+          <a href="/security"><span>Security notes</span><b>Minimal context, signed responses</b></a>
           <a href="/developer"><span>Developer portal</span><b>Create keys, agents, and test checkpoints</b></a>
         </div>
       </section>
 
-      <section id="waitlist" class="final-beta">
+      <section id="waitlist" class="lp-final">
         <div>
-          <span class="overhaul-eyebrow">Limited beta</span>
-          <h2>Ready to build safer agents?</h2>
-          <p>Join the limited beta and get hands-on onboarding for your first approval checkpoint.</p>
-          <div class="seat-meter"><span style="width: 66%"></span></div>
+          <span>Limited founder-guided beta</span>
+          <h2>Ready to trust your agents with real-world actions?</h2>
+          <p>Request early access and get help wiring your first approval checkpoint.</p>
+          <div class="lp-meter"><i style="width: 66%"></i></div>
           <small>33 of 50 beta seats remaining</small>
         </div>
         <form id="waitlist-form" data-lead-form>
-          <input name="name" type="text" autocomplete="name" placeholder="Name" />
           <input name="email" type="email" required autocomplete="email" placeholder="Work email" />
+          <input name="company" type="text" autocomplete="organization" placeholder="Company name" />
           <select name="frameworkInterest" required>
-            <option value="">Choose framework</option>
+            <option value="">Primary agent stack</option>
             <option>LangGraph</option>
             <option>Vercel AI SDK</option>
             <option>OpenAI Agents SDK</option>
@@ -276,18 +240,33 @@
             <option>Custom agent</option>
           </select>
           <input name="planInterest" type="hidden" value="developer-beta" />
-          <button type="submit">Request beta access</button>
+          <button type="submit">Request early access</button>
           <p id="form-status" class="mini-status" role="status"></p>
         </form>
       </section>
+
+      <section class="lp-faq" aria-label="Frequently asked questions">
+        <details>
+          <summary>What happens after I request access?</summary>
+          <p>You get a beta invite if your workflow is a good fit. Founder-guided users get help wiring the first checkpoint.</p>
+        </details>
+        <details>
+          <summary>Does Forsig need my secrets?</summary>
+          <p>No. Your integration should send only the proposed action, risk reason, and minimum context needed for review.</p>
+        </details>
+        <details>
+          <summary>Can I test without risking production?</summary>
+          <p>Yes. Use test mode and shadow simulations before turning on active approval gates.</p>
+        </details>
+      </section>
     </main>
 
-    <footer class="overhaul-footer">
+    <footer class="lp-footer">
       <div>
-        <a class="overhaul-brand" href="/" aria-label="Forsig home"><span>Forsig</span></a>
-        <p>Building human approval checkpoints for agents that touch the real world.</p>
+        <a class="lp-brand" href="/" aria-label="Forsig home"><span>Forsig</span></a>
+        <p>Human approval checkpoints for agents that touch the real world.</p>
       </div>
-      <nav>
+      <nav aria-label="Footer navigation">
         <a href="/docs">Docs</a>
         <a href="/security">Security</a>
         <a href="/privacy">Privacy</a>
@@ -295,6 +274,7 @@
         <a href="/contact">Contact</a>
       </nav>
     </footer>
+
     <script src="/app.js" type="module"></script>
   </body>
 </html>
