@@ -667,26 +667,161 @@ function initMinimalCodeTabs() {
   const code = document.getElementById("minimal-code");
   const title = document.getElementById("minimal-code-title");
   if (!code || !title) return;
+
+  const actionSelect = document.getElementById("sandbox-action");
+  const sandboxTitle = document.getElementById("sandbox-title");
+  const sandboxCopy = document.getElementById("sandbox-copy");
+  const sandboxRisk = document.getElementById("sandbox-risk");
+  const sandboxStatus = document.getElementById("sandbox-status");
+  const sandboxContext = document.getElementById("sandbox-context");
+  const sandboxJson = document.getElementById("sandbox-json");
+  const timelineSteps = Array.from(document.querySelectorAll(".sandbox-timeline span"));
+
   const snippets = {
     ts: {
+      refund: {
       title: "agent.ts",
-      code: `const decision = await forsig.escalations.create({
+        code: `const decision = await forsig.escalations.create({
   action: "stripe.refund",
   risk: "refund_over_limit",
   context: { amount: 500, customer: "VIP" }
 });`
+      },
+      migration: {
+        title: "deploy-agent.ts",
+        code: `const decision = await forsig.escalations.create({
+  action: "database.migration",
+  risk: "production_schema_change",
+  context: { table: "billing_accounts", environment: "production" }
+});`
+      },
+      email: {
+        title: "email-agent.ts",
+        code: `const decision = await forsig.escalations.create({
+  action: "email.send",
+  risk: "external_customer_message",
+  context: { recipient: "procurement@example.com", discount: "30%" }
+});`
+      },
+      spend: {
+        title: "research-agent.ts",
+        code: `const decision = await forsig.escalations.create({
+  action: "tool.purchase",
+  risk: "paid_tool_spend",
+  context: { tool: "market_data_export", amount: 300, budgetRemaining: 420 }
+});`
+      }
     },
     py: {
+      refund: {
       title: "agent.py",
       code: `decision = forsig.escalations.create(
     action="stripe.refund",
     risk="refund_over_limit",
     context={"amount": 500, "customer": "VIP"},
 )`
+      },
+      migration: {
+        title: "deploy_agent.py",
+        code: `decision = forsig.escalations.create(
+    action="database.migration",
+    risk="production_schema_change",
+    context={"table": "billing_accounts", "environment": "production"},
+)`
+      },
+      email: {
+        title: "email_agent.py",
+        code: `decision = forsig.escalations.create(
+    action="email.send",
+    risk="external_customer_message",
+    context={"recipient": "procurement@example.com", "discount": "30%"},
+)`
+      },
+      spend: {
+        title: "research_agent.py",
+        code: `decision = forsig.escalations.create(
+    action="tool.purchase",
+    risk="paid_tool_spend",
+    context={"tool": "market_data_export", "amount": 300, "budget_remaining": 420},
+)`
+      }
     }
   };
-  function show(language) {
-    const snippet = snippets[language] || snippets.ts;
+
+  const scenarios = {
+    refund: {
+      title: "Approve refund for customer #123",
+      copy: "The support agent wants to issue a $500 refund to a VIP customer.",
+      risk: "High risk",
+      context: [["Amount", "$500"], ["Reason", "Above policy limit"], ["Reviewer", "Support lead"]],
+      pending: {
+        action: "stripe.refund",
+        status: "pending_review",
+        risk: "refund_over_limit",
+        reviewer: "support-lead@company.com"
+      }
+    },
+    migration: {
+      title: "Approve production migration",
+      copy: "The deployment agent wants to run a billing-table migration in production.",
+      risk: "Critical risk",
+      context: [["Environment", "Production"], ["Table", "billing_accounts"], ["Reviewer", "Engineering lead"]],
+      pending: {
+        action: "database.migration",
+        status: "pending_review",
+        risk: "production_schema_change",
+        reviewer: "eng-lead@company.com"
+      }
+    },
+    email: {
+      title: "Review outbound customer email",
+      copy: "The sales agent wants to send a custom discount offer to an enterprise prospect.",
+      risk: "Medium risk",
+      context: [["Recipient", "procurement@example.com"], ["Discount", "30%"], ["Reviewer", "Sales lead"]],
+      pending: {
+        action: "email.send",
+        status: "pending_review",
+        risk: "external_customer_message",
+        reviewer: "sales-lead@company.com"
+      }
+    },
+    spend: {
+      title: "Approve paid tool export",
+      copy: "The research agent wants to buy a $300 market data export.",
+      risk: "High risk",
+      context: [["Tool", "market_data_export"], ["Spend", "$300"], ["Budget", "$420 left"]],
+      pending: {
+        action: "tool.purchase",
+        status: "pending_review",
+        risk: "paid_tool_spend",
+        reviewer: "ops-lead@company.com"
+      }
+    }
+  };
+
+  let activeLanguage = "ts";
+  let activeScenario = actionSelect?.value || "refund";
+
+  function setJson(payload) {
+    if (sandboxJson) sandboxJson.textContent = JSON.stringify(payload, null, 2);
+  }
+
+  function renderScenario() {
+    const scenario = scenarios[activeScenario] || scenarios.refund;
+    if (sandboxTitle) sandboxTitle.textContent = scenario.title;
+    if (sandboxCopy) sandboxCopy.textContent = scenario.copy;
+    if (sandboxRisk) sandboxRisk.textContent = scenario.risk;
+    if (sandboxStatus) sandboxStatus.textContent = "Pending";
+    if (sandboxContext) {
+      sandboxContext.innerHTML = scenario.context.map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`).join("");
+    }
+    timelineSteps.forEach((step, index) => step.classList.toggle("active", index < 2));
+    setJson(scenario.pending);
+  }
+
+  function show(language = activeLanguage) {
+    activeLanguage = language;
+    const snippet = snippets[activeLanguage]?.[activeScenario] || snippets.ts.refund;
     title.textContent = snippet.title;
     code.style.opacity = "0";
     setTimeout(() => {
@@ -696,11 +831,44 @@ function initMinimalCodeTabs() {
     document.querySelectorAll("[data-minimal-code]").forEach((button) => {
       button.classList.toggle("active", button.dataset.minimalCode === language);
     });
-    track("minimal_code_tab_changed", { language });
+    track("minimal_code_tab_changed", { language, scenario: activeScenario });
   }
+
+  function showDecision(decision) {
+    const scenario = scenarios[activeScenario] || scenarios.refund;
+    const copy = {
+      approved: "Proceed with the proposed action.",
+      edited: "Proceed with reviewer edits applied.",
+      rejected: "Stop the proposed action."
+    };
+    if (sandboxStatus) sandboxStatus.textContent = decision;
+    timelineSteps.forEach((step) => step.classList.add("active"));
+    setJson({
+      status: decision,
+      instruction: copy[decision],
+      signed: true,
+      action: scenario.pending.action,
+      reviewer: scenario.pending.reviewer
+    });
+    track("landing_sandbox_decision_clicked", { decision, scenario: activeScenario });
+  }
+
   document.querySelectorAll("[data-minimal-code]").forEach((button) => {
     button.addEventListener("click", () => show(button.dataset.minimalCode));
   });
+  if (actionSelect) {
+    actionSelect.addEventListener("change", () => {
+      activeScenario = actionSelect.value;
+      renderScenario();
+      show(activeLanguage);
+      track("landing_sandbox_action_changed", { scenario: activeScenario });
+    });
+  }
+  document.querySelectorAll("[data-sandbox-decision]").forEach((button) => {
+    button.addEventListener("click", () => showDecision(button.dataset.sandboxDecision));
+  });
+  renderScenario();
+  show(activeLanguage);
 }
 
 function initDashboard() {
