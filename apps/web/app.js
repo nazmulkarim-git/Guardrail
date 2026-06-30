@@ -518,6 +518,90 @@ if decision.status == "approved":
   if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
     setInterval(() => showSlide(activeSlide + 1), 5200);
   }
+
+  const scenarioButtons = document.querySelectorAll("[data-live-scenario]");
+  const decisionButtons = document.querySelectorAll("[data-live-decision]");
+  const liveTitle = document.getElementById("live-demo-title-card");
+  const liveCopy = document.getElementById("live-demo-copy");
+  const liveAgent = document.getElementById("live-demo-agent");
+  const liveAction = document.getElementById("live-demo-action");
+  const liveRisk = document.getElementById("live-demo-risk");
+  const liveStatus = document.getElementById("live-demo-status");
+  const liveResponse = document.getElementById("live-demo-response");
+  const liveScenarios = {
+    refund: {
+      title: "Approve refund for customer #123",
+      copy: "The agent wants to issue a $500 refund that exceeds your policy limit.",
+      agent: "Refund agent",
+      action: "stripe.refund",
+      risk: "High risk",
+      approved: "Proceed with the $500 refund.",
+      edited: "Issue store credit instead of cash refund.",
+      rejected: "Stop refund. Ask support lead to review manually."
+    },
+    deploy: {
+      title: "Review production migration",
+      copy: "The deployment agent wants to run a schema change against the billing table.",
+      agent: "Deploy agent",
+      action: "production.migration",
+      risk: "Critical risk",
+      approved: "Run migration after backup verification.",
+      edited: "Run staging dry run and attach rollback proof.",
+      rejected: "Stop deployment until database owner approves."
+    },
+    email: {
+      title: "Review outbound sales email",
+      copy: "The sales agent wants to send a custom discount offer to an enterprise prospect.",
+      agent: "Sales agent",
+      action: "email.send",
+      risk: "Medium risk",
+      approved: "Send the proposed customer email.",
+      edited: "Reduce discount to 15% and request a call.",
+      rejected: "Do not send. Pricing exception is missing."
+    }
+  };
+  let activeScenario = "refund";
+
+  function renderLiveDecision(status = "pending", instruction = "Waiting for reviewer") {
+    if (!liveResponse || !liveStatus) return;
+    liveStatus.textContent = status === "pending" ? "Pending" : status.replace("_", " ");
+    liveResponse.textContent = JSON.stringify({
+      status,
+      signed: status !== "pending",
+      instruction
+    }, null, 2);
+  }
+
+  function renderLiveScenario(key) {
+    const scenario = liveScenarios[key] || liveScenarios.refund;
+    activeScenario = key;
+    if (liveTitle) liveTitle.textContent = scenario.title;
+    if (liveCopy) liveCopy.textContent = scenario.copy;
+    if (liveAgent) liveAgent.textContent = scenario.agent;
+    if (liveAction) liveAction.textContent = scenario.action;
+    if (liveRisk) liveRisk.textContent = scenario.risk;
+    scenarioButtons.forEach((button) => button.classList.toggle("active", button.dataset.liveScenario === key));
+    renderLiveDecision();
+  }
+
+  scenarioButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      renderLiveScenario(button.dataset.liveScenario || "refund");
+      track("landing_live_scenario_clicked", { scenario: activeScenario });
+    });
+  });
+
+  decisionButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const decision = button.dataset.liveDecision || "approved";
+      const scenario = liveScenarios[activeScenario] || liveScenarios.refund;
+      renderLiveDecision(decision, scenario[decision] || scenario.approved);
+      decisionButtons.forEach((item) => item.classList.toggle("active", item === button));
+      track("landing_live_decision_clicked", { scenario: activeScenario, decision });
+    });
+  });
+
+  if (scenarioButtons.length) renderLiveScenario("refund");
 }
 
 function initWaitlistFollowup() {

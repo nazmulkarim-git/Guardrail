@@ -48,7 +48,7 @@
       </a>
       <div class="portkey-nav-actions">
         <a class="portkey-nav-link" href="/developer">Sign in</a>
-        <a class="portkey-btn portkey-btn-primary" href="#book-demo" data-track="nav_book_demo_clicked">Book a demo</a>
+        <a class="portkey-btn portkey-btn-primary" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener" data-track="nav_book_demo_clicked">Book a demo</a>
       </div>
     </header>
 
@@ -62,10 +62,9 @@
             edits, or rejects the action.
           </p>
           <div class="portkey-actions">
-            <a class="portkey-btn portkey-btn-primary" href="#book-demo" data-track="hero_book_demo_clicked">Book a demo</a>
+            <a class="portkey-btn portkey-btn-primary" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener" data-track="hero_book_demo_clicked">Book a demo</a>
             <a class="portkey-btn portkey-btn-secondary" href="#waitlist" data-track="hero_early_access_clicked">Get early access</a>
           </div>
-          <button class="portkey-demo-link" type="button" data-open-demo data-track="hero_watch_demo_clicked">Watch the two-minute product demo</button>
         </div>
 
         <aside class="portkey-hero-product" aria-label="Forsig approval dashboard preview">
@@ -116,37 +115,46 @@
         </div>
       </section>
 
-      <section id="product" class="portkey-feature reveal" aria-labelledby="observability-title">
-        <div class="feature-visual dashboard-visual" aria-label="Example observability dashboard">
-          <div class="visual-toolbar">
-            <span>Approvals</span>
-            <b>Last 7 days</b>
+      <section id="product" class="portkey-feature portkey-live-feature reveal" aria-labelledby="live-demo-title">
+        <div class="feature-visual live-approval-demo" aria-label="Interactive Forsig approval demo">
+          <div class="live-demo-tabs" role="tablist" aria-label="Approval examples">
+            <button class="active" type="button" data-live-scenario="refund">Refund</button>
+            <button type="button" data-live-scenario="deploy">Deploy</button>
+            <button type="button" data-live-scenario="email">Email</button>
           </div>
-          <div class="dashboard-stats">
-            <div><b>18</b><span>Pending</span></div>
-            <div><b>72</b><span>Approved</span></div>
-            <div><b>9</b><span>Edited</span></div>
-          </div>
-          <div class="chart-lines" aria-hidden="true">
-            <i style="height: 36%"></i>
-            <i style="height: 62%"></i>
-            <i style="height: 44%"></i>
-            <i style="height: 76%"></i>
-            <i style="height: 52%"></i>
-            <i style="height: 88%"></i>
-            <i style="height: 58%"></i>
-          </div>
-          <div class="audit-rows">
-            <span><b>refund-agent</b><em>pending review</em></span>
-            <span><b>deploy-agent</b><em>edited approval</em></span>
-            <span><b>sales-agent</b><em>rejected</em></span>
+          <div class="live-demo-shell">
+            <div class="live-request-card">
+              <div class="live-request-top">
+                <span id="live-demo-risk">High risk</span>
+                <b id="live-demo-status">Pending</b>
+              </div>
+              <h3 id="live-demo-title-card">Approve refund for customer #123</h3>
+              <p id="live-demo-copy">The agent wants to issue a $500 refund that exceeds your policy limit.</p>
+              <dl>
+                <div><dt>Agent</dt><dd id="live-demo-agent">Refund agent</dd></div>
+                <div><dt>Action</dt><dd id="live-demo-action">stripe.refund</dd></div>
+                <div><dt>Timeout</dt><dd>15 minutes</dd></div>
+              </dl>
+            </div>
+            <div class="live-decision-panel">
+              <span class="section-kicker">Reviewer decision</span>
+              <div class="live-decision-buttons">
+                <button type="button" data-live-decision="approved">Approve</button>
+                <button type="button" data-live-decision="edited">Edit</button>
+                <button type="button" data-live-decision="rejected">Reject</button>
+              </div>
+              <pre><code id="live-demo-response">{
+  "status": "pending",
+  "instruction": "Waiting for reviewer"
+}</code></pre>
+            </div>
           </div>
         </div>
         <div class="feature-copy">
-          <span class="section-kicker">Observability & analytics</span>
-          <h2>Know where your agents need human judgment.</h2>
-          <p>Track pending approvals, risk patterns, reviewer decisions, and audit trails from one console before a small issue becomes a public incident.</p>
-          <a href="/developer">Learn more</a>
+          <span class="section-kicker">Live approval flow</span>
+          <h2 id="live-demo-title">Try the moment Forsig protects your workflow.</h2>
+          <p>Pick a risky agent action, choose a reviewer decision, and see the structured response your agent receives before it continues.</p>
+          <a href="/developer">Open developer portal</a>
         </div>
       </section>
 
@@ -156,7 +164,7 @@
           <h2>Add approvals before your next agent goes live.</h2>
         </div>
         <div class="portkey-actions">
-          <a class="portkey-btn portkey-btn-primary" href="#book-demo">Book a demo</a>
+          <a class="portkey-btn portkey-btn-primary" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener">Book a demo</a>
           <a class="portkey-btn portkey-btn-secondary" href="#waitlist">Get early access</a>
         </div>
       </section>
@@ -268,14 +276,25 @@ if (decision.status === "approved") {
         <div class="section-head-centered">
           <span class="section-kicker">Trust</span>
           <h2 id="trust-title">Trusted by leading AI teams.</h2>
-          <p>Forsig is in private beta. Public customer logos and named testimonials will be added only after permission.</p>
+          <p>Forsig is being shaped with builders who are putting autonomous agents into customer, revenue, and production workflows.</p>
         </div>
-        <div class="logo-row" aria-label="Private beta audience">
-          <span>AgentOps teams</span>
-          <span>Support automation</span>
-          <span>AI platform teams</span>
-          <span>DevOps workflows</span>
-          <span>Ops founders</span>
+        <div class="trust-marquee" aria-label="Private beta audience">
+          <div>
+            <span>AgentOps teams</span>
+            <span>Support automation</span>
+            <span>AI platform teams</span>
+            <span>DevOps workflows</span>
+            <span>Ops founders</span>
+            <span>Compliance reviewers</span>
+          </div>
+          <div aria-hidden="true">
+            <span>AgentOps teams</span>
+            <span>Support automation</span>
+            <span>AI platform teams</span>
+            <span>DevOps workflows</span>
+            <span>Ops founders</span>
+            <span>Compliance reviewers</span>
+          </div>
         </div>
         <div class="testimonial-carousel" aria-label="Private beta feedback carousel">
           <button type="button" data-testimonial-prev aria-label="Previous testimonial">Prev</button>
@@ -365,7 +384,7 @@ if (decision.status === "approved") {
           <h2>Ship autonomous agents with one last human safeguard.</h2>
         </div>
         <div class="portkey-actions">
-          <a class="portkey-btn portkey-btn-primary" href="#book-demo">Book a demo</a>
+          <a class="portkey-btn portkey-btn-primary" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener">Book a demo</a>
           <a class="portkey-btn portkey-btn-secondary" href="#waitlist">Get early access</a>
         </div>
       </section>
@@ -411,7 +430,7 @@ if (decision.status === "approved") {
         <h2 id="final-title">The last safeguard your AI needs.</h2>
         <p>Give your agents speed. Keep human control where the business risk is real.</p>
         <div class="portkey-actions">
-          <a class="portkey-btn portkey-btn-primary" href="mailto:hello@forsig.com?subject=Book%20a%20Forsig%20demo">Book a demo</a>
+          <a class="portkey-btn portkey-btn-primary" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener">Book a demo</a>
           <a class="portkey-btn portkey-btn-secondary" href="#waitlist">Get early access</a>
         </div>
       </section>
@@ -442,33 +461,29 @@ if (decision.status === "approved") {
       </section>
     </main>
 
-    <div class="conversion-modal portkey-demo-modal" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title" hidden>
-      <div class="portkey-demo-panel">
-        <button type="button" aria-label="Close demo" data-close-demo>&times;</button>
-        <span class="section-kicker">Two-minute demo</span>
-        <h2 id="demo-modal-title">Watch Forsig pause a risky AI action.</h2>
-        <video controls preload="metadata" poster="/assets/demo-poster.svg" aria-label="Forsig product demo video">
-          <source src="/demo.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        <p>Place demo.mp4 in the web public folder to enable playback.</p>
-      </div>
-    </div>
-
     <footer class="portkey-footer">
       <div class="footer-brand">
-        <a class="portkey-brand" href="/" aria-label="Forsig home"><span>Forsig</span></a>
+        <a class="portkey-brand" href="/" aria-label="Forsig home">
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <path d="M4 20h12M24 20h12" />
+            <circle cx="20" cy="20" r="6" />
+            <path d="M20 8v6M20 26v6" />
+            <circle cx="4" cy="20" r="2" />
+            <circle cx="36" cy="20" r="2" />
+          </svg>
+          <span>Forsig</span>
+        </a>
         <p>Human approval checkpoints for AI agents that touch money, customers, production, or paid tools.</p>
         <div class="footer-socials" aria-label="Social links">
-          <a href="https://x.com/" aria-label="Forsig on X">X</a>
-          <a href="https://www.linkedin.com/" aria-label="Forsig on LinkedIn">in</a>
+          <a href="https://x.com/thenazmulkarim" target="_blank" rel="noopener" aria-label="Nazmul Karim on X">X</a>
+          <a href="https://www.linkedin.com/in/thenazmulkarim/" target="_blank" rel="noopener" aria-label="Nazmul Karim on LinkedIn">in</a>
           <a href="mailto:hello@forsig.com" aria-label="Email Forsig">@</a>
         </div>
       </div>
       <nav aria-label="Footer navigation">
         <div>
           <h3>Product</h3>
-          <a href="#product">Overview</a>
+          <a href="#product">Live approval flow</a>
           <a href="#security">Security</a>
           <a href="#waitlist">Beta</a>
         </div>
@@ -480,9 +495,9 @@ if (decision.status === "approved") {
         </div>
         <div>
           <h3>Solutions</h3>
-          <a href="/use-cases/refunds">Refunds</a>
-          <a href="/use-cases/deployments">Deployments</a>
-          <a href="/use-cases/tool-spend">Tool spend</a>
+          <a href="/docs#refunds">Refunds</a>
+          <a href="/docs#deployments">Deployments</a>
+          <a href="/docs#tool-spend">Tool spend</a>
         </div>
         <div>
           <h3>Resources</h3>

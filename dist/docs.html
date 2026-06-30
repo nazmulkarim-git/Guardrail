@@ -3,14 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Forsig Docs</title>
-    <meta name="description" content="Example-first documentation for Forsig human approval infrastructure." />
+    <title>Forsig Docs - Quickstart and API examples</title>
+    <meta name="description" content="Example-first Forsig documentation for human approval checkpoints, shadow mode, webhooks, and SDK integration." />
     <meta name="robots" content="index,follow" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
-  <body data-page="docs" class="zip-design legal-zip">
-    <main class="legal-page docs-page">
-      <a class="zip-brand" href="/" aria-label="Forsig home">
+  <body data-page="docs" class="docs-premium">
+    <header class="docs-topbar">
+      <a class="docs-brand" href="/" aria-label="Forsig home">
         <svg viewBox="0 0 40 40" aria-hidden="true">
           <path d="M4 20h12M24 20h12" />
           <circle cx="20" cy="20" r="6" />
@@ -18,162 +21,148 @@
           <circle cx="4" cy="20" r="2" />
           <circle cx="36" cy="20" r="2" />
         </svg>
-        <span>Forsig</span>
+        <span>Forsig Docs</span>
       </a>
-      <article class="legal-card docs-card">
-        <p><button class="docs-back-link" type="button" id="docs-back-button">Back</button></p>
-        <p class="eyebrow">Docs</p>
-        <h1>Run a real approval in minutes.</h1>
-        <p>Forsig pauses a risky AI-agent action, asks a human for a decision, and returns a structured result your code can branch on.</p>
+      <nav aria-label="Docs actions">
+        <button class="docs-back-link" type="button" id="docs-back-button">Back</button>
+        <a href="/developer">Developer portal</a>
+        <a class="docs-cta" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener">Book a demo</a>
+      </nav>
+    </header>
 
+    <main class="docs-layout">
+      <aside class="docs-sidebar" aria-label="Docs navigation">
         <label class="docs-search">
           <span>Search docs</span>
-          <input id="docs-search-input" type="search" placeholder="Search quickstart, webhook, Python, n8n..." />
+          <input id="docs-search-input" type="search" placeholder="Search quickstart, Python, webhooks..." />
         </label>
+        <nav>
+          <a href="#quickstart">Quickstart</a>
+          <a href="#shadow-mode">Shadow mode</a>
+          <a href="#node">Node.js</a>
+          <a href="#python">Python</a>
+          <a href="#curl">cURL</a>
+          <a href="#frameworks">Frameworks</a>
+          <a href="#webhooks">Webhooks</a>
+          <a href="#security">Security</a>
+        </nav>
+      </aside>
 
-        <section data-doc-section>
+      <article class="docs-content">
+        <section class="docs-hero" data-doc-section>
+          <span>Documentation</span>
+          <h1>Run a real approval in minutes.</h1>
+          <p>Forsig pauses a risky AI-agent action, asks a human for a decision, and returns a structured result your code can branch on.</p>
+          <div class="docs-hero-grid">
+            <div><b>1</b><span>Create API key</span></div>
+            <div><b>2</b><span>Wrap risky action</span></div>
+            <div><b>3</b><span>Approve in Inbox</span></div>
+            <div><b>4</b><span>Agent branches safely</span></div>
+          </div>
+        </section>
+
+        <section id="quickstart" class="docs-section" data-doc-section>
           <h2>Quickstart</h2>
-          <ol>
-            <li>Create or use the starter agent in <a href="/developer">Developer</a>.</li>
-            <li>Create an API key. Forsig shows the full key once.</li>
-            <li>Set <code>FORSIG_API_KEY</code> locally.</li>
-            <li>Run one of the examples below and approve the Inbox escalation.</li>
-          </ol>
+          <p>Create an API key in the Developer portal, set it locally, then run one of the examples. The first run should use test or shadow mode.</p>
           <pre><code>export FORSIG_API_KEY=fsk_test_xxx
 export FORSIG_BASE_URL=https://www.forsig.com
 node examples/refund-agent-node/index.mjs</code></pre>
-          <p class="docs-warning">CLI scaffolding is planned. Until <code>npx create-forsig-demo</code> is published, use the Developer Quickstart or the included example code.</p>
+          <p class="docs-warning">No secrets: send only what a reviewer needs. Do not include API keys, passwords, full payment details, or unnecessary customer records.</p>
         </section>
 
-        <section data-doc-section>
-          <h2>Environment pattern</h2>
-          <p>Use separate agents and API keys for development, staging, and production. Start with <code>mode: "shadow"</code> in development, review the shadow simulations, then create a production agent and switch only the final execution boundary to <code>active</code>.</p>
-          <pre><code>development agent -> shadow mode -> inspect logs
-staging agent     -> active mode on non-critical workflow
-production agent  -> active mode with reviewer email routing</code></pre>
-        </section>
-
-        <section data-doc-section>
+        <section id="shadow-mode" class="docs-section" data-doc-section>
           <h2>Shadow mode and active mode</h2>
-          <p>Start new integrations in <code>shadow</code> mode. Forsig logs that approval would have been required, but your agent keeps running. Switch to <code>active</code> mode when you are ready to block execution until a human decides.</p>
-          <pre><code>FORSIG_MODE=shadow
-
-{
+          <p>Use shadow mode to learn where approvals would trigger without blocking your agent. Switch selected workflows to active mode when you are ready to pause execution.</p>
+          <pre><code>{
   "mode": "shadow",
   "status": "shadow_logged",
-  "wouldHaveEscalated": true,
-  "message": "Shadow mode: approval would have been required, but execution was not blocked."
+  "wouldHaveEscalated": true
 }</code></pre>
-          <p>Use <code>FORSIG_MODE=active</code> when the action should pause until approval. Active mode keeps the existing approval, notification, audit, and decision flow.</p>
         </section>
 
-        <section data-doc-section>
-          <h2>Plain Node</h2>
-          <pre><code>const baseUrl = process.env.FORSIG_BASE_URL || "https://www.forsig.com";
-const apiKey = process.env.FORSIG_API_KEY;
+        <section id="node" class="docs-section" data-doc-section>
+          <h2>Node.js</h2>
+          <pre><code>import { Forsig } from "@forsig/sdk";
 
-const payload = {
-  agent: { id: "refund-agent", name: "Refund Agent", environment: "production" },
-  workflow: "refund-review-flow",
-  step: "refund-over-limit",
-  risk: { type: "refund_over_limit", level: "high" },
-  task: {
-    title: "Approve refund for customer #123",
-    proposedAction: "Issue a $500 refund",
-    customerImpact: true
-  },
-  context: { refundAmount: 500, customerTier: "VIP" },
-  mode: process.env.FORSIG_MODE || "shadow",
-  review: { notify: ["dashboard", "email"] }
-};
+const forsig = new Forsig({ apiKey: process.env.FORSIG_API_KEY });
 
-const created = await fetch(`${baseUrl}/api/v1/escalations`, {
-  method: "POST",
-  headers: {
-    "authorization": `Bearer ${apiKey}`,
-    "content-type": "application/json"
-  },
-  body: JSON.stringify(payload)
-}).then((res) => res.json());
+const decision = await forsig.escalate({
+  agent: "refund-agent",
+  action: "stripe.refund",
+  risk: "refund_over_limit",
+  context: { amount: 500, customer: "VIP customer #123" },
+  waitForDecision: true
+});
 
-console.log("Open in Forsig:", created.dashboardUrl || created.dashboard_url);</code></pre>
-          <p class="docs-warning">No secrets: send the smallest review context possible. Do not include API keys, passwords, full payment details, or unnecessary personal data.</p>
+if (decision.status === "approved") {
+  await issueRefund();
+}</code></pre>
         </section>
 
-        <section data-doc-section>
+        <section id="python" class="docs-section" data-doc-section>
           <h2>Python</h2>
-          <pre><code>import os, requests, time
+          <pre><code>from forsig import Forsig
+import os
 
-base_url = os.getenv("FORSIG_BASE_URL", "https://www.forsig.com")
-headers = {
-    "authorization": f"Bearer {os.environ['FORSIG_API_KEY']}",
-    "content-type": "application/json",
-}
+forsig = Forsig(api_key=os.environ["FORSIG_API_KEY"])
 
-payload = {
-    "agent": {"id": "refund-agent", "name": "Refund Agent", "environment": "production"},
-    "risk": {"type": "refund_over_limit", "level": "high"},
-    "task": {"title": "Approve refund for customer #123", "proposedAction": "Issue a $500 refund"},
-    "context": {"refundAmount": 500, "customerTier": "VIP"},
-    "review": {"notify": ["dashboard", "email"]},
-}
+decision = forsig.escalate(
+    agent="refund-agent",
+    action="stripe.refund",
+    risk="refund_over_limit",
+    context={"amount": 500, "customer": "VIP customer #123"},
+    wait_for_decision=True,
+)
 
-created = requests.post(f"{base_url}/api/v1/escalations", json=payload, headers=headers).json()
-while True:
-    time.sleep(3)
-    result = requests.get(f"{base_url}/api/v1/escalations/{created['id']}", headers=headers).json()
-    if result["escalation"]["status"] != "pending":
-        print(result["escalation"]["decision"])
-        break</code></pre>
+if decision.status == "approved":
+    issue_refund()</code></pre>
         </section>
 
-        <section data-doc-section>
-          <h2>curl</h2>
-          <pre><code>curl -X POST https://www.forsig.com/api/v1/escalations \
-  -H "authorization: Bearer $FORSIG_API_KEY" \
-  -H "content-type: application/json" \
+        <section id="curl" class="docs-section" data-doc-section>
+          <h2>cURL</h2>
+          <pre><code>curl https://www.forsig.com/api/v1/escalations \
+  -H "Authorization: Bearer $FORSIG_API_KEY" \
+  -H "Content-Type: application/json" \
   -d '{
-    "agent": { "id": "refund-agent", "name": "Refund Agent", "environment": "production" },
-    "risk": { "type": "refund_over_limit", "level": "high" },
-    "task": { "title": "Approve refund for customer #123", "proposedAction": "Issue a $500 refund" },
-    "context": { "refundAmount": 500, "customerTier": "VIP" },
-    "review": { "notify": ["dashboard", "email"] }
+    "agent": "refund-agent",
+    "action": "stripe.refund",
+    "risk": "refund_over_limit",
+    "context": { "amount": 500, "customer": "VIP customer #123" },
+    "waitForDecision": true
   }'</code></pre>
         </section>
 
-        <section data-doc-section>
+        <section id="frameworks" class="docs-section" data-doc-section>
           <h2>Framework examples</h2>
-          <h3>LangGraph</h3>
-          <pre><code>async function refundApprovalNode(state) {
+          <div class="docs-card-grid">
+            <article id="refunds">
+              <h3>Refunds</h3>
+              <p>Place Forsig before the payment API call. If approved, continue. If rejected or timed out, stop.</p>
+            </article>
+            <article id="deployments">
+              <h3>Deployments</h3>
+              <p>Escalate production migrations, data updates, and release actions before they run.</p>
+            </article>
+            <article id="tool-spend">
+              <h3>Tool spend</h3>
+              <p>Require approval before paid exports, purchases, or external tool calls spend money.</p>
+            </article>
+          </div>
+          <pre><code>async function approvalNode(state) {
   const decision = await forsig.escalate({
-    agent: { id: "refund-agent", name: "Refund Agent" },
-    risk: { type: "refund_over_limit", level: "high" },
-    task: { title: "Approve refund", proposedAction: "Issue refund" },
-    context: { refundAmount: state.refundAmount },
+    agent: "support-agent",
+    action: state.action,
+    risk: state.risk,
+    context: state.reviewContext,
     waitForDecision: true
   });
-  return decision.status === "approved" ? { ...state, approved: true } : { ...state, stopped: true };
+  return { ...state, forsigDecision: decision };
 }</code></pre>
-          <h3>Vercel AI SDK</h3>
-          <pre><code>export async function approveBeforeToolCall(toolInput) {
-  "use server";
-  const decision = await forsig.escalate({
-    agent: { id: "support-agent", name: "Support Agent" },
-    risk: { type: "external_action", level: "high" },
-    task: { title: "Approve outbound action", proposedAction: toolInput.action },
-    context: { ticketId: toolInput.ticketId },
-    waitForDecision: true
-  });
-  if (decision.status !== "approved") return decision;
-  return runTool(toolInput);
-}</code></pre>
-          <h3>n8n</h3>
-          <p>Use an HTTP Request node to create the escalation, then pause the workflow and poll <code>/api/v1/escalations/:id</code> until the status is no longer <code>pending</code>.</p>
         </section>
 
-        <section data-doc-section>
+        <section id="webhooks" class="docs-section" data-doc-section>
           <h2>Webhook signing</h2>
-          <p>When <code>callbackUrl</code> is set, Forsig posts the resolved decision with <code>x-forsig-event</code> and <code>x-forsig-signature</code>. Verify the raw request body before trusting the decision.</p>
+          <p>When a callback URL is set, Forsig posts the resolved decision with a signature header. Verify the raw body before trusting the event.</p>
           <pre><code>import { createHmac, timingSafeEqual } from "node:crypto";
 
 function verifyForsigWebhook(rawBody, signature, secret) {
@@ -184,18 +173,19 @@ function verifyForsigWebhook(rawBody, signature, secret) {
 }</code></pre>
         </section>
 
-        <section data-doc-section>
-          <h2>Sandbox mode</h2>
-          <p>Use the hosted Developer Quickstart when you want to test without touching your own agent. Forsig auto-creates a starter agent, generates code with your API key, and lets you approve the first real escalation from Inbox.</p>
+        <section id="security" class="docs-section" data-doc-section>
+          <h2>Security model</h2>
+          <p>Forsig stores reviewer identity, action descriptions, risk reasons, signed decisions, and timestamps. It never needs API keys, passwords, full payment records, or private agent memory.</p>
         </section>
       </article>
     </main>
+
     <script>
       const input = document.getElementById("docs-search-input");
       input?.addEventListener("input", () => {
         const query = input.value.trim().toLowerCase();
         document.querySelectorAll("[data-doc-section]").forEach((section) => {
-          section.hidden = query && !section.textContent.toLowerCase().includes(query);
+          section.hidden = Boolean(query) && !section.textContent.toLowerCase().includes(query);
         });
       });
       document.getElementById("docs-back-button")?.addEventListener("click", () => {
