@@ -427,6 +427,99 @@ function initLandingV2Interactions() {
   }
 }
 
+function initPortkeyLanding() {
+  const nav = document.querySelector(".portkey-nav");
+  if (nav) {
+    const updateNav = () => nav.classList.toggle("is-scrolled", window.scrollY > 8);
+    updateNav();
+    window.addEventListener("scroll", updateNav, { passive: true });
+  }
+
+  const codeOutput = document.getElementById("portkey-code-output");
+  const codeTabs = document.querySelectorAll("[data-portkey-code-tab]");
+  const snippets = {
+    node: `import { Forsig } from "@forsig/sdk";
+
+const forsig = new Forsig({ apiKey: process.env.FORSIG_API_KEY });
+
+const decision = await forsig.escalate({
+  agent: "refund-agent",
+  action: "stripe.refund",
+  risk: "refund_over_limit",
+  context: { amount: 500, customer: "VIP customer #123" },
+  waitForDecision: true
+});
+
+if (decision.status === "approved") {
+  await issueRefund();
+}`,
+    python: `from forsig import Forsig
+import os
+
+forsig = Forsig(api_key=os.environ["FORSIG_API_KEY"])
+
+decision = forsig.escalate(
+    agent="refund-agent",
+    action="stripe.refund",
+    risk="refund_over_limit",
+    context={"amount": 500, "customer": "VIP customer #123"},
+    wait_for_decision=True,
+)
+
+if decision.status == "approved":
+    issue_refund()`,
+    curl: `curl https://www.forsig.com/api/v1/escalations \\
+  -H "Authorization: Bearer $FORSIG_API_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "agent": "refund-agent",
+    "action": "stripe.refund",
+    "risk": "refund_over_limit",
+    "context": {
+      "amount": 500,
+      "customer": "VIP customer #123"
+    },
+    "waitForDecision": true
+  }'`
+  };
+
+  codeTabs.forEach((button) => {
+    button.addEventListener("click", () => {
+      const key = button.dataset.portkeyCodeTab || "node";
+      if (codeOutput) codeOutput.textContent = snippets[key] || snippets.node;
+      codeTabs.forEach((tab) => {
+        const isActive = tab === button;
+        tab.classList.toggle("active", isActive);
+        tab.setAttribute("aria-selected", String(isActive));
+      });
+      track("landing_code_tab_clicked", { language: key });
+    });
+  });
+
+  const slides = Array.from(document.querySelectorAll("[data-testimonial-slide]"));
+  const prev = document.querySelector("[data-testimonial-prev]");
+  const next = document.querySelector("[data-testimonial-next]");
+  if (!slides.length) return;
+  let activeSlide = Math.max(0, slides.findIndex((slide) => slide.classList.contains("active")));
+  const showSlide = (index) => {
+    activeSlide = (index + slides.length) % slides.length;
+    slides.forEach((slide, slideIndex) => {
+      slide.classList.toggle("active", slideIndex === activeSlide);
+    });
+  };
+  prev?.addEventListener("click", () => {
+    showSlide(activeSlide - 1);
+    track("landing_testimonial_prev_clicked");
+  });
+  next?.addEventListener("click", () => {
+    showSlide(activeSlide + 1);
+    track("landing_testimonial_next_clicked");
+  });
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    setInterval(() => showSlide(activeSlide + 1), 5200);
+  }
+}
+
 function initWaitlistFollowup() {
   const form = document.getElementById("waitlist-followup-form");
   if (!form) return;
@@ -1498,6 +1591,7 @@ initConsoleMotion();
 initImpactCalculator();
 initWaitlist();
 initLandingV2Interactions();
+initPortkeyLanding();
 initWaitlistFollowup();
 initPricingIntent();
 initHeroApprovalCard();

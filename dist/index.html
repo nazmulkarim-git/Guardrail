@@ -3,18 +3,18 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Forsig - Protect your business from AI mistakes</title>
-    <meta name="description" content="Forsig adds human approval checkpoints to risky AI agent actions so teams avoid costly refunds, compliance issues, and AI errors." />
+    <title>Forsig - Human approval checkpoints for AI agents</title>
+    <meta name="description" content="Forsig adds human approval checkpoints to risky AI agent actions so teams avoid costly refunds, compliance issues, and production mistakes." />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="https://www.forsig.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.forsig.com/" />
-    <meta property="og:title" content="Forsig - Protect your business from AI mistakes" />
-    <meta property="og:description" content="Human approval checkpoints pause risky AI agent actions before they damage customers, compliance, or revenue." />
+    <meta property="og:title" content="Forsig - Human approval checkpoints for AI agents" />
+    <meta property="og:description" content="Pause risky AI agent actions until a human approves, edits, or rejects them." />
     <meta property="og:site_name" content="Forsig" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Forsig - Protect your business from AI mistakes" />
-    <meta name="twitter:description" content="Pause risky AI agent actions until a human approves, edits, or rejects them." />
+    <meta name="twitter:title" content="Forsig - Human approval checkpoints for AI agents" />
+    <meta name="twitter:description" content="Prevent costly AI mistakes with signed human approval checkpoints." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -32,11 +32,11 @@
       }
     </script>
   </head>
-  <body data-page="landing" class="lp-conversion">
-    <div class="conversion-bg" aria-hidden="true"></div>
+  <body data-page="landing" class="lp-portkey">
+    <div class="portkey-bg" aria-hidden="true"></div>
 
-    <header class="conversion-nav" aria-label="Main navigation">
-      <a class="conversion-brand" href="/" aria-label="Forsig home">
+    <header class="portkey-nav" aria-label="Main navigation">
+      <a class="portkey-brand" href="/" aria-label="Forsig home">
         <svg viewBox="0 0 40 40" aria-hidden="true">
           <path d="M4 20h12M24 20h12" />
           <circle cx="20" cy="20" r="6" />
@@ -46,116 +46,341 @@
         </svg>
         <span>Forsig</span>
       </a>
-      <nav class="conversion-nav-links" aria-label="Landing page sections">
-        <a href="#product">Product</a>
-        <a href="#developers">Developers</a>
-        <a href="#security">Security</a>
-        <a href="#waitlist">Beta</a>
-      </nav>
-      <div class="conversion-nav-actions">
-        <a href="/docs">Docs</a>
-        <a href="/developer">Sign in</a>
-        <a class="conversion-button conversion-button-primary" href="#waitlist" data-track="nav_join_beta_clicked">Join beta</a>
+      <div class="portkey-nav-actions">
+        <a class="portkey-nav-link" href="/developer">Sign in</a>
+        <a class="portkey-btn portkey-btn-primary" href="#book-demo" data-track="nav_book_demo_clicked">Book a demo</a>
       </div>
     </header>
 
     <main>
-      <!-- LandingPage structure: Hero, signup, ValueProps, Video, Testimonials, UseCases, Security, FAQ.
-           In the current static app these sections act like React components and are data-driven in markup.
-           If/when this app moves to React, each <section> maps directly to a component. -->
-      <section class="conversion-hero reveal" aria-labelledby="hero-title">
-        <div class="conversion-hero-copy">
-          <span class="conversion-pill">Private beta now open</span>
+      <section class="portkey-hero reveal" aria-labelledby="hero-title">
+        <div class="portkey-hero-copy">
+          <span class="portkey-pill">Private beta for AI agent teams</span>
           <h1 id="hero-title">Human approval checkpoints for AI agents before they make expensive mistakes.</h1>
-          <p>Forsig lets developers pause risky AI-agent actions, route them to a human reviewer, and return a signed decision your agent can trust.</p>
-          <div class="conversion-actions">
-            <a class="conversion-button conversion-button-primary" href="#waitlist" data-track="hero_join_beta_clicked">Join beta</a>
-            <button class="conversion-link-button" type="button" data-open-demo data-track="hero_watch_demo_clicked">Watch demo</button>
-            <a class="conversion-link-button conversion-link-anchor" href="#developers" data-track="hero_quickstart_clicked">View quickstart</a>
+          <p>
+            Forsig pauses high-risk refunds, migrations, messages, and paid tool calls until a reviewer approves,
+            edits, or rejects the action.
+          </p>
+          <div class="portkey-actions">
+            <a class="portkey-btn portkey-btn-primary" href="#book-demo" data-track="hero_book_demo_clicked">Book a demo</a>
+            <a class="portkey-btn portkey-btn-secondary" href="#waitlist" data-track="hero_early_access_clicked">Get early access</a>
           </div>
+          <button class="portkey-demo-link" type="button" data-open-demo data-track="hero_watch_demo_clicked">Watch the two-minute product demo</button>
         </div>
 
-        <aside class="conversion-hero-card" aria-label="Forsig approval workflow preview">
-          <div class="workflow-card workflow-card-agent">
-            <span>Agent action</span>
-            <b>Refund $500</b>
-            <small>Risk: exceeds policy</small>
-          </div>
-          <div class="workflow-line" aria-hidden="true"></div>
-          <div class="workflow-card workflow-card-review">
-            <span>Forsig checkpoint</span>
-            <b>Human review required</b>
-            <small>Approve, edit, reject, or take over</small>
-          </div>
-          <div class="workflow-line" aria-hidden="true"></div>
-          <div class="workflow-card workflow-card-decision">
-            <span>Signed decision</span>
-            <b>Agent continues safely</b>
-            <small>Audit trail saved</small>
+        <aside class="portkey-hero-product" aria-label="Forsig approval dashboard preview">
+          <div class="product-window">
+            <div class="product-window-top">
+              <span></span><span></span><span></span>
+              <b>Forsig approval dashboard</b>
+            </div>
+            <div class="approval-preview-grid">
+              <div class="approval-request-panel">
+                <span class="panel-kicker">Risk matched</span>
+                <h2>Approve refund for customer #123</h2>
+                <p>The agent wants to issue a $500 refund. Forsig pauses execution and sends only the needed context.</p>
+                <div class="approval-actions" aria-label="Approval actions">
+                  <button type="button">Approve</button>
+                  <button type="button">Edit</button>
+                  <button type="button">Reject</button>
+                </div>
+              </div>
+              <div class="approval-side-stack">
+                <div><b>Pending</b><span>Human decision required</span></div>
+                <div><b>High risk</b><span>Refund exceeds policy</span></div>
+                <div><b>Signed trail</b><span>Decision stored for audit</span></div>
+              </div>
+            </div>
+            <pre aria-label="Decision payload returned to the agent"><code>{
+  "status": "approved",
+  "signed": true,
+  "instruction": "Proceed with refund"
+}</code></pre>
           </div>
         </aside>
       </section>
 
-      <section id="product" class="conversion-section reveal" aria-labelledby="problem-title">
-        <div class="conversion-section-head">
-          <span class="conversion-kicker">Problem</span>
-          <h2 id="problem-title">AI agents are touching money, customers, and production. Mistakes are expensive.</h2>
-          <p>Forsig gives your agent one explicit pause point before a high-impact action becomes a business incident.</p>
+      <section class="portkey-metrics reveal" aria-labelledby="metrics-title">
+        <h2 id="metrics-title">Built for teams shipping agents into real workflows.</h2>
+        <div class="metric-card">
+          <b>0</b>
+          <span>Secrets required in review context</span>
         </div>
-        <div class="value-grid">
-          <article class="value-card">
-            <span class="value-icon" aria-hidden="true">Refund</span>
-            <h3>Refunds and payouts</h3>
-            <p>Require approval before agents issue money movements above your policy threshold.</p>
-          </article>
-          <article class="value-card">
-            <span class="value-icon" aria-hidden="true">Email</span>
-            <h3>Customer messages</h3>
-            <p>Review outbound emails when an agent may send the wrong offer, claim, or tone.</p>
-          </article>
-          <article class="value-card">
-            <span class="value-icon" aria-hidden="true">Prod</span>
-            <h3>Production changes</h3>
-            <p>Pause deployments, data updates, and migrations before they affect real users.</p>
-          </article>
+        <div class="metric-card">
+          <b>4</b>
+          <span>High-risk action types covered first</span>
+        </div>
+        <div class="metric-card">
+          <b>&lt; 2 min</b>
+          <span>Target time from escalation to decision</span>
         </div>
       </section>
 
-      <section class="conversion-section reveal" aria-labelledby="mechanism-title">
-        <div class="conversion-section-head">
-          <span class="conversion-kicker">How it works</span>
-          <h2 id="mechanism-title">Create a checkpoint, review the risk, return a signed decision.</h2>
+      <section id="product" class="portkey-feature reveal" aria-labelledby="observability-title">
+        <div class="feature-visual dashboard-visual" aria-label="Example observability dashboard">
+          <div class="visual-toolbar">
+            <span>Approvals</span>
+            <b>Last 7 days</b>
+          </div>
+          <div class="dashboard-stats">
+            <div><b>18</b><span>Pending</span></div>
+            <div><b>72</b><span>Approved</span></div>
+            <div><b>9</b><span>Edited</span></div>
+          </div>
+          <div class="chart-lines" aria-hidden="true">
+            <i style="height: 36%"></i>
+            <i style="height: 62%"></i>
+            <i style="height: 44%"></i>
+            <i style="height: 76%"></i>
+            <i style="height: 52%"></i>
+            <i style="height: 88%"></i>
+            <i style="height: 58%"></i>
+          </div>
+          <div class="audit-rows">
+            <span><b>refund-agent</b><em>pending review</em></span>
+            <span><b>deploy-agent</b><em>edited approval</em></span>
+            <span><b>sales-agent</b><em>rejected</em></span>
+          </div>
         </div>
-        <div class="mechanism-grid" aria-label="Forsig approval mechanism">
-          <article>
-            <span>1</span>
-            <h3>Agent proposes action</h3>
-            <p>Your workflow sends the proposed action, risk reason, and minimal context.</p>
-          </article>
-          <article>
-            <span>2</span>
-            <h3>Forsig pauses execution</h3>
-            <p>The reviewer sees a structured approval request instead of an untracked chat thread.</p>
-          </article>
-          <article>
-            <span>3</span>
-            <h3>Decision returns to agent</h3>
-            <p>Your agent receives approved, rejected, edited, taken over, or timed out.</p>
-          </article>
+        <div class="feature-copy">
+          <span class="section-kicker">Observability & analytics</span>
+          <h2>Know where your agents need human judgment.</h2>
+          <p>Track pending approvals, risk patterns, reviewer decisions, and audit trails from one console before a small issue becomes a public incident.</p>
+          <a href="/developer">Learn more</a>
         </div>
       </section>
 
-      <section id="waitlist" class="conversion-signup reveal" aria-labelledby="signup-title">
+      <section class="portkey-cta-bar reveal" aria-label="Book a Forsig demo">
         <div>
-          <span class="conversion-kicker">Limited launch cohort</span>
-          <h2 id="signup-title">Join the beta before the first 50 seats close.</h2>
-          <p>Early adopters get founder onboarding, discounted launch pricing, and priority access to agent workflow templates.</p>
+          <span class="section-kicker">Launch safely</span>
+          <h2>Add approvals before your next agent goes live.</h2>
+        </div>
+        <div class="portkey-actions">
+          <a class="portkey-btn portkey-btn-primary" href="#book-demo">Book a demo</a>
+          <a class="portkey-btn portkey-btn-secondary" href="#waitlist">Get early access</a>
+        </div>
+      </section>
+
+      <section class="portkey-feature portkey-feature-flipped reveal" aria-labelledby="cost-title">
+        <div class="feature-copy">
+          <span class="section-kicker">Compliance & cost management</span>
+          <h2>Limit the actions that can cost money or trust.</h2>
+          <p>Set approval points around refunds, paid tools, data edits, and production changes. Forsig saves the decision trail without storing secrets.</p>
+          <a href="#security">Learn more</a>
+        </div>
+        <div class="feature-visual cost-visual" aria-label="Example cost and risk controls">
+          <div class="cost-card">
+            <span>Refund risk</span>
+            <i style="width: 82%"></i>
+          </div>
+          <div class="cost-card">
+            <span>Tool spend</span>
+            <i style="width: 68%"></i>
+          </div>
+          <div class="cost-card">
+            <span>Production impact</span>
+            <i style="width: 74%"></i>
+          </div>
+          <div class="cost-summary">
+            <b>Fail closed by default</b>
+            <p>If nobody responds before timeout, risky actions stop instead of silently continuing.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="portkey-feature reveal" aria-labelledby="flow-title">
+        <div class="feature-visual flow-visual">
+          <svg viewBox="0 0 760 360" role="img" aria-labelledby="flow-svg-title flow-svg-desc">
+            <title id="flow-svg-title">Forsig AI approval flow</title>
+            <desc id="flow-svg-desc">Your AI agent sends a risky action to Forsig, a human reviewer decides, and safe execution resumes.</desc>
+            <defs>
+              <linearGradient id="flowGradient" x1="0" x2="1">
+                <stop offset="0%" stop-color="#22d3ee" />
+                <stop offset="52%" stop-color="#8b5cf6" />
+                <stop offset="100%" stop-color="#14f1bd" />
+              </linearGradient>
+              <marker id="arrow" markerWidth="12" markerHeight="12" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+                <path d="M0,0 L0,6 L9,3 z" fill="#14f1bd" />
+              </marker>
+            </defs>
+            <path class="flow-path" d="M140 178 C245 74 330 74 380 178 S520 282 620 178" marker-end="url(#arrow)" />
+            <g class="flow-node" transform="translate(58 112)">
+              <rect width="164" height="118" rx="22" />
+              <text x="24" y="42">Your AI agent</text>
+              <text x="24" y="72">proposes action</text>
+            </g>
+            <g class="flow-node flow-node-main" transform="translate(298 112)">
+              <rect width="164" height="118" rx="22" />
+              <text x="24" y="42">Forsig</text>
+              <text x="24" y="72">checkpoint</text>
+            </g>
+            <g class="flow-node" transform="translate(538 112)">
+              <rect width="164" height="118" rx="22" />
+              <text x="24" y="42">Safe execution</text>
+              <text x="24" y="72">continues</text>
+            </g>
+            <g class="reviewer-node" transform="translate(306 260)">
+              <rect width="148" height="62" rx="18" />
+              <text x="24" y="38">Human reviewer</text>
+            </g>
+            <path class="review-path" d="M380 230 V260" marker-end="url(#arrow)" />
+          </svg>
+        </div>
+        <div class="feature-copy">
+          <span class="section-kicker">AI gateway approval flow</span>
+          <h2>Insert Forsig exactly where the agent needs permission.</h2>
+          <p>Your workflow calls Forsig before the risky action. A reviewer returns a signed response your agent can branch on immediately.</p>
+          <a href="#developers">Learn more</a>
+        </div>
+      </section>
+
+      <section id="developers" class="portkey-dev-section reveal" aria-labelledby="developers-title">
+        <div class="dev-copy">
+          <span class="section-kicker">Developers & integration</span>
+          <h2 id="developers-title">Install the SDK and wrap the risky action.</h2>
+          <p>Use <code>forsig.escalate()</code> around refunds, migrations, emails, or paid tool calls. Start in shadow mode, then enable active approvals.</p>
+        </div>
+        <div class="dev-code-card">
+          <div class="code-tabs" role="tablist" aria-label="Integration language">
+            <button class="active" type="button" role="tab" aria-selected="true" data-portkey-code-tab="node">Node.js</button>
+            <button type="button" role="tab" aria-selected="false" data-portkey-code-tab="python">Python</button>
+            <button type="button" role="tab" aria-selected="false" data-portkey-code-tab="curl">cURL</button>
+          </div>
+          <pre><code id="portkey-code-output">import { Forsig } from "@forsig/sdk";
+
+const forsig = new Forsig({ apiKey: process.env.FORSIG_API_KEY });
+
+const decision = await forsig.escalate({
+  agent: "refund-agent",
+  action: "stripe.refund",
+  risk: "refund_over_limit",
+  context: { amount: 500, customer: "VIP customer #123" },
+  waitForDecision: true
+});
+
+if (decision.status === "approved") {
+  await issueRefund();
+}</code></pre>
+        </div>
+      </section>
+
+      <section class="portkey-trust reveal" aria-labelledby="trust-title">
+        <div class="section-head-centered">
+          <span class="section-kicker">Trust</span>
+          <h2 id="trust-title">Trusted by leading AI teams.</h2>
+          <p>Forsig is in private beta. Public customer logos and named testimonials will be added only after permission.</p>
+        </div>
+        <div class="logo-row" aria-label="Private beta audience">
+          <span>AgentOps teams</span>
+          <span>Support automation</span>
+          <span>AI platform teams</span>
+          <span>DevOps workflows</span>
+          <span>Ops founders</span>
+        </div>
+        <div class="testimonial-carousel" aria-label="Private beta feedback carousel">
+          <button type="button" data-testimonial-prev aria-label="Previous testimonial">Prev</button>
+          <div class="testimonial-slide active" data-testimonial-slide>
+            <div class="testimonial-logo">Beta team</div>
+            <p>"We want every refund agent to pause before money leaves the business."</p>
+            <div><b>Support automation lead</b><span>Private beta interview</span></div>
+          </div>
+          <div class="testimonial-slide" data-testimonial-slide>
+            <div class="testimonial-logo">Design partner</div>
+            <p>"Shadow mode shows where approvals would trigger without slowing our production agents."</p>
+            <div><b>AI platform engineer</b><span>Design partner feedback</span></div>
+          </div>
+          <div class="testimonial-slide" data-testimonial-slide>
+            <div class="testimonial-logo">Ops team</div>
+            <p>"The signed audit trail is the first thing our compliance reviewer asks about."</p>
+            <div><b>Operations founder</b><span>Beta conversation</span></div>
+          </div>
+          <button type="button" data-testimonial-next aria-label="Next testimonial">Next</button>
+        </div>
+      </section>
+
+      <section class="portkey-usecases reveal" aria-labelledby="usecases-title">
+        <div class="section-head-centered">
+          <span class="section-kicker">Use cases</span>
+          <h2 id="usecases-title">Protect the actions that can damage revenue or trust.</h2>
+        </div>
+        <div class="usecase-grid">
+          <article>
+            <span>01</span>
+            <h3>Stop costly refunds</h3>
+            <p>Require a reviewer before high-value refunds leave your payment system.</p>
+            <a href="/use-cases/refunds">Learn more</a>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Review customer emails</h3>
+            <p>Catch risky offers, wrong claims, or bad tone before an agent sends.</p>
+            <a href="/use-cases/emails">Learn more</a>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Guard migrations</h3>
+            <p>Pause production changes until the right reviewer sees context.</p>
+            <a href="/use-cases/deployments">Learn more</a>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Control paid tools</h3>
+            <p>Approve exports, purchases, or external tool calls before spend happens.</p>
+            <a href="/use-cases/tool-spend">Learn more</a>
+          </article>
+        </div>
+      </section>
+
+      <section id="security" class="portkey-security reveal" aria-labelledby="security-title">
+        <div class="section-head-centered">
+          <span class="section-kicker">Security</span>
+          <h2 id="security-title">Forsig stores decisions, not secrets.</h2>
+        </div>
+        <div class="security-card">
+          <div>
+            <h3>Forsig stores</h3>
+            <p><span>+</span> Reviewer identity and timestamp</p>
+            <p><span>+</span> Tool name and proposed action</p>
+            <p><span>+</span> Risk reason and signed decision</p>
+            <p><span>+</span> Audit trail for each escalation</p>
+          </div>
+          <div>
+            <h3>Forsig never needs</h3>
+            <p><span>-</span> API keys, passwords, or private tokens</p>
+            <p><span>-</span> Full payment records</p>
+            <p><span>-</span> Unnecessary customer data</p>
+            <p><span>-</span> Private agent memory</p>
+          </div>
+        </div>
+        <div class="security-badges" aria-label="Security roadmap badges">
+          <span>SOC 2 in progress</span>
+          <span>GDPR-ready controls planned</span>
+          <span>Signed decisions</span>
+        </div>
+      </section>
+
+      <section class="portkey-cta-bar reveal" aria-label="Get early access">
+        <div>
+          <span class="section-kicker">Developer beta</span>
+          <h2>Ship autonomous agents with one last human safeguard.</h2>
+        </div>
+        <div class="portkey-actions">
+          <a class="portkey-btn portkey-btn-primary" href="#book-demo">Book a demo</a>
+          <a class="portkey-btn portkey-btn-secondary" href="#waitlist">Get early access</a>
+        </div>
+      </section>
+
+      <section id="waitlist" class="portkey-signup reveal" aria-labelledby="signup-title">
+        <div>
+          <span class="section-kicker">Beta access</span>
+          <h2 id="signup-title">Join the Forsig beta.</h2>
+          <p>Early teams get founder onboarding, launch pricing, and help choosing the first approval checkpoints.</p>
           <div class="seat-meter" aria-label="Beta seats remaining">
-            <div class="seat-meter-bar"><i data-seat-progress style="width: 66%"></i></div>
+            <div><i data-seat-progress style="width: 34%"></i></div>
             <span><b data-seats-left>33</b> beta seats remaining</span>
           </div>
         </div>
-        <form id="waitlist-form" class="conversion-form" data-lead-form data-referral-confirmation novalidate>
+        <form id="waitlist-form" class="portkey-form" data-lead-form data-referral-confirmation novalidate>
           <label>
             <span>Email</span>
             <input name="email" type="email" required autocomplete="email" placeholder="you@company.com" />
@@ -165,10 +390,10 @@
             <input name="name" type="text" autocomplete="given-name" placeholder="Alex" />
           </label>
           <input name="planInterest" type="hidden" value="developer-beta" />
-          <button class="conversion-button conversion-button-primary" type="submit">Join Beta Now</button>
-          <p class="conversion-note">We'll only use your email to send beta updates.</p>
+          <button class="portkey-btn portkey-btn-primary" type="submit">Get early access</button>
+          <p class="form-note">We will only use your email to send beta updates.</p>
           <p id="form-status" class="mini-status" role="status"></p>
-          <div class="lp-referral-result conversion-referral" hidden>
+          <div class="lp-referral-result referral-result" hidden>
             <b>You are on the list.</b>
             <p>Invite 3 colleagues to unlock priority access.</p>
             <div class="referral-progress" aria-label="Referral progress"><i style="width: 33%"></i></div>
@@ -181,160 +406,19 @@
         </form>
       </section>
 
-      <section class="conversion-section reveal" aria-labelledby="value-title">
-        <div class="conversion-section-head">
-          <span class="conversion-kicker">Value proposition</span>
-          <h2 id="value-title">Add a human checkpoint where mistakes get expensive.</h2>
-        </div>
-        <!-- ValueProps data: icon name + concise benefit statement. -->
-        <div class="value-grid">
-          <article class="value-card">
-            <span class="value-icon" aria-hidden="true">Refund</span>
-            <h3>Prevent expensive refunds</h3>
-            <p>Hold high-value refunds until a real reviewer confirms the action.</p>
-          </article>
-          <article class="value-card">
-            <span class="value-icon" aria-hidden="true">Shield</span>
-            <h3>Maintain compliance</h3>
-            <p>Keep a clear audit trail for decisions without collecting secrets.</p>
-          </article>
-          <article class="value-card">
-            <span class="value-icon" aria-hidden="true">Risk</span>
-            <h3>Reduce AI risk</h3>
-            <p>Pause low-confidence or high-impact actions before they reach users.</p>
-          </article>
+      <section id="book-demo" class="portkey-final-cta reveal" aria-labelledby="final-title">
+        <span class="section-kicker">Forsig</span>
+        <h2 id="final-title">The last safeguard your AI needs.</h2>
+        <p>Give your agents speed. Keep human control where the business risk is real.</p>
+        <div class="portkey-actions">
+          <a class="portkey-btn portkey-btn-primary" href="mailto:hello@forsig.com?subject=Book%20a%20Forsig%20demo">Book a demo</a>
+          <a class="portkey-btn portkey-btn-secondary" href="#waitlist">Get early access</a>
         </div>
       </section>
 
-      <section id="developers" class="conversion-section developer-section reveal" aria-labelledby="developer-title">
-        <div class="conversion-section-head">
-          <span class="conversion-kicker">Developers</span>
-          <h2 id="developer-title">A small integration point, not a new workflow system.</h2>
-          <p>Start in shadow mode, measure what would need approval, then switch selected checkpoints to active review.</p>
-        </div>
-        <div class="developer-code-card">
-          <div class="code-tabs" role="tablist" aria-label="Quickstart examples">
-            <button class="active" type="button">Node</button>
-            <button type="button">Python</button>
-            <button type="button">cURL</button>
-            <button type="button">LangGraph</button>
-            <button type="button">Vercel AI SDK</button>
-            <button type="button">n8n</button>
-          </div>
-          <pre><code>import { Forsig } from "@forsig/sdk";
-
-const forsig = new Forsig({ apiKey: process.env.FORSIG_API_KEY });
-
-const decision = await forsig.escalate({
-  mode: "shadow",
-  agent: "refund-agent",
-  task: "Approve refund for customer #123",
-  risk: { type: "refund_over_limit", level: "high" },
-  proposedAction: "Issue a $500 refund",
-  waitForDecision: true
-});
-
-if (decision.status === "approved") {
-  await issueRefund();
-}</code></pre>
-          <div class="developer-code-actions">
-            <a class="conversion-button conversion-button-primary" href="/docs">Open docs</a>
-            <a class="conversion-link-button conversion-link-anchor" href="/developer">Developer portal</a>
-          </div>
-        </div>
-      </section>
-
-      <section class="conversion-section conversion-video-section reveal" aria-labelledby="video-title">
-        <div class="conversion-section-head">
-          <span class="conversion-kicker">Product demo</span>
-          <h2 id="video-title">See how an approval moves from agent to human to action.</h2>
-          <p>The demo shows the same flow developers use: create an escalation, review the risk, then return a structured decision.</p>
-        </div>
-        <figure class="product-video-card">
-          <video controls preload="metadata" poster="/assets/demo-poster.svg" aria-label="Two-minute Forsig product demo showing a human approval checkpoint">
-            <source src="/demo.mp4" type="video/mp4" />
-            Your browser does not support the video tag. Place demo.mp4 in the web public root to enable playback.
-          </video>
-          <figcaption>Two-minute demo: Forsig pauses a risky agent action and returns a signed decision.</figcaption>
-        </figure>
-      </section>
-
-      <section class="conversion-section reveal" aria-labelledby="proof-title">
-        <div class="conversion-section-head">
-          <span class="conversion-kicker">Social proof</span>
-          <h2 id="proof-title">Designed with feedback from developers putting agents into real workflows.</h2>
-          <p>Forsig is in private beta. Public logos, metrics, and testimonials will only appear here when they are verified.</p>
-        </div>
-        <div class="beta-proof-grid">
-          <article><b>Private beta</b><span>Hands-on onboarding for early developer teams.</span></article>
-          <article><b>Shadow-first rollout</b><span>Observe risky actions before blocking production workflows.</span></article>
-          <article><b>Security-first scope</b><span>Review minimal context. Keep secrets and full records out.</span></article>
-        </div>
-      </section>
-
-      <section class="conversion-section reveal" aria-labelledby="usecases-title">
-        <div class="conversion-section-head">
-          <span class="conversion-kicker">Use cases</span>
-          <h2 id="usecases-title">Protect the actions that can damage revenue or trust.</h2>
-        </div>
-        <div class="usecase-grid">
-          <article class="usecase-card">
-            <div class="usecase-illustration" aria-hidden="true">01</div>
-            <h3>Stop costly refunds</h3>
-            <p>Outcome: every high-value refund waits for a signed approval before money leaves.</p>
-          </article>
-          <article class="usecase-card">
-            <div class="usecase-illustration" aria-hidden="true">02</div>
-            <h3>Guard migrations</h3>
-            <p>Outcome: production changes pause until someone reviews the affected data and risk.</p>
-          </article>
-          <article class="usecase-card">
-            <div class="usecase-illustration" aria-hidden="true">03</div>
-            <h3>Review outbound emails</h3>
-            <p>Outcome: incorrect offers and risky customer messages are caught before sending.</p>
-          </article>
-          <article class="usecase-card">
-            <div class="usecase-illustration" aria-hidden="true">04</div>
-            <h3>Control paid tools</h3>
-            <p>Outcome: tool purchases and data exports require approval before spend happens.</p>
-          </article>
-        </div>
-      </section>
-
-      <section id="security" class="conversion-section security-section reveal" aria-labelledby="security-title">
-        <div class="conversion-section-head">
-          <span class="conversion-kicker">Compliance & trust</span>
-          <h2 id="security-title">Forsig stores decisions, not secrets.</h2>
-        </div>
-        <div class="security-grid">
-          <article>
-            <h3>What Forsig stores</h3>
-            <ul>
-              <li>User or reviewer ID</li>
-              <li>Tool and agent names</li>
-              <li>Action description and risk reason</li>
-              <li>Decision, timestamp, and audit trail</li>
-            </ul>
-          </article>
-          <article>
-            <h3>What Forsig never needs</h3>
-            <ul>
-              <li>API keys, passwords, or private tokens</li>
-              <li>Full payment records</li>
-              <li>Unnecessary customer data</li>
-              <li>Private agent memory</li>
-            </ul>
-          </article>
-        </div>
-        <div class="trust-badges">
-          <span><img src="/assets/soc2-badge.svg" alt="" loading="lazy" /> SOC 2 in progress</span>
-          <span><img src="/assets/gdpr-badge.svg" alt="" loading="lazy" /> GDPR-ready controls planned</span>
-        </div>
-      </section>
-
-      <section class="conversion-section faq-section reveal" aria-labelledby="faq-title">
-        <div class="conversion-section-head">
-          <span class="conversion-kicker">FAQ</span>
+      <section class="portkey-faq reveal" aria-labelledby="faq-title">
+        <div class="section-head-centered">
+          <span class="section-kicker">FAQ</span>
           <h2 id="faq-title">Common beta questions.</h2>
         </div>
         <div class="faq-list">
@@ -351,41 +435,66 @@ if (decision.status === "approved") {
             <p>Yes. Send only the action, risk reason, and minimal context a reviewer needs.</p>
           </details>
           <details>
-            <summary>Is this production-ready?</summary>
-            <p>Forsig is in private beta. Start with shadow mode, then enable active approvals for selected low-blast-radius workflows.</p>
+            <summary>Is Forsig production-ready?</summary>
+            <p>Forsig is in private beta. Start with shadow mode, then enable active approvals for selected workflows.</p>
           </details>
         </div>
       </section>
     </main>
 
-    <div class="conversion-modal" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title" hidden>
-      <div class="conversion-modal-panel">
+    <div class="conversion-modal portkey-demo-modal" role="dialog" aria-modal="true" aria-labelledby="demo-modal-title" hidden>
+      <div class="portkey-demo-panel">
         <button type="button" aria-label="Close demo" data-close-demo>&times;</button>
-        <span class="conversion-kicker">Two-minute demo</span>
+        <span class="section-kicker">Two-minute demo</span>
         <h2 id="demo-modal-title">Watch Forsig pause a risky AI action.</h2>
-        <video controls preload="metadata" poster="/assets/demo-poster.svg" aria-label="Forsig two-minute demo video">
+        <video controls preload="metadata" poster="/assets/demo-poster.svg" aria-label="Forsig product demo video">
           <source src="/demo.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
-        <p>Place `demo.mp4` in `apps/web/demo.mp4` so it deploys to `/demo.mp4`.</p>
+        <p>Place demo.mp4 in the web public folder to enable playback.</p>
       </div>
     </div>
 
-    <footer class="conversion-footer">
-      <div>
-        <a class="conversion-brand" href="/" aria-label="Forsig home"><span>Forsig</span></a>
+    <footer class="portkey-footer">
+      <div class="footer-brand">
+        <a class="portkey-brand" href="/" aria-label="Forsig home"><span>Forsig</span></a>
         <p>Human approval checkpoints for AI agents that touch money, customers, production, or paid tools.</p>
+        <div class="footer-socials" aria-label="Social links">
+          <a href="https://x.com/" aria-label="Forsig on X">X</a>
+          <a href="https://www.linkedin.com/" aria-label="Forsig on LinkedIn">in</a>
+          <a href="mailto:hello@forsig.com" aria-label="Email Forsig">@</a>
+        </div>
       </div>
       <nav aria-label="Footer navigation">
-        <a href="#product">Product</a>
-        <a href="#developers">Developers</a>
-        <a href="#security">Security</a>
-        <a href="#waitlist">Pricing/Beta</a>
-        <a href="/developer">Developer portal</a>
-        <a href="/docs">Docs</a>
-        <a href="/security">Security</a>
-        <a href="/privacy">Privacy</a>
-        <a href="/contact">Contact</a>
+        <div>
+          <h3>Product</h3>
+          <a href="#product">Overview</a>
+          <a href="#security">Security</a>
+          <a href="#waitlist">Beta</a>
+        </div>
+        <div>
+          <h3>Developers</h3>
+          <a href="#developers">SDK</a>
+          <a href="/docs">Docs</a>
+          <a href="/developer">Portal</a>
+        </div>
+        <div>
+          <h3>Solutions</h3>
+          <a href="/use-cases/refunds">Refunds</a>
+          <a href="/use-cases/deployments">Deployments</a>
+          <a href="/use-cases/tool-spend">Tool spend</a>
+        </div>
+        <div>
+          <h3>Resources</h3>
+          <a href="/docs">Documentation</a>
+          <a href="/security">Security notes</a>
+          <a href="/privacy">Privacy</a>
+        </div>
+        <div>
+          <h3>Company</h3>
+          <a href="/contact">Contact</a>
+          <a href="mailto:hello@forsig.com">hello@forsig.com</a>
+        </div>
       </nav>
     </footer>
 
