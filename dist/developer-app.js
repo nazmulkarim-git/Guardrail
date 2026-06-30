@@ -1,4 +1,5 @@
 import { generateIntegrationPrompt } from "./prompt-generator.mjs";
+import { developerTheme } from "./theme.js";
 
 const state = {
   selectedId: new URLSearchParams(location.search).get("esc"),
@@ -34,6 +35,10 @@ const $ = (selector) => document.querySelector(selector);
 function applyTheme(theme = localStorage.getItem("forsig_developer_theme") || "dark") {
   document.body.dataset.theme = theme;
   localStorage.setItem("forsig_developer_theme", theme);
+  const palette = developerTheme[theme] || developerTheme.dark;
+  Object.entries(palette).forEach(([name, value]) => {
+    document.documentElement.style.setProperty(`--theme-${name}`, value);
+  });
   const button = $("#developer-theme-toggle");
   if (button) button.innerHTML = `${theme === "light" ? "Dark" : "Light"} <span>T</span>`;
 }
@@ -132,6 +137,50 @@ function renderLineNumberedCode(codeEl, rawCode) {
   codeEl.innerHTML = raw.split("\n").map((line, index) => (
     `<span class="code-line" data-line="${index + 1}">${escapeHtml(line) || " "}</span>`
   )).join("");
+}
+
+function renderDashboard() {
+  const summary = $("#developer-dashboard-summary");
+  const recent = $("#developer-dashboard-recent");
+  if (!summary || !recent) return;
+  const pending = state.escalations.filter((item) => item.status === "pending").length;
+  const activeAgents = state.agents.filter((agent) => !agent.archived_at).length;
+  const activeKeys = state.keys.filter((key) => keyStatus(key) === "active").length;
+  const recentItems = [...state.escalations]
+    .sort((a, b) => new Date(b.createdAt || b.created_at || 0) - new Date(a.createdAt || a.created_at || 0))
+    .slice(0, 5);
+
+  summary.innerHTML = [
+    { label: "Pending approvals", value: pending, detail: "Requests waiting for a decision" },
+    { label: "Recent escalations", value: state.escalations.length, detail: "Loaded in the current workspace view" },
+    { label: "Agents", value: activeAgents, detail: "Active workflows sending requests" },
+    { label: "API keys", value: activeKeys, detail: "Active server-side keys" }
+  ].map((item) => `
+    <article>
+      <span>${escapeHtml(item.label)}</span>
+      <strong>${escapeHtml(item.value)}</strong>
+      <small>${escapeHtml(item.detail)}</small>
+    </article>
+  `).join("");
+
+  recent.innerHTML = recentItems.length ? `
+    <div class="resend-table-row resend-table-head dashboard-recent-row">
+      <span>Request</span><span>Status</span><span>Agent</span><span>Created</span>
+    </div>
+    ${recentItems.map((item) => `
+      <button type="button" data-escalation-id="${escapeHtml(item.id)}" class="resend-table-row selectable-row dashboard-recent-row">
+        <span><b>${escapeHtml(item.task?.title || item.id)}</b><small>${escapeHtml(item.workflow || item.step || "Approval request")}</small></span>
+        <span><em class="key-state key-state-${escapeHtml(item.status || "pending")}">${escapeHtml(item.status || "pending")}</em></span>
+        <span>${escapeHtml(item.agent?.name || item.agent?.id || "Agent")}</span>
+        <span>${formatDate(item.createdAt || item.created_at)}</span>
+      </button>
+    `).join("")}
+  ` : `
+    <div class="empty-state">
+      <strong>No escalations yet.</strong>
+      <p>Create an agent and send a test escalation when you are ready.</p>
+    </div>
+  `;
 }
 
 function formatDate(value) {
@@ -234,6 +283,7 @@ function setAuthMode(mode) {
 }
 
 function setView(view) {
+  window.scrollTo({ top: 0, behavior: "auto" });
   document.querySelectorAll("[data-developer-view]").forEach((button) => {
     button.classList.toggle("active", button.dataset.developerView === view);
   });
@@ -250,6 +300,7 @@ function setView(view) {
     loadAgents();
   }
   if (view === "quickstart") {
+    renderDashboard();
     renderQuickstart();
   }
   if (view === "integration") {
@@ -347,6 +398,7 @@ async function loadKeys() {
     const data = await api("/api/developer/api-key");
     state.keys = data.keys || [];
     renderKeys();
+    renderDashboard();
     renderOnboarding();
     renderQuickstart();
     if (state.selectedKeyId) showKeyDetail(state.selectedKeyId);
@@ -393,10 +445,10 @@ function renderKeys() {
     list.innerHTML = `
       <div class="empty-state">
         <strong>No API keys yet.</strong>
-        <p>Create a key, copy it once, then run the Quickstart script to send your first real escalation.</p>
+        <p>Create a key, copy it once, then run the setup script to send your first real escalation.</p>
         <div class="developer-empty-actions">
           <button type="button" onclick="document.querySelector('#developer-create-api-key').click()">Create API key</button>
-          <button type="button" data-developer-view="quickstart">Open Quickstart</button>
+          <button type="button" data-developer-view="quickstart">Open Dashboard</button>
         </div>
       </div>
     `;
@@ -596,10 +648,10 @@ function showAuditDetail(id) {
 }
 
 const commandItems = [
-  { id: "quickstart", label: "Open onboarding", hint: "Start the guided API key, SDK, and first escalation flow.", keywords: ["start", "setup", "quickstart"], run: () => setView("quickstart") },
-  { id: "node-example", label: "Show Node example", hint: "Open the quickstart and switch the code block to Node.", keywords: ["javascript", "typescript", "sdk"], run: () => { setView("quickstart"); state.quickstartTab = "node"; renderQuickstart(); } },
-  { id: "python-example", label: "Show Python example", hint: "Open the quickstart and switch the code block to Python.", keywords: ["sdk", "requests"], run: () => { setView("quickstart"); state.quickstartTab = "python"; renderQuickstart(); } },
-  { id: "curl-example", label: "Show cURL example", hint: "Open the quickstart and switch the code block to cURL.", keywords: ["api", "http"], run: () => { setView("quickstart"); state.quickstartTab = "curl"; renderQuickstart(); } },
+  { id: "quickstart", label: "Open Dashboard", hint: "View workspace summary and guided setup.", keywords: ["start", "setup", "dashboard"], run: () => setView("quickstart") },
+  { id: "node-example", label: "Show Node example", hint: "Open dashboard setup and switch the code block to Node.", keywords: ["javascript", "typescript", "sdk"], run: () => { setView("quickstart"); state.quickstartTab = "node"; renderQuickstart(); } },
+  { id: "python-example", label: "Show Python example", hint: "Open dashboard setup and switch the code block to Python.", keywords: ["sdk", "requests"], run: () => { setView("quickstart"); state.quickstartTab = "python"; renderQuickstart(); } },
+  { id: "curl-example", label: "Show cURL example", hint: "Open dashboard setup and switch the code block to cURL.", keywords: ["api", "http"], run: () => { setView("quickstart"); state.quickstartTab = "curl"; renderQuickstart(); } },
   { id: "inbox", label: "Open Inbox", hint: "Review pending approvals.", keywords: ["escalations", "decisions"], run: () => setView("inbox") },
   { id: "create-key", label: "Create API key", hint: "Generate a key and see it once.", keywords: ["token", "secret"], run: () => { setView("keys"); openModal("#api-key-create-modal"); } },
   { id: "create-agent", label: "Create agent", hint: "Group escalations by workflow.", keywords: ["workflow", "reviewers"], run: () => { setView("agents"); openModal("#agent-create-modal"); } },
@@ -676,7 +728,7 @@ function checklistItems() {
   return [
     { label: hasAgent ? "Starter agent ready" : "Create a starter agent", done: hasAgent, view: "agents" },
     { label: hasKey ? "API key ready" : "Create an API key", done: hasKey, view: "keys" },
-    { label: hasEscalation ? "Real escalation received" : "Run the quickstart script", done: hasEscalation, view: "quickstart" },
+    { label: hasEscalation ? "Real escalation received" : "Run the setup script", done: hasEscalation, view: "quickstart" },
     { label: hasDecision ? "Decision sent to agent" : "Approve and inspect JSON", done: hasDecision, view: "inbox" }
   ];
 }
@@ -939,6 +991,7 @@ async function loadAgents() {
     const data = await api("/api/developer/agents");
     state.agents = data.agents || [];
     renderAgents();
+    renderDashboard();
     renderOnboarding();
     renderQuickstart();
     if (state.selectedAgentId) showAgentDetail(state.selectedAgentId);
@@ -1040,6 +1093,7 @@ async function loadEscalations() {
   const data = await api(`/api/developer/escalations?status=${encodeURIComponent(state.status)}`);
   state.escalations = data.escalations || [];
   renderInboxRows();
+  renderDashboard();
   renderOnboarding();
   renderQuickstart();
 }
@@ -1697,7 +1751,15 @@ document.addEventListener("click", async (event) => {
   if (startFree) {
     setView("keys");
     openModal("#api-key-create-modal");
-    track("developer_start_free_clicked");
+    track("developer_create_key_clicked");
+    return;
+  }
+
+  const createAgentAction = event.target.closest("[data-open-create-agent]");
+  if (createAgentAction) {
+    setView("agents");
+    openModal("#agent-create-modal");
+    track("developer_create_agent_clicked");
     return;
   }
 
@@ -1747,7 +1809,7 @@ document.addEventListener("click", async (event) => {
     await navigator.clipboard.writeText(code.dataset.raw || code.textContent);
     button.classList.add("copied");
     button.textContent = "Copied";
-    toast("Quickstart code copied");
+    toast("Setup code copied");
     setTimeout(() => {
       button.classList.remove("copied");
       button.textContent = "Copy snippet";
@@ -1764,7 +1826,7 @@ document.addEventListener("click", async (event) => {
       hasApiKey: Boolean(activeApiKey()),
       hasAgent: Boolean(starterAgent())
     });
-    toast("Copy the quickstart code and run it locally");
+    toast("Copy the setup code and run it locally");
     return;
   }
 

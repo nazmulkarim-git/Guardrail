@@ -15117,6 +15117,300 @@ body[data-page="developer"][data-theme="light"] .developer-codeblock {
   }
 }
 
+/* Developer workspace reset.
+   This layer intentionally removes the landing-page feeling from /developer:
+   no oversized hero, no heavy gradients, compact page titles, and functional cards. */
+body[data-page="developer"] {
+  --developer-bg: var(--theme-background, #0f172a);
+  --developer-surface: var(--theme-surface, #111827);
+  --developer-surface-alt: var(--theme-surfaceAlt, #1f2937);
+  --developer-border: var(--theme-border, #334155);
+  --developer-text: var(--theme-text, #f8fafc);
+  --developer-muted: var(--theme-muted, #cbd5e1);
+  --developer-primary: var(--theme-primary, #6366f1);
+  --developer-secondary: var(--theme-secondary, #14b8a6);
+  --developer-danger: var(--theme-danger, #fb7185);
+  --developer-panel: var(--developer-surface);
+  --developer-soft-line: var(--developer-border);
+  color: var(--developer-text) !important;
+  background: var(--developer-bg) !important;
+}
+
+body[data-page="developer"] .admin-shell,
+body[data-page="developer"] .admin-main,
+body[data-page="developer"] .developer-topline {
+  background: var(--developer-bg) !important;
+}
+
+body[data-page="developer"] .admin-sidebar {
+  position: sticky !important;
+  top: 0;
+  height: 100vh;
+  background: color-mix(in srgb, var(--developer-bg) 92%, #000 8%) !important;
+  border-right: 1px solid var(--developer-border) !important;
+}
+
+body[data-page="developer"] .admin-view,
+body[data-page="developer"] .developer-page-head,
+body[data-page="developer"] .admin-toolbar {
+  width: min(1420px, calc(100% - 64px)) !important;
+}
+
+body[data-page="developer"] .developer-page-head {
+  align-items: flex-start !important;
+  margin-bottom: var(--space-3) !important;
+}
+
+body[data-page="developer"] .developer-page-head h1,
+body[data-page="developer"] .developer-page-head h2,
+body[data-page="developer"] .developer-card-head h2,
+body[data-page="developer"] .admin-panel h2 {
+  margin: 0 0 var(--space-1) !important;
+  color: var(--developer-text) !important;
+  font-size: var(--text-h1) !important;
+  line-height: var(--line-heading) !important;
+  letter-spacing: 0 !important;
+  word-break: normal !important;
+}
+
+body[data-page="developer"] .developer-card-head h2,
+body[data-page="developer"] .admin-panel h2 {
+  font-size: var(--text-h2) !important;
+}
+
+body[data-page="developer"] .admin-meta,
+body[data-page="developer"] .developer-page-head p,
+body[data-page="developer"] .developer-workspace-card p {
+  color: var(--developer-muted) !important;
+  font-size: var(--text-caption) !important;
+  line-height: 1.5 !important;
+}
+
+body[data-page="developer"] .developer-dashboard-view {
+  display: grid;
+  gap: var(--space-3);
+}
+
+body[data-page="developer"] .developer-page-actions,
+body[data-page="developer"] .developer-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+body[data-page="developer"] .developer-page-actions {
+  flex-wrap: wrap;
+}
+
+body[data-page="developer"] .developer-page-actions button,
+body[data-page="developer"] .developer-card-head button,
+body[data-page="developer"] .developer-primary-button,
+body[data-page="developer"] .developer-detail-actions button,
+body[data-page="developer"] .developer-detail-actions a,
+body[data-page="developer"] .developer-wizard-actions button {
+  min-height: 38px;
+  border: 1px solid var(--developer-border) !important;
+  border-radius: 10px !important;
+  padding: 0 14px !important;
+  color: var(--developer-text) !important;
+  background: var(--developer-surface-alt) !important;
+  box-shadow: none !important;
+}
+
+body[data-page="developer"] .developer-primary-button,
+body[data-page="developer"] .developer-page-actions .developer-primary-button {
+  border-color: var(--developer-primary) !important;
+  color: #fff !important;
+  background: var(--developer-primary) !important;
+}
+
+body[data-page="developer"] .developer-page-actions button:hover,
+body[data-page="developer"] .developer-card-head button:hover,
+body[data-page="developer"] .developer-primary-button:hover,
+body[data-page="developer"] .developer-detail-actions button:hover,
+body[data-page="developer"] .developer-detail-actions a:hover,
+body[data-page="developer"] .developer-wizard-actions button:hover,
+body[data-page="developer"] .developer-dashboard-summary article:hover,
+body[data-page="developer"] .developer-workspace-card:hover {
+  transform: translateY(-1px);
+}
+
+body[data-page="developer"] .developer-dashboard-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+body[data-page="developer"] .developer-dashboard-summary article,
+body[data-page="developer"] .developer-workspace-card,
+body[data-page="developer"] .developer-onboarding-wizard,
+body[data-page="developer"] .developer-wizard-panel,
+body[data-page="developer"] .resend-panel,
+body[data-page="developer"] .admin-panel {
+  border: 1px solid var(--developer-border) !important;
+  border-radius: 14px !important;
+  background: var(--developer-surface) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14) !important;
+  backdrop-filter: none !important;
+}
+
+body[data-page="developer"] .developer-dashboard-summary article {
+  display: grid;
+  gap: 6px;
+  min-height: 118px;
+  padding: var(--space-2);
+}
+
+body[data-page="developer"] .developer-dashboard-summary span {
+  color: var(--developer-muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+body[data-page="developer"] .developer-dashboard-summary strong {
+  color: var(--developer-text);
+  font-size: 28px;
+  line-height: 1;
+}
+
+body[data-page="developer"] .developer-dashboard-summary small {
+  color: var(--developer-muted);
+  line-height: 1.45;
+}
+
+body[data-page="developer"] .developer-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+  gap: var(--space-2);
+}
+
+body[data-page="developer"] .developer-workspace-card,
+body[data-page="developer"] .developer-onboarding-wizard {
+  padding: var(--space-2);
+}
+
+body[data-page="developer"] .developer-dashboard-recent {
+  margin-top: var(--space-2);
+}
+
+body[data-page="developer"] .dashboard-recent-row {
+  grid-template-columns: minmax(260px, 1.2fr) 120px minmax(140px, 0.8fr) 170px !important;
+}
+
+body[data-page="developer"] .quickstart-checklist {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: var(--space-1) !important;
+  margin: var(--space-2) 0 0 !important;
+}
+
+body[data-page="developer"] .quickstart-checklist > div,
+body[data-page="developer"] .quickstart-checklist button {
+  min-height: auto !important;
+  padding: 12px !important;
+  border-radius: 10px !important;
+  background: var(--developer-surface-alt) !important;
+}
+
+body[data-page="developer"] .developer-stepper {
+  margin: var(--space-2) 0 !important;
+}
+
+body[data-page="developer"] .developer-stepper button {
+  min-height: 48px;
+  border-color: var(--developer-border);
+  color: var(--developer-muted);
+  background: var(--developer-surface-alt);
+}
+
+body[data-page="developer"] .developer-stepper button.active {
+  border-color: var(--developer-primary);
+  color: var(--developer-text);
+  background: color-mix(in srgb, var(--developer-primary) 18%, var(--developer-surface-alt));
+}
+
+body[data-page="developer"] .developer-wizard-panel summary {
+  min-height: 58px;
+  padding: 14px;
+}
+
+body[data-page="developer"] .developer-wizard-panel > div {
+  padding: 0 14px 14px 54px;
+}
+
+body[data-page="developer"] .developer-codeblock {
+  max-height: 420px !important;
+  border-color: var(--developer-border) !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+}
+
+body[data-page="developer"] .developer-testimonials,
+body[data-page="developer"] .developer-start-hero,
+body[data-page="developer"] .developer-metric-grid,
+body[data-page="developer"] .developer-hero-card {
+  display: none !important;
+}
+
+body[data-page="developer"] .command-palette > div {
+  border-color: var(--developer-border) !important;
+  background: var(--developer-surface) !important;
+}
+
+body[data-page="developer"] #developer-command-results button:hover,
+body[data-page="developer"] #developer-command-results button:focus-visible {
+  background: color-mix(in srgb, var(--developer-primary) 16%, var(--developer-surface)) !important;
+}
+
+body[data-page="developer"][data-theme="light"] {
+  color: var(--developer-text) !important;
+}
+
+body[data-page="developer"][data-theme="light"] .admin-shell,
+body[data-page="developer"][data-theme="light"] .admin-main,
+body[data-page="developer"][data-theme="light"] .developer-topline {
+  background: var(--developer-bg) !important;
+}
+
+body[data-page="developer"][data-theme="light"] .developer-codeblock {
+  background: #111827 !important;
+  color: #f8fafc !important;
+}
+
+@media (max-width: 1120px) {
+  body[data-page="developer"] .developer-dashboard-summary,
+  body[data-page="developer"] .developer-dashboard-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-page="developer"] .admin-sidebar {
+    position: static !important;
+    height: auto;
+  }
+
+  body[data-page="developer"] .developer-dashboard-summary,
+  body[data-page="developer"] .developer-dashboard-grid,
+  body[data-page="developer"] .developer-stepper {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="developer"] .developer-page-actions,
+  body[data-page="developer"] .developer-card-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  body[data-page="developer"] .developer-page-actions button,
+  body[data-page="developer"] .developer-card-head button {
+    width: 100%;
+  }
+}
+
 /* Landing-page overhaul */
 body[data-page="landing"].forsig-overhaul {
   --oh-bg: #05070d;

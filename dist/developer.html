@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="/design-tokens.css" />
+    <link rel="stylesheet" href="/typography.css" />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body data-page="developer" class="zip-design admin-app">
@@ -23,7 +24,8 @@
         </a>
         <nav>
           <span class="sidebar-group-label">Setup</span>
-          <button type="button" data-developer-view="quickstart" data-nav-icon="S" class="active"><span>Start here</span><small>Shift S</small></button>
+          <button type="button" data-developer-view="quickstart" data-nav-icon="D" class="active"><span>Dashboard</span></button>
+          <button type="button" data-developer-view="integration" data-nav-icon="I" title="Generate a Codex, Claude, or Cursor prompt that adds Forsig checkpoints to your codebase."><span>AI Installer</span></button>
           <button type="button" data-developer-view="shadow" data-nav-icon="M" title="See non-blocking simulations before you turn on active approval."><span>Shadow simulations</span></button>
           <span class="sidebar-group-label">Operate</span>
           <button type="button" data-developer-view="inbox" data-nav-icon="Q"><span>Inbox</span><small>Shift I</small></button>
@@ -110,51 +112,52 @@
           </div>
         </section>
 
-        <section id="developer-view-quickstart" class="admin-view developer-start-view">
-          <!-- StartHere: premium hero and guided onboarding hub for first-run developer activation. -->
-          <section class="developer-start-hero" aria-labelledby="developer-start-title">
+        <section id="developer-view-quickstart" class="admin-view developer-dashboard-view">
+          <!-- Dashboard: functional workspace entry point for developers after login. -->
+          <div class="developer-page-head">
             <div>
-              <span class="zip-section-label">Developer beta</span>
-              <h1 id="developer-start-title">Safeguard your AI agents with approval checkpoints and audit trails.</h1>
-              <p>Control risky actions and comply with policies with zero friction. Create a key, install Forsig, and approve your first escalation in minutes.</p>
-              <div class="developer-hero-actions">
-                <button id="developer-start-free" class="developer-primary-button" type="button">Start free</button>
-                <a class="developer-secondary-button" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noreferrer">Book a demo</a>
-              </div>
+              <h1>Dashboard</h1>
+              <p class="admin-meta">Monitor approval activity, jump to operational work, and finish setup tasks.</p>
             </div>
-            <div class="developer-hero-card" aria-label="Forsig approval flow preview">
-              <span>Agent action</span>
-              <strong>Refund $500</strong>
-              <small>Risk exceeds policy. Forsig pauses execution and notifies reviewers.</small>
-              <div class="developer-hero-flow">
-                <b>Checkpoint created</b>
-                <b>Human approves</b>
-                <b>Signed decision returned</b>
-              </div>
+            <div class="developer-page-actions">
+              <button type="button" class="developer-primary-button" data-open-create-agent>Create Agent</button>
+              <button type="button" data-open-create-key>Create API Key</button>
+              <button type="button" data-developer-view="inbox">View Inbox</button>
             </div>
-          </section>
+          </div>
 
-          <!-- Metrics: social proof placeholders that stay useful during private beta. -->
-          <section class="developer-metric-grid" aria-label="Forsig trust metrics">
-            <article><span>OK</span><strong>2.4k+</strong><small>Approvals processed in test and beta workspaces</small></article>
-            <article><span>UP</span><strong>99.9%</strong><small>Target dashboard availability for private beta teams</small></article>
-            <article><span>DP</span><strong>18</strong><small>Design partners and early AI workflow builders</small></article>
-            <article><span>5M</span><strong>&lt; 5 min</strong><small>Typical time to create a real checkpoint</small></article>
-          </section>
+          <section id="developer-dashboard-summary" class="developer-dashboard-summary" aria-label="Workspace summary"></section>
 
-          <!-- Guided onboarding: consolidates Start here and AI Installer into one activation flow. -->
-          <section class="developer-onboarding-wizard" aria-labelledby="developer-onboarding-title">
-            <div class="developer-page-head compact">
+          <section class="developer-dashboard-grid">
+            <article class="developer-workspace-card">
+              <div class="developer-card-head">
+                <div>
+                  <h2>Recent escalations</h2>
+                  <p class="admin-meta">Latest requests visible in this workspace.</p>
+                </div>
+                <button type="button" data-developer-view="inbox">Open Inbox</button>
+              </div>
+              <div id="developer-dashboard-recent" class="developer-dashboard-recent"></div>
+            </article>
+
+            <article class="developer-workspace-card">
               <div>
-                <span class="zip-section-label">Guided setup</span>
-                <h2 id="developer-onboarding-title">Launch your first Forsig checkpoint</h2>
-                <p class="admin-meta">Follow the three steps below. You can use the code directly or generate an AI installer prompt for Codex, Cursor, or Claude.</p>
+                <h2>Setup checklist</h2>
+                <p class="admin-meta">Complete these items before sending production escalations.</p>
+              </div>
+              <div id="developer-quickstart-checklist" class="quickstart-checklist" aria-live="polite"></div>
+            </article>
+          </section>
+
+          <!-- Guided onboarding: compact setup panel for first workspace activation. -->
+          <section class="developer-onboarding-wizard" aria-labelledby="developer-onboarding-title">
+            <div class="developer-card-head">
+              <div>
+                <h2 id="developer-onboarding-title">Onboarding wizard</h2>
+                <p class="admin-meta">Generate a key, install Forsig, then approve a test escalation.</p>
               </div>
               <button id="developer-generate-real-snippet" class="developer-primary-button" type="button">Generate example</button>
             </div>
-
-            <div id="developer-quickstart-checklist" class="quickstart-checklist" aria-live="polite"></div>
-
             <div id="developer-onboarding-stepper" class="developer-stepper" role="tablist" aria-label="Onboarding steps">
               <button class="active" type="button" data-onboarding-step="0"><span>1</span>Generate API key</button>
               <button type="button" data-onboarding-step="1"><span>2</span>Install SDK or AI agent</button>
@@ -165,7 +168,7 @@
               <details class="developer-wizard-panel" data-onboarding-panel="0" open>
                 <summary><span>1</span><strong>Generate API key</strong><small>Shown once, then safely masked.</small></summary>
                 <div>
-                  <p>Create a server-side key and store it as <code>FORSIG_API_KEY</code>. Forsig never asks for your model keys, payment secrets, or customer records.</p>
+                  <p>Create a server-side key and store it as <code>FORSIG_API_KEY</code>.</p>
                   <button type="button" class="developer-primary-button" data-open-create-key>Create API key</button>
                 </div>
               </details>
@@ -173,8 +176,8 @@
               <details class="developer-wizard-panel" data-onboarding-panel="1">
                 <summary><span>2</span><strong>Install SDK or AI agent</strong><small>Copy Node, Python, cURL, or framework examples.</small></summary>
                 <div class="developer-codeblock-card">
-                  <p>Use these examples as a guide for creating Forsig checkpoints from your app. Start in shadow mode, then switch to active approval after you trust the trigger.</p>
-                  <div class="quickstart-tabs" role="tablist" aria-label="Quickstart language">
+                  <p>Use these examples as a guide for creating Forsig checkpoints from your app.</p>
+                  <div class="quickstart-tabs" role="tablist" aria-label="Setup code language">
                     <button class="active" type="button" data-quickstart-tab="node">Node</button>
                     <button type="button" data-quickstart-tab="python">Python</button>
                     <button type="button" data-quickstart-tab="curl">cURL</button>
@@ -186,7 +189,7 @@
                     <strong>No secrets in review context.</strong>
                     <span>Send only what a reviewer needs. Avoid API keys, passwords, payment details, full customer records, and unnecessary personal data.</span>
                   </div>
-                  <pre class="quickstart-code developer-codeblock" aria-label="Forsig quickstart code"><code id="developer-quickstart-code"></code></pre>
+                  <pre class="quickstart-code developer-codeblock" aria-label="Forsig setup code"><code id="developer-quickstart-code"></code></pre>
                   <div class="developer-detail-actions">
                     <button id="developer-copy-quickstart" type="button">Copy snippet</button>
                     <button type="button" data-developer-view="integration">Generate AI installer prompt</button>
@@ -208,24 +211,6 @@
               <button type="button" data-onboarding-prev>Previous</button>
               <button type="button" data-onboarding-next>Next step</button>
             </div>
-          </section>
-
-          <section class="developer-testimonials" aria-label="Beta feedback">
-            <article>
-              <span>AK</span>
-              <blockquote>&quot;Forsig gave our agents a clean stop point before refunds, without making the workflow feel heavy.&quot;</blockquote>
-              <small>AI platform engineer, design partner</small>
-            </article>
-            <article>
-              <span>MO</span>
-              <blockquote>&quot;The audit trail made it obvious which actions needed review before we moved from shadow mode.&quot;</blockquote>
-              <small>Ops founder, private beta</small>
-            </article>
-            <article>
-              <span>SR</span>
-              <blockquote>&quot;The installer prompt helped us find the right risky branches faster than manual docs alone.&quot;</blockquote>
-              <small>Automation lead, beta workspace</small>
-            </article>
           </section>
         </section>
 
@@ -282,7 +267,7 @@
             <textarea id="developer-ai-prompt-input" placeholder="Add anything specific about your app, thresholds, reviewer routing, or agent framework. Example: Refunds over $500 USD require approval, discount emails over 20% require approval, and production migrations should notify devops."></textarea>
             <div class="ai-prompt-actions">
               <button id="developer-copy-ai-install" type="button">Copy install command</button>
-              <button id="developer-open-quickstart-from-prompt" type="button">Open quickstart</button>
+              <button id="developer-open-quickstart-from-prompt" type="button">Open dashboard</button>
             </div>
             <pre class="quickstart-code ai-prompt-output"><code id="developer-ai-prompt-output"></code></pre>
             <div class="developer-detail-actions">
@@ -415,7 +400,7 @@
                   <span>Email reviewers when a real escalation is created</span>
                 </label>
                 <textarea name="defaultReviewerEmails" placeholder="Reviewer emails, comma separated"></textarea>
-                <p class="admin-meta">Default reviewers are used by quickstart snippets, AI installer prompts, and new escalations unless an agent overrides them.</p>
+                <p class="admin-meta">Default reviewers are used by setup snippets, AI installer prompts, and new escalations unless an agent overrides them.</p>
                 <button type="submit">Save notifications</button>
                 <p class="mini-status" role="status"></p>
               </form>
@@ -506,9 +491,9 @@
           <button id="api-key-modal-copy" type="button">Copy API key</button>
           <div class="api-key-next-step">
             <h3>Next: run a checkpoint</h3>
-            <p>Set this key as an environment variable, then open Quickstart for copy-paste code.</p>
+            <p>Set this key as an environment variable, then open Dashboard for copy-paste code.</p>
             <pre><code id="api-key-modal-env"></code></pre>
-            <button type="button" data-developer-view="quickstart">Open Quickstart</button>
+            <button type="button" data-developer-view="quickstart">Open Dashboard</button>
           </div>
         </div>
       </div>
