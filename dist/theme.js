@@ -1,13 +1,13 @@
 export const developerTheme = {
   dark: {
-    background: "#0F172A",
-    surface: "#111827",
-    surfaceAlt: "#1F2937",
-    border: "#334155",
-    text: "#F8FAFC",
-    muted: "#CBD5E1",
-    primary: "#6366F1",
-    secondary: "#14B8A6",
+    background: "#000000",
+    surface: "#0A0A0C",
+    surfaceAlt: "#111114",
+    border: "#242428",
+    text: "#F5F5F5",
+    muted: "#A1A1AA",
+    primary: "#FFFFFF",
+    secondary: "#3B82F6",
     danger: "#FB7185"
   },
   light: {

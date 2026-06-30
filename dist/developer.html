@@ -23,18 +23,16 @@
           </span>
         </a>
         <nav>
-          <span class="sidebar-group-label">Setup</span>
-          <button type="button" data-developer-view="quickstart" data-nav-icon="D" class="active"><span>Dashboard</span></button>
-          <button type="button" data-developer-view="integration" data-nav-icon="I" title="Generate a Codex, Claude, or Cursor prompt that adds Forsig checkpoints to your codebase."><span>AI Installer</span></button>
-          <button type="button" data-developer-view="shadow" data-nav-icon="M" title="See non-blocking simulations before you turn on active approval."><span>Shadow simulations</span></button>
-          <span class="sidebar-group-label">Operate</span>
-          <button type="button" data-developer-view="inbox" data-nav-icon="Q"><span>Inbox</span><small>Shift I</small></button>
-          <button type="button" data-developer-view="agents" data-nav-icon="G" title="Group escalations by workflow, environment, and reviewer defaults."><span>Agents</span></button>
-          <button type="button" data-developer-view="keys" data-nav-icon="K" title="Create, hold, and revoke API keys. Full keys are only shown once."><span>API Keys</span><small>C</small></button>
-          <button type="button" data-developer-view="audit" data-nav-icon="T" title="Review and export decisions, test runs, and workspace events."><span>Audit trails</span></button>
-          <span class="sidebar-group-label">Workspace</span>
-          <a href="/docs" data-nav-icon="D"><span>Docs</span></a>
-          <button type="button" data-developer-view="settings" data-nav-icon="P"><span>Settings</span></button>
+          <button type="button" data-developer-view="quickstart" data-nav-icon="H" class="active" title="Dashboard"><span>Dashboard</span></button>
+          <button type="button" data-developer-view="inbox" data-nav-icon="M" title="Inbox"><span>Inbox</span></button>
+          <button type="button" data-developer-view="onboarding" data-nav-icon="O" title="Onboarding"><span>Onboarding</span></button>
+          <button type="button" data-developer-view="integration" data-nav-icon="A" title="AI Installer"><span>AI Installer</span></button>
+          <button type="button" data-developer-view="shadow" data-nav-icon="S" title="Shadow simulations"><span>Shadow simulations</span></button>
+          <button type="button" data-developer-view="agents" data-nav-icon="G" title="Agents"><span>Agents</span></button>
+          <button type="button" data-developer-view="keys" data-nav-icon="K" title="API Keys"><span>API Keys</span></button>
+          <button type="button" data-developer-view="audit" data-nav-icon="L" title="Audit trails"><span>Audit trails</span></button>
+          <a href="/docs" data-nav-icon="D" title="Docs"><span>Docs</span></a>
+          <button type="button" data-developer-view="settings" data-nav-icon="P" title="Settings"><span>Settings</span></button>
         </nav>
         <div class="developer-sidebar-footer">
           <button type="button" data-developer-view="profile">My profile</button>
@@ -74,12 +72,15 @@
 
       <section id="developer-app" class="admin-main" hidden>
         <div class="developer-topline">
-          <span id="developer-workspace-label" class="admin-meta"></span>
-          <div>
-            <button id="developer-command-open" class="developer-help-pill" type="button">Command <span>K</span></button>
-            <a class="developer-help-pill" href="/docs">Docs <span>D</span></a>
-            <button id="developer-theme-toggle" class="developer-help-pill" type="button">Theme <span>T</span></button>
-            <a class="developer-help-pill" href="/contact">Need help? <span>H</span></a>
+          <div class="developer-topline-title">
+            <span class="developer-topline-logo">F</span>
+            <strong id="developer-page-title">Dashboard</strong>
+          </div>
+          <div class="developer-topline-actions">
+            <button id="developer-command-open" class="developer-icon-button" type="button" aria-label="Open command palette">K</button>
+            <a href="/docs">Docs</a>
+            <a href="/contact">Need help?</a>
+            <button id="developer-theme-toggle" class="developer-theme-button" type="button">Light</button>
           </div>
         </div>
 
@@ -141,15 +142,17 @@
             </article>
 
             <article class="developer-workspace-card">
-              <div>
-                <h2>Setup checklist</h2>
-                <p class="admin-meta">Complete these items before sending production escalations.</p>
+              <div class="developer-empty-compact">
+                <span class="developer-empty-icon">O</span>
+                <h2>Finish onboarding</h2>
+                <p class="admin-meta">Generate a key, copy a setup snippet, and approve a test escalation when you are ready.</p>
+                <button type="button" class="developer-primary-button" data-developer-view="onboarding">Open onboarding</button>
               </div>
-              <div id="developer-quickstart-checklist" class="quickstart-checklist" aria-live="polite"></div>
             </article>
           </section>
+        </section>
 
-          <!-- Guided onboarding: compact setup panel for first workspace activation. -->
+        <section id="developer-view-onboarding" class="admin-view" hidden>
           <section class="developer-onboarding-wizard" aria-labelledby="developer-onboarding-title">
             <div class="developer-card-head">
               <div>
@@ -158,6 +161,7 @@
               </div>
               <button id="developer-generate-real-snippet" class="developer-primary-button" type="button">Generate example</button>
             </div>
+            <div id="developer-quickstart-checklist" class="quickstart-checklist" aria-live="polite"></div>
             <div id="developer-onboarding-stepper" class="developer-stepper" role="tablist" aria-label="Onboarding steps">
               <button class="active" type="button" data-onboarding-step="0"><span>1</span>Generate API key</button>
               <button type="button" data-onboarding-step="1"><span>2</span>Install SDK or AI agent</button>
@@ -453,15 +457,15 @@
           <h2 id="agent-create-modal-title">Create agent</h2>
           <p class="admin-meta">Agents group escalations by workflow, environment, reviewer defaults, and audit history. Start with development or staging first.</p>
           <form id="developer-agent-form" class="admin-form-grid">
-            <input name="name" type="text" required minlength="3" maxlength="80" placeholder="Agent name, e.g. Refund Agent" />
-            <input name="slug" type="text" pattern="[a-z0-9-]{3,64}" placeholder="Agent slug, e.g. refund-agent" />
-            <select name="environment">
-              <option value="development">Development</option>
-              <option value="staging">Staging</option>
-              <option value="production">Production</option>
-            </select>
-            <input name="defaultReviewerEmails" type="text" placeholder="Reviewer emails, comma separated" />
-            <textarea name="description" placeholder="What risky actions should this agent escalate?"></textarea>
+            <label><span>Name</span><input name="name" type="text" required minlength="3" maxlength="80" placeholder="Refund Agent" /></label>
+            <label><span>Slug</span><input name="slug" type="text" pattern="[a-z0-9-]{3,64}" placeholder="refund-agent" /></label>
+            <label><span>Environment</span><select name="environment">
+                <option value="development">Development</option>
+                <option value="staging">Staging</option>
+                <option value="production">Production</option>
+              </select></label>
+            <label><span>Reviewer emails</span><input name="defaultReviewerEmails" type="text" placeholder="security@company.com, ops@company.com" /></label>
+            <label><span>Description</span><textarea name="description" placeholder="What risky actions should this agent escalate?"></textarea></label>
             <button type="submit">Create agent</button>
             <p class="mini-status" role="status"></p>
           </form>
@@ -474,7 +478,7 @@
           <h2 id="api-key-create-modal-title">Create API key</h2>
           <p class="admin-meta">Store this key securely. Forsig will show the full value once, then only the masked prefix.</p>
           <form id="developer-api-key-form" class="admin-form-grid">
-            <input name="name" type="text" required minlength="3" maxlength="80" placeholder="Key name" />
+            <label><span>Name</span><input name="name" type="text" required minlength="3" maxlength="80" placeholder="Production server" /></label>
             <button type="submit">Create API key</button>
             <p class="mini-status" role="status"></p>
           </form>

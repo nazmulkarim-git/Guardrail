@@ -151,16 +151,16 @@ function renderDashboard() {
     .slice(0, 5);
 
   summary.innerHTML = [
-    { label: "Pending approvals", value: pending, detail: "Requests waiting for a decision" },
-    { label: "Recent escalations", value: state.escalations.length, detail: "Loaded in the current workspace view" },
-    { label: "Agents", value: activeAgents, detail: "Active workflows sending requests" },
-    { label: "API keys", value: activeKeys, detail: "Active server-side keys" }
+    { label: "Pending approvals", value: pending, detail: "Requests waiting for a decision", view: "inbox" },
+    { label: "Recent escalations", value: state.escalations.length, detail: "Loaded in the current workspace view", view: "inbox" },
+    { label: "Agents", value: activeAgents, detail: "Active workflows sending requests", view: "agents" },
+    { label: "API keys", value: activeKeys, detail: "Active server-side keys", view: "keys" }
   ].map((item) => `
-    <article>
+    <button type="button" data-developer-view="${item.view}">
       <span>${escapeHtml(item.label)}</span>
       <strong>${escapeHtml(item.value)}</strong>
       <small>${escapeHtml(item.detail)}</small>
-    </article>
+    </button>
   `).join("");
 
   recent.innerHTML = recentItems.length ? `
@@ -284,6 +284,20 @@ function setAuthMode(mode) {
 
 function setView(view) {
   window.scrollTo({ top: 0, behavior: "auto" });
+  const titles = {
+    quickstart: "Dashboard",
+    inbox: "Inbox",
+    onboarding: "Onboarding",
+    integration: "AI Installer",
+    shadow: "Shadow simulations",
+    agents: "Agents",
+    keys: "API keys",
+    audit: "Audit trails",
+    settings: "Settings",
+    profile: "Profile"
+  };
+  const pageTitle = $("#developer-page-title");
+  if (pageTitle) pageTitle.textContent = titles[view] || "Developer";
   document.querySelectorAll("[data-developer-view]").forEach((button) => {
     button.classList.toggle("active", button.dataset.developerView === view);
   });
@@ -301,6 +315,8 @@ function setView(view) {
   }
   if (view === "quickstart") {
     renderDashboard();
+  }
+  if (view === "onboarding") {
     renderQuickstart();
   }
   if (view === "integration") {
@@ -648,10 +664,11 @@ function showAuditDetail(id) {
 }
 
 const commandItems = [
-  { id: "quickstart", label: "Open Dashboard", hint: "View workspace summary and guided setup.", keywords: ["start", "setup", "dashboard"], run: () => setView("quickstart") },
-  { id: "node-example", label: "Show Node example", hint: "Open dashboard setup and switch the code block to Node.", keywords: ["javascript", "typescript", "sdk"], run: () => { setView("quickstart"); state.quickstartTab = "node"; renderQuickstart(); } },
-  { id: "python-example", label: "Show Python example", hint: "Open dashboard setup and switch the code block to Python.", keywords: ["sdk", "requests"], run: () => { setView("quickstart"); state.quickstartTab = "python"; renderQuickstart(); } },
-  { id: "curl-example", label: "Show cURL example", hint: "Open dashboard setup and switch the code block to cURL.", keywords: ["api", "http"], run: () => { setView("quickstart"); state.quickstartTab = "curl"; renderQuickstart(); } },
+  { id: "quickstart", label: "Open Dashboard", hint: "View workspace summary and recent escalation activity.", keywords: ["home", "dashboard"], run: () => setView("quickstart") },
+  { id: "onboarding", label: "Open Onboarding", hint: "Generate a key, install Forsig, and approve a test escalation.", keywords: ["start", "setup"], run: () => setView("onboarding") },
+  { id: "node-example", label: "Show Node example", hint: "Open onboarding and switch the code block to Node.", keywords: ["javascript", "typescript", "sdk"], run: () => { setView("onboarding"); state.quickstartTab = "node"; renderQuickstart(); } },
+  { id: "python-example", label: "Show Python example", hint: "Open onboarding and switch the code block to Python.", keywords: ["sdk", "requests"], run: () => { setView("onboarding"); state.quickstartTab = "python"; renderQuickstart(); } },
+  { id: "curl-example", label: "Show cURL example", hint: "Open onboarding and switch the code block to cURL.", keywords: ["api", "http"], run: () => { setView("onboarding"); state.quickstartTab = "curl"; renderQuickstart(); } },
   { id: "inbox", label: "Open Inbox", hint: "Review pending approvals.", keywords: ["escalations", "decisions"], run: () => setView("inbox") },
   { id: "create-key", label: "Create API key", hint: "Generate a key and see it once.", keywords: ["token", "secret"], run: () => { setView("keys"); openModal("#api-key-create-modal"); } },
   { id: "create-agent", label: "Create agent", hint: "Group escalations by workflow.", keywords: ["workflow", "reviewers"], run: () => { setView("agents"); openModal("#agent-create-modal"); } },
@@ -1819,7 +1836,7 @@ document.addEventListener("click", async (event) => {
   }
 
   if (event.target.closest("#developer-generate-real-snippet")) {
-    setView("quickstart");
+    setView("onboarding");
     state.quickstartTab = "node";
     renderQuickstart();
     track("send_real_escalation_snippet_generated", {
@@ -1852,7 +1869,7 @@ document.addEventListener("click", async (event) => {
   }
 
   if (event.target.closest("#developer-open-quickstart-from-prompt")) {
-    setView("quickstart");
+    setView("onboarding");
     track("ai_install_opened_quickstart");
     return;
   }
@@ -1991,6 +2008,14 @@ document.addEventListener("keydown", (event) => {
     if (openModalEl) {
       if (openModalEl.id === "api-key-modal") closeApiKeyModal();
       else openModalEl.hidden = true;
+      return;
+    }
+  }
+  if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
+    const openForm = document.querySelector(".developer-form-modal:not([hidden]) form");
+    if (openForm) {
+      event.preventDefault();
+      openForm.requestSubmit();
       return;
     }
   }

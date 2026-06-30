@@ -15411,6 +15411,410 @@ body[data-page="developer"][data-theme="light"] .developer-codeblock {
   }
 }
 
+/* Resend-inspired developer console layer.
+   Utilities added here intentionally override older Forsig portal styles:
+   - single-column sidebar with compact nav icons
+   - minimal top bar
+   - hairline tables and centered modals
+   - dashboard stats as clickable workspace cards */
+body[data-page="developer"] {
+  --resend-bg: var(--theme-background, #000);
+  --resend-panel: var(--theme-surface, #0a0a0c);
+  --resend-panel-2: var(--theme-surfaceAlt, #111114);
+  --resend-line: var(--theme-border, #242428);
+  --resend-text: var(--theme-text, #f5f5f5);
+  --resend-muted: var(--theme-muted, #a1a1aa);
+  --resend-accent: var(--theme-primary, #fff);
+  --resend-blue: var(--theme-secondary, #3b82f6);
+  background: var(--resend-bg) !important;
+}
+
+body[data-page="developer"] .admin-shell {
+  grid-template-columns: 300px minmax(0, 1fr) !important;
+  background: var(--resend-bg) !important;
+}
+
+body[data-page="developer"] .admin-sidebar {
+  gap: 20px !important;
+  padding: 24px 18px !important;
+  background: var(--resend-bg) !important;
+  border-right: 1px solid var(--resend-line) !important;
+}
+
+body[data-page="developer"] .sidebar-group-label {
+  display: none !important;
+}
+
+body[data-page="developer"] .zip-brand {
+  min-height: 42px !important;
+  padding: 0 6px !important;
+}
+
+body[data-page="developer"] .developer-avatar,
+body[data-page="developer"] .developer-topline-logo {
+  border: 1px solid #3b2f72 !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, #2b214f, #6d5dfc) !important;
+  box-shadow: none !important;
+}
+
+body[data-page="developer"] .admin-sidebar nav {
+  display: grid !important;
+  gap: 4px !important;
+}
+
+body[data-page="developer"] .admin-sidebar nav button,
+body[data-page="developer"] .admin-sidebar nav a,
+body[data-page="developer"] .developer-sidebar-footer button {
+  min-height: 40px !important;
+  border: 0 !important;
+  border-radius: 10px !important;
+  padding: 0 12px !important;
+  color: var(--resend-muted) !important;
+  background: transparent !important;
+  font-size: 14px !important;
+  font-weight: 650 !important;
+}
+
+body[data-page="developer"] .admin-sidebar nav button::before,
+body[data-page="developer"] .admin-sidebar nav a::before {
+  content: attr(data-nav-icon) !important;
+  width: 20px !important;
+  height: 20px !important;
+  display: grid !important;
+  place-items: center !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: currentColor !important;
+  background: transparent !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+body[data-page="developer"] .admin-sidebar nav button:hover,
+body[data-page="developer"] .admin-sidebar nav a:hover,
+body[data-page="developer"] .developer-sidebar-footer button:hover,
+body[data-page="developer"] .admin-sidebar nav button.active {
+  color: var(--resend-text) !important;
+  background: #1a1a1f !important;
+}
+
+body[data-page="developer"] .developer-sidebar-footer {
+  margin-top: auto !important;
+  border: 1px solid var(--resend-line) !important;
+  border-radius: 16px !important;
+  padding: 10px !important;
+  background: transparent !important;
+}
+
+body[data-page="developer"] .developer-topline {
+  min-height: 72px !important;
+  width: 100% !important;
+  margin: 0 0 34px !important;
+  padding: 0 40px !important;
+  border-bottom: 1px solid var(--resend-line) !important;
+  background: var(--resend-bg) !important;
+}
+
+body[data-page="developer"] .developer-topline-title,
+body[data-page="developer"] .developer-topline-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+body[data-page="developer"] .developer-topline-title strong {
+  color: var(--resend-text);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+body[data-page="developer"] .developer-topline-actions {
+  margin-left: auto;
+}
+
+body[data-page="developer"] .developer-topline-actions a,
+body[data-page="developer"] .developer-theme-button,
+body[data-page="developer"] .developer-icon-button {
+  min-height: 34px;
+  border: 0;
+  border-radius: 10px;
+  padding: 0 10px;
+  color: var(--resend-muted);
+  background: transparent;
+  font-size: 14px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+body[data-page="developer"] .developer-icon-button {
+  width: 34px;
+  border: 1px solid var(--resend-line);
+  color: var(--resend-text);
+  background: var(--resend-panel-2);
+}
+
+body[data-page="developer"] .developer-theme-button {
+  border: 1px solid var(--resend-line);
+  color: var(--resend-text);
+  background: var(--resend-panel-2);
+}
+
+body[data-page="developer"] .developer-topline-actions a:hover,
+body[data-page="developer"] .developer-theme-button:hover,
+body[data-page="developer"] .developer-icon-button:hover {
+  color: var(--resend-text);
+  background: #1a1a1f;
+}
+
+body[data-page="developer"] .admin-view,
+body[data-page="developer"] .developer-page-head,
+body[data-page="developer"] .admin-toolbar,
+body[data-page="developer"] .key-table-toolbar {
+  width: min(1380px, calc(100% - 80px)) !important;
+}
+
+body[data-page="developer"] .developer-page-head {
+  margin-bottom: 28px !important;
+}
+
+body[data-page="developer"] .developer-page-head h1 {
+  font-size: 28px !important;
+  font-weight: 750 !important;
+}
+
+body[data-page="developer"] .developer-dashboard-summary {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+body[data-page="developer"] .developer-dashboard-summary button,
+body[data-page="developer"] .developer-workspace-card,
+body[data-page="developer"] .developer-onboarding-wizard,
+body[data-page="developer"] .resend-panel,
+body[data-page="developer"] .admin-panel,
+body[data-page="developer"] .developer-detail-page {
+  border: 1px solid var(--resend-line) !important;
+  border-radius: 14px !important;
+  color: var(--resend-text) !important;
+  background: var(--resend-panel) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.01), 0 18px 44px rgba(0, 0, 0, 0.22) !important;
+}
+
+body[data-page="developer"] .developer-dashboard-summary button {
+  display: grid;
+  gap: 8px;
+  min-height: 126px;
+  padding: 18px;
+  text-align: left;
+  cursor: pointer;
+}
+
+body[data-page="developer"] .developer-dashboard-summary button:hover,
+body[data-page="developer"] .developer-workspace-card:hover {
+  border-color: #3a3a42 !important;
+  background: #0f0f12 !important;
+}
+
+body[data-page="developer"] .developer-dashboard-summary span,
+body[data-page="developer"] .resend-table-head span {
+  color: var(--resend-muted) !important;
+}
+
+body[data-page="developer"] .developer-dashboard-summary strong {
+  color: var(--resend-text);
+}
+
+body[data-page="developer"] .admin-toolbar,
+body[data-page="developer"] .key-table-toolbar {
+  display: flex !important;
+  gap: 10px !important;
+  align-items: center !important;
+  margin-bottom: 18px !important;
+}
+
+body[data-page="developer"] input,
+body[data-page="developer"] select,
+body[data-page="developer"] textarea {
+  min-height: 40px !important;
+  border: 1px solid var(--resend-line) !important;
+  border-radius: 10px !important;
+  color: var(--resend-text) !important;
+  background: var(--resend-panel-2) !important;
+}
+
+body[data-page="developer"] .resend-table-row,
+body[data-page="developer"] .inbox-table-row,
+body[data-page="developer"] #developer-escalation-list .resend-table-row.inbox-table-row {
+  min-height: 64px !important;
+  border: 0 !important;
+  border-bottom: 1px solid var(--resend-line) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+body[data-page="developer"] button.resend-table-row:hover,
+body[data-page="developer"] button.inbox-table-row:hover,
+body[data-page="developer"] .audit-table button.resend-table-row:hover {
+  background: #101014 !important;
+}
+
+body[data-page="developer"] .resend-table-head {
+  min-height: 40px !important;
+  background: #17171b !important;
+}
+
+body[data-page="developer"] .key-state {
+  min-height: 24px !important;
+  border-radius: 999px !important;
+  border: 0 !important;
+  padding: 0 10px !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+body[data-page="developer"] .key-state-active,
+body[data-page="developer"] .key-state-approved,
+body[data-page="developer"] .key-state-delivered {
+  color: #34d399 !important;
+  background: rgba(16, 185, 129, 0.14) !important;
+}
+
+body[data-page="developer"] .key-state-revoked,
+body[data-page="developer"] .key-state-rejected,
+body[data-page="developer"] .key-state-error,
+body[data-page="developer"] .key-state-bounced {
+  color: #fb7185 !important;
+  background: rgba(244, 63, 94, 0.16) !important;
+}
+
+body[data-page="developer"] .key-state-held,
+body[data-page="developer"] .key-state-pending {
+  color: #fbbf24 !important;
+  background: rgba(245, 158, 11, 0.14) !important;
+}
+
+body[data-page="developer"] .empty-state,
+body[data-page="developer"] .developer-empty-compact {
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+  padding: 40px 22px;
+  text-align: center;
+}
+
+body[data-page="developer"] .developer-empty-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 14px;
+  border: 1px solid var(--resend-line);
+  border-radius: 12px;
+  color: var(--resend-muted);
+  background: var(--resend-panel-2);
+}
+
+body[data-page="developer"] .api-key-modal {
+  background: rgba(0, 0, 0, 0.68) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+body[data-page="developer"] .api-key-modal > div {
+  width: min(520px, calc(100vw - 32px)) !important;
+  border: 1px solid var(--resend-line) !important;
+  border-radius: 18px !important;
+  padding: 24px !important;
+  background: #0a0a0c !important;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5) !important;
+}
+
+body[data-page="developer"] .admin-form-grid label {
+  display: grid;
+  gap: 8px;
+  color: var(--resend-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+body[data-page="developer"] .admin-form-grid label span {
+  color: var(--resend-muted);
+}
+
+body[data-page="developer"] .admin-form-grid button[type="submit"],
+body[data-page="developer"] .developer-primary-button {
+  border-color: var(--resend-accent) !important;
+  color: #000 !important;
+  background: var(--resend-accent) !important;
+}
+
+body[data-page="developer"] .developer-onboarding-wizard {
+  max-width: 1060px;
+}
+
+body[data-page="developer"][data-theme="light"] {
+  --resend-bg: #f8fafc;
+  --resend-panel: #ffffff;
+  --resend-panel-2: #f1f5f9;
+  --resend-line: #e2e8f0;
+  --resend-text: #0f172a;
+  --resend-muted: #64748b;
+  --resend-accent: #0f172a;
+}
+
+body[data-page="developer"][data-theme="light"] .admin-sidebar,
+body[data-page="developer"][data-theme="light"] .developer-topline,
+body[data-page="developer"][data-theme="light"] .admin-shell,
+body[data-page="developer"][data-theme="light"] .admin-main {
+  background: var(--resend-bg) !important;
+}
+
+body[data-page="developer"][data-theme="light"] .resend-table-head {
+  background: #f1f5f9 !important;
+}
+
+body[data-page="developer"][data-theme="light"] button.resend-table-row:hover,
+body[data-page="developer"][data-theme="light"] button.inbox-table-row:hover,
+body[data-page="developer"][data-theme="light"] .audit-table button.resend-table-row:hover,
+body[data-page="developer"][data-theme="light"] .admin-sidebar nav button:hover,
+body[data-page="developer"][data-theme="light"] .admin-sidebar nav a:hover,
+body[data-page="developer"][data-theme="light"] .admin-sidebar nav button.active {
+  background: #eef2f7 !important;
+}
+
+@media (max-width: 900px) {
+  body[data-page="developer"] .admin-shell {
+    grid-template-columns: 76px minmax(0, 1fr) !important;
+  }
+
+  body[data-page="developer"] .admin-sidebar {
+    padding: 18px 10px !important;
+  }
+
+  body[data-page="developer"] .developer-brand-text,
+  body[data-page="developer"] .admin-sidebar nav button span,
+  body[data-page="developer"] .admin-sidebar nav a span,
+  body[data-page="developer"] .developer-sidebar-footer button {
+    display: none !important;
+  }
+
+  body[data-page="developer"] .admin-sidebar nav button,
+  body[data-page="developer"] .admin-sidebar nav a {
+    justify-content: center !important;
+    padding: 0 !important;
+  }
+
+  body[data-page="developer"] .developer-topline {
+    padding: 0 18px !important;
+  }
+
+  body[data-page="developer"] .admin-view,
+  body[data-page="developer"] .developer-page-head,
+  body[data-page="developer"] .admin-toolbar,
+  body[data-page="developer"] .key-table-toolbar {
+    width: min(100% - 28px, 1380px) !important;
+  }
+}
+
 /* Landing-page overhaul */
 body[data-page="landing"].forsig-overhaul {
   --oh-bg: #05070d;
