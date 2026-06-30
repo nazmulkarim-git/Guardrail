@@ -24,6 +24,7 @@ const state = {
   workspace: null,
   lastApiKey: "",
   selectedAuditId: null,
+  onboardingStep: 0,
   shadowSimulations: [],
   auditEvents: []
 };
@@ -95,6 +96,42 @@ function escapeHtml(value) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function escapeRegExp(value) {
+  return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function highlightMatch(value, query) {
+  const text = String(value ?? "");
+  const trimmed = String(query || "").trim();
+  if (!trimmed) return escapeHtml(text);
+  const pattern = new RegExp(`(${escapeRegExp(trimmed)})`, "ig");
+  return escapeHtml(text).replace(pattern, "<mark>$1</mark>");
+}
+
+function commandScore(item, query) {
+  const needle = String(query || "").trim().toLowerCase();
+  if (!needle) return 1;
+  const haystack = `${item.label} ${item.hint} ${(item.keywords || []).join(" ")}`.toLowerCase();
+  if (haystack.includes(needle)) return 4;
+  const words = needle.split(/\s+/).filter(Boolean);
+  if (words.every((word) => haystack.includes(word))) return 3;
+  let cursor = 0;
+  for (const char of needle) {
+    cursor = haystack.indexOf(char, cursor);
+    if (cursor === -1) return 0;
+    cursor += 1;
+  }
+  return 2;
+}
+
+function renderLineNumberedCode(codeEl, rawCode) {
+  const raw = String(rawCode || "");
+  codeEl.dataset.raw = raw;
+  codeEl.innerHTML = raw.split("\n").map((line, index) => (
+    `<span class="code-line" data-line="${index + 1}">${escapeHtml(line) || " "}</span>`
+  )).join("");
 }
 
 function formatDate(value) {
@@ -559,27 +596,35 @@ function showAuditDetail(id) {
 }
 
 const commandItems = [
-  { id: "quickstart", label: "Open Quickstart", hint: "Copy Node, Python, curl, and framework examples.", run: () => setView("quickstart") },
-  { id: "inbox", label: "Open Inbox", hint: "Review pending approvals.", run: () => setView("inbox") },
-  { id: "create-key", label: "Create API key", hint: "Generate a key and see it once.", run: () => { setView("keys"); openModal("#api-key-create-modal"); } },
-  { id: "create-agent", label: "Create agent", hint: "Group escalations by workflow.", run: () => { setView("agents"); openModal("#agent-create-modal"); } },
-  { id: "integration", label: "AI Installer", hint: "Draft a Codex, Claude, or Cursor install prompt.", run: () => setView("integration") },
-  { id: "shadow", label: "Shadow simulations", hint: "Inspect non-blocking approval simulations.", run: () => setView("shadow") },
-  { id: "audit", label: "Audit trails", hint: "Filter and export decision history.", run: () => setView("audit") },
-  { id: "export-audit", label: "Export audit CSV", hint: "Download visible audit events.", run: exportAuditCsv },
-  { id: "settings", label: "Settings", hint: "Workspace, reviewers, notifications, invites.", run: () => setView("settings") },
-  { id: "docs", label: "Docs", hint: "Open implementation docs.", run: () => { location.href = "/docs"; } }
+  { id: "quickstart", label: "Open onboarding", hint: "Start the guided API key, SDK, and first escalation flow.", keywords: ["start", "setup", "quickstart"], run: () => setView("quickstart") },
+  { id: "node-example", label: "Show Node example", hint: "Open the quickstart and switch the code block to Node.", keywords: ["javascript", "typescript", "sdk"], run: () => { setView("quickstart"); state.quickstartTab = "node"; renderQuickstart(); } },
+  { id: "python-example", label: "Show Python example", hint: "Open the quickstart and switch the code block to Python.", keywords: ["sdk", "requests"], run: () => { setView("quickstart"); state.quickstartTab = "python"; renderQuickstart(); } },
+  { id: "curl-example", label: "Show cURL example", hint: "Open the quickstart and switch the code block to cURL.", keywords: ["api", "http"], run: () => { setView("quickstart"); state.quickstartTab = "curl"; renderQuickstart(); } },
+  { id: "inbox", label: "Open Inbox", hint: "Review pending approvals.", keywords: ["escalations", "decisions"], run: () => setView("inbox") },
+  { id: "create-key", label: "Create API key", hint: "Generate a key and see it once.", keywords: ["token", "secret"], run: () => { setView("keys"); openModal("#api-key-create-modal"); } },
+  { id: "create-agent", label: "Create agent", hint: "Group escalations by workflow.", keywords: ["workflow", "reviewers"], run: () => { setView("agents"); openModal("#agent-create-modal"); } },
+  { id: "integration", label: "AI installer prompt", hint: "Draft a Codex, Claude, or Cursor install prompt.", keywords: ["cursor", "claude", "codex", "install"], run: () => setView("integration") },
+  { id: "shadow", label: "Shadow simulations", hint: "Inspect non-blocking approval simulations.", keywords: ["dry run", "observe"], run: () => setView("shadow") },
+  { id: "audit", label: "Audit trails", hint: "Filter and export decision history.", keywords: ["logs", "compliance"], run: () => setView("audit") },
+  { id: "export-audit", label: "Export audit CSV", hint: "Download visible audit events.", keywords: ["download", "compliance"], run: exportAuditCsv },
+  { id: "settings", label: "Settings", hint: "Workspace, reviewers, notifications, invites.", keywords: ["email", "reviewers"], run: () => setView("settings") },
+  { id: "docs", label: "Open docs", hint: "Read implementation docs and webhook signing examples.", keywords: ["documentation", "webhooks"], run: () => { location.href = "/docs"; } }
 ];
 
 function renderCommandPalette() {
   const results = $("#developer-command-results");
   if (!results) return;
-  const query = ($("#developer-command-search")?.value || "").trim().toLowerCase();
-  const matches = commandItems.filter((item) => !query || `${item.label} ${item.hint}`.toLowerCase().includes(query));
+  const query = ($("#developer-command-search")?.value || "").trim();
+  const matches = commandItems
+    .map((item) => ({ item, score: commandScore(item, query) }))
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score || a.item.label.localeCompare(b.item.label))
+    .slice(0, 8)
+    .map((entry) => entry.item);
   results.innerHTML = matches.length ? matches.map((item) => `
-    <button type="button" data-command-id="${item.id}">
-      <strong>${escapeHtml(item.label)}</strong>
-      <span>${escapeHtml(item.hint)}</span>
+    <button type="button" data-command-id="${item.id}" aria-label="${escapeHtml(item.label)}">
+      <strong>${highlightMatch(item.label, query)}</strong>
+      <span>${highlightMatch(item.hint, query)}</span>
     </button>
   `).join("") : "<p class='empty-state'>No commands found.</p>";
 }
@@ -654,8 +699,26 @@ function renderChecklist(container) {
   `;
 }
 
+function setOnboardingStep(step) {
+  const maxStep = 2;
+  state.onboardingStep = Math.max(0, Math.min(maxStep, Number(step) || 0));
+  document.querySelectorAll("[data-onboarding-step]").forEach((button) => {
+    const isActive = Number(button.dataset.onboardingStep) === state.onboardingStep;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-selected", String(isActive));
+  });
+  document.querySelectorAll("[data-onboarding-panel]").forEach((panel) => {
+    panel.open = Number(panel.dataset.onboardingPanel) === state.onboardingStep;
+  });
+  const prev = $("[data-onboarding-prev]");
+  const next = $("[data-onboarding-next]");
+  if (prev) prev.disabled = state.onboardingStep === 0;
+  if (next) next.textContent = state.onboardingStep === maxStep ? "Open Inbox" : "Next step";
+}
+
 function renderOnboarding() {
   renderChecklist($("#developer-quickstart-checklist"));
+  setOnboardingStep(state.onboardingStep);
 }
 
 function quickstartSnippets() {
@@ -832,7 +895,7 @@ function renderQuickstart() {
   if (!code) return;
   renderOnboarding();
   const snippets = quickstartSnippets();
-  code.textContent = snippets[state.quickstartTab] || snippets.node;
+  renderLineNumberedCode(code, snippets[state.quickstartTab] || snippets.node);
   document.querySelectorAll("[data-quickstart-tab]").forEach((button) => {
     button.classList.toggle("active", button.dataset.quickstartTab === state.quickstartTab);
   });
@@ -1630,6 +1693,38 @@ document.addEventListener("click", async (event) => {
     return;
   }
 
+  const startFree = event.target.closest("#developer-start-free, [data-open-create-key]");
+  if (startFree) {
+    setView("keys");
+    openModal("#api-key-create-modal");
+    track("developer_start_free_clicked");
+    return;
+  }
+
+  const onboardingStep = event.target.closest("[data-onboarding-step]");
+  if (onboardingStep) {
+    setOnboardingStep(onboardingStep.dataset.onboardingStep);
+    track("developer_onboarding_step_selected", { step: state.onboardingStep });
+    return;
+  }
+
+  if (event.target.closest("[data-onboarding-prev]")) {
+    setOnboardingStep(state.onboardingStep - 1);
+    return;
+  }
+
+  if (event.target.closest("[data-onboarding-next]")) {
+    if (state.onboardingStep >= 2) setView("inbox");
+    else setOnboardingStep(state.onboardingStep + 1);
+    return;
+  }
+
+  if (event.target.closest("[data-run-test-escalation]")) {
+    $("#developer-test-escalation")?.click();
+    track("developer_onboarding_test_escalation_clicked");
+    return;
+  }
+
   const quickstartTab = event.target.closest("[data-quickstart-tab]");
   if (quickstartTab) {
     state.quickstartTab = quickstartTab.dataset.quickstartTab;
@@ -1647,8 +1742,16 @@ document.addEventListener("click", async (event) => {
   }
 
   if (event.target.closest("#developer-copy-quickstart")) {
-    await navigator.clipboard.writeText($("#developer-quickstart-code").textContent);
+    const button = event.target.closest("#developer-copy-quickstart");
+    const code = $("#developer-quickstart-code");
+    await navigator.clipboard.writeText(code.dataset.raw || code.textContent);
+    button.classList.add("copied");
+    button.textContent = "Copied";
     toast("Quickstart code copied");
+    setTimeout(() => {
+      button.classList.remove("copied");
+      button.textContent = "Copy snippet";
+    }, 1400);
     track("quickstart_code_copied", { tab: state.quickstartTab });
     return;
   }

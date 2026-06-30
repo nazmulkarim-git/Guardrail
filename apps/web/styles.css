@@ -14576,6 +14576,547 @@ body[data-page="developer"][data-theme="light"] .key-table-toolbar {
   background: transparent !important;
 }
 
+/* Developer portal premium DX refresh.
+   Scope: /developer Start here view, command palette, and shared console controls.
+   The portal is plain HTML/JS, so these classes map to the modular sections in
+   developer.html: StartHere hero, trust metrics, onboarding wizard, CodeBlock,
+   and testimonial cards. */
+body[data-page="developer"] {
+  --developer-accent: #6d5dfc;
+  --developer-accent-2: #ff6b6b;
+  --developer-accent-3: #00f5c8;
+  --developer-panel: rgba(16, 21, 35, 0.78);
+  --developer-panel-strong: rgba(21, 27, 45, 0.94);
+  --developer-soft-line: rgba(255, 255, 255, 0.12);
+  --developer-glow: 0 24px 80px rgba(80, 72, 255, 0.2);
+  font-family: Inter, "Instrument Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 18% 10%, rgba(109, 93, 252, 0.22), transparent 34%),
+    radial-gradient(circle at 80% 18%, rgba(255, 107, 107, 0.11), transparent 30%),
+    linear-gradient(135deg, #070914 0%, #0d1222 48%, #070914 100%) !important;
+}
+
+body[data-page="developer"][data-theme="light"] {
+  --developer-panel: rgba(255, 255, 255, 0.84);
+  --developer-panel-strong: rgba(255, 255, 255, 0.96);
+  --developer-soft-line: rgba(17, 24, 39, 0.12);
+  --developer-glow: 0 24px 80px rgba(93, 91, 239, 0.12);
+  background:
+    radial-gradient(circle at 12% 12%, rgba(109, 93, 252, 0.13), transparent 32%),
+    radial-gradient(circle at 88% 18%, rgba(255, 107, 107, 0.09), transparent 30%),
+    linear-gradient(135deg, #f8fafc 0%, #eef2ff 48%, #f8fafc 100%) !important;
+}
+
+body[data-page="developer"] .admin-main {
+  background: transparent !important;
+}
+
+body[data-page="developer"] .admin-view,
+body[data-page="developer"] .developer-page-head,
+body[data-page="developer"] .admin-toolbar {
+  width: min(1480px, calc(100% - 72px)) !important;
+}
+
+body[data-page="developer"] .developer-start-view {
+  display: grid;
+  gap: 22px;
+}
+
+body[data-page="developer"] .developer-start-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
+  gap: clamp(20px, 3vw, 42px);
+  align-items: stretch;
+  overflow: hidden;
+  border: 1px solid var(--developer-soft-line);
+  border-radius: 28px;
+  padding: clamp(28px, 5vw, 58px);
+  background:
+    radial-gradient(circle at 8% 0%, rgba(0, 245, 200, 0.16), transparent 34%),
+    radial-gradient(circle at 90% 18%, rgba(109, 93, 252, 0.32), transparent 38%),
+    linear-gradient(135deg, rgba(15, 20, 35, 0.94), rgba(12, 15, 27, 0.78));
+  box-shadow: var(--developer-glow);
+}
+
+body[data-page="developer"] .developer-start-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+}
+
+body[data-page="developer"] .developer-start-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+body[data-page="developer"] .developer-start-hero h1 {
+  max-width: 850px;
+  margin: 14px 0 18px;
+  color: #f9fbff;
+  font-size: clamp(38px, 5.2vw, 76px);
+  line-height: 0.96;
+  letter-spacing: 0;
+}
+
+body[data-page="developer"] .developer-start-hero p {
+  max-width: 680px;
+  margin: 0;
+  color: rgba(231, 238, 255, 0.78);
+  font-size: clamp(16px, 1.6vw, 20px);
+  line-height: 1.6;
+}
+
+body[data-page="developer"] .developer-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+body[data-page="developer"] .developer-primary-button,
+body[data-page="developer"] .developer-secondary-button,
+body[data-page="developer"] .developer-detail-actions button,
+body[data-page="developer"] .developer-detail-actions a,
+body[data-page="developer"] .developer-wizard-actions button {
+  min-height: 44px;
+  border-radius: 13px;
+  padding: 0 18px;
+  font-size: 14px;
+  font-weight: 800;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+body[data-page="developer"] .developer-primary-button {
+  border: 0 !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, var(--developer-accent), #4f46e5 52%, #1b9fff) !important;
+  box-shadow: 0 14px 34px rgba(79, 70, 229, 0.28);
+}
+
+body[data-page="developer"] .developer-secondary-button,
+body[data-page="developer"] .developer-detail-actions button,
+body[data-page="developer"] .developer-detail-actions a,
+body[data-page="developer"] .developer-wizard-actions button {
+  display: inline-grid;
+  place-items: center;
+  border: 1px solid var(--developer-soft-line);
+  color: var(--developer-text, #f8fafc);
+  background: rgba(255, 255, 255, 0.055);
+  text-decoration: none;
+}
+
+body[data-page="developer"] .developer-primary-button:hover,
+body[data-page="developer"] .developer-secondary-button:hover,
+body[data-page="developer"] .developer-detail-actions button:hover,
+body[data-page="developer"] .developer-detail-actions a:hover,
+body[data-page="developer"] .developer-wizard-actions button:hover,
+body[data-page="developer"] .developer-metric-grid article:hover,
+body[data-page="developer"] .developer-testimonials article:hover {
+  transform: translateY(-2px);
+}
+
+body[data-page="developer"] .developer-hero-card {
+  align-self: center;
+  min-height: 360px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 24px;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.035)),
+    radial-gradient(circle at 50% 42%, rgba(0, 245, 200, 0.18), transparent 36%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 30px 80px rgba(0, 0, 0, 0.24);
+}
+
+body[data-page="developer"] .developer-hero-card span,
+body[data-page="developer"] .developer-hero-flow b {
+  color: var(--developer-accent-3);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+body[data-page="developer"] .developer-hero-card strong {
+  display: block;
+  margin: 10px 0 6px;
+  color: #fff;
+  font-size: clamp(28px, 3vw, 42px);
+  line-height: 1.05;
+}
+
+body[data-page="developer"] .developer-hero-card small {
+  display: block;
+  max-width: 420px;
+  color: rgba(231, 238, 255, 0.74);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+body[data-page="developer"] .developer-hero-flow {
+  display: grid;
+  gap: 12px;
+  margin-top: 44px;
+}
+
+body[data-page="developer"] .developer-hero-flow b {
+  width: fit-content;
+  min-height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(0, 245, 200, 0.28);
+  border-radius: 999px;
+  padding: 0 16px;
+  background: rgba(0, 245, 200, 0.08);
+}
+
+body[data-page="developer"] .developer-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+body[data-page="developer"] .developer-metric-grid article,
+body[data-page="developer"] .developer-onboarding-wizard,
+body[data-page="developer"] .developer-testimonials article {
+  border: 1px solid var(--developer-soft-line);
+  border-radius: 20px;
+  background: var(--developer-panel);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(18px);
+}
+
+body[data-page="developer"] .developer-metric-grid article {
+  display: grid;
+  gap: 8px;
+  min-height: 142px;
+  padding: 20px;
+}
+
+body[data-page="developer"] .developer-metric-grid span,
+body[data-page="developer"] .developer-testimonials span {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--developer-accent), var(--developer-accent-2));
+  font-size: 12px;
+  font-weight: 900;
+}
+
+body[data-page="developer"] .developer-metric-grid strong {
+  color: var(--developer-text, #fff);
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: 1;
+}
+
+body[data-page="developer"] .developer-metric-grid small,
+body[data-page="developer"] .developer-wizard-panel p,
+body[data-page="developer"] .developer-codeblock-card p,
+body[data-page="developer"] .developer-testimonials small {
+  color: var(--developer-muted, rgba(226, 232, 240, 0.72));
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+body[data-page="developer"] .developer-onboarding-wizard {
+  padding: clamp(18px, 2.4vw, 30px);
+}
+
+body[data-page="developer"] .developer-stepper {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 18px 0;
+}
+
+body[data-page="developer"] .developer-stepper button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  border: 1px solid var(--developer-soft-line);
+  border-radius: 15px;
+  padding: 0 14px;
+  color: var(--developer-muted, #aab4c8);
+  background: rgba(255, 255, 255, 0.045);
+  font-weight: 800;
+  text-align: left;
+}
+
+body[data-page="developer"] .developer-stepper button span,
+body[data-page="developer"] .developer-wizard-panel summary span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(109, 93, 252, 0.34);
+}
+
+body[data-page="developer"] .developer-stepper button.active {
+  border-color: rgba(109, 93, 252, 0.8);
+  color: var(--developer-text, #fff);
+  background: linear-gradient(135deg, rgba(109, 93, 252, 0.24), rgba(0, 245, 200, 0.08));
+}
+
+body[data-page="developer"] .developer-wizard-panels {
+  display: grid;
+  gap: 12px;
+}
+
+body[data-page="developer"] .developer-wizard-panel {
+  border: 1px solid var(--developer-soft-line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.038);
+  overflow: hidden;
+}
+
+body[data-page="developer"] .developer-wizard-panel summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 68px;
+  padding: 18px;
+  cursor: pointer;
+  list-style: none;
+}
+
+body[data-page="developer"] .developer-wizard-panel summary::-webkit-details-marker {
+  display: none;
+}
+
+body[data-page="developer"] .developer-wizard-panel summary strong {
+  color: var(--developer-text, #fff);
+  font-size: 18px;
+}
+
+body[data-page="developer"] .developer-wizard-panel summary small {
+  color: var(--developer-muted, #9aa5ba);
+  font-size: 13px;
+}
+
+body[data-page="developer"] .developer-wizard-panel > div {
+  padding: 0 18px 18px 58px;
+}
+
+body[data-page="developer"] .developer-codeblock-card {
+  display: grid;
+  gap: 14px;
+}
+
+body[data-page="developer"] .developer-codeblock {
+  position: relative;
+  max-height: 520px !important;
+  margin: 0;
+  padding: 16px 0 !important;
+  overflow: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 16px !important;
+  background: #070a12 !important;
+  color: #e8eefc !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+}
+
+body[data-page="developer"] .developer-codeblock code {
+  display: block;
+}
+
+body[data-page="developer"] .developer-codeblock .code-line {
+  display: block;
+  min-height: 20px;
+  padding: 0 18px 0 64px;
+  white-space: pre;
+}
+
+body[data-page="developer"] .developer-codeblock .code-line::before {
+  content: attr(data-line);
+  display: inline-block;
+  width: 34px;
+  margin-left: -48px;
+  margin-right: 14px;
+  color: #667085;
+  text-align: right;
+  user-select: none;
+}
+
+body[data-page="developer"] #developer-copy-quickstart.copied {
+  border-color: rgba(0, 245, 200, 0.5);
+  color: #06110e;
+  background: var(--developer-accent-3);
+}
+
+body[data-page="developer"] .developer-wizard-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+body[data-page="developer"] .developer-wizard-actions button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+  transform: none;
+}
+
+body[data-page="developer"] .developer-testimonials {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+body[data-page="developer"] .developer-testimonials article {
+  display: grid;
+  gap: 12px;
+  padding: 20px;
+}
+
+body[data-page="developer"] .developer-testimonials blockquote {
+  margin: 0;
+  color: var(--developer-text, #fff);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+body[data-page="developer"] .command-palette > div {
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+}
+
+body[data-page="developer"] #developer-command-results button {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--developer-soft-line);
+  padding: 14px 16px;
+  color: var(--developer-text, #fff);
+  background: transparent;
+  text-align: left;
+  transition: background 150ms ease, transform 150ms ease;
+}
+
+body[data-page="developer"] #developer-command-results button:hover,
+body[data-page="developer"] #developer-command-results button:focus-visible {
+  background: rgba(109, 93, 252, 0.16);
+  outline: 0;
+}
+
+body[data-page="developer"] #developer-command-results mark {
+  border-radius: 5px;
+  padding: 0 2px;
+  color: #06110e;
+  background: var(--developer-accent-3);
+}
+
+body[data-page="developer"][data-theme="light"] .developer-start-hero {
+  background:
+    radial-gradient(circle at 8% 0%, rgba(0, 166, 145, 0.14), transparent 34%),
+    radial-gradient(circle at 90% 18%, rgba(109, 93, 252, 0.2), transparent 38%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(241, 245, 249, 0.84));
+}
+
+body[data-page="developer"][data-theme="light"] .developer-start-hero h1,
+body[data-page="developer"][data-theme="light"] .developer-hero-card strong,
+body[data-page="developer"][data-theme="light"] .developer-testimonials blockquote {
+  color: #101828;
+}
+
+body[data-page="developer"][data-theme="light"] .developer-start-hero p,
+body[data-page="developer"][data-theme="light"] .developer-hero-card small {
+  color: #475467;
+}
+
+body[data-page="developer"][data-theme="light"] .developer-hero-card,
+body[data-page="developer"][data-theme="light"] .developer-wizard-panel,
+body[data-page="developer"][data-theme="light"] .developer-stepper button {
+  border-color: rgba(15, 23, 42, 0.12);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+body[data-page="developer"][data-theme="light"] .developer-secondary-button,
+body[data-page="developer"][data-theme="light"] .developer-detail-actions button,
+body[data-page="developer"][data-theme="light"] .developer-detail-actions a,
+body[data-page="developer"][data-theme="light"] .developer-wizard-actions button {
+  color: #101828;
+  background: #fff;
+}
+
+body[data-page="developer"][data-theme="light"] .developer-codeblock {
+  border-color: #d8dee9 !important;
+  background: #0f172a !important;
+  color: #e2e8f0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-page="developer"] .developer-primary-button,
+  body[data-page="developer"] .developer-secondary-button,
+  body[data-page="developer"] .developer-detail-actions button,
+  body[data-page="developer"] .developer-detail-actions a,
+  body[data-page="developer"] .developer-wizard-actions button,
+  body[data-page="developer"] .developer-metric-grid article,
+  body[data-page="developer"] .developer-testimonials article {
+    transition: none;
+  }
+}
+
+@media (max-width: 1180px) {
+  body[data-page="developer"] .developer-start-hero {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="developer"] .developer-metric-grid,
+  body[data-page="developer"] .developer-testimonials {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  body[data-page="developer"] .admin-view,
+  body[data-page="developer"] .developer-page-head,
+  body[data-page="developer"] .admin-toolbar {
+    width: min(100% - 24px, 1480px) !important;
+  }
+
+  body[data-page="developer"] .developer-start-hero {
+    padding: 24px;
+    border-radius: 22px;
+  }
+
+  body[data-page="developer"] .developer-start-hero h1 {
+    font-size: clamp(34px, 12vw, 48px);
+  }
+
+  body[data-page="developer"] .developer-metric-grid,
+  body[data-page="developer"] .developer-testimonials,
+  body[data-page="developer"] .developer-stepper {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="developer"] .developer-wizard-panel summary {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  body[data-page="developer"] .developer-wizard-panel summary small {
+    grid-column: 2;
+  }
+
+  body[data-page="developer"] .developer-wizard-panel > div {
+    padding-left: 18px;
+  }
+}
+
 /* Landing-page overhaul */
 body[data-page="landing"].forsig-overhaul {
   --oh-bg: #05070d;

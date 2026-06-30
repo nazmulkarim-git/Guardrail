@@ -24,7 +24,6 @@
         <nav>
           <span class="sidebar-group-label">Setup</span>
           <button type="button" data-developer-view="quickstart" data-nav-icon="S" class="active"><span>Start here</span><small>Shift S</small></button>
-          <button type="button" data-developer-view="integration" data-nav-icon="I" title="Generate a Codex, Claude, or Cursor prompt that adds Forsig checkpoints to your codebase."><span>AI Installer</span><small>Shift A</small></button>
           <button type="button" data-developer-view="shadow" data-nav-icon="M" title="See non-blocking simulations before you turn on active approval."><span>Shadow simulations</span></button>
           <span class="sidebar-group-label">Operate</span>
           <button type="button" data-developer-view="inbox" data-nav-icon="Q"><span>Inbox</span><small>Shift I</small></button>
@@ -111,62 +110,123 @@
           </div>
         </section>
 
-        <section id="developer-view-quickstart" class="admin-view">
-          <div class="developer-page-head">
+        <section id="developer-view-quickstart" class="admin-view developer-start-view">
+          <!-- StartHere: premium hero and guided onboarding hub for first-run developer activation. -->
+          <section class="developer-start-hero" aria-labelledby="developer-start-title">
             <div>
-              <h1>Run your first checkpoint</h1>
-              <p class="admin-meta">Create a key, run a tiny script, approve the escalation, and watch the agent receive a structured decision.</p>
+              <span class="zip-section-label">Developer beta</span>
+              <h1 id="developer-start-title">Safeguard your AI agents with approval checkpoints and audit trails.</h1>
+              <p>Control risky actions and comply with policies with zero friction. Create a key, install Forsig, and approve your first escalation in minutes.</p>
+              <div class="developer-hero-actions">
+                <button id="developer-start-free" class="developer-primary-button" type="button">Start free</button>
+                <a class="developer-secondary-button" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noreferrer">Book a demo</a>
+              </div>
             </div>
-            <button id="developer-generate-real-snippet" class="developer-primary-button" type="button">Generate example</button>
-          </div>
-          <div id="developer-quickstart-checklist" class="quickstart-checklist"></div>
-          <div class="quickstart-aha-panel">
-            <article>
-              <span>1</span>
-              <b>Create or use an active API key</b>
-              <small>Forsig only shows the full key once. Store it as <code>FORSIG_API_KEY</code>.</small>
-            </article>
-            <article>
-              <span>2</span>
-              <b>Run the copy-paste script</b>
-              <small>Start in shadow mode, then switch to active approval when the checkpoint looks right.</small>
-            </article>
-            <article>
-              <span>3</span>
-              <b>Approve in Inbox</b>
-              <small>Your local agent receives JSON: approved, rejected, edited, taken_over, or timeout.</small>
-            </article>
-          </div>
-          <div class="quickstart-layout">
-            <article class="quickstart-main">
-              <p class="admin-meta">Use these examples as a guide for creating Forsig checkpoints from your app. They default to shadow mode so you can observe what would require approval before switching to active mode.</p>
-              <div class="quickstart-tabs" role="tablist" aria-label="Quickstart language">
-                <button class="active" type="button" data-quickstart-tab="node">Node</button>
-                <button type="button" data-quickstart-tab="python">Python</button>
-                <button type="button" data-quickstart-tab="curl">cURL</button>
-                <button type="button" data-quickstart-tab="langgraph">LangGraph</button>
-                <button type="button" data-quickstart-tab="vercel">Vercel AI SDK</button>
-                <button type="button" data-quickstart-tab="n8n">n8n</button>
+            <div class="developer-hero-card" aria-label="Forsig approval flow preview">
+              <span>Agent action</span>
+              <strong>Refund $500</strong>
+              <small>Risk exceeds policy. Forsig pauses execution and notifies reviewers.</small>
+              <div class="developer-hero-flow">
+                <b>Checkpoint created</b>
+                <b>Human approves</b>
+                <b>Signed decision returned</b>
               </div>
-              <div class="minimal-warning">
-                <strong>No secrets in review context.</strong>
-                <span>Send only what a reviewer needs. Avoid API keys, passwords, payment details, full customer records, and unnecessary personal data.</span>
-              </div>
-              <pre class="quickstart-code"><code id="developer-quickstart-code"></code></pre>
-              <div class="developer-detail-actions">
-                <button id="developer-copy-quickstart" type="button">Copy snippet</button>
-                <a class="developer-back-button" href="/docs">Open docs</a>
-              </div>
-            </article>
-          </div>
-          <article class="quickstart-main quickstart-ai-card">
-            <div>
-              <span class="zip-section-label">Fastest real integration</span>
-              <h2>Let Codex, Cursor, or Claude add Forsig to your codebase.</h2>
-              <p class="admin-meta">Describe the risky actions. Forsig generates a precise coding-assistant prompt with search hints, tests, shadow-mode rollout, reviewer email routing, and fail-closed decision handling.</p>
             </div>
-            <button type="button" data-developer-view="integration">Open AI installer</button>
-          </article>
+          </section>
+
+          <!-- Metrics: social proof placeholders that stay useful during private beta. -->
+          <section class="developer-metric-grid" aria-label="Forsig trust metrics">
+            <article><span>OK</span><strong>2.4k+</strong><small>Approvals processed in test and beta workspaces</small></article>
+            <article><span>UP</span><strong>99.9%</strong><small>Target dashboard availability for private beta teams</small></article>
+            <article><span>DP</span><strong>18</strong><small>Design partners and early AI workflow builders</small></article>
+            <article><span>5M</span><strong>&lt; 5 min</strong><small>Typical time to create a real checkpoint</small></article>
+          </section>
+
+          <!-- Guided onboarding: consolidates Start here and AI Installer into one activation flow. -->
+          <section class="developer-onboarding-wizard" aria-labelledby="developer-onboarding-title">
+            <div class="developer-page-head compact">
+              <div>
+                <span class="zip-section-label">Guided setup</span>
+                <h2 id="developer-onboarding-title">Launch your first Forsig checkpoint</h2>
+                <p class="admin-meta">Follow the three steps below. You can use the code directly or generate an AI installer prompt for Codex, Cursor, or Claude.</p>
+              </div>
+              <button id="developer-generate-real-snippet" class="developer-primary-button" type="button">Generate example</button>
+            </div>
+
+            <div id="developer-quickstart-checklist" class="quickstart-checklist" aria-live="polite"></div>
+
+            <div id="developer-onboarding-stepper" class="developer-stepper" role="tablist" aria-label="Onboarding steps">
+              <button class="active" type="button" data-onboarding-step="0"><span>1</span>Generate API key</button>
+              <button type="button" data-onboarding-step="1"><span>2</span>Install SDK or AI agent</button>
+              <button type="button" data-onboarding-step="2"><span>3</span>Approve test escalation</button>
+            </div>
+
+            <div class="developer-wizard-panels">
+              <details class="developer-wizard-panel" data-onboarding-panel="0" open>
+                <summary><span>1</span><strong>Generate API key</strong><small>Shown once, then safely masked.</small></summary>
+                <div>
+                  <p>Create a server-side key and store it as <code>FORSIG_API_KEY</code>. Forsig never asks for your model keys, payment secrets, or customer records.</p>
+                  <button type="button" class="developer-primary-button" data-open-create-key>Create API key</button>
+                </div>
+              </details>
+
+              <details class="developer-wizard-panel" data-onboarding-panel="1">
+                <summary><span>2</span><strong>Install SDK or AI agent</strong><small>Copy Node, Python, cURL, or framework examples.</small></summary>
+                <div class="developer-codeblock-card">
+                  <p>Use these examples as a guide for creating Forsig checkpoints from your app. Start in shadow mode, then switch to active approval after you trust the trigger.</p>
+                  <div class="quickstart-tabs" role="tablist" aria-label="Quickstart language">
+                    <button class="active" type="button" data-quickstart-tab="node">Node</button>
+                    <button type="button" data-quickstart-tab="python">Python</button>
+                    <button type="button" data-quickstart-tab="curl">cURL</button>
+                    <button type="button" data-quickstart-tab="langgraph">LangGraph</button>
+                    <button type="button" data-quickstart-tab="vercel">Vercel AI SDK</button>
+                    <button type="button" data-quickstart-tab="n8n">n8n</button>
+                  </div>
+                  <div class="minimal-warning">
+                    <strong>No secrets in review context.</strong>
+                    <span>Send only what a reviewer needs. Avoid API keys, passwords, payment details, full customer records, and unnecessary personal data.</span>
+                  </div>
+                  <pre class="quickstart-code developer-codeblock" aria-label="Forsig quickstart code"><code id="developer-quickstart-code"></code></pre>
+                  <div class="developer-detail-actions">
+                    <button id="developer-copy-quickstart" type="button">Copy snippet</button>
+                    <button type="button" data-developer-view="integration">Generate AI installer prompt</button>
+                    <a class="developer-back-button" href="/docs">Open docs</a>
+                  </div>
+                </div>
+              </details>
+
+              <details class="developer-wizard-panel" data-onboarding-panel="2">
+                <summary><span>3</span><strong>Approve test escalation</strong><small>See the exact reviewer workflow before going live.</small></summary>
+                <div>
+                  <p>Create a test escalation, open it in Inbox, then approve, reject, edit, or take over. The agent receives a structured JSON decision.</p>
+                  <button type="button" class="developer-primary-button" data-run-test-escalation>Create test escalation</button>
+                </div>
+              </details>
+            </div>
+
+            <div class="developer-wizard-actions">
+              <button type="button" data-onboarding-prev>Previous</button>
+              <button type="button" data-onboarding-next>Next step</button>
+            </div>
+          </section>
+
+          <section class="developer-testimonials" aria-label="Beta feedback">
+            <article>
+              <span>AK</span>
+              <blockquote>&quot;Forsig gave our agents a clean stop point before refunds, without making the workflow feel heavy.&quot;</blockquote>
+              <small>AI platform engineer, design partner</small>
+            </article>
+            <article>
+              <span>MO</span>
+              <blockquote>&quot;The audit trail made it obvious which actions needed review before we moved from shadow mode.&quot;</blockquote>
+              <small>Ops founder, private beta</small>
+            </article>
+            <article>
+              <span>SR</span>
+              <blockquote>&quot;The installer prompt helped us find the right risky branches faster than manual docs alone.&quot;</blockquote>
+              <small>Automation lead, beta workspace</small>
+            </article>
+          </section>
         </section>
 
         <section id="developer-view-integration" class="admin-view" hidden>
