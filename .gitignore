@@ -1,0 +1,15 @@
+node_modules/
+/dist/
+
+# Python test/runtime caches
+__pycache__/
+*.py[cod]
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# OS/editor noise
+.DS_Store
+Thumbs.db

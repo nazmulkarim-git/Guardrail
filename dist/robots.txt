@@ -1,6 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /thanks
-Disallow: /api/
-
-Sitemap: https://www.forsig.com/sitemap.xml

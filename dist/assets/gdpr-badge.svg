@@ -1,5 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="GDPR badge">
-  <rect width="64" height="64" rx="18" fill="#111827"/>
-  <path d="M32 14 49 21v11c0 11-7.4 18.2-17 22-9.6-3.8-17-11-17-22V21l17-7Z" fill="#1f2a44" stroke="#19f5c0" stroke-width="3"/>
-  <path d="M25 32h14M32 25v14" stroke="#8da2ff" stroke-width="4" stroke-linecap="round"/>
-</svg>
