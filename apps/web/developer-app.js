@@ -232,6 +232,7 @@ function summarizeMetadata(metadata = {}) {
 }
 
 function showLogin() {
+  document.body.classList.add("developer-auth-mode");
   $("#developer-sidebar").hidden = true;
   $("#developer-login").hidden = false;
   $("#developer-password").hidden = true;
@@ -241,6 +242,7 @@ function showLogin() {
 }
 
 function showApp() {
+  document.body.classList.remove("developer-auth-mode");
   $("#developer-sidebar").hidden = false;
   $("#developer-login").hidden = true;
   $("#developer-password").hidden = true;
@@ -257,6 +259,7 @@ function passwordStrengthError(password) {
 }
 
 function showPasswordReset(copy = "Use at least 10 characters with uppercase, lowercase, number, and special character.") {
+  document.body.classList.add("developer-auth-mode");
   $("#developer-sidebar").hidden = true;
   $("#developer-login").hidden = true;
   $("#developer-password").hidden = false;

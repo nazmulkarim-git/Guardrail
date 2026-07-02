@@ -267,11 +267,12 @@ body[data-page="landing"] footer {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(420px, 0.78fr);
   align-items: center;
-  gap: clamp(48px, 7vw, 96px);
-  width: min(100% - 72px, 1280px);
+  gap: clamp(42px, 6vw, 86px);
+  width: 100%;
+  max-width: none;
   min-height: calc(100vh - 92px);
   margin: 0 auto;
-  padding: clamp(72px, 9vw, 128px) 0 clamp(96px, 10vw, 150px);
+  padding: clamp(70px, 8vw, 118px) clamp(28px, 5.5vw, 104px) clamp(90px, 9vw, 136px);
 }
 
 .fs-cloud {
@@ -300,13 +301,13 @@ body[data-page="landing"] footer {
 }
 
 .fs-hero-copy h1 {
-  max-width: 760px;
+  max-width: 820px;
   margin: 24px 0 0;
   color: #000000;
-  font-size: clamp(48px, 7vw, 94px);
+  font-size: clamp(50px, 5.9vw, 84px);
   font-weight: 900;
   letter-spacing: 0.01em;
-  line-height: 0.98;
+  line-height: 1.02;
   word-break: normal;
 }
 
@@ -321,9 +322,8 @@ body[data-page="landing"] footer {
 .fs-yc-badge {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  min-height: 42px;
-  padding: 6px 16px 6px 7px;
+  min-height: 38px;
+  padding: 6px 16px;
   border: 1px solid rgba(17, 24, 39, 0.10);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.66);
@@ -331,16 +331,6 @@ body[data-page="landing"] footer {
   color: #111827;
   font-size: 14px;
   font-weight: 800;
-}
-
-.fs-yc-badge b {
-  display: inline-grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 10px;
-  color: #ffffff;
-  background: #ff6d2d;
 }
 
 .fs-hero-actions {
@@ -370,7 +360,13 @@ body[data-page="landing"] footer {
   padding: 0 18px;
   color: var(--fs-text);
   background: transparent;
+  font-size: 14px;
   outline: 0;
+}
+
+.fs-hero-form input::placeholder {
+  color: #94a3b8;
+  font-size: 14px;
 }
 
 .fs-hero-form button,
@@ -571,9 +567,10 @@ body[data-page="landing"] footer {
 }
 
 .fs-section {
-  width: min(100% - 72px, 1280px);
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
-  padding: clamp(82px, 8vw, 128px) 0;
+  padding: clamp(82px, 8vw, 128px) clamp(28px, 5.5vw, 104px);
 }
 
 .fs-section-sky,
@@ -583,7 +580,7 @@ body[data-page="landing"] footer {
 .fs-waitlist-section {
   width: 100%;
   max-width: none;
-  padding-inline: max(36px, calc((100vw - 1280px) / 2));
+  padding-inline: clamp(28px, 5.5vw, 104px);
 }
 
 .fs-section-sky {
@@ -623,10 +620,10 @@ body[data-page="landing"] footer {
 .fs-waitlist-card h2 {
   margin: 12px 0 0;
   color: #000000;
-  font-size: clamp(38px, 4.6vw, 66px);
+  font-size: clamp(38px, 4.1vw, 60px);
   font-weight: 900;
   letter-spacing: 0.01em;
-  line-height: 1.06;
+  line-height: 1.1;
 }
 
 .fs-section-heading p,
@@ -720,14 +717,15 @@ body[data-page="landing"] footer {
   grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
   align-items: center;
   gap: clamp(42px, 6vw, 96px);
-  width: min(100%, 1280px);
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
 }
 
 .fs-demo-card,
 .dev-code-card {
   overflow: hidden;
-  padding: 24px;
+  padding: clamp(20px, 2.4vw, 32px);
   background: rgba(255, 255, 255, 0.78);
   backdrop-filter: blur(14px);
 }
@@ -753,17 +751,18 @@ body[data-page="landing"] footer {
 
 .fs-live-demo-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.72fr);
-  gap: 18px;
+  grid-template-columns: minmax(0, 1.03fr) minmax(280px, 0.97fr);
+  gap: 22px;
   margin-top: 18px;
 }
 
 .live-request-card,
 .live-decision-panel {
+  min-width: 0;
   border: 1px solid rgba(17, 24, 39, 0.10);
   border-radius: 26px;
   background: rgba(255, 255, 255, 0.76);
-  padding: 26px;
+  padding: clamp(22px, 2.4vw, 32px);
 }
 
 .fs-live-row {
@@ -802,7 +801,7 @@ body[data-page="landing"] footer {
 .live-request-card h3 {
   margin: 28px 0 0;
   color: #000000;
-  font-size: clamp(28px, 3vw, 42px);
+  font-size: clamp(30px, 2.7vw, 40px);
   font-weight: 900;
   line-height: 1.12;
 }
@@ -821,10 +820,11 @@ body[data-page="landing"] footer {
 }
 
 .live-request-card dl div {
+  min-width: 0;
   border: 1px solid rgba(17, 24, 39, 0.10);
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.74);
-  padding: 14px;
+  padding: 14px 12px;
 }
 
 .live-request-card dt {
@@ -838,7 +838,9 @@ body[data-page="landing"] footer {
 .live-request-card dd {
   margin: 6px 0 0;
   color: #000000;
+  font-size: 14px;
   font-weight: 800;
+  overflow-wrap: anywhere;
 }
 
 .live-decision-panel > span {
@@ -865,6 +867,8 @@ body[data-page="landing"] footer {
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   font-size: 13px;
   line-height: 1.75;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .fs-use-grid {
@@ -908,7 +912,12 @@ body[data-page="landing"] footer {
 
 .fs-security-card ul {
   margin: 18px 0 0;
-  padding-left: 20px;
+  padding-left: 22px;
+  list-style: disc;
+}
+
+.fs-security-card li {
+  display: list-item;
 }
 
 .fs-metrics-grid {
@@ -1639,6 +1648,69 @@ body[data-page="developer"][data-theme="dark"] .inbox-table-head {
   margin: 12vh auto 0;
 }
 
+body.developer-auth-mode .admin-shell,
+.admin-shell:has(#developer-login:not([hidden])),
+.admin-shell:has(#developer-password:not([hidden])) {
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+  min-height: 100vh;
+  padding: clamp(24px, 5vw, 72px);
+}
+
+body[data-page="developer"].developer-auth-mode,
+body[data-page="developer"]:has(#developer-login:not([hidden])),
+body[data-page="developer"]:has(#developer-password:not([hidden])) {
+  background:
+    radial-gradient(circle at 12% 4%, rgba(176, 224, 230, 0.62), transparent 30rem),
+    radial-gradient(circle at 88% 10%, rgba(255, 182, 217, 0.42), transparent 32rem),
+    linear-gradient(135deg, #ecfeff 0%, #fffdf7 48%, #fff1f7 100%);
+}
+
+#developer-login.admin-login-card,
+#developer-password.admin-login-card {
+  width: min(100%, 470px);
+  margin: 0;
+  padding: clamp(28px, 4vw, 42px);
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 30px 90px rgba(17, 24, 39, 0.14);
+  backdrop-filter: blur(20px);
+}
+
+#developer-login-form,
+#developer-reset-password-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+}
+
+#developer-login-form button,
+#developer-reset-password-form button {
+  min-height: 48px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 0 20px;
+  color: #ffffff;
+  background: var(--fs-slate);
+  font-weight: 900;
+  cursor: pointer;
+  transition: all 220ms ease;
+}
+
+#developer-login-form button:hover,
+#developer-reset-password-form button:hover {
+  background: var(--fs-slate-dark);
+  box-shadow: 0 14px 28px rgba(71, 85, 105, 0.22);
+}
+
+#developer-forgot-password {
+  color: var(--theme-muted) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  border-color: var(--theme-border) !important;
+  box-shadow: none !important;
+}
+
 .auth-mode-tabs,
 .admin-form-grid,
 .developer-wizard-panels,
@@ -1855,7 +1927,8 @@ body[data-page="developer"][data-theme="dark"] .inbox-table-head {
 
   .fs-hero-section,
   .fs-section {
-    width: min(100% - 32px, 1280px);
+    width: 100%;
+    padding-inline: 18px;
   }
 
   .fs-hero-section {
