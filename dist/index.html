@@ -54,7 +54,7 @@
       </nav>
       <div class="portkey-nav-actions">
         <a class="portkey-nav-link" href="/developer">Sign in</a>
-        <a class="portkey-btn portkey-btn-primary" href="#waitlist" data-track="nav_early_access_clicked">Join beta</a>
+        <a class="portkey-btn portkey-btn-primary" href="#waitlist" data-track="nav_early_access_clicked">Join waitlist</a>
       </div>
     </header>
 
@@ -68,9 +68,15 @@
             edits, or rejects them.
           </p>
           <div class="portkey-actions">
-            <a class="portkey-btn portkey-btn-primary" href="#waitlist" data-track="hero_early_access_clicked">Join beta</a>
+            <a class="portkey-btn portkey-btn-primary" href="#waitlist" data-track="hero_early_access_clicked">Join waitlist</a>
             <a class="portkey-btn portkey-btn-secondary" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener" data-track="hero_book_demo_clicked">Book a demo</a>
           </div>
+          <form id="hero-waitlist-form" class="aside-inline-waitlist" data-lead-form novalidate>
+            <input name="email" type="email" required autocomplete="email" placeholder="Enter your work email" aria-label="Work email" />
+            <input name="planInterest" type="hidden" value="developer-beta" />
+            <button type="submit">Join waitlist</button>
+            <p class="mini-status" role="status"></p>
+          </form>
         </div>
 
         <aside class="portkey-hero-product" aria-label="Forsig approval dashboard preview">
@@ -416,7 +422,7 @@ if (decision.status === "approved") {
       <section id="waitlist" class="portkey-signup reveal" aria-labelledby="signup-title">
         <div>
           <span class="section-kicker">Beta access</span>
-          <h2 id="signup-title">Join the Forsig beta.</h2>
+          <h2 id="signup-title">Join the Forsig waitlist.</h2>
           <p>Early teams get founder onboarding, launch pricing, and help choosing the first approval checkpoints.</p>
           <div class="seat-meter" aria-label="Beta seats remaining">
             <div><i data-seat-progress style="width: 34%"></i></div>
@@ -433,7 +439,7 @@ if (decision.status === "approved") {
             <input name="name" type="text" autocomplete="given-name" placeholder="Alex" />
           </label>
           <input name="planInterest" type="hidden" value="developer-beta" />
-          <button class="portkey-btn portkey-btn-primary" type="submit">Get early access</button>
+          <button class="portkey-btn portkey-btn-primary" type="submit">Join waitlist</button>
           <p class="form-note">We will only use your email to send beta updates.</p>
           <p id="form-status" class="mini-status" role="status"></p>
           <div class="lp-referral-result referral-result" hidden>

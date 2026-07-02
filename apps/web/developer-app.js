@@ -30,9 +30,18 @@ const state = {
   auditEvents: []
 };
 
+function initialDeveloperTheme() {
+  if (!localStorage.getItem("forsig_developer_theme_v2")) {
+    localStorage.setItem("forsig_developer_theme_v2", "1");
+    localStorage.setItem("forsig_developer_theme", "light");
+    return "light";
+  }
+  return localStorage.getItem("forsig_developer_theme") || "light";
+}
+
 const $ = (selector) => document.querySelector(selector);
 
-function applyTheme(theme = localStorage.getItem("forsig_developer_theme") || "dark") {
+function applyTheme(theme = initialDeveloperTheme()) {
   document.body.dataset.theme = theme;
   localStorage.setItem("forsig_developer_theme", theme);
   const palette = developerTheme[theme] || developerTheme.dark;

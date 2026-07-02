@@ -1,24 +1,24 @@
 export const developerTheme = {
   dark: {
-    background: "#07090F",
-    surface: "#10131B",
-    surfaceAlt: "#171B25",
-    border: "#2A2F3D",
-    text: "#F4F0E8",
-    muted: "#AFA99B",
-    primary: "#14F1BD",
-    secondary: "#7C6DFF",
+    background: "#090B0C",
+    surface: "#111516",
+    surfaceAlt: "#22292B",
+    border: "#343A3C",
+    text: "#FFFFFF",
+    muted: "#D4D4D4",
+    primary: "#00A5EF",
+    secondary: "#00BB7F",
     danger: "#FB7185"
   },
   light: {
-    background: "#F6F4EF",
-    surface: "#FFFFFF",
-    surfaceAlt: "#ECE8DE",
-    border: "#D8D0C2",
-    text: "#17140F",
-    muted: "#625B50",
-    primary: "#0D8F73",
-    secondary: "#5146D9",
-    danger: "#E11D48"
+    background: "#FFFFFF",
+    surface: "#FAFAFA",
+    surfaceAlt: "#F5F5F5",
+    border: "#E5E5E5",
+    text: "#0A0A0A",
+    muted: "#525252",
+    primary: "#00A5EF",
+    secondary: "#00BB7F",
+    danger: "#FB2C36"
   }
 };
