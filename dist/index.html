@@ -32,7 +32,7 @@
       }
     </script>
   </head>
-  <body data-page="landing" class="lp-portkey">
+  <body data-page="landing" class="lp-portkey lp-aside">
     <div class="portkey-bg" aria-hidden="true"></div>
 
     <header class="portkey-nav" aria-label="Main navigation">
@@ -46,9 +46,15 @@
         </svg>
         <span>Forsig</span>
       </a>
+      <nav class="aside-nav-menu" aria-label="Landing page sections">
+        <a href="#product">Product</a>
+        <a href="#developers">Developers</a>
+        <a href="#security">Security</a>
+        <a href="/docs">Docs</a>
+      </nav>
       <div class="portkey-nav-actions">
         <a class="portkey-nav-link" href="/developer">Sign in</a>
-        <a class="portkey-btn portkey-btn-primary" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener" data-track="nav_book_demo_clicked">Book a demo</a>
+        <a class="portkey-btn portkey-btn-primary" href="#waitlist" data-track="nav_early_access_clicked">Join beta</a>
       </div>
     </header>
 
@@ -56,14 +62,14 @@
       <section class="portkey-hero reveal" aria-labelledby="hero-title">
         <div class="portkey-hero-copy">
           <span class="portkey-pill">Private beta for AI agent teams</span>
-          <h1 id="hero-title">Human approval checkpoints for AI agents before they make expensive mistakes.</h1>
+          <h1 id="hero-title">The approval layer for AI agents that do real work.</h1>
           <p>
-            Forsig pauses high-risk refunds, migrations, messages, and paid tool calls until a reviewer approves,
-            edits, or rejects the action.
+            Forsig pauses risky refunds, migrations, messages, and paid tool calls until a human approves,
+            edits, or rejects them.
           </p>
           <div class="portkey-actions">
-            <a class="portkey-btn portkey-btn-primary" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener" data-track="hero_book_demo_clicked">Book a demo</a>
-            <a class="portkey-btn portkey-btn-secondary" href="#waitlist" data-track="hero_early_access_clicked">Get early access</a>
+            <a class="portkey-btn portkey-btn-primary" href="#waitlist" data-track="hero_early_access_clicked">Join beta</a>
+            <a class="portkey-btn portkey-btn-secondary" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener" data-track="hero_book_demo_clicked">Book a demo</a>
           </div>
         </div>
 
@@ -87,16 +93,34 @@
               <div class="approval-side-stack">
                 <div><b>Pending</b><span>Human decision required</span></div>
                 <div><b>High risk</b><span>Refund exceeds policy</span></div>
-                <div><b>Signed trail</b><span>Decision stored for audit</span></div>
-              </div>
+              <div><b>Signed trail</b><span>Decision stored for audit</span></div>
             </div>
-            <pre aria-label="Decision payload returned to the agent"><code>{
+          </div>
+          <div class="aside-agent-flow" aria-label="Approval path summary">
+            <span>Agent proposes</span>
+            <i></i>
+            <span>Forsig pauses</span>
+            <i></i>
+            <span>Human decides</span>
+            <i></i>
+            <span>Agent resumes</span>
+          </div>
+          <pre aria-label="Decision payload returned to the agent"><code>{
   "status": "approved",
   "signed": true,
   "instruction": "Proceed with refund"
 }</code></pre>
           </div>
         </aside>
+      </section>
+
+      <section class="aside-intro reveal" aria-labelledby="intro-title">
+        <span class="section-kicker">Introducing Forsig</span>
+        <h2 id="intro-title">AI agents are fast. Business actions still need control.</h2>
+        <p>
+          Forsig gives developers a review checkpoint for actions that touch money, customers, production, or external tools.
+          Your agent keeps moving after a signed human decision.
+        </p>
       </section>
 
       <section class="portkey-metrics reveal" aria-labelledby="metrics-title">
