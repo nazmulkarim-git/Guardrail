@@ -559,6 +559,16 @@ if decision.status == "approved":
       approved: "Send the proposed customer email.",
       edited: "Reduce discount to 15% and request a call.",
       rejected: "Do not send. Pricing exception is missing."
+    },
+    tool: {
+      title: "Review paid data export",
+      copy: "The research agent wants to buy a paid market dataset through an external tool.",
+      agent: "Research agent",
+      action: "tool.purchase",
+      risk: "High risk",
+      approved: "Buy the dataset within the approved budget.",
+      edited: "Limit spend to $150 and attach the receipt.",
+      rejected: "Stop purchase. Budget owner approval is missing."
     }
   };
   let activeScenario = "refund";

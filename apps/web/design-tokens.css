@@ -2,13 +2,13 @@
    Static equivalent of design-tokens.ts for this repo. Values use a 4px/8px spacing rhythm
    and are shared by landing, developer console, and admin surfaces. */
 :root {
-  --fs-color-primary: #4f46e5;
-  --fs-color-primary-strong: #4338ca;
-  --fs-color-success: #19f5c0;
+  --fs-color-primary: #64748b;
+  --fs-color-primary-strong: #475569;
+  --fs-color-success: #20b2aa;
   --fs-color-warning: #f8c35b;
   --fs-color-danger: #ff5f7a;
   --fs-color-bg-dark: #0b1020;
-  --fs-color-bg-light: #f7f8fb;
+  --fs-color-bg-light: #fffdf7;
   --fs-color-surface-dark: #111827;
   --fs-color-surface-light: #ffffff;
   --fs-color-border-dark: rgba(184, 199, 226, 0.18);
@@ -16,7 +16,7 @@
   --fs-text-dark: #f8fbff;
   --fs-text-light: #101828;
   --fs-muted-dark: #aebbd2;
-  --fs-muted-light: #5b667a;
+  --fs-muted-light: #4b5563;
   --fs-space-1: 4px;
   --fs-space-2: 8px;
   --fs-space-3: 12px;
@@ -38,6 +38,6 @@
   --fs-radius-xl: 20px;
   --fs-shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.06);
   --fs-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-  --fs-focus-ring: 0 0 0 3px rgba(79, 70, 229, 0.35);
+  --fs-focus-ring: 0 0 0 3px rgba(100, 116, 139, 0.28);
   --fs-transition: 160ms ease-out;
 }

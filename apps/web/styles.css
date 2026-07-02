@@ -23218,3 +23218,92 @@ body[data-page="app"] .command-palette > div {
     width: min(100% - 28px, 640px) !important;
   }
 }
+
+/* 2026 pastel system override for remaining legacy admin routes.
+   The main landing and developer portal use aside-system.css; /app still uses this file,
+   so this small layer keeps admin controls aligned with the softer Forsig palette. */
+body[data-page="app"] {
+  --developer-bg: #fffdf7 !important;
+  --developer-surface: rgba(255, 255, 255, 0.82) !important;
+  --developer-panel: rgba(255, 255, 255, 0.78) !important;
+  --developer-line: rgba(17, 24, 39, 0.12) !important;
+  --developer-text: #111827 !important;
+  --developer-muted: #4b5563 !important;
+  --developer-primary: #64748b !important;
+  --console-bg: #fffdf7 !important;
+  --console-panel: rgba(255, 255, 255, 0.82) !important;
+  --console-border: rgba(17, 24, 39, 0.12) !important;
+  --console-text: #111827 !important;
+  --console-muted: #4b5563 !important;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(176, 224, 230, 0.45), transparent 28rem),
+    radial-gradient(circle at 92% 8%, rgba(255, 182, 217, 0.28), transparent 30rem),
+    #fffdf7 !important;
+  color: #111827 !important;
+}
+
+body[data-page="app"] .admin-sidebar {
+  background: rgba(255, 255, 255, 0.68) !important;
+  backdrop-filter: blur(20px);
+}
+
+body[data-page="app"] .admin-stats article:nth-child(1) {
+  background: linear-gradient(145deg, rgba(255, 182, 217, 0.42), rgba(255, 255, 255, 0.86)) !important;
+}
+
+body[data-page="app"] .admin-stats article:nth-child(2) {
+  background: linear-gradient(145deg, rgba(176, 224, 230, 0.52), rgba(255, 255, 255, 0.86)) !important;
+}
+
+body[data-page="app"] .admin-stats article:nth-child(3) {
+  background: linear-gradient(145deg, rgba(144, 238, 144, 0.36), rgba(255, 255, 255, 0.86)) !important;
+}
+
+body[data-page="app"] .admin-stats article:nth-child(4) {
+  background: linear-gradient(145deg, rgba(255, 246, 190, 0.68), rgba(255, 255, 255, 0.86)) !important;
+}
+
+body[data-page="app"] .developer-primary-button,
+body[data-page="app"] .admin-form-grid button,
+body[data-page="app"] .decision-form button,
+body[data-page="app"] #admin-login-form button,
+body[data-page="app"] .decision-actions button.active {
+  border-color: transparent !important;
+  border-radius: 999px !important;
+  color: #ffffff !important;
+  background: #64748b !important;
+  box-shadow: 0 12px 26px rgba(71, 85, 105, 0.18) !important;
+}
+
+body[data-page="app"] .decision-actions button {
+  border-radius: 999px !important;
+  color: #475569 !important;
+  background: rgba(255, 255, 255, 0.76) !important;
+}
+
+body[data-page="app"] .developer-primary-button:hover,
+body[data-page="app"] .admin-form-grid button:hover,
+body[data-page="app"] .decision-form button:hover,
+body[data-page="app"] #admin-login-form button:hover,
+body[data-page="app"] .decision-actions button:hover,
+body[data-page="app"] .decision-actions button.active {
+  background: #475569 !important;
+}
+
+body[data-page="app"] .key-state-active,
+body[data-page="app"] .key-state-approved {
+  color: #065f46 !important;
+  background: rgba(144, 238, 144, 0.36) !important;
+}
+
+body[data-page="app"] .key-state-pending,
+body[data-page="app"] .key-state-held {
+  color: #854d0e !important;
+  background: rgba(254, 243, 199, 0.88) !important;
+}
+
+body[data-page="app"] .key-state-rejected,
+body[data-page="app"] .key-state-revoked {
+  color: #9f1239 !important;
+  background: rgba(255, 182, 217, 0.38) !important;
+}
