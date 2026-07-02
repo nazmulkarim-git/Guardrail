@@ -7,10 +7,35 @@
     <meta name="robots" content="noindex,nofollow" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/design-tokens.css" />
-    <link rel="stylesheet" href="/typography.css" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Geist", "Inter", "ui-sans-serif", "system-ui"],
+              mono: ["Geist Mono", "SFMono-Regular", "Consolas", "monospace"]
+            },
+            colors: {
+              primary: "#00A5EF",
+              foreground: "#0A0A0A",
+              muted: "#525252",
+              border: "#E5E5E5"
+            },
+            borderRadius: {
+              md: "8.4px",
+              lg: "11.2px",
+              xl: "16.8px"
+            },
+            boxShadow: {
+              aside: "0 1px 2px #00000026"
+            }
+          }
+        }
+      };
+    </script>
+    <link rel="stylesheet" href="/aside-system.css" />
   </head>
   <body data-page="developer" class="zip-design admin-app">
     <main class="admin-shell">

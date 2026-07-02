@@ -499,24 +499,25 @@ if decision.status == "approved":
   const slides = Array.from(document.querySelectorAll("[data-testimonial-slide]"));
   const prev = document.querySelector("[data-testimonial-prev]");
   const next = document.querySelector("[data-testimonial-next]");
-  if (!slides.length) return;
-  let activeSlide = Math.max(0, slides.findIndex((slide) => slide.classList.contains("active")));
-  const showSlide = (index) => {
-    activeSlide = (index + slides.length) % slides.length;
-    slides.forEach((slide, slideIndex) => {
-      slide.classList.toggle("active", slideIndex === activeSlide);
+  if (slides.length) {
+    let activeSlide = Math.max(0, slides.findIndex((slide) => slide.classList.contains("active")));
+    const showSlide = (index) => {
+      activeSlide = (index + slides.length) % slides.length;
+      slides.forEach((slide, slideIndex) => {
+        slide.classList.toggle("active", slideIndex === activeSlide);
+      });
+    };
+    prev?.addEventListener("click", () => {
+      showSlide(activeSlide - 1);
+      track("landing_testimonial_prev_clicked");
     });
-  };
-  prev?.addEventListener("click", () => {
-    showSlide(activeSlide - 1);
-    track("landing_testimonial_prev_clicked");
-  });
-  next?.addEventListener("click", () => {
-    showSlide(activeSlide + 1);
-    track("landing_testimonial_next_clicked");
-  });
-  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    setInterval(() => showSlide(activeSlide + 1), 5200);
+    next?.addEventListener("click", () => {
+      showSlide(activeSlide + 1);
+      track("landing_testimonial_next_clicked");
+    });
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setInterval(() => showSlide(activeSlide + 1), 5200);
+    }
   }
 
   const scenarioButtons = document.querySelectorAll("[data-live-scenario]");

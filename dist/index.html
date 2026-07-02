@@ -3,23 +3,51 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Forsig - Human approval checkpoints for AI agents</title>
-    <meta name="description" content="Forsig adds human approval checkpoints to risky AI agent actions so teams avoid costly refunds, compliance issues, and production mistakes." />
+    <title>Forsig - Human approval for AI agents</title>
+    <meta name="description" content="Forsig pauses risky AI agent actions until a human approves, edits, or rejects them." />
     <meta name="robots" content="index,follow" />
     <link rel="canonical" href="https://www.forsig.com/" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.forsig.com/" />
-    <meta property="og:title" content="Forsig - Human approval checkpoints for AI agents" />
-    <meta property="og:description" content="Pause risky AI agent actions until a human approves, edits, or rejects them." />
+    <meta property="og:title" content="Forsig - Human approval for AI agents" />
+    <meta property="og:description" content="Pause risky refunds, deployments, messages, and paid tool calls until a human decides." />
     <meta property="og:site_name" content="Forsig" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Forsig - Human approval checkpoints for AI agents" />
-    <meta name="twitter:description" content="Prevent costly AI mistakes with signed human approval checkpoints." />
+    <meta name="twitter:title" content="Forsig - Human approval for AI agents" />
+    <meta name="twitter:description" content="Signed human approval checkpoints for AI agent workflows." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="/design-tokens.css" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Geist", "Inter", "ui-sans-serif", "system-ui"],
+              mono: ["Geist Mono", "SFMono-Regular", "Consolas", "monospace"]
+            },
+            colors: {
+              primary: "#00A5EF",
+              foreground: "#0A0A0A",
+              muted: "#525252",
+              border: "#E5E5E5",
+              mist: "#090B0C"
+            },
+            borderRadius: {
+              md: "8.4px",
+              lg: "11.2px",
+              xl: "16.8px",
+              "2xl": "22.4px"
+            },
+            boxShadow: {
+              aside: "0 1px 2px #00000026"
+            }
+          }
+        }
+      };
+    </script>
+    <link rel="stylesheet" href="/aside-system.css" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -32,259 +60,204 @@
       }
     </script>
   </head>
-  <body data-page="landing" class="lp-portkey lp-aside">
-    <div class="portkey-bg" aria-hidden="true"></div>
-
-    <header class="portkey-nav" aria-label="Main navigation">
-      <a class="portkey-brand" href="/" aria-label="Forsig home">
-        <svg viewBox="0 0 40 40" aria-hidden="true">
-          <path d="M4 20h12M24 20h12" />
-          <circle cx="20" cy="20" r="6" />
-          <path d="M20 8v6M20 26v6" />
-          <circle cx="4" cy="20" r="2" />
-          <circle cx="36" cy="20" r="2" />
-        </svg>
-        <span>Forsig</span>
-      </a>
-      <nav class="aside-nav-menu" aria-label="Landing page sections">
-        <a href="#product">Product</a>
-        <a href="#developers">Developers</a>
-        <a href="#security">Security</a>
-        <a href="/docs">Docs</a>
-      </nav>
-      <div class="portkey-nav-actions">
-        <a class="portkey-nav-link" href="/developer">Sign in</a>
-        <a class="portkey-btn portkey-btn-primary" href="#waitlist" data-track="nav_early_access_clicked">Join waitlist</a>
-      </div>
-    </header>
-
-    <main>
-      <section class="portkey-hero reveal" aria-labelledby="hero-title">
-        <div class="portkey-hero-copy">
-          <span class="portkey-pill">Private beta for AI agent teams</span>
-          <h1 id="hero-title">The approval layer for AI agents that do real work.</h1>
-          <p>
-            Forsig pauses risky refunds, migrations, messages, and paid tool calls until a human approves,
-            edits, or rejects them.
-          </p>
-          <div class="portkey-actions">
-            <a class="portkey-btn portkey-btn-primary" href="#waitlist" data-track="hero_early_access_clicked">Join waitlist</a>
-            <a class="portkey-btn portkey-btn-secondary" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener" data-track="hero_book_demo_clicked">Book a demo</a>
-          </div>
-          <form id="hero-waitlist-form" class="aside-inline-waitlist" data-lead-form novalidate>
-            <input name="email" type="email" required autocomplete="email" placeholder="Enter your work email" aria-label="Work email" />
-            <input name="planInterest" type="hidden" value="developer-beta" />
-            <button type="submit">Join waitlist</button>
-            <p class="mini-status" role="status"></p>
-          </form>
+  <body data-page="landing" class="bg-white text-foreground antialiased">
+    <div class="fs-grid-bg min-h-screen overflow-hidden">
+      <header class="sticky top-4 z-50 mx-auto flex min-h-16 w-[min(100%-32px,1120px)] items-center justify-between rounded-xl border border-border bg-white/90 px-4 shadow-aside backdrop-blur">
+        <a class="fs-logo flex items-center gap-3 text-[15px] font-bold text-foreground no-underline" href="/" aria-label="Forsig home">
+          <svg class="h-8 w-8" viewBox="0 0 40 40" aria-hidden="true">
+            <path d="M4 20h12M24 20h12" />
+            <circle cx="20" cy="20" r="6" />
+            <path d="M20 8v6M20 26v6" />
+            <circle cx="4" cy="20" r="2" />
+            <circle cx="36" cy="20" r="2" />
+          </svg>
+          <span>Forsig</span>
+        </a>
+        <nav class="hidden items-center gap-6 text-sm font-medium text-muted md:flex" aria-label="Main navigation">
+          <a class="hover:text-foreground" href="#features">Features</a>
+          <a class="hover:text-foreground" href="#use-cases">Use cases</a>
+          <a class="hover:text-foreground" href="#security">Security</a>
+          <a class="hover:text-foreground" href="/docs">Docs</a>
+        </nav>
+        <div class="flex items-center gap-2">
+          <a class="hidden text-sm font-medium text-muted hover:text-foreground sm:inline-flex" href="/developer">Sign in</a>
+          <a class="fs-button fs-button-primary" href="#waitlist" data-track="nav_join_waitlist_clicked">Join waitlist</a>
         </div>
+      </header>
 
-        <aside class="portkey-hero-product" aria-label="Forsig approval dashboard preview">
-          <div class="product-window">
-            <div class="product-window-top">
-              <span></span><span></span><span></span>
-              <b>Forsig approval dashboard</b>
+      <main>
+        <section class="mx-auto grid w-[min(100%-32px,1120px)] items-center gap-10 py-16 md:grid-cols-[0.92fr_0.82fr] md:py-20 lg:py-24" aria-labelledby="hero-title">
+          <div class="reveal">
+            <a class="mb-5 inline-flex min-h-8 items-center rounded-lg border border-sky-100 bg-sky-50 px-3 text-xs font-semibold text-primary no-underline" href="https://www.ycombinator.com/" target="_blank" rel="noopener">
+              Private beta for agent teams
+            </a>
+            <h1 id="hero-title" class="max-w-2xl text-[44px] font-bold leading-[1.04] tracking-[-0.01em] text-foreground sm:text-6xl lg:text-[68px]">
+              Human approval for AI agents that do real work.
+            </h1>
+            <p class="mt-5 max-w-xl text-lg leading-8 text-muted">
+              Forsig pauses risky refunds, deployments, customer messages, and paid tool calls until a human approves, edits, or rejects them.
+            </p>
+            <div class="mt-7 flex flex-wrap items-center gap-3">
+              <a class="fs-button fs-button-primary" href="#waitlist" data-track="hero_join_waitlist_clicked">Join waitlist</a>
+              <a class="fs-button fs-button-secondary" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener" data-track="hero_book_demo_clicked">Book a demo</a>
             </div>
-            <div class="approval-preview-grid">
-              <div class="approval-request-panel">
-                <span class="panel-kicker">Risk matched</span>
-                <h2>Approve refund for customer #123</h2>
-                <p>The agent wants to issue a $500 refund. Forsig pauses execution and sends only the needed context.</p>
-                <div class="approval-actions" aria-label="Approval actions">
-                  <button type="button">Approve</button>
-                  <button type="button">Edit</button>
-                  <button type="button">Reject</button>
+            <form id="hero-waitlist-form" class="mt-5 grid max-w-md grid-cols-[1fr_auto] overflow-hidden rounded-xl border border-border bg-white shadow-aside" data-lead-form novalidate>
+              <input class="min-h-11 bg-transparent px-3 text-base outline-none placeholder:italic placeholder:text-neutral-500" name="email" type="email" required autocomplete="email" placeholder="Enter your work email" aria-label="Work email" />
+              <input name="planInterest" type="hidden" value="developer-beta" />
+              <button class="bg-primary px-4 text-sm font-semibold text-white transition hover:bg-primary/80" type="submit">Join</button>
+              <p class="mini-status col-span-2 px-3 pb-3" role="status"></p>
+            </form>
+          </div>
+
+          <aside class="reveal fs-card bg-white p-3" aria-label="Forsig product preview">
+            <div class="overflow-hidden rounded-xl border border-border bg-neutral-50">
+              <div class="flex min-h-11 items-center gap-2 border-b border-border px-4">
+                <span class="h-3 w-3 rounded-full bg-red-400"></span>
+                <span class="h-3 w-3 rounded-full bg-yellow-400"></span>
+                <span class="h-3 w-3 rounded-full bg-emerald-400"></span>
+                <span class="ml-2 text-xs font-semibold text-muted">Forsig approval dashboard</span>
+              </div>
+              <div class="grid gap-3 p-4 sm:grid-cols-[1fr_0.72fr]">
+                <div class="rounded-xl border border-border bg-white p-5 shadow-aside">
+                  <span class="text-xs font-bold uppercase tracking-wide text-primary">Risk matched</span>
+                  <h2 class="mt-3 text-3xl font-bold leading-tight tracking-[-0.01em]">Approve refund for customer #123</h2>
+                  <p class="mt-3 text-sm leading-6 text-muted">The agent wants to issue a $500 refund. Forsig pauses execution and sends only the needed context.</p>
+                  <div class="mt-5 grid grid-cols-3 gap-2">
+                    <button class="min-h-9 rounded-lg bg-primary text-sm font-semibold text-white">Approve</button>
+                    <button class="min-h-9 rounded-lg border border-border text-sm font-semibold">Edit</button>
+                    <button class="min-h-9 rounded-lg border border-border text-sm font-semibold">Reject</button>
+                  </div>
+                </div>
+                <div class="grid gap-3">
+                  <div class="rounded-xl border border-border bg-white p-4 shadow-aside"><b>Pending</b><p class="mt-1 text-sm text-muted">Human decision required</p></div>
+                  <div class="rounded-xl border border-border bg-white p-4 shadow-aside"><b>High risk</b><p class="mt-1 text-sm text-muted">Refund exceeds policy</p></div>
+                  <div class="rounded-xl border border-border bg-white p-4 shadow-aside"><b>Signed trail</b><p class="mt-1 text-sm text-muted">Stored for audit</p></div>
                 </div>
               </div>
-              <div class="approval-side-stack">
-                <div><b>Pending</b><span>Human decision required</span></div>
-                <div><b>High risk</b><span>Refund exceeds policy</span></div>
-              <div><b>Signed trail</b><span>Decision stored for audit</span></div>
-            </div>
-          </div>
-          <div class="aside-agent-flow" aria-label="Approval path summary">
-            <span>Agent proposes</span>
-            <i></i>
-            <span>Forsig pauses</span>
-            <i></i>
-            <span>Human decides</span>
-            <i></i>
-            <span>Agent resumes</span>
-          </div>
-          <pre aria-label="Decision payload returned to the agent"><code>{
+              <pre class="mx-4 mb-4 overflow-auto rounded-xl border border-border bg-white p-4 font-mono text-xs leading-6 text-foreground"><code>{
   "status": "approved",
   "signed": true,
   "instruction": "Proceed with refund"
 }</code></pre>
-          </div>
-        </aside>
-      </section>
-
-      <section class="aside-intro reveal" aria-labelledby="intro-title">
-        <span class="section-kicker">Introducing Forsig</span>
-        <h2 id="intro-title">AI agents are fast. Business actions still need control.</h2>
-        <p>
-          Forsig gives developers a review checkpoint for actions that touch money, customers, production, or external tools.
-          Your agent keeps moving after a signed human decision.
-        </p>
-      </section>
-
-      <section class="portkey-metrics reveal" aria-labelledby="metrics-title">
-        <h2 id="metrics-title">Built for teams shipping agents into real workflows.</h2>
-        <div class="metric-card">
-          <b>0</b>
-          <span>Secrets required in review context</span>
-        </div>
-        <div class="metric-card">
-          <b>4</b>
-          <span>High-risk action types covered first</span>
-        </div>
-        <div class="metric-card">
-          <b>&lt; 2 min</b>
-          <span>Target time from escalation to decision</span>
-        </div>
-      </section>
-
-      <section id="product" class="portkey-feature portkey-live-feature reveal" aria-labelledby="live-demo-title">
-        <div class="feature-visual live-approval-demo" aria-label="Interactive Forsig approval demo">
-          <div class="live-demo-tabs" role="tablist" aria-label="Approval examples">
-            <button class="active" type="button" data-live-scenario="refund">Refund</button>
-            <button type="button" data-live-scenario="deploy">Deploy</button>
-            <button type="button" data-live-scenario="email">Email</button>
-          </div>
-          <div class="live-demo-shell">
-            <div class="live-request-card">
-              <div class="live-request-top">
-                <span id="live-demo-risk">High risk</span>
-                <b id="live-demo-status">Pending</b>
-              </div>
-              <h3 id="live-demo-title-card">Approve refund for customer #123</h3>
-              <p id="live-demo-copy">The agent wants to issue a $500 refund that exceeds your policy limit.</p>
-              <dl>
-                <div><dt>Agent</dt><dd id="live-demo-agent">Refund agent</dd></div>
-                <div><dt>Action</dt><dd id="live-demo-action">stripe.refund</dd></div>
-                <div><dt>Timeout</dt><dd>15 minutes</dd></div>
-              </dl>
             </div>
-            <div class="live-decision-panel">
-              <span class="section-kicker">Reviewer decision</span>
-              <div class="live-decision-buttons">
-                <button type="button" data-live-decision="approved">Approve</button>
-                <button type="button" data-live-decision="edited">Edit</button>
-                <button type="button" data-live-decision="rejected">Reject</button>
+          </aside>
+        </section>
+
+        <section class="mx-auto w-[min(100%-32px,896px)] py-12 text-center reveal" aria-labelledby="intro-title">
+          <a id="features" class="text-xs font-bold uppercase tracking-wide text-primary">Introducing Forsig</a>
+          <h2 id="intro-title" class="mt-3 text-4xl font-bold leading-tight tracking-[-0.01em] text-foreground md:text-5xl">
+            Agents are fast. Risky business actions still need permission.
+          </h2>
+          <p class="mx-auto mt-4 max-w-2xl text-base leading-7 text-muted">
+            Forsig is a checkpoint layer for developers shipping AI agents into customer, revenue, production, and tool-spend workflows.
+          </p>
+        </section>
+
+        <section class="mx-auto grid w-[min(100%-32px,1120px)] gap-6 py-12 md:grid-cols-3 reveal" aria-label="Forsig metrics">
+          <article class="fs-card p-6">
+            <b class="text-4xl">0</b>
+            <p class="mt-2 text-sm leading-6 text-muted">Secrets required in review context</p>
+          </article>
+          <article class="fs-card p-6">
+            <b class="text-4xl">4</b>
+            <p class="mt-2 text-sm leading-6 text-muted">High-risk action types covered first</p>
+          </article>
+          <article class="fs-card p-6">
+            <b class="text-4xl">&lt; 2 min</b>
+            <p class="mt-2 text-sm leading-6 text-muted">Target time from escalation to decision</p>
+          </article>
+        </section>
+
+        <section id="product" class="mx-auto grid w-[min(100%-32px,1120px)] items-center gap-8 py-14 lg:grid-cols-[1.1fr_0.9fr]">
+          <div class="reveal fs-card bg-white p-4">
+            <div class="live-demo-tabs mb-4 flex flex-wrap gap-2" role="tablist" aria-label="Approval examples">
+              <button class="active min-h-9 rounded-lg border border-border px-3 text-sm font-semibold" type="button" data-live-scenario="refund">Refund</button>
+              <button class="min-h-9 rounded-lg border border-border px-3 text-sm font-semibold" type="button" data-live-scenario="deploy">Deploy</button>
+              <button class="min-h-9 rounded-lg border border-border px-3 text-sm font-semibold" type="button" data-live-scenario="email">Email</button>
+            </div>
+            <div class="grid gap-4 md:grid-cols-[1fr_0.75fr]">
+              <div class="live-request-card rounded-xl border border-border bg-neutral-50 p-5">
+                <div class="flex items-center justify-between gap-3">
+                  <span id="live-demo-risk" class="rounded-md bg-red-50 px-2 py-1 text-xs font-semibold text-red-600">High risk</span>
+                  <b id="live-demo-status" class="rounded-md bg-amber-50 px-2 py-1 text-xs font-semibold text-amber-700">Pending</b>
+                </div>
+                <h3 id="live-demo-title-card" class="mt-5 text-3xl font-bold leading-tight tracking-[-0.01em]">Approve refund for customer #123</h3>
+                <p id="live-demo-copy" class="mt-3 text-sm leading-6 text-muted">The agent wants to issue a $500 refund that exceeds your policy limit.</p>
+                <dl class="mt-5 grid gap-3 sm:grid-cols-3">
+                  <div class="rounded-lg border border-border bg-white p-3"><dt class="text-xs font-semibold uppercase text-muted">Agent</dt><dd id="live-demo-agent" class="mt-1 text-sm font-semibold">Refund agent</dd></div>
+                  <div class="rounded-lg border border-border bg-white p-3"><dt class="text-xs font-semibold uppercase text-muted">Action</dt><dd id="live-demo-action" class="mt-1 text-sm font-semibold">stripe.refund</dd></div>
+                  <div class="rounded-lg border border-border bg-white p-3"><dt class="text-xs font-semibold uppercase text-muted">Timeout</dt><dd class="mt-1 text-sm font-semibold">15 minutes</dd></div>
+                </dl>
               </div>
-              <pre><code id="live-demo-response">{
+              <div class="live-decision-panel rounded-xl border border-border bg-neutral-50 p-5">
+                <span class="text-xs font-bold uppercase tracking-wide text-primary">Reviewer decision</span>
+                <div class="live-decision-buttons mt-4 flex flex-wrap gap-2">
+                  <button class="min-h-9 rounded-lg border border-border px-3 text-sm font-semibold" type="button" data-live-decision="approved">Approve</button>
+                  <button class="min-h-9 rounded-lg border border-border px-3 text-sm font-semibold" type="button" data-live-decision="edited">Edit</button>
+                  <button class="min-h-9 rounded-lg border border-border px-3 text-sm font-semibold" type="button" data-live-decision="rejected">Reject</button>
+                </div>
+                <pre class="mt-4"><code id="live-demo-response">{
   "status": "pending",
   "instruction": "Waiting for reviewer"
 }</code></pre>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="feature-copy">
-          <span class="section-kicker">Live approval flow</span>
-          <h2 id="live-demo-title">Try the moment Forsig protects your workflow.</h2>
-          <p>Pick a risky agent action, choose a reviewer decision, and see the structured response your agent receives before it continues.</p>
-          <a href="/developer">Open developer portal</a>
-        </div>
-      </section>
+          <div class="reveal">
+            <span class="text-xs font-bold uppercase tracking-wide text-primary">Unlimited capability with guardrails</span>
+            <h2 class="mt-3 text-4xl font-bold leading-tight tracking-[-0.01em] md:text-5xl">Anything your agent can affect, Forsig can pause for review.</h2>
+            <p class="mt-4 text-base leading-7 text-muted">Use Forsig where autonomous work gets real: money, customer communication, production changes, and paid tools.</p>
+            <a class="mt-5 inline-flex text-sm font-semibold text-primary no-underline" href="/developer">Open developer portal</a>
+          </div>
+        </section>
 
-      <section class="portkey-cta-bar reveal" aria-label="Book a Forsig demo">
-        <div>
-          <span class="section-kicker">Launch safely</span>
-          <h2>Add approvals before your next agent goes live.</h2>
-        </div>
-        <div class="portkey-actions">
-          <a class="portkey-btn portkey-btn-primary" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener">Book a demo</a>
-          <a class="portkey-btn portkey-btn-secondary" href="#waitlist">Get early access</a>
-        </div>
-      </section>
+        <section class="mx-auto grid w-[min(100%-32px,1120px)] items-center gap-8 py-14 lg:grid-cols-[0.9fr_1.1fr]">
+          <div class="reveal">
+            <span class="text-xs font-bold uppercase tracking-wide text-primary">The SOTA approval checkpoint</span>
+            <h2 class="mt-3 text-4xl font-bold leading-tight tracking-[-0.01em] md:text-5xl">A decision model your agent can branch on.</h2>
+            <p class="mt-4 text-base leading-7 text-muted">Forsig returns a structured response: approved, rejected, edited, takeover, more context, or timeout.</p>
+          </div>
+          <div class="reveal fs-card grid gap-3 bg-white p-4 md:grid-cols-2">
+            <div class="rounded-xl border border-border bg-neutral-50 p-5"><b>Approve</b><p class="mt-2 text-sm leading-6 text-muted">Proceed with the proposed action.</p></div>
+            <div class="rounded-xl border border-border bg-neutral-50 p-5"><b>Edit</b><p class="mt-2 text-sm leading-6 text-muted">Continue with safer reviewer instructions.</p></div>
+            <div class="rounded-xl border border-border bg-neutral-50 p-5"><b>Reject</b><p class="mt-2 text-sm leading-6 text-muted">Stop the risky action before damage.</p></div>
+            <div class="rounded-xl border border-border bg-neutral-50 p-5"><b>Take over</b><p class="mt-2 text-sm leading-6 text-muted">Move the task to a human operator.</p></div>
+            <div class="rounded-xl border border-border bg-neutral-50 p-5"><b>More context</b><p class="mt-2 text-sm leading-6 text-muted">Ask the agent to gather missing details.</p></div>
+            <div class="rounded-xl border border-border bg-neutral-50 p-5"><b>Timeout</b><p class="mt-2 text-sm leading-6 text-muted">Fail closed when nobody responds.</p></div>
+          </div>
+        </section>
 
-      <section class="portkey-feature portkey-feature-flipped reveal" aria-labelledby="cost-title">
-        <div class="feature-copy">
-          <span class="section-kicker">Compliance & cost management</span>
-          <h2>Limit the actions that can cost money or trust.</h2>
-          <p>Set approval points around refunds, paid tools, data edits, and production changes. Forsig saves the decision trail without storing secrets.</p>
-          <a href="#security">Learn more</a>
-        </div>
-        <div class="feature-visual cost-visual" aria-label="Example cost and risk controls">
-          <div class="cost-card">
-            <span>Refund risk</span>
-            <i style="width: 82%"></i>
+        <section id="security" class="mx-auto grid w-[min(100%-32px,1120px)] items-center gap-8 py-14 lg:grid-cols-[1fr_0.9fr]">
+          <div class="reveal fs-card bg-white p-4">
+            <div class="rounded-xl border border-border bg-neutral-50 p-6">
+              <h2 class="text-4xl font-bold leading-tight tracking-[-0.01em]">Secrets that *************.</h2>
+              <p class="mt-4 text-base leading-7 text-muted">Forsig stores decisions and minimal context, not private tokens, full payment records, or unnecessary customer data.</p>
+              <div class="mt-6 grid gap-3 sm:grid-cols-2">
+                <div class="rounded-xl border border-border bg-white p-4"><b>Forsig stores</b><p class="mt-2 text-sm leading-6 text-muted">Action, risk, reviewer, timestamp, and signed decision.</p></div>
+                <div class="rounded-xl border border-border bg-white p-4"><b>Forsig never needs</b><p class="mt-2 text-sm leading-6 text-muted">API keys, passwords, full records, or private agent memory.</p></div>
+              </div>
+            </div>
           </div>
-          <div class="cost-card">
-            <span>Tool spend</span>
-            <i style="width: 68%"></i>
+          <div class="reveal">
+            <span class="text-xs font-bold uppercase tracking-wide text-primary">Privacy and control</span>
+            <h2 class="mt-3 text-4xl font-bold leading-tight tracking-[-0.01em] md:text-5xl">Safe enough to use around real customer workflows.</h2>
+            <p class="mt-4 text-base leading-7 text-muted">Start in shadow mode, see where reviews would trigger, then turn on active approvals for the actions that matter.</p>
           </div>
-          <div class="cost-card">
-            <span>Production impact</span>
-            <i style="width: 74%"></i>
-          </div>
-          <div class="cost-summary">
-            <b>Fail closed by default</b>
-            <p>If nobody responds before timeout, risky actions stop instead of silently continuing.</p>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="portkey-feature reveal" aria-labelledby="flow-title">
-        <div class="feature-visual flow-visual">
-          <svg viewBox="0 0 760 360" role="img" aria-labelledby="flow-svg-title flow-svg-desc">
-            <title id="flow-svg-title">Forsig AI approval flow</title>
-            <desc id="flow-svg-desc">Your AI agent sends a risky action to Forsig, a human reviewer decides, and safe execution resumes.</desc>
-            <defs>
-              <linearGradient id="flowGradient" x1="0" x2="1">
-                <stop offset="0%" stop-color="#22d3ee" />
-                <stop offset="52%" stop-color="#8b5cf6" />
-                <stop offset="100%" stop-color="#14f1bd" />
-              </linearGradient>
-              <marker id="arrow" markerWidth="12" markerHeight="12" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
-                <path d="M0,0 L0,6 L9,3 z" fill="#14f1bd" />
-              </marker>
-            </defs>
-            <path class="flow-path" d="M140 178 C245 74 330 74 380 178 S520 282 620 178" marker-end="url(#arrow)" />
-            <g class="flow-node" transform="translate(58 112)">
-              <rect width="164" height="118" rx="22" />
-              <text x="24" y="42">Your AI agent</text>
-              <text x="24" y="72">proposes action</text>
-            </g>
-            <g class="flow-node flow-node-main" transform="translate(298 112)">
-              <rect width="164" height="118" rx="22" />
-              <text x="24" y="42">Forsig</text>
-              <text x="24" y="72">checkpoint</text>
-            </g>
-            <g class="flow-node" transform="translate(538 112)">
-              <rect width="164" height="118" rx="22" />
-              <text x="24" y="42">Safe execution</text>
-              <text x="24" y="72">continues</text>
-            </g>
-            <g class="reviewer-node" transform="translate(306 260)">
-              <rect width="148" height="62" rx="18" />
-              <text x="24" y="38">Human reviewer</text>
-            </g>
-            <path class="review-path" d="M380 230 V260" marker-end="url(#arrow)" />
-          </svg>
-        </div>
-        <div class="feature-copy">
-          <span class="section-kicker">AI gateway approval flow</span>
-          <h2>Insert Forsig exactly where the agent needs permission.</h2>
-          <p>Your workflow calls Forsig before the risky action. A reviewer returns a signed response your agent can branch on immediately.</p>
-          <a href="#developers">Learn more</a>
-        </div>
-      </section>
-
-      <section id="developers" class="portkey-dev-section reveal" aria-labelledby="developers-title">
-        <div class="dev-copy">
-          <span class="section-kicker">Developers & integration</span>
-          <h2 id="developers-title">Install the SDK and wrap the risky action.</h2>
-          <p>Use <code>forsig.escalate()</code> around refunds, migrations, emails, or paid tool calls. Start in shadow mode, then enable active approvals.</p>
-        </div>
-        <div class="dev-code-card">
-          <div class="code-tabs" role="tablist" aria-label="Integration language">
-            <button class="active" type="button" role="tab" aria-selected="true" data-portkey-code-tab="node">Node.js</button>
-            <button type="button" role="tab" aria-selected="false" data-portkey-code-tab="python">Python</button>
-            <button type="button" role="tab" aria-selected="false" data-portkey-code-tab="curl">cURL</button>
+        <section id="developers" class="mx-auto grid w-[min(100%-32px,1120px)] items-center gap-8 py-14 lg:grid-cols-[0.78fr_1fr]">
+          <div class="reveal">
+            <span class="text-xs font-bold uppercase tracking-wide text-primary">Developers</span>
+            <h2 class="mt-3 text-4xl font-bold leading-tight tracking-[-0.01em] md:text-5xl">Wrap a risky action with a Forsig checkpoint.</h2>
+            <p class="mt-4 text-base leading-7 text-muted">Install the SDK, send minimal review context, and wait for the signed decision your agent can branch on.</p>
           </div>
-          <pre><code id="portkey-code-output">import { Forsig } from "@forsig/sdk";
+          <div class="reveal dev-code-card fs-card overflow-hidden bg-white">
+            <div class="code-tabs flex flex-wrap gap-2 border-b border-border bg-neutral-50 p-3" role="tablist" aria-label="Integration language">
+              <button class="active min-h-9 rounded-lg border border-border px-3 text-sm font-semibold" type="button" role="tab" aria-selected="true" data-portkey-code-tab="node">Node.js</button>
+              <button class="min-h-9 rounded-lg border border-border px-3 text-sm font-semibold" type="button" role="tab" aria-selected="false" data-portkey-code-tab="python">Python</button>
+              <button class="min-h-9 rounded-lg border border-border px-3 text-sm font-semibold" type="button" role="tab" aria-selected="false" data-portkey-code-tab="curl">cURL</button>
+            </div>
+            <pre class="m-0 rounded-none border-0 shadow-none"><code id="portkey-code-output">import { Forsig } from "@forsig/sdk";
 
 const forsig = new Forsig({ apiKey: process.env.FORSIG_API_KEY });
 
@@ -299,249 +272,97 @@ const decision = await forsig.escalate({
 if (decision.status === "approved") {
   await issueRefund();
 }</code></pre>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      <section class="portkey-trust reveal" aria-labelledby="trust-title">
-        <div class="section-head-centered">
-          <span class="section-kicker">Trust</span>
-          <h2 id="trust-title">Trusted by leading AI teams.</h2>
-          <p>Forsig is being shaped with builders who are putting autonomous agents into customer, revenue, and production workflows.</p>
-        </div>
-        <div class="trust-marquee" aria-label="Private beta audience">
-          <div>
-            <span>AgentOps teams</span>
-            <span>Support automation</span>
-            <span>AI platform teams</span>
-            <span>DevOps workflows</span>
-            <span>Ops founders</span>
-            <span>Compliance reviewers</span>
+        <section id="use-cases" class="mx-auto w-[min(100%-32px,1120px)] py-14">
+          <div class="mx-auto max-w-3xl text-center reveal">
+            <span class="text-xs font-bold uppercase tracking-wide text-primary">Use cases</span>
+            <h2 class="mt-3 text-4xl font-bold leading-tight tracking-[-0.01em] md:text-5xl">Protect the work your users will notice.</h2>
           </div>
-          <div aria-hidden="true">
-            <span>AgentOps teams</span>
-            <span>Support automation</span>
-            <span>AI platform teams</span>
-            <span>DevOps workflows</span>
-            <span>Ops founders</span>
-            <span>Compliance reviewers</span>
+          <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <article class="reveal fs-card p-6"><span class="text-sm font-bold text-primary">01</span><h3 class="mt-4 text-xl font-bold">Refunds</h3><p class="mt-2 text-sm leading-6 text-muted">Review costly refunds before money leaves.</p></article>
+            <article class="reveal fs-card p-6"><span class="text-sm font-bold text-primary">02</span><h3 class="mt-4 text-xl font-bold">Emails</h3><p class="mt-2 text-sm leading-6 text-muted">Catch bad offers or wrong claims before sending.</p></article>
+            <article class="reveal fs-card p-6"><span class="text-sm font-bold text-primary">03</span><h3 class="mt-4 text-xl font-bold">Deployments</h3><p class="mt-2 text-sm leading-6 text-muted">Pause production changes for human review.</p></article>
+            <article class="reveal fs-card p-6"><span class="text-sm font-bold text-primary">04</span><h3 class="mt-4 text-xl font-bold">Tool spend</h3><p class="mt-2 text-sm leading-6 text-muted">Approve paid exports and external tool calls.</p></article>
           </div>
-        </div>
-        <div class="testimonial-carousel" aria-label="Private beta feedback carousel">
-          <button type="button" data-testimonial-prev aria-label="Previous testimonial">Prev</button>
-          <div class="testimonial-slide active" data-testimonial-slide>
-            <div class="testimonial-logo">Beta team</div>
-            <p>"We want every refund agent to pause before money leaves the business."</p>
-            <div><b>Support automation lead</b><span>Private beta interview</span></div>
-          </div>
-          <div class="testimonial-slide" data-testimonial-slide>
-            <div class="testimonial-logo">Design partner</div>
-            <p>"Shadow mode shows where approvals would trigger without slowing our production agents."</p>
-            <div><b>AI platform engineer</b><span>Design partner feedback</span></div>
-          </div>
-          <div class="testimonial-slide" data-testimonial-slide>
-            <div class="testimonial-logo">Ops team</div>
-            <p>"The signed audit trail is the first thing our compliance reviewer asks about."</p>
-            <div><b>Operations founder</b><span>Beta conversation</span></div>
-          </div>
-          <button type="button" data-testimonial-next aria-label="Next testimonial">Next</button>
-        </div>
-      </section>
+        </section>
 
-      <section class="portkey-usecases reveal" aria-labelledby="usecases-title">
-        <div class="section-head-centered">
-          <span class="section-kicker">Use cases</span>
-          <h2 id="usecases-title">Protect the actions that can damage revenue or trust.</h2>
-        </div>
-        <div class="usecase-grid">
-          <article>
-            <span>01</span>
-            <h3>Stop costly refunds</h3>
-            <p>Require a reviewer before high-value refunds leave your payment system.</p>
-            <a href="/use-cases/refunds">Learn more</a>
-          </article>
-          <article>
-            <span>02</span>
-            <h3>Review customer emails</h3>
-            <p>Catch risky offers, wrong claims, or bad tone before an agent sends.</p>
-            <a href="/use-cases/emails">Learn more</a>
-          </article>
-          <article>
-            <span>03</span>
-            <h3>Guard migrations</h3>
-            <p>Pause production changes until the right reviewer sees context.</p>
-            <a href="/use-cases/deployments">Learn more</a>
-          </article>
-          <article>
-            <span>04</span>
-            <h3>Control paid tools</h3>
-            <p>Approve exports, purchases, or external tool calls before spend happens.</p>
-            <a href="/use-cases/tool-spend">Learn more</a>
-          </article>
-        </div>
-      </section>
-
-      <section id="security" class="portkey-security reveal" aria-labelledby="security-title">
-        <div class="section-head-centered">
-          <span class="section-kicker">Security</span>
-          <h2 id="security-title">Forsig stores decisions, not secrets.</h2>
-        </div>
-        <div class="security-card">
-          <div>
-            <h3>Forsig stores</h3>
-            <p><span>+</span> Reviewer identity and timestamp</p>
-            <p><span>+</span> Tool name and proposed action</p>
-            <p><span>+</span> Risk reason and signed decision</p>
-            <p><span>+</span> Audit trail for each escalation</p>
+        <section class="mx-auto w-[min(100%-32px,1120px)] py-14">
+          <div class="mx-auto max-w-3xl text-center reveal">
+            <span class="text-xs font-bold uppercase tracking-wide text-primary">Trust</span>
+            <h2 class="mt-3 text-4xl font-bold leading-tight tracking-[-0.01em] md:text-5xl">Built with teams shipping real agents.</h2>
           </div>
-          <div>
-            <h3>Forsig never needs</h3>
-            <p><span>-</span> API keys, passwords, or private tokens</p>
-            <p><span>-</span> Full payment records</p>
-            <p><span>-</span> Unnecessary customer data</p>
-            <p><span>-</span> Private agent memory</p>
+          <div class="trust-marquee mt-8" aria-label="Private beta audience">
+            <div>
+              <span class="fs-card inline-flex min-w-52 justify-center px-5 py-4 text-sm font-semibold text-muted">AgentOps teams</span>
+              <span class="fs-card inline-flex min-w-52 justify-center px-5 py-4 text-sm font-semibold text-muted">Support automation</span>
+              <span class="fs-card inline-flex min-w-52 justify-center px-5 py-4 text-sm font-semibold text-muted">AI platform teams</span>
+              <span class="fs-card inline-flex min-w-52 justify-center px-5 py-4 text-sm font-semibold text-muted">DevOps workflows</span>
+            </div>
+            <div aria-hidden="true">
+              <span class="fs-card inline-flex min-w-52 justify-center px-5 py-4 text-sm font-semibold text-muted">AgentOps teams</span>
+              <span class="fs-card inline-flex min-w-52 justify-center px-5 py-4 text-sm font-semibold text-muted">Support automation</span>
+              <span class="fs-card inline-flex min-w-52 justify-center px-5 py-4 text-sm font-semibold text-muted">AI platform teams</span>
+              <span class="fs-card inline-flex min-w-52 justify-center px-5 py-4 text-sm font-semibold text-muted">DevOps workflows</span>
+            </div>
           </div>
-        </div>
-        <div class="security-badges" aria-label="Security roadmap badges">
-          <span>SOC 2 in progress</span>
-          <span>GDPR-ready controls planned</span>
-          <span>Signed decisions</span>
-        </div>
-      </section>
+        </section>
 
-      <section class="portkey-cta-bar reveal" aria-label="Get early access">
-        <div>
-          <span class="section-kicker">Developer beta</span>
-          <h2>Ship autonomous agents with one last human safeguard.</h2>
-        </div>
-        <div class="portkey-actions">
-          <a class="portkey-btn portkey-btn-primary" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener">Book a demo</a>
-          <a class="portkey-btn portkey-btn-secondary" href="#waitlist">Get early access</a>
-        </div>
-      </section>
-
-      <section id="waitlist" class="portkey-signup reveal" aria-labelledby="signup-title">
-        <div>
-          <span class="section-kicker">Beta access</span>
-          <h2 id="signup-title">Join the Forsig waitlist.</h2>
-          <p>Early teams get founder onboarding, launch pricing, and help choosing the first approval checkpoints.</p>
-          <div class="seat-meter" aria-label="Beta seats remaining">
-            <div><i data-seat-progress style="width: 34%"></i></div>
-            <span><b data-seats-left>33</b> beta seats remaining</span>
+        <section id="waitlist" class="mx-auto grid w-[min(100%-32px,896px)] gap-8 py-16 md:grid-cols-[1fr_0.9fr]">
+          <div class="reveal">
+            <span class="text-xs font-bold uppercase tracking-wide text-primary">Private beta</span>
+            <h2 id="signup-title" class="mt-3 text-4xl font-bold leading-tight tracking-[-0.01em] md:text-5xl">Crafted for both human and agent.</h2>
+            <p class="mt-4 text-base leading-7 text-muted">Join the beta and get help choosing the first approval checkpoints for your agent workflows.</p>
           </div>
-        </div>
-        <form id="waitlist-form" class="portkey-form" data-lead-form data-referral-confirmation novalidate>
-          <label>
-            <span>Email</span>
-            <input name="email" type="email" required autocomplete="email" placeholder="you@company.com" />
-          </label>
-          <label>
-            <span>Name <em>optional</em></span>
-            <input name="name" type="text" autocomplete="given-name" placeholder="Alex" />
-          </label>
-          <input name="planInterest" type="hidden" value="developer-beta" />
-          <button class="portkey-btn portkey-btn-primary" type="submit">Join waitlist</button>
-          <p class="form-note">We will only use your email to send beta updates.</p>
-          <p id="form-status" class="mini-status" role="status"></p>
-          <div class="lp-referral-result referral-result" hidden>
-            <b>You are on the list.</b>
-            <p>Invite 3 colleagues to unlock priority access.</p>
-            <div class="referral-progress" aria-label="Referral progress"><i style="width: 33%"></i></div>
-            <label>
-              <span>Your referral link</span>
-              <input data-referral-link readonly value="" />
+          <form id="waitlist-form" class="reveal fs-card grid gap-3 bg-white p-5" data-lead-form data-referral-confirmation novalidate>
+            <label class="grid gap-2 text-sm font-semibold">
+              Email
+              <input class="fs-input" name="email" type="email" required autocomplete="email" placeholder="you@company.com" />
             </label>
-            <button type="button" data-copy-referral>Copy referral link</button>
-          </div>
-        </form>
-      </section>
+            <label class="grid gap-2 text-sm font-semibold">
+              Name <span class="font-normal text-muted">optional</span>
+              <input class="fs-input" name="name" type="text" autocomplete="given-name" placeholder="Alex" />
+            </label>
+            <input name="planInterest" type="hidden" value="developer-beta" />
+            <button class="fs-button fs-button-primary" type="submit">Join waitlist</button>
+            <p class="text-sm leading-6 text-muted">We will only use your email to send beta updates.</p>
+            <p id="form-status" class="mini-status" role="status"></p>
+            <div class="lp-referral-result referral-result rounded-xl border border-sky-100 bg-sky-50 p-4" hidden>
+              <b>You are on the list.</b>
+              <p class="mt-1 text-sm leading-6 text-muted">Invite 3 colleagues to unlock priority access.</p>
+              <label class="mt-3 grid gap-2 text-sm font-semibold">
+                Your referral link
+                <input class="fs-input" data-referral-link readonly value="" />
+              </label>
+              <button class="fs-button fs-button-secondary mt-3" type="button" data-copy-referral>Copy referral link</button>
+            </div>
+          </form>
+        </section>
+      </main>
 
-      <section id="book-demo" class="portkey-final-cta reveal" aria-labelledby="final-title">
-        <span class="section-kicker">Forsig</span>
-        <h2 id="final-title">The last safeguard your AI needs.</h2>
-        <p>Give your agents speed. Keep human control where the business risk is real.</p>
-        <div class="portkey-actions">
-          <a class="portkey-btn portkey-btn-primary" href="https://calendly.com/thenazmulkarim/30min" target="_blank" rel="noopener">Book a demo</a>
-          <a class="portkey-btn portkey-btn-secondary" href="#waitlist">Get early access</a>
-        </div>
-      </section>
-
-      <section class="portkey-faq reveal" aria-labelledby="faq-title">
-        <div class="section-head-centered">
-          <span class="section-kicker">FAQ</span>
-          <h2 id="faq-title">Common beta questions.</h2>
-        </div>
-        <div class="faq-list">
-          <details open>
-            <summary>How quickly can I test Forsig?</summary>
-            <p>You can create an API key, run the quickstart script, and approve your first test escalation in minutes.</p>
-          </details>
-          <details>
-            <summary>Does Forsig block my agent forever?</summary>
-            <p>No. You set timeouts and fallback behavior. Risky actions can fail closed when nobody responds.</p>
-          </details>
-          <details>
-            <summary>Can I use Forsig without sending sensitive data?</summary>
-            <p>Yes. Send only the action, risk reason, and minimal context a reviewer needs.</p>
-          </details>
-          <details>
-            <summary>Is Forsig production-ready?</summary>
-            <p>Forsig is in private beta. Start with shadow mode, then enable active approvals for selected workflows.</p>
-          </details>
-        </div>
-      </section>
-    </main>
-
-    <footer class="portkey-footer">
-      <div class="footer-brand">
-        <a class="portkey-brand" href="/" aria-label="Forsig home">
-          <svg viewBox="0 0 40 40" aria-hidden="true">
-            <path d="M4 20h12M24 20h12" />
-            <circle cx="20" cy="20" r="6" />
-            <path d="M20 8v6M20 26v6" />
-            <circle cx="4" cy="20" r="2" />
-            <circle cx="36" cy="20" r="2" />
-          </svg>
-          <span>Forsig</span>
-        </a>
-        <p>Human approval checkpoints for AI agents that touch money, customers, production, or paid tools.</p>
-        <div class="footer-socials" aria-label="Social links">
-          <a href="https://x.com/thenazmulkarim" target="_blank" rel="noopener" aria-label="Nazmul Karim on X">X</a>
-          <a href="https://www.linkedin.com/in/thenazmulkarim/" target="_blank" rel="noopener" aria-label="Nazmul Karim on LinkedIn">in</a>
-          <a href="mailto:hello@forsig.com" aria-label="Email Forsig">@</a>
-        </div>
-      </div>
-      <nav aria-label="Footer navigation">
+      <footer class="mx-auto grid w-[min(100%-32px,1120px)] gap-10 border-t border-border py-10 md:grid-cols-[1fr_1.5fr]">
         <div>
-          <h3>Product</h3>
-          <a href="#product">Live approval flow</a>
-          <a href="#security">Security</a>
-          <a href="#waitlist">Beta</a>
+          <a class="fs-logo flex items-center gap-3 text-sm font-bold text-foreground no-underline" href="/" aria-label="Forsig home">
+            <svg class="h-8 w-8" viewBox="0 0 40 40" aria-hidden="true">
+              <path d="M4 20h12M24 20h12" />
+              <circle cx="20" cy="20" r="6" />
+              <path d="M20 8v6M20 26v6" />
+              <circle cx="4" cy="20" r="2" />
+              <circle cx="36" cy="20" r="2" />
+            </svg>
+            <span>Forsig</span>
+          </a>
+          <p class="mt-4 max-w-sm text-sm leading-6 text-muted">Human approval checkpoints for AI agents that touch money, customers, production, or paid tools.</p>
         </div>
-        <div>
-          <h3>Developers</h3>
-          <a href="#developers">SDK</a>
-          <a href="/docs">Docs</a>
-          <a href="/developer">Portal</a>
-        </div>
-        <div>
-          <h3>Solutions</h3>
-          <a href="/docs#refunds">Refunds</a>
-          <a href="/docs#deployments">Deployments</a>
-          <a href="/docs#tool-spend">Tool spend</a>
-        </div>
-        <div>
-          <h3>Resources</h3>
-          <a href="/docs">Documentation</a>
-          <a href="/security">Security notes</a>
-          <a href="/privacy">Privacy</a>
-        </div>
-        <div>
-          <h3>Company</h3>
-          <a href="/contact">Contact</a>
-          <a href="mailto:hello@forsig.com">hello@forsig.com</a>
-        </div>
-      </nav>
-    </footer>
+        <nav class="grid gap-6 text-sm sm:grid-cols-4" aria-label="Footer navigation">
+          <div><h3 class="font-bold">Features</h3><a class="mt-3 block text-muted hover:text-foreground" href="#product">Approval checkpoint</a><a class="mt-2 block text-muted hover:text-foreground" href="#security">Security</a></div>
+          <div><h3 class="font-bold">Use cases</h3><a class="mt-3 block text-muted hover:text-foreground" href="#use-cases">Refunds</a><a class="mt-2 block text-muted hover:text-foreground" href="#use-cases">Deployments</a></div>
+          <div><h3 class="font-bold">Resources</h3><a class="mt-3 block text-muted hover:text-foreground" href="/docs">Docs</a><a class="mt-2 block text-muted hover:text-foreground" href="/security">Security notes</a></div>
+          <div><h3 class="font-bold">Company</h3><a class="mt-3 block text-muted hover:text-foreground" href="/contact">Contact</a><a class="mt-2 block text-muted hover:text-foreground" href="/privacy">Privacy</a></div>
+        </nav>
+      </footer>
+    </div>
 
     <script src="/app.js" type="module"></script>
   </body>
