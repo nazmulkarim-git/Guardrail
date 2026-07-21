@@ -1,5 +1,6 @@
 import postgres from "postgres";
 import { randomUUID } from "node:crypto";
+import { analyzePublicSubmission, publicSuccessResponse } from "./_anti-abuse.js";
 import { checkRateLimit } from "./_forsig-core.js";
 
 let sql;
@@ -79,8 +80,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (!checkRateLimit(req, res, "contact", { limit: 6, windowMs: 60_000 })) return;
+    if (!checkRateLimit(req, res, "contact", { limit: 3, windowMs: 60_000 })) return;
     const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
+    const abuse = analyzePublicSubmission(req, body, { type: "contact" });
+    if (abuse.blocked) {
+      console.warn("Suppressed spam contact submission", {
+        reasons: abuse.reasons,
+        score: abuse.score,
+        ip: abuse.ip
+      });
+      res.status(200).json(publicSuccessResponse("contact"));
+      return;
+    }
+
     const name = normalizeString(body.name);
     const email = normalizeString(body.email)?.toLowerCase();
     const company = normalizeString(body.company);

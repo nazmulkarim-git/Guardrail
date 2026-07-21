@@ -36,6 +36,12 @@
             <option>Product Manager</option>
           </select>
           <textarea name="message" required placeholder="Write your message *"></textarea>
+          <input name="formStartedAt" type="hidden" value="" />
+          <input name="formIntent" type="hidden" value="forsig-public-form" />
+          <label aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden">
+            Website
+            <input name="website" type="text" tabindex="-1" autocomplete="off" />
+          </label>
           <button class="button primary" type="submit">Send message</button>
           <p id="contact-status" class="mini-status" role="status"></p>
         </form>

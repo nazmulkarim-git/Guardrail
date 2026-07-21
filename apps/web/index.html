@@ -113,6 +113,12 @@
             <form id="hero-waitlist-form" class="fs-hero-form" data-lead-form novalidate>
               <input name="email" type="email" required autocomplete="email" placeholder="Enter your work email" aria-label="Work email" />
               <input name="planInterest" type="hidden" value="developer-beta" />
+              <input name="formStartedAt" type="hidden" value="" />
+              <input name="formIntent" type="hidden" value="forsig-public-form" />
+              <label aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden">
+                Website
+                <input name="website" type="text" tabindex="-1" autocomplete="off" />
+              </label>
               <button type="submit">Join</button>
               <p class="mini-status" role="status"></p>
             </form>
@@ -317,6 +323,12 @@ const decision = await forsig.escalate({
                 <input name="name" type="text" autocomplete="given-name" placeholder="Alex" />
               </label>
               <input name="planInterest" type="hidden" value="developer-beta" />
+              <input name="formStartedAt" type="hidden" value="" />
+              <input name="formIntent" type="hidden" value="forsig-public-form" />
+              <label aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden">
+                Website
+                <input name="website" type="text" tabindex="-1" autocomplete="off" />
+              </label>
               <button class="fs-button fs-button-primary" type="submit">Join waitlist</button>
               <p>We will only use your email to send beta updates.</p>
               <p id="form-status" class="mini-status" role="status"></p>

@@ -1,5 +1,6 @@
 import postgres from "postgres";
 import { randomUUID } from "node:crypto";
+import { analyzePublicSubmission, publicSuccessResponse } from "./_anti-abuse.js";
 import { checkRateLimit } from "./_forsig-core.js";
 
 let sql;
@@ -293,8 +294,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    if (!checkRateLimit(req, res, "waitlist", { limit: 8, windowMs: 60_000 })) return;
+    if (!checkRateLimit(req, res, "waitlist", { limit: 4, windowMs: 60_000 })) return;
     const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
+    const abuse = analyzePublicSubmission(req, body, { type: "waitlist" });
+    if (abuse.blocked) {
+      console.warn("Suppressed spam waitlist submission", {
+        reasons: abuse.reasons,
+        score: abuse.score,
+        ip: abuse.ip
+      });
+      res.status(200).json(publicSuccessResponse("waitlist"));
+      return;
+    }
+
     if (!isEmail(body.email)) {
       res.status(400).json({ ok: false, error: "Valid email is required." });
       return;

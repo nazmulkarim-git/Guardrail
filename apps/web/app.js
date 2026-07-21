@@ -44,6 +44,39 @@ function utmProperties() {
   };
 }
 
+function preparePublicForm(form) {
+  if (!form) return;
+  let startedAt = form.querySelector('input[name="formStartedAt"]');
+  if (!startedAt) {
+    startedAt = document.createElement("input");
+    startedAt.type = "hidden";
+    startedAt.name = "formStartedAt";
+    form.appendChild(startedAt);
+  }
+  if (!startedAt.value) startedAt.value = String(Date.now());
+
+  let formIntent = form.querySelector('input[name="formIntent"]');
+  if (!formIntent) {
+    formIntent = document.createElement("input");
+    formIntent.type = "hidden";
+    formIntent.name = "formIntent";
+    form.appendChild(formIntent);
+  }
+  formIntent.value = "forsig-public-form";
+
+  if (!form.querySelector('input[name="website"]')) {
+    const wrapper = document.createElement("label");
+    wrapper.setAttribute("aria-hidden", "true");
+    wrapper.style.cssText = "position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden";
+    wrapper.innerHTML = 'Website <input name="website" type="text" tabindex="-1" autocomplete="off" />';
+    form.appendChild(wrapper);
+  }
+}
+
+function hasFilledHoneypot(form) {
+  return Boolean(form?.querySelector('input[name="website"]')?.value?.trim());
+}
+
 function prefillReferralCodes() {
   const referral = new URLSearchParams(location.search).get("ref");
   if (!referral) return;
@@ -300,9 +333,15 @@ function initWaitlist() {
   ].filter((entry) => entry.form);
 
   for (const entry of forms) {
+    preparePublicForm(entry.form);
     entry.form.addEventListener("focusin", () => track("waitlist_form_started", { sourceSection: entry.sourceSection }), { once: true });
     entry.form.addEventListener("submit", async (event) => {
       event.preventDefault();
+      preparePublicForm(entry.form);
+      if (hasFilledHoneypot(entry.form)) {
+        entry.status.textContent = "You are on the beta list.";
+        return;
+      }
       const emailInput = entry.form.querySelector('input[name="email"]');
       const email = emailInput?.value?.trim() || "";
       if (emailInput && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -1782,9 +1821,15 @@ function initContactForm() {
   const form = document.getElementById("contact-form");
   const status = document.getElementById("contact-status");
   if (!form || !status) return;
+  preparePublicForm(form);
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    preparePublicForm(form);
+    if (hasFilledHoneypot(form)) {
+      status.textContent = "Message sent. Check your inbox for confirmation.";
+      return;
+    }
     status.textContent = "Sending...";
     const data = Object.fromEntries(new FormData(form).entries());
     data.name = String(data.name || "").trim();
