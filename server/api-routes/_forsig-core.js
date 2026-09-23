@@ -388,8 +388,44 @@ export async function sendSlackNotification({ text, blocks }) {
 }
 
 export function webhookSignature(payload) {
-  const secret = process.env.FORSIG_WEBHOOK_SECRET || process.env.FORSIG_ADMIN_SESSION_SECRET || process.env.FORSIG_API_KEY || "forsig-dev-webhook-secret";
-  return createHmac("sha256", secret).update(payload).digest("hex");
+  const secret = process.env.FORSIG_WEBHOOK_SECRET;
+  if (!secret && process.env.NODE_ENV === "production") {
+    throw new Error("FORSIG_WEBHOOK_SECRET is required in production.");
+  }
+  return createHmac("sha256", secret || "forsig-dev-webhook-secret").update(payload).digest("hex");
+}
+
+function isPrivateHostname(hostname) {
+  const host = String(hostname || "").toLowerCase();
+  if (!host) return true;
+  if (host === "localhost" || host === "::1" || host === "[::1]") return true;
+  if (host.endsWith(".local")) return true;
+  const match = host.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (!match) return false;
+  const [a, b] = match.slice(1).map(Number);
+  if (a === 10 || a === 127 || a === 0) return true;
+  if (a === 169 && b === 254) return true;
+  if (a === 172 && b >= 16 && b <= 31) return true;
+  if (a === 192 && b === 168) return true;
+  return false;
+}
+
+export function validateCallbackUrl(value) {
+  const normalized = normalizeString(value);
+  if (!normalized) return null;
+  let url;
+  try {
+    url = new URL(normalized);
+  } catch {
+    return null;
+  }
+  if (process.env.NODE_ENV === "production") {
+    if (url.protocol !== "https:") return null;
+    if (isPrivateHostname(url.hostname)) return null;
+  } else if (!["http:", "https:"].includes(url.protocol)) {
+    return null;
+  }
+  return url.toString();
 }
 
 export async function deliverResolutionWebhook(db, { workspaceId, escalationId, decision, event = "escalation.resolved" }) {

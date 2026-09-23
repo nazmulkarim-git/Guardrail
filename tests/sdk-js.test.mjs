@@ -116,33 +116,6 @@ test("Forsig client returns shadow escalation without polling", async () => {
   assert.equal(JSON.parse(calls[0].init.body).mode, "shadow");
 });
 
-test("Forsig client sends decisions", async () => {
-  const calls = [];
-  const client = new Forsig({
-    apiKey: "fsk_test_123",
-    baseURL: "https://example.test",
-    fetch: async (url, init) => {
-      calls.push({ url, init });
-      return {
-        ok: true,
-        json: async () => ({
-          ok: true,
-          decision: { id: "dec_123", status: "edited", instruction: "Offer store credit." }
-        })
-      };
-    }
-  });
-
-  const decision = await client.decide("esc_123", {
-    status: "edited",
-    instruction: "Offer store credit."
-  });
-
-  assert.equal(decision.status, "edited");
-  assert.equal(calls[0].url, "https://example.test/api/v1/escalations/esc_123/decision");
-  assert.equal(JSON.parse(calls[0].init.body).instruction, "Offer store credit.");
-});
-
 test("Forsig client supports baseUrl alias and cancellation", async () => {
   const calls = [];
   const client = new Forsig({

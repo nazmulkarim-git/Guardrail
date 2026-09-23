@@ -44,8 +44,7 @@ export default async function handler(req, res) {
   try {
     const db = getSql();
     const id = req.query?.id;
-    const body = readBody(req);
-    const parsed = validateDecisionPayload(body);
+    const parsed = validateDecisionPayload(readBody(req));
     if (!parsed.valid) {
       apiError(res, 400, "invalid_decision", parsed.errors.join(" "));
       return;
@@ -65,97 +64,81 @@ export default async function handler(req, res) {
       return;
     }
 
-    const escalationRows = await db`
-      select id, status
-      from escalations
-      where id = ${id}
-        and workspace_id = ${session.workspaceId}
-      limit 1
-    `;
-    const escalation = escalationRows[0];
-    if (!escalation) {
-      apiError(res, 404, "escalation_not_found", "Escalation not found.");
-      return;
-    }
-    if (escalation.status !== "pending") {
-      apiError(res, 409, "escalation_already_resolved", "This escalation is already resolved.");
-      return;
-    }
-
+    const reviewerName = developer.name || developer.email;
     const decisionId = newId("dec");
     const auditId = newId("audit");
-    const reviewerName = developer.name || developer.email;
-    const rows = await db`
-      insert into decisions (
-        id,
-        escalation_id,
-        workspace_id,
-        reviewer_user_id,
-        reviewer_name,
-        reviewer_channel,
-        status,
-        instruction,
-        added_context_json,
-        comment,
-        created_at
-      )
-      values (
-        ${decisionId},
-        ${id},
-        ${session.workspaceId},
-        ${developer.id},
-        ${reviewerName},
-        'developer_portal',
-        ${parsed.status},
-        ${parsed.instruction},
-        ${toJson(parsed.addedContext)},
-        ${parsed.comment},
-        now()
-      )
-      returning *
-    `;
 
-    await db`
-      update escalations
-      set status = ${parsed.status},
-          resolved_at = now(),
-          updated_at = now()
-      where id = ${id}
-        and workspace_id = ${session.workspaceId}
-    `;
+    const result = await db.begin(async (tx) => {
+      const claimed = await tx`
+        update escalations
+        set status = ${parsed.status},
+            resolved_at = now(),
+            updated_at = now()
+        where id = ${id}
+          and workspace_id = ${session.workspaceId}
+          and status = 'pending'
+        returning id, workspace_id
+      `;
 
-    await db`
-      insert into audit_events (
-        id,
-        workspace_id,
-        escalation_id,
-        actor_type,
-        actor_id,
-        event_type,
-        metadata_json,
-        created_at
-      )
-      values (
-        ${auditId},
-        ${session.workspaceId},
-        ${id},
-        'user',
-        ${developer.id},
-        ${`decision.${parsed.status}`},
-        ${toJson({ instruction: parsed.instruction, reviewerName })},
-        now()
-      )
-    `;
+      if (!claimed[0]) {
+        const existing = await tx`
+          select id, status
+          from escalations
+          where id = ${id}
+            and workspace_id = ${session.workspaceId}
+          limit 1
+        `;
+        return {
+          ok: false,
+          status: existing[0] ? 409 : 404,
+          code: existing[0] ? "escalation_already_resolved" : "escalation_not_found",
+          message: existing[0] ? "This escalation is already resolved." : "Escalation not found."
+        };
+      }
 
+      const rows = await tx`
+        insert into decisions (
+          id, escalation_id, workspace_id, reviewer_user_id, reviewer_name,
+          reviewer_channel, status, instruction, added_context_json, comment, created_at
+        )
+        values (
+          ${decisionId}, ${id}, ${session.workspaceId}, ${developer.id}, ${reviewerName},
+          'developer_portal', ${parsed.status}, ${parsed.instruction},
+          ${toJson(parsed.addedContext)}, ${parsed.comment}, now()
+        )
+        returning *
+      `;
+
+      await tx`
+        insert into audit_events (
+          id, workspace_id, escalation_id, actor_type, actor_id,
+          event_type, metadata_json, created_at
+        )
+        values (
+          ${auditId}, ${session.workspaceId}, ${id}, 'user', ${developer.id},
+          ${`decision.${parsed.status}`},
+          ${toJson({ instruction: parsed.instruction, reviewerName })}, now()
+        )
+      `;
+
+      return { ok: true, decision: rows[0] };
+    });
+
+    if (!result.ok) {
+      apiError(res, result.status, result.code, result.message);
+      return;
+    }
+
+    const decision = result.decision;
     const webhook = await deliverResolutionWebhook(db, {
       workspaceId: session.workspaceId,
       escalationId: id,
       decision: {
-        id: rows[0].id,
-        status: rows[0].status,
-        instruction: rows[0].instruction,
-        addedContext: rows[0].added_context_json,
-        comment: rows[0].comment
+        id: decision.id,
+        status: decision.status,
+        instruction: decision.instruction,
+        addedContext: decision.added_context_json,
+        comment: decision.comment
       }
     }).catch((error) => {
       console.error("Developer decision webhook failed", { escalationId: id, message: error.message });
@@ -165,14 +148,14 @@ export default async function handler(req, res) {
     json(res, 200, {
       ok: true,
       decision: {
-        id: rows[0].id,
+        id: decision.id,
         escalationId: id,
-        status: rows[0].status,
-        instruction: rows[0].instruction,
-        addedContext: rows[0].added_context_json,
-        comment: rows[0].comment,
+        status: decision.status,
+        instruction: decision.instruction,
+        addedContext: decision.added_context_json,
+        comment: decision.comment,
         auditId,
-        createdAt: rows[0].created_at
+        createdAt: decision.created_at
       },
       webhook: { sent: Boolean(webhook.sent), reason: webhook.reason || webhook.error || null }
     });

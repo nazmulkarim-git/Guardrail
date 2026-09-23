@@ -47,6 +47,9 @@ function getIp(req) {
 }
 
 async function sendEmail({ to, replyTo, subject, html }) {
+  if (!to) {
+    return { sent: false, reason: "recipient not configured" };
+  }
   if (!process.env.RESEND_API_KEY) {
     return { sent: false, reason: "RESEND_API_KEY not configured" };
   }
@@ -176,7 +179,7 @@ export default async function handler(req, res) {
       `;
     });
 
-    const ownerEmail = process.env.WAITLIST_OWNER_EMAIL || "thenazmulkarim@gmail.com";
+    const ownerEmail = process.env.WAITLIST_OWNER_EMAIL || null;
     const ownerHtml = `
       <div style="font-family:Inter,Arial,sans-serif;color:#111827">
         <h2>New Forsig contact message</h2>

@@ -83,9 +83,6 @@ class Forsig:
         response = self._request("GET", f"/api/v1/escalations/{escalation_id}")
         return response["escalation"]
 
-    def decide(self, escalation_id: str, **decision: Any) -> Dict[str, Any]:
-        response = self._request("POST", f"/api/v1/escalations/{escalation_id}/decision", decision)
-        return response["decision"]
 
     def cancel_escalation(self, escalation_id: str) -> Dict[str, Any]:
         response = self._request("POST", f"/api/v1/escalations/{escalation_id}/cancel", {})

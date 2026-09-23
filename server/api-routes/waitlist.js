@@ -188,7 +188,8 @@ async function sendConfirmationEmail(lead) {
 }
 
 async function sendOwnerNotification(lead) {
-  const ownerEmail = process.env.WAITLIST_OWNER_EMAIL || "thenazmulkarim@gmail.com";
+  const ownerEmail = process.env.WAITLIST_OWNER_EMAIL;
+  if (!ownerEmail) return { sent: false, reason: "WAITLIST_OWNER_EMAIL not configured" };
   if (!process.env.RESEND_API_KEY) {
     return { sent: false, reason: "RESEND_API_KEY not configured" };
   }

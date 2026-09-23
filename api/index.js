@@ -16,7 +16,6 @@ const routes = [
 
   { method: "POST", pattern: /^v1\/escalations$/, file: "v1/escalations.js" },
   { method: "GET", pattern: /^v1\/escalations\/([^/]+)$/, file: "v1/escalations/[id].js", params: ["id"] },
-  { method: "POST", pattern: /^v1\/escalations\/([^/]+)\/decision$/, file: "v1/escalations/[id]/decision.js", params: ["id"] },
   { method: "POST", pattern: /^v1\/escalations\/([^/]+)\/cancel$/, file: "v1/escalations/[id]/cancel.js", params: ["id"] },
 
   { method: "POST", pattern: /^admin\/login$/, file: "admin/login.js" },
