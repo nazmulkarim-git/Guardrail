@@ -12,7 +12,8 @@ import {
   requireMethod,
   sendEmail,
   sendSlackNotification,
-  toJson
+  toJson,
+  validateCallbackUrl
 } from "../_forsig-core.js";
 
 function normalizeRisk(value) {
@@ -76,8 +77,7 @@ function uniqueEmails(values) {
 function notificationRecipients(parsed) {
   return uniqueEmails([
     ...(parsed.reviewerEmails || []),
-    process.env.FORSIG_REVIEWER_EMAIL,
-    process.env.WAITLIST_OWNER_EMAIL
+    process.env.FORSIG_REVIEWER_EMAIL
   ]);
 }
 
@@ -150,6 +150,17 @@ export default async function handler(req, res) {
       return;
     }
 
+    const callbackInput =
+      normalizeString(parsed.review.callback_url) ||
+      normalizeString(parsed.review.callbackUrl) ||
+      normalizeString(body.callbackUrl) ||
+      normalizeString(body.callback_url);
+    const callbackUrl = validateCallbackUrl(callbackInput);
+    if (callbackInput && !callbackUrl) {
+      apiError(res, 400, "invalid_callback_url", "callbackUrl must be a valid HTTPS public URL in production.");
+      return;
+    }
+
     const id = newId("esc");
     const nowRows = await db`select now() as now`;
     const createdAt = nowRows[0].now;
@@ -211,7 +222,7 @@ export default async function handler(req, res) {
         ${toJson(body.model)},
         ${toJson(parsed.review.allowed_actions || parsed.review.allowedActions || body.allowedActions || body.allowed_actions || ["approve", "reject", "edit", "add_context", "take_over", "needs_more_info"])},
         ${toJson(parsed.review.notify || body.notify || body.notifyChannels || body.notify_channels || ["dashboard"])},
-        ${normalizeString(parsed.review.callback_url) || normalizeString(parsed.review.callbackUrl) || normalizeString(body.callbackUrl) || normalizeString(body.callback_url)},
+        ${callbackUrl},
         ${parsed.assignedReviewerEmail},
         ${parsed.testMode},
         ${timeoutAt},

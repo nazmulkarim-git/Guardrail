@@ -103,7 +103,6 @@ Send the minimum context a reviewer needs. Do not send API keys, passwords, priv
 - `Forsig(api_key, base_url?, http_client?)`
 - `forsig.escalate(**payload)`
 - `forsig.get_escalation(escalation_id)`
-- `forsig.decide(escalation_id, **decision)`
 - `forsig.cancel_escalation(escalation_id)`
 - `forsig.wait_for_decision(escalation_id, poll_interval_seconds?, timeout_seconds?)`
 - `forsig_headers(...)`

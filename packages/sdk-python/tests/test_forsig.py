@@ -70,21 +70,6 @@ class ForsigSdkTests(unittest.TestCase):
         self.assertEqual(calls[0]["api_key"], "fsk_test_123")
         self.assertEqual(calls[0]["payload"]["agent"], "refund-agent")
 
-    def test_client_sends_decision(self):
-        calls = []
-
-        def http_client(**kwargs):
-            calls.append(kwargs)
-            return {"ok": True, "decision": {"id": "dec_123", "status": "edited"}}
-
-        client = Forsig(api_key="fsk_test_123", base_url="https://example.test", http_client=http_client)
-        decision = client.decide("esc_123", status="edited", instruction="Offer store credit.")
-
-        self.assertEqual(decision["status"], "edited")
-        self.assertEqual(calls[0]["method"], "POST")
-        self.assertEqual(calls[0]["url"], "https://example.test/api/v1/escalations/esc_123/decision")
-        self.assertEqual(calls[0]["payload"]["instruction"], "Offer store credit.")
-
     def test_client_cancels_escalation(self):
         calls = []
 

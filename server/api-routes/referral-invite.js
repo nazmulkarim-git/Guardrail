@@ -26,7 +26,11 @@ function getOrigin(req) {
 }
 
 function inviteSecret() {
-  return process.env.REFERRAL_INVITE_SECRET || process.env.RESEND_API_KEY || "forsig-dev-referral-secret";
+  const secret = process.env.REFERRAL_INVITE_SECRET;
+  if (!secret && process.env.NODE_ENV === "production") {
+    throw new Error("REFERRAL_INVITE_SECRET is required in production.");
+  }
+  return secret || "forsig-dev-referral-secret";
 }
 
 function signPayload(payload) {

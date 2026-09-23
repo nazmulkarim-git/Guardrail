@@ -62,18 +62,6 @@ export type ForsigEscalationInput = {
   timeoutMs?: number;
 };
 
-export type ForsigDecisionInput = {
-  status: "approved" | "rejected" | "edited" | "context_added" | "taken_over" | "needs_more_info" | "expired" | "canceled";
-  instruction?: string;
-  addedContext?: Record<string, unknown>;
-  comment?: string;
-  reviewer?: {
-    id?: string;
-    name?: string;
-    channel?: string;
-  };
-};
-
 export type ForsigClientOptions = {
   apiKey: string;
   baseURL?: string;
@@ -160,13 +148,6 @@ export class Forsig {
     return response.escalation;
   }
 
-  async decide(id: string, decision: ForsigDecisionInput) {
-    const response = await this.request(`/api/v1/escalations/${encodeURIComponent(id)}/decision`, {
-      method: "POST",
-      body: JSON.stringify(decision)
-    });
-    return response.decision;
-  }
 
   async cancelEscalation(id: string) {
     const response = await this.request(`/api/v1/escalations/${encodeURIComponent(id)}/cancel`, {

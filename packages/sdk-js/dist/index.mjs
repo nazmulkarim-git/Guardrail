@@ -68,13 +68,6 @@ export class Forsig {
     return response.escalation;
   }
 
-  async decide(id, decision) {
-    const response = await this.request(`/api/v1/escalations/${encodeURIComponent(id)}/decision`, {
-      method: "POST",
-      body: JSON.stringify(decision)
-    });
-    return response.decision;
-  }
 
   async cancelEscalation(id) {
     const response = await this.request(`/api/v1/escalations/${encodeURIComponent(id)}/cancel`, {

@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { hashApiKey, parseBearer } from "../server/api-routes/_forsig-core.js";
 import { validateEscalationPayload } from "../server/api-routes/v1/escalations.js";
-import { validateDecisionPayload } from "../server/api-routes/v1/escalations/[id]/decision.js";
+import publicDecisionHandler from "../server/api-routes/v1/escalations/[id]/decision.js";
 
 test("validateEscalationPayload accepts compact JavaScript input", () => {
   const parsed = validateEscalationPayload({
@@ -68,16 +68,28 @@ test("validateEscalationPayload reports missing required fields", () => {
   ]);
 });
 
-test("validateDecisionPayload requires instructions for non-approval decisions", () => {
-  const parsed = validateDecisionPayload({ status: "rejected" });
-  assert.equal(parsed.valid, false);
-  assert.equal(parsed.errors[0], "instruction is required unless status is approved.");
-});
+test("agent API credentials cannot grant reviewer decisions", async () => {
+  let statusCode = null;
+  let payload = null;
 
-test("validateDecisionPayload accepts approved without instruction", () => {
-  const parsed = validateDecisionPayload({ status: "approved" });
-  assert.equal(parsed.valid, true);
-  assert.equal(parsed.instruction, "Proceed with the proposed action.");
+  const req = { method: "POST" };
+  const res = {
+    setHeader() {},
+    status(code) {
+      statusCode = code;
+      return this;
+    },
+    json(body) {
+      payload = body;
+      return this;
+    }
+  };
+
+  await publicDecisionHandler(req, res);
+
+  assert.equal(statusCode, 403);
+  assert.equal(payload?.ok, false);
+  assert.equal(payload?.error?.code, "reviewer_auth_required");
 });
 
 test("parseBearer extracts bearer token", () => {

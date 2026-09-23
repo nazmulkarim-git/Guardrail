@@ -106,7 +106,6 @@ Send the minimum context a reviewer needs. Do not send API keys, passwords, priv
 - `new Forsig({ apiKey, baseURL?, fetch? })`
 - `forsig.escalate(input)`
 - `forsig.getEscalation(id)`
-- `forsig.decide(id, decision)`
 - `forsig.cancelEscalation(id)`
 - `forsig.waitForDecision(id, options?)`
 - `forsigHeaders(input?)`

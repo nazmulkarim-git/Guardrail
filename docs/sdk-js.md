@@ -22,7 +22,6 @@ Methods:
 - `forsig.escalate(payload)`
 - `forsig.getEscalation(id)`
 - `forsig.cancelEscalation(id)`
-- `forsig.decide(id, decision)`
 
 Use `waitForDecision: true` for simple workflows where the agent can pause while a human reviews the request.
 
